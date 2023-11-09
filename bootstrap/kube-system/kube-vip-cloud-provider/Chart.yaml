@@ -1,0 +1,15 @@
+apiVersion: v2
+name: kube-vip-cloud-provider
+description: Helm chart for kube-vip-cloud-provider
+type: application
+version: 0.1.0
+appVersion: "1.0"
+
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-83"
+
+dependencies:
+  - name: kube-vip-cloud-provider
+    repository: https://kube-vip.github.io/helm-charts
+    version: 0.2.2
