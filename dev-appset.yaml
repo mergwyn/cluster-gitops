@@ -23,14 +23,14 @@ spec:
       source:
         repoURL: https://github.com/mergwyn/cluster-gitops.git
         targetRevision: main
-        path: '{{path}}'
+        path: '{{ path }}'
         helm:
           ignoreMissingValueFiles: true
           valueFiles:
-            - ../../settings/settings.yaml
-            - ../../settings/{{ .Values.envName }}.yaml
+            - ../../../settings/settings.yaml
+            - ../../../settings/dev.yaml
             - values.yaml
-            - values-{{ .Values.envName }}.yaml
+            - values-dev.yaml
       destination:
         server: https://kubernetes.default.svc
         namespace: '{{ path[1] }}'
@@ -42,4 +42,3 @@ spec:
         syncOptions:
         - ServerSideApply=true
         - CreateNamespace=true
-        - RespectIgnoreDifferences=true
