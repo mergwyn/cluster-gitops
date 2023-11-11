@@ -5,3 +5,4 @@ metadata:
   namespace: kube-system
 data:
   cidr-global: 10.58.0.48/29  # TODO make a paramter via overlay
+#range-global: 10.58.0.48-10.58.0.59
