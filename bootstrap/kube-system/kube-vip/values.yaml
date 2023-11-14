@@ -1,6 +1,6 @@
 kube-vip:
   config:
-    address: 10.58.0.48
+    address: 10.58.0.232
     #address: {{ tpl .CLUSTER_EXTERNAL_SUBNET_PREFIX  }}.{{ tpl .CLUSTER_LB }}
 
   env:
