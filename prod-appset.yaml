@@ -11,8 +11,6 @@ spec:
       directories:
       - path: bootstrap/*/*
       - path: core/*/*
-      - path: core/monitoring/kube-prom-stack
-        exclude: true
       - path: core/kube-system/cloudflare-tunnel-remote
         exclude: true
       - path: core/node-feature-discovery/intel-device-plugins-gpu
