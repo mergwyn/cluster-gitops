@@ -4,6 +4,9 @@ env:
 configs:
   params:
     server.insecure: true
+  argocd:
+    kustomize.buildOptions: --enable-helm
+
 
 extraObjects:
   - kind: IngressRoute
