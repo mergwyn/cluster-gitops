@@ -1,0 +1,12 @@
+apiVersion: v2
+name: radarr
+description: Helm chart for radarr
+type: application
+version: 0.1.0
+appVersion: "1.0"
+
+
+dependencies:
+  - name: radarr
+    repository: https://geek-cookbook.github.io/charts/
+    version: 16.3.2

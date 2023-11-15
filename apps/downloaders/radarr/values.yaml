@@ -1,0 +1,60 @@
+---
+radarr:
+
+  image:
+    repository: lscr.io/linuxserver/radarr
+    tag: "4.7.5"
+
+  dnsPolicy: ClusterFirst
+
+  env:
+    TZ: Europe/London
+    UMASK: "002"
+    PUID: "3001"
+    PGID: "513"
+
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/hostname
+            operator: In
+            values:
+            - golf
+
+  service:
+    radarr:
+      ports:
+        https:
+          port: 7878
+
+  ingress:
+    radarr:
+      enabled: true
+      ingressClass: traefik
+      annotations:
+        traefik.ingress.kubernetes.io/router.entrypoints: websecure
+      hosts:
+        - host: "radarr.theclarkhome.com"
+          paths:
+            - path: /
+              backend:
+                name: radarr
+                service:
+                  port: 7878
+      tls:
+        - hosts:
+          - "*.theclarkhome.com"
+
+  persistence:
+    config:
+      enabled: true
+      type: hostPath
+      mountPath: /config
+      hostPath: /opt/appdata/radarr
+    data:
+      enabled: true
+      type: nfs
+      server: 10.58.0.12
+      path: /srv/media

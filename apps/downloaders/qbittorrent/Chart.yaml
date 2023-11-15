@@ -1,0 +1,12 @@
+apiVersion: v2
+name: qbittorrent
+description: Helm chart for qbittorrent
+type: application
+version: 0.1.0
+appVersion: "1.0"
+
+
+dependencies:
+  - name: qbittorrent
+    repository: https://geek-cookbook.github.io/charts/
+    version: 13.5.2

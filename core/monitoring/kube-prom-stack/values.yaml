@@ -1,0 +1,95 @@
+---
+kube-prometheus-stack:
+
+  env:
+    TZ: Europe/London
+
+  alertmanager:
+    config:
+      global:
+        smtp_require_tls: false
+      route:
+        receiver: 'email-k8s-admin'
+        routes:
+        - receiver: 'null'
+          matchers:
+            - alertname =~ "InfoInhibitor|Watchdog"
+        - receiver: 'email-k8s-admin'
+      receivers:
+      - name: 'null'
+      - name: 'email-k8s-admin'
+        email_configs:
+        - to: gary@theclarkhome.com
+          from: email-k8s-admin@theclarkhome.com
+          smarthost: mail.default:587
+    ingress:
+      enabled: true
+      ingressClass: traefik
+      annotations:
+        traefik.ingress.kubernetes.io/router.entrypoints: websecure
+      hosts:
+        - "alertmanager.theclarkhome.com"
+      tls:
+        - hosts:
+          - "*.theclarkhome.com"
+
+  prometheus:
+    ingress:
+      enabled: true
+      ingressClass: traefik
+      annotations:
+        traefik.ingress.kubernetes.io/router.entrypoints: websecure
+      hosts:
+        - "prometheus.theclarkhome.com"
+      tls:
+        - hosts:
+          - "*.theclarkhome.com"
+
+
+  grafana:
+    dashboardProviders:
+      dashboardproviders.yaml:
+        apiVersion: 1
+        providers:
+        - name: 'default'
+          orgId: 1
+          folder: ''
+          type: file
+          disableDeletion: true
+          editable: true
+          options:
+            path: /var/lib/grafana/dashboards/default
+    dashboards:
+      default:
+        argocd:
+          gnetId: 14584
+          datasource: Prometheus
+        hwmon:
+          gnetId: 12950
+          datasource: Prometheus
+#        cert-manager:
+#          gnetId: 11001
+#          datasource: Prometheus
+    ingress:
+      enabled: true
+      ingressClass: traefik
+      annotations:
+        traefik.ingress.kubernetes.io/router.entrypoints: websecure
+      hosts:
+        - "grafana.theclarkhome.com"
+      tls:
+        - hosts:
+          - "*.theclarkhome.com"
+
+  defaultRules:
+    rules:
+      kubeProxy: false
+
+  resources:
+    limits:
+      cpu: 400m
+      memory: 1Gi 
+    requests:
+      cpu: 200m
+      memory: 512Mi
+

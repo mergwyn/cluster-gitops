@@ -1,0 +1,12 @@
+apiVersion: v2
+name: home-assistant
+description: Helm chart for home-assistant
+type: application
+version: 0.1.0
+appVersion: "1.0"
+
+
+dependencies:
+  - name: home-assistant
+    repository: https://geek-cookbook.github.io/charts/
+    version: 13.5.0

@@ -1,0 +1,81 @@
+---
+xteve:
+  image:
+    #repository: alturismo/xteve
+    repository: senexcrenshaw/xteve
+    pullPolicy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "2.5.3"
+
+  env:
+    TZ: Europe/London
+    UMASK: "002"
+    XTEVE_UID: "3001"
+    XTEVE_GID: "513"
+
+  command:
+    - sh
+    - -c
+    - /home/xteve/bin/xteve -port=34400 -config=/home/xteve/conf
+
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/hostname
+            operator: In
+            values:
+            - golf
+
+  service:
+    xteve:
+      ports:
+        https:
+          port: 34400
+
+  ingress:
+    xteve:
+      enabled: true
+      ingressClass: traefik
+      annotations:
+        traefik.ingress.kubernetes.io/router.entrypoints: websecure
+          #kubernetes.io/ingress.class: traefik
+      hosts:
+        - host: "xteve.theclarkhome.com"
+          paths:
+            - path: /
+              backend:
+                name: xteve
+                service:
+                  port: 34400
+      tls:
+        - hosts:
+          - "*.theclarkhome.com"
+
+  probes:
+    liveness:
+      enabled: false
+    startup:
+      enabled: false
+    readiness:
+      enabled: false
+
+  dnsPolicy: ClusterFirst
+
+  persistence:
+    config:
+       #mountPath: /root/.xteve
+      mountPath: /home/xteve/conf
+      type: hostPath
+      hostPath: /opt/appdata/xteve
+      enabled: true
+    tmp:
+      type: hostPath
+      hostPath: /tmp/xteve
+      enabled: true
+    data:
+      type: nfs
+      server: 10.58.0.12
+      path: /srv/media/xmltv
+      enabled: true
