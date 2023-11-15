@@ -1,22 +1,21 @@
 ---
 
-mail:
-  config:
-    general:
-      TZ: Europe/London
-      ALLOWED_SENDER_DOMAINS: theclarkhome.com
-      DKIM_AUTOGENERATE: "yes"
-    postfix:
-      myhostname: relay.theclarkhome.com
-      myorigin: theclarkhome.com
+config:
+  general:
+    TZ: Europe/London
+    ALLOWED_SENDER_DOMAINS: theclarkhome.com
+    DKIM_AUTOGENERATE: "yes"
+  postfix:
+    myhostname: relay.theclarkhome.com
+    myorigin: theclarkhome.com
 
-  existingSecret: postfix-mail
+existingSecret: postfix-mail
 
-  resources:
-    limits:
-      cpu: 200m
-      memory: 128Mi
-    requests:
-      cpu: 20m
-      memory: 128Mi
+resources:
+  limits:
+    cpu: 200m
+    memory: 128Mi
+  requests:
+    cpu: 20m
+    memory: 128Mi
 

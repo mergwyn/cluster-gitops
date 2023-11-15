@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: default
+
+helmCharts:
+- name: mail
+  releaseName: mail
+  repo: https://bokysan.github.io/docker-postfix/
+  version: v4.0.2
+  valuesFile: values.yaml
+
+
