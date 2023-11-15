@@ -1,0 +1,44 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: cluster-gitops-dev
+  namespace: argocd
+spec:
+  generators:
+  - git:
+      repoURL: https://github.com/mergwyn/cluster-gitops.git
+      revision: main
+      directories:
+      - path: bootstrap/*/*
+      - path: core/*/*
+      - path: core/monitoring/kube-prom-stack
+        exclude: true
+      - path: core/kube-system/cloudflare-tunnel-remote
+        exclude: true
+      - path: apps/*/*
+        exclude: true
+      
+  template:
+    metadata:
+      name: '{{ path.basename }}'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/mergwyn/cluster-gitops.git
+        targetRevision: main
+        path: '{{ path }}'
+        helm:
+          ignoreMissingValueFiles: true
+          valueFiles:
+            - values.yaml
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{ path[1] }}'
+      syncPolicy:
+        automated:
+          allowEmpty: true
+          prune: true
+          selfHeal: false
+        syncOptions:
+        - ServerSideApply=true
+        - CreateNamespace=true
