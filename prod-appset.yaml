@@ -15,11 +15,11 @@ spec:
         exclude: true
       - path: core/kube-system/cloudflare-tunnel-remote
         exclude: true
-      - path: core/node-feature-discovery/intel-device-plugins-gpu:
+      - path: core/node-feature-discovery/intel-device-plugins-gpu
         exclude: true
-      - path: core/node-feature-discovery/intel-device-plugins-operator:
+      - path: core/node-feature-discovery/intel-device-plugins-operator
         exclude: true
-      - path: core/node-feature-discovery/node-feature-discovery:
+      - path: core/node-feature-discovery/node-feature-discovery
         exclude: true
       - path: apps/*/*
         exclude: true
