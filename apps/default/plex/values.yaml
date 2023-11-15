@@ -1,55 +1,53 @@
 ---
-plex:
+image:
+  repository: plexinc/pms-docker
+  tag: '1.32.5.7516-8f4248874'
 
-  image:
-    repository: plexinc/pms-docker
-    tag: '1.32.5.7516-8f4248874'
+env:
+  PLEX_MEDIA_SERVER_APPLICATION_SUPPORT_DIR: "/config"
+  PLEX_CLAIM: "claim-LufEVYTg9R29o2qzZsLA"
+  ALLOWED_NETWORKS: "10.0.0.0/8"
+  #ADVERTISE_IP: ""
+  PLEX_GID: "513"
+  PLEX_PASS: "yes"
+  PLEX_UID: "3001"
+  TZ: Europe/London
+  UMASK: "002"
 
-  env:
-    PLEX_MEDIA_SERVER_APPLICATION_SUPPORT_DIR: "/config"
-    PLEX_CLAIM: "claim-LufEVYTg9R29o2qzZsLA"
-    ALLOWED_NETWORKS: "10.0.0.0/8"
-    #ADVERTISE_IP: ""
-    PLEX_GID: "513"
-    PLEX_PASS: "yes"
-    PLEX_UID: "3001"
-    TZ: Europe/London
-    UMASK: "002"
+service:
+  main:
+    type: LoadBalancer
+    loadBalancerIP: "10.58.0.33"
+    ports:
+      https:
+        protocol: HTTPS
+        port: 32400
+        targetPort: 32400
 
-  service:
-    main:
-      type: LoadBalancer
-      loadBalancerIP: "10.58.0.33"
-      ports:
-        https:
-          protocol: HTTPS
-          port: 32400
-          targetPort: 32400
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - foxtrot
 
-  affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: kubernetes.io/hostname
-            operator: In
-            values:
-            - foxtrot
+resources:
+  requests:
+    gpu.intel.com/i915: "1"
+  limits:
+    gpu.intel.com/i915: "1"
 
-  resources:
-    requests:
-      gpu.intel.com/i915: "1"
-    limits:
-      gpu.intel.com/i915: "1"
-
-  persistence:
-    config:
-      enabled: true
-      type: hostPath
-      hostPath: /opt/appdata/plex
-    data:
-      enabled: true
-      type: hostPath
-      hostPath: /srv/media
-      mountPath: /data
+persistence:
+  config:
+    enabled: true
+    type: hostPath
+    hostPath: /opt/appdata/plex
+  data:
+    enabled: true
+    type: hostPath
+    hostPath: /srv/media
+    mountPath: /data
 

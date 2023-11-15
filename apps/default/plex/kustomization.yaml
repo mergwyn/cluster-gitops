@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: default
+
+helmCharts:
+- name: plex
+  releaseName: plex
+  repository: https://geek-cookbook.github.io/charts/
+  version: 6.4.3
+  valuesFile: values.yaml
+
+
