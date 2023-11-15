@@ -4,7 +4,7 @@ env:
 configs:
   params:
     server.insecure: true
-  argocd:
+  cm:
     kustomize.buildOptions: --enable-helm
 
 
