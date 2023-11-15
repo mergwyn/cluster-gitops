@@ -27,6 +27,8 @@ spec:
         repoURL: https://github.com/mergwyn/cluster-gitops.git
         targetRevision: main
         path: '{{ path }}'
+        kustomize:
+          namespace: '{{ path[1] }}'
         helm:
           ignoreMissingValueFiles: true
           valueFiles:
