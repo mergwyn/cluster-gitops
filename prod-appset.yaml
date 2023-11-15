@@ -29,10 +29,10 @@ spec:
         path: '{{ path }}'
         kustomize:
           namespace: '{{ path[1] }}'
-        helm:
-          ignoreMissingValueFiles: true
-          valueFiles:
-            - values.yaml
+#        helm:
+#          ignoreMissingValueFiles: true
+#          valueFiles:
+#            - values.yaml
       destination:
         server: https://kubernetes.default.svc
         namespace: '{{ path[1] }}'
