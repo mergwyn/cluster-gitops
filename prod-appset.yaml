@@ -21,8 +21,7 @@ spec:
         exclude: true
       - path: core/node-feature-discovery/node-feature-discovery
         exclude: true
-      - path: apps/*/*
-        exclude: true
+      - path: apps/default/mail
       
   template:
     metadata:
@@ -35,10 +34,6 @@ spec:
         path: '{{ path }}'
         kustomize:
           namespace: '{{ path[1] }}'
-#        helm:
-#          ignoreMissingValueFiles: true
-#          valueFiles:
-#            - values.yaml
       destination:
         server: https://kubernetes.default.svc
         namespace: '{{ path[1] }}'
