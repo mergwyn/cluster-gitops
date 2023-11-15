@@ -5,5 +5,5 @@ namespace: kube-system
 helmCharts:
 - name: argo-cd
   repo: https://argoproj.github.io/argo-helm
-  version: 5.51.0
+  version: 5.51.2
   valuesFile: values.yaml
