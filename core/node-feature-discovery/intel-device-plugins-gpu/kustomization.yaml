@@ -5,7 +5,7 @@ namespace: node-feature-discovery
 helmCharts:
 - name: intel-device-plugins-gpu
   releaseName: intel-device-plugins-gpu
-  version: 0.4.4
+  version: 0.28.0
   repo: https://intel.github.io/helm-charts
   valuesFile: values.yaml
 
