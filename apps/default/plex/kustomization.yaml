@@ -5,7 +5,7 @@ namespace: default
 helmCharts:
 - name: plex
   releaseName: plex
-  repository: https://geek-cookbook.github.io/charts/
+  repo: https://geek-cookbook.github.io/charts/
   version: 6.4.3
   valuesFile: values.yaml
 
