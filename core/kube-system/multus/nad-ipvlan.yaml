@@ -11,8 +11,8 @@ spec:
       "capabilities": { "ips": true },
       "ipam": {
         "type": "host-local",
-        "subnet": "10.58.0.0/16",
-        "rangeStart": "10.58.0.240",
-        "rangeEnd": "10.58.0.249"
+        "subnet": "10.58.0.0/24",
+        "rangeStart": "10.58.0.40",
+        "rangeEnd": "10.58.0.49"
       }
     }'

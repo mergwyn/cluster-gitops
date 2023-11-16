@@ -17,7 +17,7 @@ env:
 service:
   main:
     type: LoadBalancer
-    loadBalancerIP: "10.58.0.33"
+    loadBalancerIP: "10.58.0.34"
     ports:
       https:
         protocol: HTTPS
