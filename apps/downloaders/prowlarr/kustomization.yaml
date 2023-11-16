@@ -6,7 +6,7 @@ helmCharts:
 - name: prowlarr
   releaseName: prowlarr
   repo: https://geek-cookbook.github.io/charts/
-  version: 0.4.4
+  version: 4.5.2
   valuesFile: values.yaml
 
 
