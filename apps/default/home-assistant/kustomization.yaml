@@ -5,6 +5,6 @@ namespace: default
 helmCharts:
 - name: home-assistant
   Releasename: home-assistant
-  repository: https://geek-cookbook.github.io/charts/
+  repo: https://geek-cookbook.github.io/charts/
   version: 13.5.0
   valuesFile: values.yaml
