@@ -19,7 +19,11 @@ spec:
         exclude: true
       - path: core/node-feature-discovery/node-feature-discovery
         exclude: true
+      - path: core/kube-system/multus
+        exclude: true
       - path: apps/*/*
+      - path: apps/default/home-assistant
+        exclude: true
       
   template:
     metadata:
