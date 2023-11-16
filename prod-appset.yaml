@@ -19,7 +19,7 @@ spec:
         exclude: true
       - path: core/node-feature-discovery/node-feature-discovery
         exclude: true
-      - path: apps/default/mail
+      - path: apps/*/*
       
   template:
     metadata:
