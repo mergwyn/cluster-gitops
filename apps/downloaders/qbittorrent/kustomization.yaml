@@ -5,7 +5,7 @@ namespace: kube-system
 helmCharts:
 - name: qbittorrent
   releaseName: qbittorrent
-  repository: https://geek-cookbook.github.io/charts/
+  repo: https://geek-cookbook.github.io/charts/
   version: 13.5.2
   valuesFile: values.yaml
 
