@@ -39,6 +39,12 @@ spec:
       destination:
         server: https://kubernetes.default.svc
         namespace: '{{ path[1] }}'
+      ignoreDifferences:
+      - kind: StatefulSet
+        group: '*'
+        name: mail
+        jsonPointers:
+        - /spec/volumeClaimTemplates
       syncPolicy:
         automated:
           allowEmpty: true
@@ -47,3 +53,4 @@ spec:
         syncOptions:
         - ServerSideApply=true
         - CreateNamespace=true
+        - RespectIgnoreDifferences=true
