@@ -22,8 +22,6 @@ spec:
       - path: core/kube-system/multus
         exclude: true
       - path: apps/*/*
-      - path: apps/default/home-assistant
-        exclude: true
       
   template:
     metadata:
