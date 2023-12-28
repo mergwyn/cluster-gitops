@@ -63,11 +63,9 @@ dnsPolicy: ClusterFirst
 
 persistence:
   config:
-     #mountPath: /root/.xteve
-    mountPath: /home/xteve/conf
-    type: hostPath
-    hostPath: /opt/appdata/xteve
     enabled: true
+    retain: true
+    storageClass: appdata-storage
   tmp:
     type: hostPath
     hostPath: /tmp/xteve
