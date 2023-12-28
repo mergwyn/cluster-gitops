@@ -1,3 +1,4 @@
+namespace: downloaders
 
 image:
   repository: lscr.io/linuxserver/prowlarr
@@ -48,6 +49,11 @@ ingress:
 persistence:
   config:
     enabled: true
-    type: hostPath
-    mountPath: /config
-    hostPath: /opt/appdata/prowlarr
+persistence:
+  config:
+    enabled: true
+    retain: true
+    storageClass: appdata-storage
+#    type: hostPath
+#    mountPath: /config
+#    hostPath: /opt/appdata/prowlarr
