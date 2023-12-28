@@ -1,0 +1,59 @@
+global:
+  fullnameOverride: sabnzbd
+image:
+  repository: lscr.io/linuxserver/sabnzbd
+  tag: "4.1.0"
+
+dnsPolicy: ClusterFirst
+
+env:
+  TZ: Europe/London
+  UMASK: "002"
+  PUID: "3001"
+  PGID: "513"
+  HAS_IPV6: false
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - golf
+
+service:
+  sabnzbd:
+    ports:
+      https:
+        port: 8080
+
+ingress:
+  sabnzbd:
+    enabled: true
+    ingressClass: traefik
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    hosts:
+      - host: "sabnzbd.theclarkhome.com"
+        paths:
+          - path: /
+            backend:
+              name: sabnzbd
+              service:
+                port: 8080
+    tls:
+      - hosts:
+        - "*.theclarkhome.com"
+
+persistence:
+  config:
+    enabled: true
+    retain: true
+    storageClass: appdata-storage
+  data:
+    enabled: true
+    type: nfs
+    server: 10.58.0.12
+    path: /srv/media
