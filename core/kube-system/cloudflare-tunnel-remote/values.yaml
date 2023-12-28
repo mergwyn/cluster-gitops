@@ -1,5 +1,9 @@
-# Cloudflare parameters.
 
-image:
-  tag: "2023.8.2"
-
+cloudflare:
+  env:
+    - name: TUNNEL_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: my-cloudflare-tunnel-remote
+          key: TUNNEL_TOKEN
+  tunnel_token: $TUNNEL_TOKEN
