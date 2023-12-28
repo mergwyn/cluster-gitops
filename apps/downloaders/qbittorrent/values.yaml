@@ -47,9 +47,8 @@ ingress:
 persistence:
   config:
     enabled: true
-    type: hostPath
-    mountPath: /config
-    hostPath: /opt/appdata/qbittorrent
+    retain: true
+    storageClass: appdata-storage
   data:
     enabled: true
     type: nfs
