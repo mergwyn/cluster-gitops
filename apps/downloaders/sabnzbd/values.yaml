@@ -13,16 +13,6 @@ env:
   PGID: "513"
   HAS_IPV6: false
 
-affinity:
-  nodeAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      nodeSelectorTerms:
-      - matchExpressions:
-        - key: kubernetes.io/hostname
-          operator: In
-          values:
-          - golf
-
 service:
   sabnzbd:
     ports:

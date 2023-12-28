@@ -16,16 +16,6 @@ command:
   - -c
   - /home/xteve/bin/xteve -port=34400 -config=/home/xteve/conf
 
-affinity:
-  nodeAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      nodeSelectorTerms:
-      - matchExpressions:
-        - key: kubernetes.io/hostname
-          operator: In
-          values:
-          - golf
-
 service:
   xteve:
     ports:

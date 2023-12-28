@@ -10,16 +10,6 @@ env:
   PUID: "3001"
   PGID: "513"
 
-affinity:
-  nodeAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      nodeSelectorTerms:
-      - matchExpressions:
-        - key: kubernetes.io/hostname
-          operator: In
-          values:
-          - golf
-
 service:
   qbittorrent:
     ports:
