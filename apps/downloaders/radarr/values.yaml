@@ -48,9 +48,8 @@ ingress:
 persistence:
   config:
     enabled: true
-    type: hostPath
-    mountPath: /config
-    hostPath: /opt/appdata/radarr
+    retain: true
+    storageClass: appdata-storage
   data:
     enabled: true
     type: nfs
