@@ -41,7 +41,7 @@ persistence:
   config:
     enabled: true
     retain: true
-    storageClass: appdata-storage
+    storageClass: seaweedfs-storage
   data:
     enabled: true
     type: nfs
