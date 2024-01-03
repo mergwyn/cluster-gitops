@@ -1,9 +1,9 @@
 
 cloudflare:
   env:
-    - name: TUNNEL_TOKEN
+    - name: MY_TUNNEL_TOKEN
       valueFrom:
         secretKeyRef:
           name: my-cloudflare-tunnel-remote
-          key: TUNNEL_TOKEN
-  tunnel_token: $TUNNEL_TOKEN
+          key: MY_TUNNEL_TOKEN
+  tunnel_token: $MY_TUNNEL_TOKEN

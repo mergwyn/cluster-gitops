@@ -11,6 +11,7 @@ spec:
       directories:
       - path: bootstrap/*/*
       - path: core/*/*
+      - path: apps/*/*
       - path: core/node-feature-discovery/intel-device-plugins-gpu
         exclude: true
       - path: core/node-feature-discovery/intel-device-plugins-operator
@@ -19,7 +20,6 @@ spec:
         exclude: true
       - path: core/kube-system/cloudflare-tunnel-remote
         exclude: true
-      - path: apps/*/*
       
   template:
     metadata:
