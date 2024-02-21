@@ -8,7 +8,10 @@ config:
   postfix:
     myhostname: relay.theclarkhome.com
     myorigin: theclarkhome.com
-    smtpd_tls_security_level: none
+    smtp_tls_security_level: none
+
+persistence:
+  storageClass: seaweedfs-storage
 
 existingSecret: postfix-mail
 
