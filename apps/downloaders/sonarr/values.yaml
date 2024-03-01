@@ -1,6 +1,6 @@
 image:
   repository: lscr.io/linuxserver/sonarr
-  tag: "4.0.1"
+  tag: "4.0.2"
 
 dnsPolicy: ClusterFirst
 
