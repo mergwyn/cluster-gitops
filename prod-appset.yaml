@@ -17,12 +17,12 @@ spec:
         exclude: true
       - path: core/kube-system/multus
         exclude: true
-      - path: core/node-feature-discovery/intel-device-plugins-gpu
-        exclude: true
-      - path: core/node-feature-discovery/intel-device-plugins-operator
-        exclude: true
-      - path: core/node-feature-discovery/node-feature-discovery
-        exclude: true
+      #- path: core/node-feature-discovery/intel-device-plugins-gpu
+      #  exclude: true
+      #- path: core/node-feature-discovery/intel-device-plugins-operator
+      #  exclude: true
+      #- path: core/node-feature-discovery/node-feature-discovery
+      #  exclude: true
       - path: core/kube-system/cloudflare-tunnel-remote
         exclude: true
       
@@ -46,6 +46,7 @@ spec:
         name: mail
         jsonPointers:
         - /spec/volumeClaimTemplates
+        - /spec/template/metadata/annotations/date/deploy-date
       syncPolicy:
         automated:
           allowEmpty: true
