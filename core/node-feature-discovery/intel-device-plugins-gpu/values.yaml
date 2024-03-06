@@ -1,5 +1,4 @@
 
 name: intel-gpu-plugin
 
-parameters:
-  nodeFeatureRule: true
+nodeFeatureRule: true
