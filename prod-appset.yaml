@@ -46,7 +46,7 @@ spec:
         name: mail
         jsonPointers:
         - /spec/volumeClaimTemplates
-        - /spec/template/metadata/annotations/date/deploy-date
+        - /spec/template/metadata/annotations
       syncPolicy:
         automated:
           allowEmpty: true
