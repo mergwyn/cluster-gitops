@@ -39,8 +39,6 @@ ingress:
 persistence:
   config:
     enabled: true
-persistence:
-  config:
-    enabled: true
     retain: true
+    type: pvc
     storageClass: seaweedfs-storage
