@@ -7,6 +7,8 @@ configs:
   cm:
     kustomize.buildOptions: --enable-helm
 
+secret:
+  createSecret: false
 
 extraObjects:
   - kind: IngressRoute
