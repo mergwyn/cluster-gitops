@@ -7,8 +7,14 @@ configs:
   cm:
     kustomize.buildOptions: --enable-helm
 
+env:
+  ADMIN_PASSWORD:
+    secretKeyRef:
+      name: argocd-admin-password
+      key: admin.password
+ 
 secret:
-  createSecret: false
+  argocdServerAdminPassword: ${ADMIN_PASSWORD}
 
 extraObjects:
   - kind: IngressRoute
