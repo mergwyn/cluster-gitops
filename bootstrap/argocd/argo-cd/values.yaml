@@ -16,9 +16,39 @@ env:
 secret:
   argocdServerAdminPassword: ${ADMIN_PASSWORD}
 
+repoServer:
+  extraContainers:
+    - name: cmp-helmfile
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+      image: ghcr.io/helmfile/helmfile:v0.157.0
+      imagePullPolicy: IfNotPresent
+      # Entrypoint should be Argo CD lightweight CMP server i.e. argocd-cmp-server
+      command: [/var/run/argocd/argocd-cmp-server]
+      volumeMounts:
+        - mountPath: /var/run/argocd
+          name: var-files
+        - mountPath: /home/argocd/cmp-server/plugins
+          name: plugins
+        - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+          subPath: plugin.yaml
+          name: cmp-helmfile
+        - mountPath: /tmp
+          name: cmp-tmp
+  volumes:
+    - name: cmp-helmfile
+      configMap:
+        name: cmp-helmfile
+    - emptyDir: {}
+      name: cmp-tmp
+
+
+
 configs:
-# Enable inter-app sync wave
   cm:
+    create: true
+# Enable inter-app sync wave
     resource.customizations.health.argoproj.io_Application: |
       hs = {}
       hs.status = "Progressing"
@@ -32,6 +62,18 @@ configs:
         end
       end
       return hs
+  cmp:
+    create: true
+    plugins:
+      cmp-helmfile: # helmfile plugin support
+        version: v1.0
+        init:
+          command: [sh, -c, 'echo "Initializing..."']
+        generate:
+          command: [sh, -c]
+          args: ["helmfile template --quiet --namespace $ARGOCD_APP_NAMESPACE"]
+        discover:
+          fileName: "helmfile.yaml"
 
 extraObjects:
   - kind: IngressRoute
