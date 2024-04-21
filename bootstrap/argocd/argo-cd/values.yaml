@@ -16,32 +16,32 @@ env:
 secret:
   argocdServerAdminPassword: ${ADMIN_PASSWORD}
 
-repoServer:
-  extraContainers:
-    - name: cmp-helmfile
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 999
-      image: ghcr.io/helmfile/helmfile:v0.157.0
-      imagePullPolicy: IfNotPresent
-      # Entrypoint should be Argo CD lightweight CMP server i.e. argocd-cmp-server
-      command: [/var/run/argocd/argocd-cmp-server]
-      volumeMounts:
-        - mountPath: /var/run/argocd
-          name: var-files
-        - mountPath: /home/argocd/cmp-server/plugins
-          name: plugins
-        - mountPath: /home/argocd/cmp-server/config/plugin.yaml
-          subPath: plugin.yaml
-          name: cmp-helmfile
-        - mountPath: /tmp
-          name: cmp-tmp
-  volumes:
-    - name: cmp-helmfile
-      configMap:
-        name: cmp-helmfile
-    - emptyDir: {}
-      name: cmp-tmp
+#repoServer:
+#  extraContainers:
+#    - name: cmp-helmfile
+#      securityContext:
+#        runAsNonRoot: true
+#        runAsUser: 999
+#      image: ghcr.io/helmfile/helmfile:v0.157.0
+#      imagePullPolicy: IfNotPresent
+#      # Entrypoint should be Argo CD lightweight CMP server i.e. argocd-cmp-server
+#      command: [/var/run/argocd/argocd-cmp-server]
+#      volumeMounts:
+#        - mountPath: /var/run/argocd
+#          name: var-files
+#        - mountPath: /home/argocd/cmp-server/plugins
+#          name: plugins
+#        - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+#          subPath: plugin.yaml
+#          name: argocd-cmp-cm
+#        - mountPath: /tmp
+#          name: cmp-tmp
+#  volumes:
+#    - name: argocd-cmp-cm
+#      configMap:
+#        name: argocd-cmp-cm
+#    - emptyDir: {}
+#      name: cmp-tmp
 
 
 
