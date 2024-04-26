@@ -10,9 +10,6 @@ config:
     myorigin: theclarkhome.com
     smtp_tls_security_level: none
 
-persistence:
-  storageClass: seaweedfs-storage
-
 existingSecret: postfix-mail
 
 resources:
