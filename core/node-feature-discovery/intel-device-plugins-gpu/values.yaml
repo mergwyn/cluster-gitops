@@ -1,5 +1,5 @@
 
-name: intel-gpu-plugin
+name: gpudeviceplugin
 
 nodeFeatureRule: true
 resourceManager: false
