@@ -1,4 +1,5 @@
 
-#name: intel-gpu-plugin
+name: intel-gpu-plugin
 
-#nodeFeatureRule: true
+nodeFeatureRule: true
+resourceManager: false
