@@ -41,4 +41,4 @@ persistence:
     enabled: true
     retain: true
     type: pvc
-    storageClass: seaweedfs-storage
+    storageClass: openebs-hostpath

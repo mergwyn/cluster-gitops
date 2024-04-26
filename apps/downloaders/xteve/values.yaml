@@ -56,7 +56,7 @@ persistence:
     enabled: true
     retain: true
     mountPath: /home/xteve/conf
-    storageClass: seaweedfs-storage
+    storageClass: openebs-hostpath
   tmp:
     type: hostPath
     hostPath: /tmp/xteve
