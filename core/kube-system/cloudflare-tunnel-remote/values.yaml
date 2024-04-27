@@ -1,5 +1,8 @@
 
 cloudflare:
+  image:
+    tag: 2024.4.1
+
   env:
     - name: MY_TUNNEL_TOKEN
       valueFrom:
