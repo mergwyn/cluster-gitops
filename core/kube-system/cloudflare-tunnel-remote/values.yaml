@@ -12,7 +12,7 @@ env:
         key: MY_TUNNEL_TOKEN
 tunnel_token: $MY_TUNNEL_TOKEN
 
-resources: {}
+resources:
   limits:
     cpu: 100m
     memory: 128Mi
