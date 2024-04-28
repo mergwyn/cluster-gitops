@@ -1,21 +1,20 @@
-cloudflare:
-  image:
-    tag: 2024.4.1
+image:
+  tag: 2024.4.1
 
-  replicaCount: 1
+replicaCount: 1
 
-  env:
-    - name: MY_TUNNEL_TOKEN
-      valueFrom:
-        secretKeyRef:
-          name: my-cloudflare-tunnel-remote
-          key: MY_TUNNEL_TOKEN
-  tunnel_token: $MY_TUNNEL_TOKEN
+env:
+  - name: MY_TUNNEL_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: my-cloudflare-tunnel-remote
+        key: MY_TUNNEL_TOKEN
+tunnel_token: $MY_TUNNEL_TOKEN
 
-  resources:
-    limits:
-      cpu: 100m
-      memory: 128Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
