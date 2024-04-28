@@ -3,14 +3,6 @@ image:
 
 replicaCount: 1
 
-env:
-  - name: MY_TUNNEL_TOKEN
-    valueFrom:
-      secretKeyRef:
-        name: my-cloudflare-tunnel-remote
-        key: MY_TUNNEL_TOKEN
-tunnel_token: $MY_TUNNEL_TOKEN
-
 resources:
   limits:
     cpu: 100m
