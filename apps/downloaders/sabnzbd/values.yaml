@@ -2,7 +2,7 @@ global:
   fullnameOverride: sabnzbd
 image:
   repository: lscr.io/linuxserver/sabnzbd
-  tag: "4.2.3"
+  tag: "4.3.0"
 
 dnsPolicy: ClusterFirst
 
