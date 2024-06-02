@@ -2,7 +2,7 @@ namespace: downloaders
 
 image:
   repository: lscr.io/linuxserver/prowlarr
-  tag: "1.17.2"
+  tag: "1.18.0"
 
 dnsPolicy: ClusterFirst
 
