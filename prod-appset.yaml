@@ -13,12 +13,10 @@ spec:
       - path: core/*/*
       - path: apps/downloaders/*
       - path: apps/default/*
-      - path: apps/default/home-assistant
-        exclude: true
       - path: core/kube-system/multus
         exclude: true
-      - path: core/kube-system/cloudflare-tunnel-remote
-        exclude: true
+      #- path: core/kube-system/cloudflare-tunnel-remote
+      #  exclude: true
       
   template:
     metadata:
@@ -41,6 +39,7 @@ spec:
         jsonPointers:
         - /spec/volumeClaimTemplates
         - /spec/template/metadata/annotations
+        - /spec/resourceManager
       syncPolicy:
         automated:
           allowEmpty: true
