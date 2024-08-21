@@ -39,6 +39,5 @@ ingress:
 persistence:
   config:
     enabled: true
-    retain: true
     type: pvc
-    storageClass: openebs-hostpath
+    storageClass: openebs-zfspv
