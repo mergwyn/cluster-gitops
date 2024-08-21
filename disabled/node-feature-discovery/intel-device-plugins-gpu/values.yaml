@@ -1,0 +1,5 @@
+
+name: gpudeviceplugin
+
+nodeFeatureRule: true
+resourceManager: false

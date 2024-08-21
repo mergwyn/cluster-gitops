@@ -10,16 +10,6 @@ env:
   PUID: "3001"
   PGID: "513"
 
-affinity:
-  nodeAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      nodeSelectorTerms:
-      - matchExpressions:
-        - key: kubernetes.io/hostname
-          operator: In
-          values:
-          - golf
-
 service:
   qbittorrent:
     ports:
@@ -47,9 +37,8 @@ ingress:
 persistence:
   config:
     enabled: true
-    type: hostPath
-    mountPath: /config
-    hostPath: /opt/appdata/qbittorrent
+    retain: true
+    storageClass: openebs-hostpath
   data:
     enabled: true
     type: nfs

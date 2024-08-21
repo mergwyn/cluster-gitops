@@ -1,7 +1,7 @@
 
 image:
   repository: lscr.io/linuxserver/radarr
-  tag: "4.7.5"
+  tag: "5.9.1"
 
 dnsPolicy: ClusterFirst
 
@@ -10,16 +10,6 @@ env:
   UMASK: "002"
   PUID: "3001"
   PGID: "513"
-
-affinity:
-  nodeAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      nodeSelectorTerms:
-      - matchExpressions:
-        - key: kubernetes.io/hostname
-          operator: In
-          values:
-          - golf
 
 service:
   radarr:
@@ -48,9 +38,8 @@ ingress:
 persistence:
   config:
     enabled: true
-    type: hostPath
-    mountPath: /config
-    hostPath: /opt/appdata/radarr
+    retain: true
+    storageClass: openebs-hostpath
   data:
     enabled: true
     type: nfs

@@ -8,6 +8,7 @@ config:
   postfix:
     myhostname: relay.theclarkhome.com
     myorigin: theclarkhome.com
+    smtp_tls_security_level: none
 
 existingSecret: postfix-mail
 

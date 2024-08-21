@@ -1,7 +1,7 @@
 ---
 image:
   repository: plexinc/pms-docker
-  tag: '1.32.8.7639-fb6452ebf'
+  tag: '1.40.5.8854-f36c552fd'
 
 env:
   PLEX_MEDIA_SERVER_APPLICATION_SUPPORT_DIR: "/config"
@@ -34,11 +34,11 @@ affinity:
           values:
           - foxtrot
 
-resources:
-  requests:
-    gpu.intel.com/i915: "1"
-  limits:
-    gpu.intel.com/i915: "1"
+#resources:
+#  requests:
+#    gpu.intel.com/i915: "1"
+#  limits:
+#    gpu.intel.com/i915: "1"
 
 persistence:
   config:

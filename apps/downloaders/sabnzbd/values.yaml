@@ -2,7 +2,7 @@ global:
   fullnameOverride: sabnzbd
 image:
   repository: lscr.io/linuxserver/sabnzbd
-  tag: "4.1.0"
+  tag: "4.3.2"
 
 dnsPolicy: ClusterFirst
 
@@ -12,16 +12,6 @@ env:
   PUID: "3001"
   PGID: "513"
   HAS_IPV6: false
-
-affinity:
-  nodeAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      nodeSelectorTerms:
-      - matchExpressions:
-        - key: kubernetes.io/hostname
-          operator: In
-          values:
-          - golf
 
 service:
   sabnzbd:
@@ -50,9 +40,8 @@ ingress:
 persistence:
   config:
     enabled: true
-    type: hostPath
-    mountPath: /config
-    hostPath: /opt/appdata/sabnzbd
+    retain: true
+    storageClass: openebs-hostpath
   data:
     enabled: true
     type: nfs

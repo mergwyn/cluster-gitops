@@ -1,0 +1,95 @@
+---
+image:
+  repository: ghcr.io/home-assistant/home-assistant
+  tag: "2024.7.2"
+
+env:
+  TZ: Europe/London
+
+podAnnotations:
+  k8s.v1.cni.cncf.io/networks:  |
+      [{
+        "name":"ipvlan-static",
+        "ips": ["10.58.0.41"]
+      }]
+
+metrics:
+  enabled: true
+  serviceMonitor:
+    interval: 1m
+    scrapeTimeout: 30s
+    labels:
+      release: kube-prometheus-stack
+    ## See https://www.home-assistant.io/docs/authentication/ for where to find
+    ## long lived access token creation under your account profile, which is
+    ## needed to monitor Home Assistant
+    bearerTokenSecret:
+      name: 'home-assistant-prometheus'
+      key: 'token'
+
+  # -- Enable and configure Prometheus Rules for the chart under this key.
+#  prometheusRule:
+#    enabled: true
+#    labels:
+#      release: kube-prometheus-stack
+#    # -- Configure additionial rules for the chart under this key.
+#    # @default -- See prometheusrules.yaml
+#    rules:
+#      - alert: HomeAssistantAbsent
+#        annotations:
+#          description: Home Assistant has disappeared from Prometheus service discovery.
+#          summary: Home Assistant is down.
+#        expr: |
+#          absent(up{job=~".*home-assistant.*"} == 1)
+#        for: 5m
+#        labels:
+#          severity: critical
+#      - alert: VWID3ChargingButtonAbsent
+#        annotations:
+#          description: THe charging button used in zappi automation has disapeared
+#          summary: Possible issue with VW integration
+#        expr: |
+#          absent(homeassistant_entity_available{entity="button.my_id_3_start_charging"} == )
+#        for: 5m
+#        labels:
+#          severity: critical
+
+ingress:
+  main:
+    enabled: true
+    ingressClass: traefik
+    annotations:
+      hajimari.io/enable: "true"
+      hajimari.io/icon: home-assistant
+      hajimari.io/info: Home Automation
+      hajimari.io/url: "https://hass.theclarkhome.com"
+      hajimari.io/group: automation
+      traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    hosts:
+      - host: "hass.theclarkhome.com"
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              name: home-assistant
+              service:
+                port: 8123
+    tls:
+      - hosts:
+        - "*.theclarkhome.com"
+
+probes:
+  liveness:
+    enabled: false
+  startup:
+    enabled: false
+  readiness:
+    enabled: false
+
+persistence:
+  config:
+    enabled: true
+    type: pvc
+    retain: true
+    existingClaim: home-assistant-config
+

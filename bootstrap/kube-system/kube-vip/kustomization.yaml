@@ -2,10 +2,14 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: kube-system
 
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-85"
+
 helmCharts:
 - name: kube-vip
   releaseName: kube-vip
-  version: 0.4.4
+  version: 0.6.1
   repo: https://kube-vip.github.io/helm-charts
   valuesFile: values.yaml
 

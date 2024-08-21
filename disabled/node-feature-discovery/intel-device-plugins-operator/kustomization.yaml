@@ -3,10 +3,9 @@ kind: Kustomization
 namespace: node-feature-discovery
 
 helmCharts:
-- name: intel-device-plugins-gpu
-  releaseName: intel-device-plugins-gpu
-  version: 0.29.0
+- name: intel-device-plugins-operator
+  releaseName: intel-device-plugins-operator
+  version: 0.30.0
   repo: https://intel.github.io/helm-charts
-  valuesFile: values.yaml
 
 

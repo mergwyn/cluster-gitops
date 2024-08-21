@@ -3,21 +3,10 @@
 set -o nounset
 
 chart=$1
-dirname ${chart}
-basename $(dirname ${chart})
 namespace=$(basename $(dirname ${chart}))
-values=${chart}/values.yaml
-release= # TODO use jq to get release from Chart.yaml
-release=kube-vip
 
-#namespace=kube-system
-#chart=bootstrap/${namespace}/kube-vip
-#values=${chart}/values.yaml
-#release=kube-vip
+kubectl kustomize --enable-helm  ${chart} |
+  sed -e "s/namespace: *kube-system/namespace: ${namespace}/" | tee /tmp/helmchart |
+  kubectl apply -n ${namespace} -f -
 
-helm dependency update --namespace ${namespace} ${chart}/
-helm upgrade --create-namespace --namespace ${namespace} ${release} ${chart}/ \
-  --values=settings/settings.yaml \
-  --values=settings/dev.yaml \
-  --values=${values} \
-  --dry-run 
+rm -rf ${chart}/charts

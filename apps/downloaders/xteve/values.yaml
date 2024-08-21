@@ -16,16 +16,6 @@ command:
   - -c
   - /home/xteve/bin/xteve -port=34400 -config=/home/xteve/conf
 
-affinity:
-  nodeAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      nodeSelectorTerms:
-      - matchExpressions:
-        - key: kubernetes.io/hostname
-          operator: In
-          values:
-          - golf
-
 service:
   xteve:
     ports:
@@ -63,11 +53,10 @@ dnsPolicy: ClusterFirst
 
 persistence:
   config:
-     #mountPath: /root/.xteve
-    mountPath: /home/xteve/conf
-    type: hostPath
-    hostPath: /opt/appdata/xteve
     enabled: true
+    retain: true
+    mountPath: /home/xteve/conf
+    storageClass: openebs-hostpath
   tmp:
     type: hostPath
     hostPath: /tmp/xteve
