@@ -5,7 +5,7 @@ namespace: kube-system
 helmCharts:
 - name: multus
   releaseName: multus
-  version: 5.0.4
+  version: 5.0.7
   repo: http://angelnu.github.io/helm-charts
 
 #TODO parameterize multise network ranges
