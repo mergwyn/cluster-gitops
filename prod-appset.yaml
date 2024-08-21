@@ -12,13 +12,7 @@ spec:
       - path: bootstrap/*/*
       - path: core/*/*
       - path: apps/downloaders/*
-      #- path: apps/downloaders/qbittorrent
-      #  exclude: true
       - path: apps/default/*
-      - path: core/kube-system/multus
-        exclude: true
-      #- path: core/kube-system/cloudflare-tunnel-remote
-      #  exclude: true
       
   template:
     metadata:
