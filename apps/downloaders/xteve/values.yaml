@@ -56,7 +56,7 @@ persistence:
     enabled: true
     retain: true
     mountPath: /home/xteve/conf
-    storageClass: openebs-hostpath
+    storageClass: openebs-zfspv
   tmp:
     type: hostPath
     hostPath: /tmp/xteve
