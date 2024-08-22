@@ -5,7 +5,7 @@ namespace: kube-system
 helmCharts:
 - name: vertical-pod-autoscaler
   releaseName: vertical-pod-autoscaler
-  version: 1.7.0
+  version: 1.7.1
   repo: https://stevehipwell.github.io/helm-charts/
   #repo: oci://ghcr.io/stevehipwell/helm-charts
   valuesFile: values.yaml
