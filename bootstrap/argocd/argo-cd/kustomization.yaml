@@ -8,3 +8,6 @@ helmCharts:
   repo: https://argoproj.github.io/argo-helm
   version: 7.4.7
   valuesFile: values.yaml
+
+resources:
+  argocd-application-controller-vpa.yaml
