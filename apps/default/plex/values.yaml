@@ -34,10 +34,14 @@ affinity:
           values:
           - foxtrot
 
-#resources:
-#  requests:
+resources:
+  requests:
+    cpu: 25m
+    memory: 625m
 #    gpu.intel.com/i915: "1"
-#  limits:
+  limits:
+    cpu: 65m
+    memory: 700m
 #    gpu.intel.com/i915: "1"
 
 persistence:
