@@ -9,4 +9,4 @@ spec:
     kind:       Deployment
     name:       plex
   updatePolicy:
-    updateMode: "Off"
+    updateMode: "Initial"
