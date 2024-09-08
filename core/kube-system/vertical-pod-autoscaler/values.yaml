@@ -1,9 +1,0 @@
-#updater:
-#  extraArgs:
-#  - "--min-replicas=1"
-
-admissionController:
-  certManager:
-    enabled: true
-  extraArgs:
-  - "--reload-cert"
