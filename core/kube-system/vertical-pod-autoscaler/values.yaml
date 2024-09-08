@@ -6,4 +6,4 @@ admissionController:
   certManager:
     enabled: true
   extraArgs:
-  - "--reload-certificates=true"
+  - "--reload-cert"
