@@ -36,11 +36,11 @@ affinity:
 
 resources:
   requests:
-#    gpu.intel.com/i915: "1"
+    gpu.intel.com/i915: "1"
   limits:
     cpu: 65m
     memory: 686226773
-#    gpu.intel.com/i915: "1"
+    gpu.intel.com/i915: "1"
 
 persistence:
   config:
