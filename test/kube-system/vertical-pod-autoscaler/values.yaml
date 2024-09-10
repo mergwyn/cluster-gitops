@@ -1,0 +1,12 @@
+#updater:
+#  extraArgs:
+#  - "--min-replicas=1"
+
+
+logLevel: 5
+
+admissionController:
+  certManager:
+    enabled: true
+#  extraArgs:
+#  - "--reload-cert"

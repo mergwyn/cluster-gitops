@@ -1,0 +1,13 @@
+repositories:
+- name: stevehipwell
+  url: https://stevehipwell.github.io/helm-charts/
+  #url: ghcr.io/stevehipwell/helm-charts
+  #oci: true
+
+releases:
+- name: vertical-pod-autoscaler
+  namespace: kube-system
+  chart: stevehipwell/vertical-pod-autoscaler
+  values:
+    - values.yaml
+
