@@ -2,6 +2,10 @@
 env:
   TZ: Europe/London
 
+prometheus-node-exporter:
+  commonLabels:
+    jobLabel: node-exporter
+
 alertmanager:
   config:
     global:
@@ -26,58 +30,41 @@ alertmanager:
     annotations:
       traefik.ingress.kubernetes.io/router.entrypoints: websecure
     hosts:
-      - "alertmanager.theclarkhome.com"
-    tls:
-      - hosts:
-        - "*.theclarkhome.com"
-
-prometheus:
-  ingress:
-    enabled: true
-    ingressClass: traefik
-    annotations:
-      traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    hosts:
-      - "prometheus.theclarkhome.com"
-    tls:
-      - hosts:
-        - "*.theclarkhome.com"
-
-
-grafana:
-  dashboardProviders:
-    dashboardproviders.yaml:
-      apiVersion: 1
-      providers:
-      - name: 'default'
-        orgId: 1
-        folder: ''
-        type: file
-        disableDeletion: true
-        editable: true
-        options:
-          path: /var/lib/grafana/dashboards/default
-  dashboards:
-    default:
-      argocd:
-        gnetId: 14584
-        datasource: Prometheus
-      hwmon:
-        gnetId: 12950
-        datasource: Prometheus
-#        cert-manager:
-#          gnetId: 11001
-#          datasource: Prometheus
-  ingress:
-    enabled: true
-    ingressClass: traefik
-    annotations:
-      traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    hosts:
       - "grafana.theclarkhome.com"
     tls:
       - hosts:
         - "*.theclarkhome.com"
+        grafana:
+  persistence:
+    enabled: true
+    type: pvc
+    storageClassName: openebs-zfspv
+    #persistentVolumeReclaimPolicy: Retain
+    accessModes:
+      - ReadWriteOnce
+    size: 10Gi
+    # annotations: {}
+    finalizers:
+      - kubernetes.io/pvc-protection
+    # selectorLabels: {}
+    # subPath: ""
+    # existingClaim:
+    # extraPvcLabels: {}
+
+prometheus:
+  prometheusSpec:
+    persistentVolumeClaimRetentionPolicy:
+      whenDeleted: Retain
+      whenScaled: Retain
+    storageSpec: 
+      volumeClaimTemplate:
+        spec:
+          storageClassName: openebs-zfspv
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 50Gi
+
 
 defaultRules:
   rules:
@@ -86,8 +73,38 @@ defaultRules:
 resources:
   limits:
     cpu: 400m
-    memory: 1Gi 
+    memory: 512Mi
   requests:
     cpu: 200m
     memory: 512Mi
 
+kubeControllerManager:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeProxy:
+  enabled: false
+#additionalPrometheusRules:
+#  # TODO move to argocd
+#- name: argocd
+#  groups:
+#  - name: argocdEmbeddedExporter
+#
+#    rules:
+#      - alert: ArgocdServiceNotSynced
+#        expr: 'argocd_app_info{sync_status!="Synced"} != 0'
+#        for: 15m
+#        labels:
+#          severity: warning
+#        annotations:
+#          summary: ArgoCD service not synced (instance {{ $labels.instance }})
+#          description: "Service {{ $labels.name }} run by argo is currently not in sync.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+#
+#      - alert: ArgocdServiceUnhealthy
+#        expr: 'argocd_app_info{health_status!="Healthy"} != 0'
+#        for: 15m
+#        labels:
+#          severity: warning
+#        annotations:
+#          summary: ArgoCD service unhealthy (instance {{ $labels.instance }})
+#          description: "Service {{ $labels.name }} run by argo is currently not healthy.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"

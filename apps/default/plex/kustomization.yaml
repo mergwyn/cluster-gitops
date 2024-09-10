@@ -10,5 +10,5 @@ helmCharts:
   valuesFile: values.yaml
 
 
-resources:
-- plex-vpa.yaml
+#resources:
+#- plex-vpa.yaml

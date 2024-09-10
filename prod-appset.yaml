@@ -12,6 +12,8 @@ spec:
       - path: bootstrap/*/*
       - path: core/*/*
       - path: apps/downloaders/*
+      - path: apps/downloaders/prowlarr
+        exclude: true
       - path: apps/default/*
       
   template:
