@@ -59,8 +59,8 @@ repoServer:
           name: var-files
         - mountPath: /home/argocd/cmp-server/plugins
           name: plugins
-        - mountPath: /home/argocd/cmp-server/config/plugin.yaml
-          subPath: plugin.yaml
+        - mountPath: /home/argocd/cmp-server/config/cmp-helmfile.yaml
+          subPath: cmp-helmfile.yaml
           name: argocd-cmp-cm
         - mountPath: /tmp
           name: cmp-tmp
