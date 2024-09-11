@@ -60,7 +60,7 @@ repoServer:
         - mountPath: /home/argocd/cmp-server/plugins
           name: plugins
         - mountPath: /home/argocd/cmp-server/config/plugin.yaml
-          subPath: cmp-helmfile.yaml
+          subPath: plugin.yaml
           name: argocd-cmp-cm
         - mountPath: /tmp
           name: cmp-tmp
