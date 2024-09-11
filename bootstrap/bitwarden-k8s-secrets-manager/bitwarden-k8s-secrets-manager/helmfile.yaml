@@ -1,0 +1,14 @@
+#kubectl apply -n ${namespace} -f https://raw.githubusercontent.com/rhpds/bitwarden-k8s-secrets-manager/master/helm/crds/bitwardensyncconfigs.yaml
+#kubectl apply -n ${namespace} -f https://raw.githubusercontent.com/rhpds/bitwarden-k8s-secrets-manager/master/helm/crds/bitwardensyncsecret.yaml
+
+repositories:
+- name: bitwarden-k8s-secrets-manager
+  url: https://rhpds.github.io/bitwarden-k8s-secrets-manager
+
+releases:
+- name: bitwarden-k8s-secrets-manager
+  namespace: bitwarden-k8s-secrets-manager
+  chart: bitwarden-k8s-secrets-manager/bitwarden-k8s-secrets-manager
+  version: 0.3.1
+  values:
+    - values.yaml

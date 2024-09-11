@@ -1,0 +1,116 @@
+namespace:
+  # Specifies whether a namespace should be created
+  create: true
+  # The name of the namespace to use.
+  # If not set and create is true, a name is generated using the name template
+  name: 
+
+# Configuration to setup sync
+configs:
+  default:
+    accessTokenSecret:
+      name: bitwarden-access-token
+    secrets:
+#      - name: cloudflare-tunnel-remote
+#        namespace: kube-system 
+#        data:
+#          tunnelToken:
+#            secret: cloudflare_tunnel_remote 
+#        labels:
+#          pod:
+#            value: cloudflared
+
+      - name: cloudflare-token-secret
+        namespace: cert-manager
+        data:
+          cloudflare-token:
+            secret: cloudflare_token_secret
+        labels:
+          app.kubernetes.io/name:
+            value: cert-manager
+
+      - name: traefik-dashboard-auth
+        namespace: traefik
+        data:
+          users:
+            secret: traefik_dashboard_auth
+        labels:
+          app.kubernetes.io/name:
+            value: traefik
+
+      - name: privatevpn
+        namespace: gateway
+        data:
+          OPENVPN_USER:
+            secret: privatevpn_secret
+            key: OPENVPN_USER
+          OPENVPN_PASSWORD:
+            secret: privatevpn_secret
+            key: OPENVPN_PASSWORD
+          SERVER_CITIES:
+            secret: privatevpn_secret
+            key: SERVER_CITIES
+          DNS_ADDRESS:
+            secret: privatevpn_secret
+            key: DNS_ADDRESS
+        labels:
+          app.kubernetes.io/name:
+            value: pod-gateway
+
+      - name: argocd-admin-password
+        namespace: argocd
+        data:
+          admin.password:
+            secret: argocd_admin_password
+        labels:
+          app.kubernetes.io/part-of:
+            value: argo-cd
+
+      - name: grafana-admin
+        namespace: monitoring
+        data:
+          admin-user:
+            secret: grafana_admin
+            key: admin-user
+          admin-password:
+            secret: grafana_admin
+            key: admin-password
+        labels:
+          app.kubernetes.io/name:
+            value: grafana
+
+    syncInterval: 60
+
+deploy: true
+
+image:
+  repository: quay.io/rhpds/bitwarden-k8s-secrets-manager
+  pullPolicy: IfNotPresent
+  tagOverride: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+resources:
+  limits:
+    cpu: "1"
+    memory: 128Mi
+  requests:
+    cpu: 500m
+    memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
