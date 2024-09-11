@@ -30,6 +30,114 @@ alertmanager:
     annotations:
       traefik.ingress.kubernetes.io/router.entrypoints: websecure
     hosts:
+      - "alertmanager.theclarkhome.com"
+    tls:
+      - hosts:
+        - "*.theclarkhome.com"
+#  storage:
+#    volumeClaimTemplate:
+#      spec:
+#        storageClassName: openebs-hostpath
+#        accessModes: ["ReadWriteOnce"]
+#        resources:
+#          requests:
+#            storage: 50Gi
+
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false
+#    podMonitorSelectorNilUsesHelmValues: false
+    additionalScrapeConfigs:
+      - job_name: minio-job-v2
+        bearer_token: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJwcm9tZXRoZXVzIiwic3ViIjoibXltaW5pb2FkbWluIiwiZXhwIjo0ODY1MjQ0NzEyfQ.21LxcoJnfop1f4eqy2NedKaeTaDw7RhiWr_ZnjoUxo11pcoIlSNDwpW93dU2Gi4XMi-yv8piDm4FU0MAObPJhg
+        metrics_path: /minio/v2/metrics/cluster
+        scheme: http
+        static_configs:
+        - targets: ['foxtrot.theclarkhome.com:9000']
+#      - job_name: minio-job-v3
+#        bearer_token: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJwcm9tZXRoZXVzIiwic3ViIjoiUTNBTTNVUTg2N1NQUVFBNDNQMkYiLCJleHAiOjQ4NzgwMjIzNjN9.ylUBXU1Sp9F5UTqso_BKFo4yi3m3XBx8HbNrt-VVrDVZHIWrR3KgayWhi8gyCQ3JayBaWseoIrvjMzn3ikFwVw
+#        metrics_path: /minio/metrics/v3
+#        scheme: https
+#        static_configs:
+#        - targets: ['foxtrot.theclarkhome.com:9000']
+#      - job_name: "seaweedfs-server"
+#        scrape_interval: 60s
+#        metrics_path: /metrics
+#        scheme: http
+#        static_configs:
+#          - targets: ['foxtrot.theclarkhome.com:9327']
+#      - job_name: "kopia-server"
+#        scrape_interval: 60s
+#        metrics_path: /metrics
+#        scheme: http
+#        static_configs:
+#          - targets: ['foxtrot.theclarkhome.com:8188']
+  ingress:
+    enabled: true
+    ingressClass: traefik
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    hosts:
+      - "prometheus.theclarkhome.com"
+    tls:
+      - hosts:
+        - "*.theclarkhome.com"
+
+grafana:
+  adminPassword: ""
+  admin:
+    ## Name of the secret. Can be templated.
+    existingSecret: grafana-admin
+    userKey: admin-user
+    passwordKey: admin-password
+  additionalDataSources:
+    - name: Loki
+      type: loki
+      url: http://loki.monitoring.svc.cluster.local:3100
+  dashboardProviders:
+    dashboardproviders.yaml:
+     apiVersion: 1
+     providers:
+     - name: 'default'
+       orgId: 1
+       #folder: 'Default'
+       type: file
+       disableDeletion: true
+       editable: true
+       options:
+         path: /var/lib/grafana/dashboards/standard
+  dashboards:
+    default:
+      #hwmon:
+      #  gnetId: 12950
+      #  datasource: Prometheus
+      #promtail:
+      #  gnetId: 15141
+      #  datasource: Loki
+      #minio:
+      #  gnetId: 13502
+      #  datasource: Prometheus
+      #minio-server:
+      #  name: "MinIO server"
+      #  url: "https://raw.githubusercontent.com/minio/minio/master/docs/metrics/prometheus/grafana/minio-dashboard.json"
+      #  datasource: Prometheus
+      #minio-bucket:
+      #  name: "MinIO bucket"
+      #  url: "https://raw.githubusercontent.com/minio/minio/master/docs/metrics/prometheus/grafana/bucket/minio-bucket.json"
+      #  datasource: Prometheus
+      #minio-node:
+      #  name: "MinIO node"
+      #  url: "https://raw.githubusercontent.com/minio/minio/master/docs/metrics/prometheus/grafana/node/minio-node.json"
+      #  datasource: Prometheus
+      zfspv:
+        url: "https://raw.githubusercontent.com/openebs/zfs-localpv/develop/deploy/sample/grafana-dashboard.json"
+        datasource: Prometheus
+  ingress:
+    enabled: true
+    ingressClass: traefik
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    hosts:
       - "grafana.theclarkhome.com"
     tls:
       - hosts:
