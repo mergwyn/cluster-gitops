@@ -84,6 +84,35 @@ kubeScheduler:
   enabled: false
 kubeProxy:
   enabled: false
+
+extraManifests:
+- kind: VerticalPodAutoscaler
+  apiVersion: autoscaling.k8s.io/v1
+  metadata:
+    namespace: monitoring
+    name: kube-prometheus-stack-grafana-vpa
+  spec:
+    targetRef:
+      apiVersion: "apps/v1"
+      kind:       Deployment
+      name:       kube-prometheus-stack-grafana  
+    updatePolicy:
+      updateMode: "Auto"
+- kind: VerticalPodAutoscaler
+  apiVersion: autoscaling.k8s.io/v1
+  metadata:
+    namespace: monitoring
+    name: kube-prometheus-stack-prometheus-vpa
+  spec:
+    targetRef:
+      apiVersion: "apps/v1"
+      kind:       Deployment
+      name:       kube-prometheus-stack-operator  
+    updatePolicy:
+      updateMode: "Auto"
+
+
+
 #additionalPrometheusRules:
 #  # TODO move to argocd
 #- name: argocd
