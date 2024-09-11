@@ -9,5 +9,5 @@ helmCharts:
   version: 7.5.1
   valuesFile: values.yaml
 
-resources:
-  argocd-application-controller-vpa.yaml
+#resources:
+#  argocd-application-controller-vpa.yaml
