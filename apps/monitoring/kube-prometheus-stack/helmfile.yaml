@@ -6,7 +6,7 @@ releases:
 - name: kube-prometheus-stack
   namespace: monitoring
   chart: kube-prometheus-stack/kube-prometheus-stack
-  version: 62.3.1
+  version: 62.6.0
   values:
   - values.yaml
 
