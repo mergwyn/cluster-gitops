@@ -31,45 +31,45 @@ configs:
         end
       end
       return hs
-#  cmp:
-#    create: true
-#    plugins:
-#      plugin: # helmfile plugin support
-#        version: v1.0
-#        init:
-#          command: [sh, -c, 'echo "Initializing..."']
-#        generate:
-#          command: [sh, -c]
-#          args: ["helmfile template --quiet --namespace $ARGOCD_APP_NAMESPACE"]
-#        discover:
-#          fileName: "helmfile.yaml"
-#
-#repoServer:
-#  extraContainers:
-#    - name: cmp-helmfile
-#      securityContext:
-#        runAsNonRoot: true
-#        runAsUser: 999
-#      image: ghcr.io/helmfile/helmfile:v0.167.1
-#      imagePullPolicy: IfNotPresent
-#      # Entrypoint should be Argo CD lightweight CMP server i.e. argocd-cmp-server
-#      command: [/var/run/argocd/argocd-cmp-server]
-#      volumeMounts:
-#        - mountPath: /var/run/argocd
-#          name: var-files
-#        - mountPath: /home/argocd/cmp-server/plugins
-#          name: plugins
-#        - mountPath: /home/argocd/cmp-server/config/plugin.yaml
-#          subPath: plugin.yaml
-#          name: argocd-cmp-cm
-#        - mountPath: /tmp
-#          name: cmp-tmp
-#  volumes:
-#    - name: argocd-cmp-cm
-#      configMap:
-#        name: argocd-cmp-cm
-#    - emptyDir: {}
-#      name: cmp-tmp
+  cmp:
+    create: true
+    plugins:
+      plugin: # helmfile plugin support
+        version: v1.0
+        init:
+          command: [sh, -c, 'echo "Initializing..."']
+        generate:
+          command: [sh, -c]
+          args: ["helmfile template --quiet --namespace $ARGOCD_APP_NAMESPACE"]
+        discover:
+          fileName: "helmfile.yaml"
+
+repoServer:
+  extraContainers:
+    - name: cmp-helmfile
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+      image: ghcr.io/helmfile/helmfile:v0.167.1
+      imagePullPolicy: IfNotPresent
+      # Entrypoint should be Argo CD lightweight CMP server i.e. argocd-cmp-server
+      command: [/var/run/argocd/argocd-cmp-server]
+      volumeMounts:
+        - mountPath: /var/run/argocd
+          name: var-files
+        - mountPath: /home/argocd/cmp-server/plugins
+          name: plugins
+        - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+          subPath: plugin.yaml
+          name: argocd-cmp-cm
+        - mountPath: /tmp
+          name: cmp-tmp
+  volumes:
+    - name: argocd-cmp-cm
+      configMap:
+        name: argocd-cmp-cm
+    - emptyDir: {}
+      name: cmp-tmp
 
 extraObjects:
   - kind: IngressRoute
