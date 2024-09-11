@@ -34,7 +34,6 @@ alertmanager:
     tls:
       - hosts:
         - "*.theclarkhome.com"
-        grafana:
   persistence:
     enabled: true
     type: pvc
