@@ -39,8 +39,17 @@ configs:
         init:
           command: [sh, -c, 'echo "Initializing..."']
         generate:
-          command: [sh, -c]
-          args: ["helmfile template --quiet --namespace $ARGOCD_APP_NAMESPACE"]
+          command:
+            - bash
+            - "-c"
+            - |
+              if [[ -v ENV_NAME ]]; then
+                helmfile -n "$ARGOCD_APP_NAMESPACE" -e $ENV_NAME template --include-crds -q
+              elif [[ -v ARGOCD_ENV_ENV_NAME ]]; then
+                helmfile -n "$ARGOCD_APP_NAMESPACE" -e "$ARGOCD_ENV_ENV_NAME" template --include-crds -q
+              else
+                helmfile -n "$ARGOCD_APP_NAMESPACE" template --include-crds -q
+              fi
         discover:
           fileName: "helmfile.yaml"
 
