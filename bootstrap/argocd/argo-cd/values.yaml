@@ -34,7 +34,7 @@ configs:
   cmp:
     create: true
     plugins:
-      plugin: # helmfile plugin support
+      helmfile: # helmfile plugin support
         version: v1.0
         init:
           command: [sh, -c, 'echo "Initializing..."']
@@ -46,7 +46,7 @@ configs:
 
 repoServer:
   extraContainers:
-    - name: plugin
+    - name: helmfile
       securityContext:
         runAsNonRoot: true
         runAsUser: 999
@@ -60,7 +60,7 @@ repoServer:
         - mountPath: /home/argocd/cmp-server/plugins
           name: plugins
         - mountPath: /home/argocd/cmp-server/config/plugin.yaml
-          subPath: plugin.yaml
+          subPath: helmfile.yaml
           name: argocd-cmp-cm
         - mountPath: /tmp
           name: cmp-tmp
