@@ -8,6 +8,8 @@ releases:
 - name: vertical-pod-autoscaler
   namespace: kube-system
   chart: stevehipwell/vertical-pod-autoscaler
+  version: 1.7.1
+  disableValidation: true # Installs CRDS
   values:
     - values.yaml
 
