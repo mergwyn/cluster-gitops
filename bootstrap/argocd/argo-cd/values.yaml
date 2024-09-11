@@ -34,7 +34,7 @@ configs:
   cmp:
     create: true
     plugins:
-      plugin: # helmfile plugin support
+      cmp-helmfile: # helmfile plugin support
         version: v1.0
         init:
           command: [sh, -c, 'echo "Initializing..."']
