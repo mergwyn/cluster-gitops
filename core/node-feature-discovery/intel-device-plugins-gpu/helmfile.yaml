@@ -4,7 +4,7 @@ repositories:
   url: https://intel.github.io/helm-charts
 
 releases:
-  name: intel-device-plugins-gpu
+- name: intel-device-plugins-gpu
   namespace: node-feature-discovery
   chart: intel/intel-device-plugins-gpu
   version: 0.30.0
