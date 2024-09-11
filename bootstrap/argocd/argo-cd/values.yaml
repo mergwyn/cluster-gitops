@@ -46,7 +46,7 @@ configs:
 
 repoServer:
   extraContainers:
-    - name: cmp-helmfile
+    - name: plugin
       securityContext:
         runAsNonRoot: true
         runAsUser: 999
