@@ -64,12 +64,16 @@ repoServer:
           name: argocd-cmp-cm
         - mountPath: /tmp
           name: cmp-tmp
+        - mountPath: /helm/.config
+          name: cmp-helm-config
   volumes:
     - name: argocd-cmp-cm
       configMap:
         name: argocd-cmp-cm
     - emptyDir: {}
       name: cmp-tmp
+    - emptyDir: {}
+      name: cmp-helm-config
 
 extraObjects:
   - kind: IngressRoute
