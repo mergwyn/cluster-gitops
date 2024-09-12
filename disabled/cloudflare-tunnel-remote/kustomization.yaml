@@ -6,7 +6,7 @@ helmCharts:
 - name: cloudflare-tunnel-remote
   Releasename: cloudflare-tunnel-remote
   repo: https://cloudflare.github.io/helm-charts
-  version: 0.1.1
+  version: 0.1.2
   valuesFile: values.yaml
 
 
