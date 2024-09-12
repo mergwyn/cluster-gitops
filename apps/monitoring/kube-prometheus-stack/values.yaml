@@ -146,17 +146,7 @@ grafana:
     enabled: true
     type: pvc
     storageClassName: openebs-zfspv
-    #persistentVolumeReclaimPolicy: Retain
-    accessModes:
-      - ReadWriteOnce
     size: 10Gi
-    # annotations: {}
-    finalizers:
-      - kubernetes.io/pvc-protection
-    # selectorLabels: {}
-    # subPath: ""
-    # existingClaim:
-    # extraPvcLabels: {}
 
 prometheus:
   prometheusSpec:
