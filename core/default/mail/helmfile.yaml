@@ -1,0 +1,10 @@
+repositories:
+- name: bokysan
+  url: https://bokysan.github.io/docker-postfix/
+
+releases:
+- name: mail
+  chart: bokysan/mail
+  version: 4.3.0
+  values:
+  - values.yaml
