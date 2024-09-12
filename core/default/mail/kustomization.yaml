@@ -6,7 +6,7 @@ helmCharts:
 - name: mail
   releaseName: mail
   repo: https://bokysan.github.io/docker-postfix/
-  version: 4.2.1
+  version: 4.3.0
   valuesFile: values.yaml
 
 
