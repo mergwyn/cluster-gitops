@@ -1,0 +1,12 @@
+repositories:
+- name: geek-cookbook
+  url: https://geek-cookbook.github.io/charts/
+
+releases:
+- name: prowlarr
+  chart: geek-cookbook/prowlarr
+  version: 4.5.2
+  values:
+  - values.yaml
+
+
