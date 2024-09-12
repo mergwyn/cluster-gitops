@@ -1,14 +1,24 @@
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-namespace: default
+repositories:
+- name: geek-cookbook
+  url: https://geek-cookbook.github.io/charts/
 
-helmCharts:
+releases:
 - name: plex
-  releaseName: plex
-  repo: https://geek-cookbook.github.io/charts/
+  chart: geek-cookbook/plex
   version: 6.4.3
-  valuesFile: values.yaml
+  values:
+  - values.yaml
+  - resources:
+    - apiVersion: autoscaling.k8s.io/v1
+      kind: VerticalPodAutoscaler
+      metadata:
+        namespace: default
+        name: plex-vpa
+      spec:
+        targetRef:
+          apiVersion: "apps/v1"
+          kind:       Deployment
+          name:       plex
+        updatePolicy:
+          updateMode: "Auto"
 
-
-resources:
-- plex-vpa.yaml
