@@ -1,6 +1,8 @@
 repositories:
 - name: geek-cookbook
   url: https://geek-cookbook.github.io/charts/
+- name: incubator
+  url: https://charts.helm.sh/incubator
 
 releases:
 - name: plex
@@ -8,17 +10,23 @@ releases:
   version: 6.4.3
   values:
   - values.yaml
-#  - resources:
-#    - apiVersion: autoscaling.k8s.io/v1
-#      kind: VerticalPodAutoscaler
-#      metadata:
-#        namespace: default
-#        name: plex-vpa
-#      spec:
-#        targetRef:
-#          apiVersion: "apps/v1"
-#          kind:       Deployment
-#          name:       plex
-#        updatePolicy:
-#          updateMode: "Auto"
-#
+- name: plex-vpa
+  chart: incubator/raw
+  values:
+  - resources:
+    - apiVersion: autoscaling.k8s.io/v1
+      kind: VerticalPodAutoscaler
+      metadata:
+        namespace: default
+        name: plex-vpa
+        labels:
+          app.kubernetes.io/instance: plex
+          app.kubernetes.io/name: plex
+      spec:
+        targetRef:
+          apiVersion: "apps/v1"
+          kind:       Deployment
+          name:       plex
+        updatePolicy:
+          updateMode: "Auto"
+
