@@ -1,0 +1,10 @@
+repositories:
+- name: geek-cookbook
+  url: https://geek-cookbook.github.io/charts/
+
+releases:
+- name: xteve
+  chart: geek-cookbook/xteve
+  version: 8.4.2
+  values:
+  - values.yaml
