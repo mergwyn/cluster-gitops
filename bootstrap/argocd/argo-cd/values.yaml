@@ -10,10 +10,14 @@ env:
 secret:
   argocdServerAdminPassword: ${ADMIN_PASSWORD}
 
-
 configs:
   params:
+    # -- Run server without TLS
+    ## NOTE: This value should be set when you generate params by other means as it changes ports used by ingress template.
     server.insecure: true
+    # -- Enables use of the Progressive Syncs capability
+    applicationsetcontroller.enable.progressive.syncs: true
+
   cm:
     kustomize.buildOptions: --enable-helm
     create: true
