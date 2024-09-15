@@ -38,6 +38,22 @@ configs:
           app.kubernetes.io/name:
             value: traefik
 
+      - name: minio-s3-test
+        namespace: velero
+        data:
+          ACCESS_KEY_ID:
+            secret: minio_s3_test
+            key: ACCESS_KEY_ID
+          ENDPOINT:
+            secret: minio_s3_test
+            key: ENDPOINT
+          SECRET_ACCESS_KEY:
+            secret: minio_s3_test
+            key: SECRET_ACCESS_KEY
+        labels:
+          app.kubernetes.io/name:
+            value: velero
+
       - name: privatevpn
         namespace: gateway
         data:
