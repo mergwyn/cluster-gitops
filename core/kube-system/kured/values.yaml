@@ -1,0 +1,9 @@
+---
+configuration:
+  lockReleaseDelay: 4h
+
+extraArgs:
+  start-time: 2am
+  end-time: 6am
+  time-zone: UTC
+  reboot-days: "mon,tue,wed,thu,fri,sat,sun"
