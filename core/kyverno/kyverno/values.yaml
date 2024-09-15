@@ -1,0 +1,11 @@
+admissionController:
+  replicas: 3
+backgroundController:
+  replicas: 3
+cleanupController:
+  replicas: 3
+reportsController:
+  replicas: 3
+
+grafana:
+  enabled: true
