@@ -48,12 +48,13 @@ prometheus:
     serviceMonitorSelectorNilUsesHelmValues: false
 #    podMonitorSelectorNilUsesHelmValues: false
     additionalScrapeConfigs:
-      - job_name: minio-job-v2
-        bearer_token: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJwcm9tZXRoZXVzIiwic3ViIjoibXltaW5pb2FkbWluIiwiZXhwIjo0ODY1MjQ0NzEyfQ.21LxcoJnfop1f4eqy2NedKaeTaDw7RhiWr_ZnjoUxo11pcoIlSNDwpW93dU2Gi4XMi-yv8piDm4FU0MAObPJhg
-        metrics_path: /minio/v2/metrics/cluster
-        scheme: http
-        static_configs:
-        - targets: ['foxtrot.theclarkhome.com:9000']
+    - job_name: minio-job-v2
+      bearer_token: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJwcm9tZXRoZXVzIiwic3ViIjoibXltaW5pb2FkbWluIiwiZXhwIjo0ODY1MjQ0NzEyfQ.21LxcoJnfop1f4eqy2NedKaeTaDw7RhiWr_ZnjoUxo11pcoIlSNDwpW93dU2Gi4XMi-yv8piDm4FU0MAObPJhg
+      metrics_path: /minio/v2/metrics/cluster
+      scheme: http
+      static_configs:
+      - targets: ['foxtrot.theclarkhome.com:9000']
+
 #      - job_name: minio-job-v3
 #        bearer_token: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJwcm9tZXRoZXVzIiwic3ViIjoiUTNBTTNVUTg2N1NQUVFBNDNQMkYiLCJleHAiOjQ4NzgwMjIzNjN9.ylUBXU1Sp9F5UTqso_BKFo4yi3m3XBx8HbNrt-VVrDVZHIWrR3KgayWhi8gyCQ3JayBaWseoIrvjMzn3ikFwVw
 #        metrics_path: /minio/metrics/v3
@@ -72,6 +73,17 @@ prometheus:
 #        scheme: http
 #        static_configs:
 #          - targets: ['foxtrot.theclarkhome.com:8188']
+    persistentVolumeClaimRetentionPolicy:
+      whenDeleted: Retain
+      whenScaled: Retain
+    storageSpec: 
+      volumeClaimTemplate:
+        spec:
+          storageClassName: openebs-zfspv
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 50Gi
   ingress:
     enabled: true
     ingressClass: traefik
@@ -82,6 +94,7 @@ prometheus:
     tls:
       - hosts:
         - "*.theclarkhome.com"
+
 
 grafana:
   adminPassword: ""
@@ -147,20 +160,6 @@ grafana:
     type: pvc
     storageClassName: openebs-zfspv
     size: 10Gi
-
-prometheus:
-  prometheusSpec:
-    persistentVolumeClaimRetentionPolicy:
-      whenDeleted: Retain
-      whenScaled: Retain
-    storageSpec: 
-      volumeClaimTemplate:
-        spec:
-          storageClassName: openebs-zfspv
-          accessModes: ["ReadWriteOnce"]
-          resources:
-            requests:
-              storage: 50Gi
 
 
 defaultRules:
