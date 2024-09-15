@@ -54,6 +54,24 @@ configs:
           app.kubernetes.io/name:
             value: velero
 
+      - name: idrivee2-s3-credentials-test
+        namespace: velero
+        date:
+          cloud:
+            secret: idrivee2_s3_credentials
+        labels:
+          app.kubernetes.io/name:
+            value: velero
+
+      - name: minio-s3-credentials-test
+        namespace: velero
+        date:
+          cloud:
+            secret: minio_s3_credentials
+        labels:
+          app.kubernetes.io/name:
+            value: velero
+
       - name: idrivee2-s3
         namespace: velero
         data:
