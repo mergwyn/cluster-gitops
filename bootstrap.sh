@@ -1,12 +1,19 @@
 #!/usr/bin/env bash
 
+
+if ! which helmfile >/dev/null ; then
+# install helmfile
+  curl -sSL https://raw.githubusercontent.com/upciti/wakemeops/main/assets/install_repository | sudo bash
+  sudo apt install helmfile
+  helmfile init --quiet
+fi
+
 namespace=argocd
 release=argo-cd
-values=bootstrap/${namespace}/${release}/values.yaml
+path=bootstrap/${namespace}/${release}/
 
-helm dependency update --namespace ${namespace} ${chart}/
-TODO Add repo
-helm install --create-namespace --namespace ${namespace} ${release} ${chart}/ --values=${values} #--dry-run --skip-crds
-kubectl apply -f dev-appset.yaml
+helmfile template --file ${path}/helmfile.yaml --namespace ${namespace}
 
-TODO add secrets
+echo kubectl apply -f prod-appset.yaml
+
+echo Need to add bitwarden secret
