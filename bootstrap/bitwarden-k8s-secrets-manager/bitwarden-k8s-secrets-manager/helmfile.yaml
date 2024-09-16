@@ -1,5 +1,3 @@
-#kubectl apply -n ${namespace} -f https://raw.githubusercontent.com/rhpds/bitwarden-k8s-secrets-manager/master/helm/crds/bitwardensyncconfigs.yaml
-#kubectl apply -n ${namespace} -f https://raw.githubusercontent.com/rhpds/bitwarden-k8s-secrets-manager/master/helm/crds/bitwardensyncsecret.yaml
 
 repositories:
 - name: bitwarden-k8s-secrets-manager

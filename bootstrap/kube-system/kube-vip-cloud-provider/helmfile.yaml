@@ -2,15 +2,15 @@
 repositories:
 - name: kube-vip
   url: https://kube-vip.github.io/helm-charts
-- name: incubator3dd
-  url: https://charts.helm.sh/incubator
+- name: bedag
+  url: https://bedag.github.io/helm-charts/
 
 releases:
 - name: kube-vip-cloud-provider
   chart: kube-vip/kube-vip-cloud-provider
   version: 0.2.2
-- name: kubevip
-  chart: incubator/raw
+- name: kube-vip-extras
+  chart: bedag/raw
   values:
   - resources:
     - apiVersion: v1

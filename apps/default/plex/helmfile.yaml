@@ -1,8 +1,8 @@
 repositories:
 - name: geek-cookbook
   url: https://geek-cookbook.github.io/charts/
-- name: incubator
-  url: https://charts.helm.sh/incubator
+- name: bedag
+  url: https://bedag.github.io/helm-charts/
 
 releases:
 - name: plex
@@ -10,8 +10,8 @@ releases:
   version: 6.4.3
   values:
   - values.yaml
-- name: plex-vpa
-  chart: incubator/raw
+- name: plex-extra
+  chart: bedag/raw
   values:
   - resources:
     - apiVersion: autoscaling.k8s.io/v1

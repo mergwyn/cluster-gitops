@@ -2,8 +2,8 @@
 repositories:
 - name: kyverno
   url: https://kyverno.github.io/kyverno/
-- name: aservo
-  url: https://aservo.github.io/charts
+- name: bedag
+  url: https://bedag.github.io/helm-charts/
 
 releases:
 - name: kyverno
@@ -12,14 +12,16 @@ releases:
   values:
   - values.yaml
 
-- name: backup-all-volumes-policy
-  chart: aservo/raw
+- name: kyverno-policies
+  chart: bedag/raw
   values:
   - resources:
     - apiVersion: kyverno.io/v1
       kind: ClusterPolicy
       metadata:
         name: backup-all-volumes
+        labels:
+           app.kubernetes.io/instance: kyverno
         annotations:
           policies.kyverno.io/title: Backup All Volumes
           policies.kyverno.io/category: Velero
