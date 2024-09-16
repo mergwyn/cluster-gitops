@@ -1,0 +1,201 @@
+---
+configuration:
+  uploaderType: kopia
+  #defaultVolumesToFsBackup: true
+  #defaultSnapshotMoveData: true
+  #features: EnableCSI
+  backupStorageLocation:
+    - name: idrive
+      provider: aws
+      bucket: velero
+      credential:
+        name: idrivee2-s3-credentials
+        key: cloud
+      config:
+        region: London
+        s3ForcePathStyle: true
+        s3Url: https://j5o6.ldn.idrivee2-27.com
+        publicUrl: https://j5o6.ldn.idrivee2-27.com
+        # Disable checksumAlgorithm to avoid issues with Minio
+        # https://github.com/vmware-tanzu/velero-plugin-for-aws/pull/197
+        checksumAlgorithm: ""
+    - name: default
+      provider: aws
+      bucket: velero
+      credential:
+        name: minio-s3-credentials
+        key: cloud
+      config:
+        region: London
+        s3ForcePathStyle: true
+        s3Url: http://foxtrot.theclarkhome.com:9000
+        publicUrl: http://foxtrot.theclarkhome.com:9000
+  volumeSnapshotLocation:
+    - name: openebs-zfspv
+      provider: csi
+
+snapshotsEnabled: false
+#defaultVolumeSnapshotLocations: csi:seaweedfs
+deployNodeAgent: true
+
+initContainers:
+  - name: velero-plugin-for-aws
+    image: velero/velero-plugin-for-aws:v1.10.0
+    volumeMounts:
+      - mountPath: /target
+        name: plugins
+#  - name: velero-plugin-for-csi
+#    image: velero/velero-plugin-for-csi:v0.5.0
+#    volumeMounts:
+#      - mountPath: /target
+#        name: plugins
+
+#credentials:
+#  useSecret: true
+#  name: cloud-credentials
+#  existingSecret:
+#  secretContents:
+#    cloud: |
+#      [default]
+#      aws_access_key_id=Unwarlike3-Keenly-Colt
+#      aws_secret_access_key=Choice4-Entourage-Equal
+
+schedules:
+# idrive storage
+  daily-idrive:
+    disabled: false
+    schedule: "@daily"
+    useOwnerReferencesInBackup: false
+    template:
+      ttl: "168h"
+      storageLocation: idrive
+  weekly-idrive:
+    disabled: false
+    schedule: "@weekly"
+    useOwnerReferencesInBackup: false
+    template:
+      ttl: "672h"
+      storageLocation: idrive
+  monthly-idrive:
+    disabled: false
+    schedule: "@monthly"
+    useOwnerReferencesInBackup: false
+    template:
+      ttl: "2190h"
+      storageLocation: idrive
+# default storage
+  hourly-minio:
+    disabled: false
+    schedule: "@hourly"
+    useOwnerReferencesInBackup: false
+    template:
+      ttl: "24h"
+      storageLocation: default
+  daily-minio:
+    disabled: false
+    schedule: "@daily"
+    useOwnerReferencesInBackup: false
+    template:
+      ttl: "168h"
+      storageLocation: default
+  weekly-minio:
+    disabled: false
+    schedule: "@weekly"
+    useOwnerReferencesInBackup: false
+    template:
+      ttl: "672h"
+      storageLocation: default
+  monthly-minio:
+    disabled: false
+    schedule: "@monthly"
+    useOwnerReferencesInBackup: false
+    template:
+      ttl: "2190h"
+      storageLocation: default
+
+
+metrics:
+  enabled: true
+  scrapeInterval: 30s
+  scrapeTimeout: 10s
+
+  # service metdata if metrics are enabled
+  service:
+    annotations: {}
+    labels: {}
+
+  # Pod annotations for Prometheus
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8085"
+    prometheus.io/path: "/metrics"
+
+  serviceMonitor:
+    autodetect: true
+    enabled: true
+    annotations: {}
+    additionalLabels: {}
+
+    # metrics.serviceMonitor.metricRelabelings Specify Metric Relabelings to add to the scrape endpoint
+    # ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#relabelconfig
+    # metricRelabelings: []
+    # metrics.serviceMonitor.relabelings [array] Prometheus relabeling rules
+    # relabelings: []
+    # ServiceMonitor namespace. Default to Velero namespace.
+    # namespace:
+    # ServiceMonitor connection scheme. Defaults to HTTP.
+    # scheme: ""
+    # ServiceMonitor connection tlsConfig. Defaults to {}.
+    # tlsConfig: {}
+  nodeAgentPodMonitor:
+    autodetect: true
+    enabled: false
+    annotations: {}
+    additionalLabels: {}
+    # ServiceMonitor namespace. Default to Velero namespace.
+    # namespace:
+    # ServiceMonitor connection scheme. Defaults to HTTP.
+    # scheme: ""
+    # ServiceMonitor connection tlsConfig. Defaults to {}.
+    # tlsConfig: {}
+
+  prometheusRule:
+    autodetect: true
+    enabled: true
+    # Additional labels to add to deployed PrometheusRule
+    additionalLabels: {}
+    # Rules to be deployed
+    spec: 
+     - alert: VeleroBackupPartialFailures
+       annotations:
+         message: Velero backup {{ $labels.schedule }} has {{ $value | humanizePercentage }} partialy failed backups.
+       expr: |-
+         velero_backup_partial_failure_total{schedule!=""} / velero_backup_attempt_total{schedule!=""} > 0.25
+       for: 15m
+       labels:
+         severity: warning
+     - alert: VeleroBackupFailures
+       annotations:
+         message: Velero backup {{ $labels.schedule }} has {{ $value | humanizePercentage }} failed backups.
+       expr: |-
+         velero_backup_failure_total{schedule!=""} / velero_backup_attempt_total{schedule!=""} > 0.25
+       for: 15m
+       labels:
+         severity: warning
+
+extraObjects:
+  velero:
+  - apiVersion: autoscaling.k8s.io/v1
+    kind: VerticalPodAutoscaler
+    metadata:
+      namespace: velero
+      name: velero-vpa
+      #labels:
+      #  app.kubernetes.io/name: velero
+    spec:
+      targetRef:
+        apiVersion: "apps/v1"
+        kind:       Deployment
+        name:       velero
+      updatePolicy:
+        updateMode: "Auto"
