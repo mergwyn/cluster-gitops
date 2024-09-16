@@ -20,7 +20,7 @@ configs:
 #          pod:
 #            value: cloudflared
 
-      - name: cloudflare-token-secret-test
+      - name: cloudflare-token-secret
         namespace: cert-manager
         data:
           cloudflare-token:
