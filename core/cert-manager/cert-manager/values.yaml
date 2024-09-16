@@ -1,0 +1,50 @@
+installCRDs: false
+#replicaCount: 1
+
+extraArgs:
+  - --dns01-recursive-nameservers=1.1.1.1:53,9.9.9.9:53
+  - --dns01-recursive-nameservers-only
+
+podDnsConfig:
+  nameservers:
+    - "1.1.1.1"
+    - "9.9.9.9"
+
+extraObjects:
+  - |
+    apiVersion: cert-manager.io/v1
+    kind: ClusterIssuer
+    metadata:
+      name: letsencrypt-production
+    spec:
+      acme:
+        server: https://acme-v02.api.letsencrypt.org/directory
+        email: gary@theclarkhome.com
+        privateKeySecretRef:
+          name: letsencrypt-production
+        solvers:
+          - dns01:
+              cloudflare:
+                email: gary@theclarkhome.com
+                apiTokenSecretRef:
+                  name: cloudflare-token-secret
+                  key: cloudflare-token
+            selector:
+              dnsZones:
+                - "theclarkhome.com"
+
+  - |
+    apiVersion: cert-manager.io/v1
+    kind: Certificate
+    metadata:
+      name: theclarkhome-com
+      namespace: kube-system
+    spec:
+      secretName: theclarkhome-com-tls
+      issuerRef:
+        name: letsencrypt-production
+        kind: ClusterIssuer
+      commonName: "*.theclarkhome.com"
+      dnsNames:
+      - "theclarkhome.com"
+      - "*.theclarkhome.com"
