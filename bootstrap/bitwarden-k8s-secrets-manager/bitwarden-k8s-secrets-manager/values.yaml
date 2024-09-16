@@ -24,7 +24,7 @@ configs:
         namespace: cert-manager
         data:
           cloudflare-token:
-            secret: cloudflare_token_secret
+            secret: cloudflare_api_token
         labels:
           app.kubernetes.io/name:
             value: cert-manager
