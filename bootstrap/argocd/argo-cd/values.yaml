@@ -131,3 +131,15 @@ extraObjects:
         name:       argo-cd-argocd-application-controller
       updatePolicy:
         updateMode: "Auto"
+  - kind: VerticalPodAutoscaler
+    apiVersion: autoscaling.k8s.io/v1
+    metadata:
+      namespace: argocd
+      name: argocd-applicationset-controller-vpa
+    spec:
+      targetRef:
+        apiVersion: "apps/v1"
+        kind:       Deployment
+        name:       argo-cd-argocd-applicationset-controller
+      updatePolicy:
+        updateMode: "Auto"
