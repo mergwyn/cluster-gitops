@@ -185,7 +185,7 @@ metrics:
 
 extraObjects:
   velero:
-  - apiVersion: autoscaling.k8s.io/v1
+    apiVersion: autoscaling.k8s.io/v1
     kind: VerticalPodAutoscaler
     metadata:
       namespace: velero
