@@ -2,8 +2,8 @@
 repositories:
 - name: kyverno
   url: https://kyverno.github.io/kyverno/
-- name: incubator
-  url: https://charts.helm.sh/incubator
+- name: aservo
+  url: https://aservo.github.io/charts
 
 releases:
 - name: kyverno
@@ -12,52 +12,52 @@ releases:
   values:
   - values.yaml
 
-#- name: backup-all-volumes-policy
-#  chart: incubator/raw
-#  values:
-#  - resources:
-#    - apiVersion: kyverno.io/v1
-#      kind: ClusterPolicy
-#      metadata:
-#        name: backup-all-volumes
-#        annotations:
-#          policies.kyverno.io/title: Backup All Volumes
-#          policies.kyverno.io/category: Velero
-#          policies.kyverno.io/severity: medium
-#          policies.kyverno.io/subject: Pod, Annotation
-#          policies.kyverno.io/description: >-
-#            In order for Velero to backup volumes in a Pod using an opt-in approach, it
-#            requires an annotation on the Pod called `backup.velero.io/backup-volumes` with the
-#            value being a comma-separated list of the volumes mounted to that Pod. This policy
-#            automatically annotates Pods (and Pod controllers) which refer to a PVC so that
-#            all volumes are listed in the aforementioned annotation if a Namespace with the label
-#            `velero-backup-pvc=true`.
-#      spec:
-#        rules:
-#        - name: backup-velero-pv
-#          match:
-#            any:
-#            - resources:
-#                kinds:
-#                - Pod
-#                namespaceSelector:
-#                  matchLabels:
-#                    velero-backup-pvc: "true"
-#          preconditions:
-#            all:
-#            #- key: "{{ request.object.spec.volumes[?contains(keys(@), 'persistentVolumeClaim')] | length(@) }}"
-#            - key: "{{ request.object.spec.volumes[?persistentVolumeClaim].name || '' | length(@) }}"
-#              operator: GreaterThanOrEquals
-#              value: 1
-#            - key: "{{request.operation}}"
-#              operator: Equals
-#              value: CREATE
-#          context:
-#            - name: volumes
-#              variable:
-#                jmesPath: join(',',request.object.spec.volumes[?persistentVolumeClaim].name)
-#          mutate:
-#            patchStrategicMerge:
-#              metadata:
-#                annotations:
-#                  backup.velero.io/backup-volumes: "{{ volumes }}"
+- name: backup-all-volumes-policy
+  chart: aservo/raw
+  values:
+  - resources:
+    - apiVersion: kyverno.io/v1
+      kind: ClusterPolicy
+      metadata:
+        name: backup-all-volumes
+        annotations:
+          policies.kyverno.io/title: Backup All Volumes
+          policies.kyverno.io/category: Velero
+          policies.kyverno.io/severity: medium
+          policies.kyverno.io/subject: Pod, Annotation
+          policies.kyverno.io/description: >-
+            In order for Velero to backup volumes in a Pod using an opt-in approach, it
+            requires an annotation on the Pod called `backup.velero.io/backup-volumes` with the
+            value being a comma-separated list of the volumes mounted to that Pod. This policy
+            automatically annotates Pods (and Pod controllers) which refer to a PVC so that
+            all volumes are listed in the aforementioned annotation if a Namespace with the label
+            `velero-backup-pvc=true`.
+      spec:
+        rules:
+        - name: backup-velero-pv
+          match:
+            any:
+            - resources:
+                kinds:
+                - Pod
+                namespaceSelector:
+                  matchLabels:
+                    velero-backup-pvc: "true"
+          preconditions:
+            all:
+            #- key: "{{ request.object.spec.volumes[?contains(keys(@), 'persistentVolumeClaim')] | length(@) }}"
+            - key: "{{ request.object.spec.volumes[?persistentVolumeClaim].name || '' | length(@) }}"
+              operator: GreaterThanOrEquals
+              value: 1
+            - key: "{{request.operation}}"
+              operator: Equals
+              value: CREATE
+          context:
+            - name: volumes
+              variable:
+                jmesPath: join(',',request.object.spec.volumes[?persistentVolumeClaim].name)
+          mutate:
+            patchStrategicMerge:
+              metadata:
+                annotations:
+                  backup.velero.io/backup-volumes: "{{ volumes }}"
