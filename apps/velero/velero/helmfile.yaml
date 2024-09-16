@@ -4,6 +4,6 @@ repositories:
 releases:
 - name: velero
   chart: vmware-tanzu/velero
-  version: 1.14.1
+  version: 7.2.1
   values:
   - values.yaml
