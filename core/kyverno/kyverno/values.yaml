@@ -7,5 +7,5 @@ cleanupController:
 reportsController:
   replicas: 3
 
-grafana:
-  enabled: true
+#grafana:
+#  enabled: true
