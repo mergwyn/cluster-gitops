@@ -1,0 +1,16 @@
+---
+
+templates:
+  default:
+    chart: stable/{{`{{ .Release.Name }}`}}
+    namespace: {{`{{ .Namespace }}`}}
+    # This prevents helmfile exiting when it encounters a missing file
+    # Valid values are "Error", "Warn", "Info", "Debug". The default is "Error"
+    # Use "Debug" to make missing files errors invisible at the default log level(--log-level=INFO)
+    missingFileHandler: Warn
+    values:
+    - config/{{`{{ .Release.Name }}`}}/values.yaml
+    - config/{{`{{ .Release.Name }}`}}/{{`{{ .Environment.Name }}`}}.yaml
+#    secrets:
+#    - config/{{`{{ .Release.Name }}`}}/secrets.yaml
+#    - config/{{`{{ .Release.Name }}`}}/{{`{{ .Environment.Name }}`}}-secrets.yaml
