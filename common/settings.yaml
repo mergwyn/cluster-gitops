@@ -1,1 +1,2 @@
-CLUSTER_LB_PLEX: "32"
+env:
+  CLUSTER_LB_PLEX: "32"
