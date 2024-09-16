@@ -1,0 +1,42 @@
+---
+
+image:
+  repository: ghcr.io/angelnu/pod-gateway
+  pullPolicy: Always
+  tag: dev
+
+routed_namespaces:
+  - downloaders
+
+settings:
+  NOT_ROUTED_TO_GATEWAY_CIDRS: "10.0.0.0/8"
+  VPN_LOCAL_CIDRS: "10.0.0.0/8"
+  DNS_LOCAL_CIDRS: ""
+  VPN_INTERFACE: "tun0"
+  IPTABLES_NFT: "yes"
+  VPN_TRAFFIC_PORT: 1194
+  VPN_BLOCK_OTHER_TRAFFIC: false
+  GATEWAY_ENABLE_DNSSEC: false
+ 
+addons:
+  vpn:
+    enabled: true
+    type: gluetun
+    gluetun:
+      image:
+        tag: v3.35.0
+    env:
+      TZ: Europe/London
+      VPN_TYPE: openvpn
+      VPN_SERVICE_PROVIDER: privatevpn
+      OPENVPN_VERBOSITY: 1
+      VPN_INTERFACE: "tun0"
+      FIREWALL: "off"
+      DOT: "off"
+      FIREWALL_VPN_INPUT_PORTS: 64709
+      FIREWALL_OUTBOUND_SUBNETS: "10.0.0.0/8"
+      VPN_ENDPOINT_PORT: 1194
+    envFrom:
+      - secretRef:
+          name: privatevpn
+
