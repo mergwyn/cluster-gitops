@@ -24,7 +24,7 @@ addons:
     type: gluetun
     gluetun:
       image:
-        tag: v3.35.0
+        tag: v3.39.0
     env:
       TZ: Europe/London
       VPN_TYPE: openvpn
