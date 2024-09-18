@@ -130,9 +130,9 @@ configs:
           WIREGUARD_ENDPOINT_PORT:
             secret: privatevpn_wg
             key: WIREGUARD_ENDPOINT_PORT
-          WIREGUARD_ALLOWED_IPS:
-            secret: privatevpn_wg
-            key: WIREGUARD_ALLOWED_IPS
+#          WIREGUARD_ALLOWED_IPS:
+#            secret: privatevpn_wg
+#            key: WIREGUARD_ALLOWED_IPS
         labels:
           app.kubernetes.io/name:
             value: pod-gateway
