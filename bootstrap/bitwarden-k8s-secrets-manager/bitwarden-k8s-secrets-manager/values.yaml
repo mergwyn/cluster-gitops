@@ -165,7 +165,8 @@ configs:
           cluster_id:
             secret: cloudcasa_clusterid
         labels:
-          app: cloudcasa-kubeagent-manager
+          app:
+            value: cloudcasa-kubeagent-manager
 
     syncInterval: 60
 
