@@ -159,6 +159,14 @@ configs:
           app.kubernetes.io/name:
             value: grafana
 
+      - name: cloudcasa-clusterid
+        namespace: veloro
+        data:
+          cluster_id:
+            secret: cloudcasa_clusterid
+        labels:
+          app: cloudcasa-kubeagent-manager
+
     syncInterval: 60
 
 deploy: true
