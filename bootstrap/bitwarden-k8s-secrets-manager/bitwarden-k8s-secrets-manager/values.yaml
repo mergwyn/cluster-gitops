@@ -91,7 +91,7 @@ configs:
             value: velero
 
       - name: privatevpn
-        namespace: gateway
+        namespace: security
         data:
           OPENVPN_USER:
             secret: privatevpn_ovn
@@ -107,10 +107,10 @@ configs:
             key: DNS_ADDRESS
         labels:
           app.kubernetes.io/name:
-            value: security
+            value: pod-gateway
 
       - name: privatevpn-wg
-        namespace: gateway
+        namespace: security
         data:
           WIREGUARD_PRIVATE_KEY:
             secret: privatevpn_wg
@@ -135,7 +135,7 @@ configs:
 #            key: WIREGUARD_ALLOWED_IPS
         labels:
           app.kubernetes.io/name:
-            value: security
+            value: pod-gateway
 
       - name: argocd-admin-password
         namespace: argocd
