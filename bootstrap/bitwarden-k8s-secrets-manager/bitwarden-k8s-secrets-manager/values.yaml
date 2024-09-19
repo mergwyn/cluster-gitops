@@ -107,7 +107,7 @@ configs:
             key: DNS_ADDRESS
         labels:
           app.kubernetes.io/name:
-            value: pod-gateway
+            value: security
 
       - name: privatevpn-wg
         namespace: gateway
@@ -135,7 +135,7 @@ configs:
 #            key: WIREGUARD_ALLOWED_IPS
         labels:
           app.kubernetes.io/name:
-            value: pod-gateway
+            value: security
 
       - name: argocd-admin-password
         namespace: argocd
