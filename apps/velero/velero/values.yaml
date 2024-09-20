@@ -65,21 +65,21 @@ schedules:
   daily-idrive:
     disabled: false
     schedule: "@daily"
-    useOwnerReferencesInBackup: false
+    useOwnerReferencesInBackup: true
     template:
       ttl: "168h"
       storageLocation: idrive
   weekly-idrive:
     disabled: false
     schedule: "@weekly"
-    useOwnerReferencesInBackup: false
+    useOwnerReferencesInBackup: true
     template:
       ttl: "672h"
       storageLocation: idrive
   monthly-idrive:
     disabled: false
     schedule: "@monthly"
-    useOwnerReferencesInBackup: false
+    useOwnerReferencesInBackup: true
     template:
       ttl: "2190h"
       storageLocation: idrive
@@ -87,28 +87,28 @@ schedules:
   hourly-minio:
     disabled: false
     schedule: "@hourly"
-    useOwnerReferencesInBackup: false
+    useOwnerReferencesInBackup: true
     template:
       ttl: "24h"
       storageLocation: default
   daily-minio:
     disabled: false
     schedule: "@daily"
-    useOwnerReferencesInBackup: false
+    useOwnerReferencesInBackup: true
     template:
       ttl: "168h"
       storageLocation: default
   weekly-minio:
     disabled: false
     schedule: "@weekly"
-    useOwnerReferencesInBackup: false
+    useOwnerReferencesInBackup: true
     template:
       ttl: "672h"
       storageLocation: default
   monthly-minio:
     disabled: false
     schedule: "@monthly"
-    useOwnerReferencesInBackup: false
+    useOwnerReferencesInBackup: true
     template:
       ttl: "2190h"
       storageLocation: default
