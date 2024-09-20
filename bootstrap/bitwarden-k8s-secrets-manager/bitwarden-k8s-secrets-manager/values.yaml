@@ -160,7 +160,7 @@ configs:
             value: grafana
 
       - name: cloudcasa-clusterid
-        namespace: velero
+        namespace: cloudcasa-io
         data:
           cluster_id:
             secret: cloudcasa_clusterid
