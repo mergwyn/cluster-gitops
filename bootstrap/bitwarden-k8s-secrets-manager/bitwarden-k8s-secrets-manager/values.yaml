@@ -90,8 +90,8 @@ configs:
           app.kubernetes.io/name:
             value: velero
 
-      - name: privatevpn
-        namespace: gateway
+      - name: privatevpn-ovn
+        namespace: security
         data:
           OPENVPN_USER:
             secret: privatevpn_ovn
