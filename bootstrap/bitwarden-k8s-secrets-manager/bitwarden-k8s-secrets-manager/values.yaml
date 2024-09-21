@@ -91,6 +91,25 @@ configs:
             value: velero
 
       - name: privatevpn
+        namespace: gateway
+        data:
+          OPENVPN_USER:
+            secret: privatevpn_ovn
+            key: OPENVPN_USER
+          OPENVPN_PASSWORD:
+            secret: privatevpn_ovn
+            key: OPENVPN_PASSWORD
+          SERVER_CITIES:
+            secret: privatevpn_ovn
+            key: SERVER_CITIES
+          DNS_ADDRESS:
+            secret: privatevpn_ovn
+            key: DNS_ADDRESS
+        labels:
+          app.kubernetes.io/name:
+            value: pod-gateway
+
+      - name: privatevpn
         namespace: security
         data:
           OPENVPN_USER:
