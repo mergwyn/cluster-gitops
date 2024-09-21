@@ -41,5 +41,5 @@ addons:
       VPN_ENDPOINT_PORT: 1194
     envFrom:
       - secretRef:
-          name: privatevpn
+          name: privatevpn-ovn
 
