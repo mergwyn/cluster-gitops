@@ -5,6 +5,8 @@
 
 logLevel: 5
 
+recommenderOnly: true # while waiting for https://github.com/stevehipwell/helm-charts/issues/1046
+
 admissionController:
   certManager:
     enabled: true
