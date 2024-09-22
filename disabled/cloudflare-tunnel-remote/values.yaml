@@ -1,4 +1,5 @@
 image:
+  repository: cloudflare/cloudflared
   tag: 2024.4.1
 
 replicaCount: 1
