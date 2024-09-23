@@ -24,9 +24,8 @@ addons:
     enabled: true
     type: gluetun
     gluetun:
-      image:
-        repository: docker.io/qmcgaw/gluetun
-        tag: v3.35.0
+      image: docker.io/qmcgaw/gluetun:
+      version: "v3.35.0"
     env:
       TZ: Europe/London
       VPN_TYPE: openvpn
