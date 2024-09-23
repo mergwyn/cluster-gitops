@@ -1,6 +1,12 @@
 ndm:
   enabled: false
 
+openebs-crds:
+  csi:
+    volumeSnapshots:
+      enabled: false
+      keep: false
+
 # Refer to https://github.com/openebs/dynamic-localpv-provisioner/blob/HEAD/deploy/helm/charts/values.yaml for complete set of values.
 localpv-provisioner:
   rbac:
@@ -11,7 +17,7 @@ zfs-localpv:
   enabled: true
   crds:
     zfsLocalPv:
-      enabled: true
+      enabled: false
     csi:
       volumeSnapshots:
         enabled: false
