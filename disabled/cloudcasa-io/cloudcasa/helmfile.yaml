@@ -1,0 +1,12 @@
+---
+repositories:
+- name: cloudcasa-repo
+  url: https://catalogicsoftware.github.io/cloudcasa-helmchart
+
+releases:
+- name: clouldcasa
+  #chart: cloudcasa-repo/cloudcasa
+  chart: /srv/src/cloudcasa-helmchart/charts/v3.4.2/
+  version: 3.4.2
+  values:
+  - values.yaml
