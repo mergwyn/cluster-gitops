@@ -3,6 +3,9 @@
   "extends": [
     "config:base"
   ],
+  "helm-values": {
+    "fileMatch": ["(^|/).*values*.yaml$"]
+  },
   "packageRules": [
     {
       "packagePatterns": ["^ghcr.io\\/linuxserver\\/"],
