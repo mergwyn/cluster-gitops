@@ -91,7 +91,7 @@ configs:
             value: velero
 
       - name: privatevpn-ovn
-        namespace: security
+        namespace: network
         data:
           OPENVPN_USER:
             secret: privatevpn_ovn
@@ -110,7 +110,7 @@ configs:
             value: pod-gateway
 
       - name: privatevpn
-        namespace: security
+        namespace: network
         data:
           OPENVPN_USER:
             secret: privatevpn_ovn
@@ -129,7 +129,7 @@ configs:
             value: pod-gateway
 
       - name: privatevpn-wg
-        namespace: security
+        namespace: network
         data:
           WIREGUARD_PRIVATE_KEY:
             secret: privatevpn_wg
