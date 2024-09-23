@@ -11,6 +11,7 @@ releases:
   version: 0.2.2
 - name: kube-vip-extras
   chart: bedag/raw
+  version: 2.0.0
   values:
   - resources:
     - apiVersion: v1
