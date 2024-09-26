@@ -1,15 +1,11 @@
 repositories:
-- name: stevehipwell
-  url: https://stevehipwell.github.io/helm-charts/
-  #url: ghcr.io/stevehipwell/helm-charts
-  #oci: true
+- name: fairwinds-stable
+  url: https://charts.fairwinds.com/stable
 
 releases:
-- name: vertical-pod-autoscaler
-  namespace: kube-system
-  chart: stevehipwell/vertical-pod-autoscaler
-  version: 1.7.1
-  disableValidation: true # Installs CRDS
+- name: vpa
+  chart: fairwinds-stable/vpa
+  version: 4.6.0
   values:
     - values.yaml
 

@@ -1,14 +1,3 @@
-#updater:
-#  extraArgs:
-#  - "--min-replicas=1"
-
-
-logLevel: 5
-
-recommenderOnly: true # while waiting for https://github.com/stevehipwell/helm-charts/issues/1046
-
-admissionController:
-  certManager:
-    enabled: true
-  extraArgs:
-  - "--reload-cert"
+---
+#recommender:
+#  enabled: false
