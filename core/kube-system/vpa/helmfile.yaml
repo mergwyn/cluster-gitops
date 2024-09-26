@@ -1,0 +1,11 @@
+repositories:
+- name: fairwinds-stable
+  url: https://charts.fairwinds.com/stable
+
+releases:
+- name: vpa
+  chart: fairwinds-stable/vpa
+  version: 4.6.0
+  values:
+    - values.yaml
+
