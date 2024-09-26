@@ -3,7 +3,7 @@ repositories:
   url: https://charts.fairwinds.com/stable
 
 releases:
-- name: vpa
+- name: vertical-pod-autoscaler
   chart: fairwinds-stable/vpa
   version: 4.6.0
   values:
