@@ -1,0 +1,11 @@
+---
+repositories:
+- name: geek-cookbook
+  url: https://geek-cookbook.github.io/charts/
+
+releases:
+- name: appdaemon
+  chart: geek-cookbook/appdaemon
+  version: ??
+  values:
+  - values.yaml

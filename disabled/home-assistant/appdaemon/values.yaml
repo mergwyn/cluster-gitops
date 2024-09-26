@@ -1,0 +1,51 @@
+
+image:
+  tag: 4.4.2
+
+env:
+  TZ: Europe/London
+
+persistence:
+  config:
+    enabled: true
+    mountPath: /conf
+    type: pvc
+    retain: true
+    storageClass: openebs-zfspv
+  apps:
+    enabled: true
+    mountPath: /home-assistant
+    type: pvc
+    existingClaim: home-assistant-config
+    accessMode: ReadWriteOnce
+
+ingress:
+  main:
+    enabled: true
+    ingressClass: traefik
+    annotations:
+      hajimari.io/enable: "true"
+      hajimari.io/icon: home-assistant
+      hajimari.io/info: appdaemon
+      hajimari.io/url: "https://appdaemon.theclarkhome.com"
+      hajimari.io/group: automation
+      traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    hosts:
+      - host: "appdaemon.theclarkhome.com"
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              name: main
+              service:
+                port: 5050
+    tls:
+      - hosts:
+        - "*.theclarkhome.com"
+
+
+#  test-backup:
+#    type: nfs
+#    server: 10.58.0.12
+#    path: /srv/backup/home-assistant
+#    enabled: true

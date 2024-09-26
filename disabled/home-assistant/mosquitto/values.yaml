@@ -1,0 +1,41 @@
+
+image:
+  tag: 2.0.18
+
+persistence:
+  data:
+    enabled: true
+    mountPath: /mosquitto/data
+    type: pvc
+    retain: true
+    storageClass: openebs-zfspv
+    accessMode: ReadWriteOnce
+    size: 10Gi
+  configinc:
+    enabled: true
+    mountPath: /mosquitto/configinc
+    type: pvc
+    retain: true
+    storageClass: openebs-zfspv
+    accessMode: ReadWriteOnce
+    size: 10Gi
+
+ingress:
+  main:
+    enabled: true
+    ingressClass: traefik
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    hosts:
+      - host: "mosquitto.theclarkhome.com"
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              name: main
+              service:
+                port: 1883
+    tls:
+      - hosts:
+        - "*.theclarkhome.com"
+
