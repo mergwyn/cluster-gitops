@@ -8,17 +8,28 @@ namespace:
 # Configuration to setup sync
 configs:
   default:
+    syncInterval: 60
     accessTokenSecret:
       name: bitwarden-access-token
+
     secrets:
-#      - name: cloudflare-tunnel-remote
-#        namespace: kube-system 
-#        data:
-#          tunnelToken:
-#            secret: cloudflare_tunnel_remote 
-#        labels:
-#          pod:
-#            value: cloudflared
+      - name: argocd-admin-password
+        namespace: argocd
+        data:
+          admin.password:
+            secret: argocd_admin_password
+        labels:
+          app.kubernetes.io/part-of:
+            value: argo-cd
+
+      - name: cloudcasa-clusterid
+        namespace: cloudcasa-io
+        data:
+          cluster_id:
+            secret: cloudcasa_clusterid
+        labels:
+          app:
+            value: cloudcasa-kubeagent-manager
 
       - name: cloudflare-token-secret
         namespace: cert-manager
@@ -29,31 +40,27 @@ configs:
           app.kubernetes.io/name:
             value: cert-manager
 
-      - name: traefik-dashboard-auth
-        namespace: network
-        data:
-          users:
-            secret: traefik_dashboard_auth
-        labels:
-          app.kubernetes.io/name:
-            value: traefik
+#      - name: cloudflare-tunnel-remote
+#        namespace: kube-system 
+#        data:
+#          tunnelToken:
+#            secret: cloudflare_tunnel_remote 
+#        labels:
+#          pod:
+#            value: cloudflared
 
-# TODO confirm if this is used
-      - name: minio-s3
-        namespace: velero
+      - name: grafana-admin
+        namespace: monitoring
         data:
-          ACCESS_KEY_ID:
-            secret: minio_s3
-            key: ACCESS_KEY_ID
-          ENDPOINT:
-            secret: minio_s3
-            key: ENDPOINT
-          SECRET_ACCESS_KEY:
-            secret: minio_s3
-            key: SECRET_ACCESS_KEY
+          admin-user:
+            secret: grafana_admin
+            key: admin-user
+          admin-password:
+            secret: grafana_admin
+            key: admin-password
         labels:
           app.kubernetes.io/name:
-            value: velero
+            value: grafana
 
 # TODO confirm if this is used
       - name: idrivee2-s3
@@ -77,6 +84,23 @@ configs:
         data:
           cloud:
             secret: idrivee2_s3_credentials
+        labels:
+          app.kubernetes.io/name:
+            value: velero
+
+# TODO confirm if this is used
+      - name: minio-s3
+        namespace: velero
+        data:
+          ACCESS_KEY_ID:
+            secret: minio_s3
+            key: ACCESS_KEY_ID
+          ENDPOINT:
+            secret: minio_s3
+            key: ENDPOINT
+          SECRET_ACCESS_KEY:
+            secret: minio_s3
+            key: SECRET_ACCESS_KEY
         labels:
           app.kubernetes.io/name:
             value: velero
@@ -156,38 +180,15 @@ configs:
           app.kubernetes.io/name:
             value: pod-gateway
 
-      - name: argocd-admin-password
-        namespace: argocd
+      - name: traefik-dashboard-auth
+        namespace: network
         data:
-          admin.password:
-            secret: argocd_admin_password
-        labels:
-          app.kubernetes.io/part-of:
-            value: argo-cd
-
-      - name: grafana-admin
-        namespace: monitoring
-        data:
-          admin-user:
-            secret: grafana_admin
-            key: admin-user
-          admin-password:
-            secret: grafana_admin
-            key: admin-password
+          users:
+            secret: traefik_dashboard_auth
         labels:
           app.kubernetes.io/name:
-            value: grafana
+            value: traefik
 
-      - name: cloudcasa-clusterid
-        namespace: cloudcasa-io
-        data:
-          cluster_id:
-            secret: cloudcasa_clusterid
-        labels:
-          app:
-            value: cloudcasa-kubeagent-manager
-
-    syncInterval: 60
 
 deploy: true
 
