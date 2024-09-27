@@ -30,7 +30,7 @@ configs:
             value: cert-manager
 
       - name: traefik-dashboard-auth
-        namespace: traefik
+        namespace: network
         data:
           users:
             secret: traefik_dashboard_auth
