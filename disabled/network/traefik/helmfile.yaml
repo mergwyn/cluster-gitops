@@ -6,7 +6,7 @@ repositories:
 releases:
 - name: traefik
   chart: traefik/traefik
-  version: 31.1.1
+  version: 32.0.0
   values:
   - values.yaml
   - values.yaml.gotmpl
