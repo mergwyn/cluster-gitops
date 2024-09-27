@@ -1,0 +1,12 @@
+---
+repositories:
+- name: traefik
+  url: https://helm.traefik.io/traefik
+
+releases:
+- name: traefik
+  chart: traefik/traefik
+  version: 32.0.0
+  values:
+  - values.yaml
+  - values.yaml.gotmpl
