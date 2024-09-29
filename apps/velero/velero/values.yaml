@@ -36,7 +36,25 @@ configuration:
 
 snapshotsEnabled: false
 #defaultVolumeSnapshotLocations: csi:seaweedfs
+
+resources:
+  requests:
+    cpu: 10m
+    memory: 351M
+  limits:
+    cpu: 33m
+    memory: 755M
+
 deployNodeAgent: true
+
+nodeAgent:
+  resources:
+    requests:
+      cpu: 15m
+      memory: 477M
+    limits:
+      cpu: 16m
+      memory: 1617M
 
 initContainers:
   - name: velero-plugin-for-aws
@@ -159,6 +177,7 @@ metrics:
     # ServiceMonitor connection tlsConfig. Defaults to {}.
     # tlsConfig: {}
 
+
   prometheusRule:
     autodetect: true
     enabled: true
@@ -182,14 +201,6 @@ metrics:
        for: 15m
        labels:
          severity: warning
-
-resources:
-  requests:
-    cpu: 10m
-    memory: 351M
-  limits:
-    cpu: 33m
-    memory: 755M
 
 extraObjects:
   velero:
