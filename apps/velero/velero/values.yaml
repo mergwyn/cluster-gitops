@@ -183,6 +183,14 @@ metrics:
        labels:
          severity: warning
 
+resources:
+  requests:
+    cpu: 10m
+    memory: 351M
+  limits:
+    cpu: 33m
+    memory: 755M
+
 extraObjects:
   velero:
     apiVersion: autoscaling.k8s.io/v1
