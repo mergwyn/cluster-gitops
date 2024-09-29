@@ -25,7 +25,7 @@ addons:
     gluetun:
       image:
         repository: docker.io/qmcgaw/gluetun
-        tag: v3.39.0
+        tag: v3.39.1
     #securityContext:
     #  privileged: true
     #volumeMounts:
