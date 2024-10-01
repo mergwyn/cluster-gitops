@@ -36,6 +36,7 @@ addons:
       VPN_INTERFACE: "tun0"
       FIREWALL: "off" # old vesion of variable
       FIREWALL_ENABLED_DISABLING_IT_SHOOTS_YOU_IN_YOUR_FOOT: "off" # new version from 3.39.0
+      FIREWALL_DEBUG: "on"
       DOT: "off"
       FIREWALL_VPN_INPUT_PORTS: 64709
       FIREWALL_OUTBOUND_SUBNETS: "10.0.0.0/8"
