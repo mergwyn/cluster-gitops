@@ -7,6 +7,6 @@ releases:
 - name: intel-device-plugins-gpu
   namespace: node-feature-discovery
   chart: intel/intel-device-plugins-gpu
-  version: 0.30.0
+  version: 0.31.0
   values: 
   - values.yaml
