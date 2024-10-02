@@ -64,7 +64,7 @@ configs:
 
 # TODO confirm if this is used
       - name: idrivee2-s3
-        namespace: velero
+        namespace: backup
         data:
           ACCESS_KEY_ID:
             secret: idrivee2_s3
@@ -80,7 +80,7 @@ configs:
             value: velero
 
       - name: idrivee2-s3-credentials
-        namespace: velero
+        namespace: backup
         data:
           cloud:
             secret: idrivee2_s3_credentials
@@ -90,7 +90,7 @@ configs:
 
 # TODO confirm if this is used
       - name: minio-s3
-        namespace: velero
+        namespace: backup
         data:
           ACCESS_KEY_ID:
             secret: minio_s3
@@ -106,7 +106,7 @@ configs:
             value: velero
 
       - name: minio-s3-credentials
-        namespace: velero
+        namespace: backup
         data:
           cloud:
             secret: minio_s3_credentials
