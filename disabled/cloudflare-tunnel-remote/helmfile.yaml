@@ -1,0 +1,11 @@
+---
+repository:
+  - name: cloudflare
+    url: https://cloudflare.github.io/helm-charts
+
+releases:
+  - name: cloudflare-tunnel-remote
+    chart: cloudflare/cloudflare-tunnel-remote
+    version: 0.1.2
+    values:
+      - values.yaml
