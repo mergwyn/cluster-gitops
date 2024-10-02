@@ -211,12 +211,12 @@ serviceAccount:
   name:
 
 resources:
-  limits:
-    cpu: "1"
-    memory: 128Mi
   requests:
-    cpu: 500m
-    memory: 128Mi
+    cpu: 23m
+    memory: 127M
+  limits:
+    cpu: 23m
+    memory: 127M
 
 nodeSelector: {}
 
