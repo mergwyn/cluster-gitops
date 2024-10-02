@@ -13,12 +13,4 @@ releases:
   chart: bedag/raw
   version: 2.0.0
   values:
-  - resources:
-    - apiVersion: v1
-      kind: ConfigMap
-      metadata:
-        name: kubevip
-        namespace: kube-system
-      data:
-        cidr-global: 10.58.0.32/30  # TODO make a parameter via overlay
-        #range-global: 10.58.0.32-10.58.0.39
+  - kubevip-cm.yaml.gotmpl
