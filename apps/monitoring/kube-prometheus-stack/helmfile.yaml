@@ -4,7 +4,6 @@ repositories:
 
 releases:
 - name: kube-prometheus-stack
-  namespace: monitoring
   chart: kube-prometheus-stack/kube-prometheus-stack
   version: 64.0.0
   values:

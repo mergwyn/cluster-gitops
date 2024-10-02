@@ -1,5 +1,4 @@
-namespace: downloaders
-
+---
 image:
   repository: lscr.io/linuxserver/prowlarr
   tag: "1.24.3"
