@@ -1,3 +1,6 @@
 ---
-#recommender:
-#  enabled: false
+recommender:
+  #enabled: false
+  extraArgs:
+    storage: prometheus
+    prometheus-address: "http://kube-prometheus-stack-prometheus.monitoring:9090/"
