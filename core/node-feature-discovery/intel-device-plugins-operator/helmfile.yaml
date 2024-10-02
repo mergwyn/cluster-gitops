@@ -4,6 +4,5 @@ repositories:
 
 releases:
 - name: intel-device-plugins-operator
-  namespace: node-feature-discovery
   chart: intel/intel-device-plugins-operator
   version: 0.31.0
