@@ -1,0 +1,8 @@
+---
+namespace:
+  # Specifies whether a namespace should be created
+  create: true
+  # The name of the namespace to use.
+  # If not set and create is true, a name is generated using the name template
+  name: {{ .Release.Namespace }}
+
