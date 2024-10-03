@@ -6,15 +6,7 @@ image:
 env:
   TZ: Europe/London
 
-#podAnnotations:
-#  k8s.v1.cni.cncf.io/networks: lan-network@eth1
-
 podAnnotations:
-  k8s.v1.cni.cncf.io/networks:  |
-      [{
-        "name":"ipvlan-static",
-        "ips": ["10.58.0.41"]
-      }]
   pre.hook.backup.velero.io/command: |
     [
       "/bin/bash",
