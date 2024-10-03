@@ -6,6 +6,6 @@ repositories:
 releases:
 - name: appdaemon
   chart: geek-cookbook/appdaemon
-  version: ??
+  version: 8.4.2
   values:
   - values.yaml

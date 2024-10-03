@@ -6,6 +6,6 @@ repositories:
 releases:
 - name: mosquitto
   chart: geek-cookbook/mosquitto
-  version: ??
+  version: 4.8.2
   values:
   - values.yaml
