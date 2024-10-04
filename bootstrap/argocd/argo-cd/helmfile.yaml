@@ -6,6 +6,6 @@ repositories:
 releases:
 - name: argo-cd
   chart: argo-cd/argo-cd
-  version: 7.6.7
+  version: 7.6.8
   values:
   - values.yaml
