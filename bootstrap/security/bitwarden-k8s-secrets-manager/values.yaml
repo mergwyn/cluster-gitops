@@ -208,14 +208,8 @@ serviceAccount:
 
 resources:
   requests:
-    cpu: 23m
-    memory: 127M
+    cpu: 15m
+    memory: 106M
   limits:
-    cpu: 23m
-    memory: 127M
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
+    cpu: 254m
+    memory: 545M
