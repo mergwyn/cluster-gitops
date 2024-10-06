@@ -40,8 +40,8 @@ resources:
     memory: 351M
     gpu.intel.com/i915: "1"
   limits:
-    cpu: 102m
-    memory: 735M
+    cpu: 1947m
+    memory: 1024M
     gpu.intel.com/i915: "1"
 
 persistence:
