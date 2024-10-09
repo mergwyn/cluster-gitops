@@ -9,8 +9,11 @@ releases:
 - name: kube-vip-cloud-provider
   chart: kube-vip/kube-vip-cloud-provider
   version: 0.2.2
+#  values:
+#  - values.yaml
+
 - name: kube-vip-extras
   chart: bedag/raw
   version: 2.0.0
   values:
-  - kubevip-cm.yaml.gotmpl
+  - kubevip-cm.yaml
