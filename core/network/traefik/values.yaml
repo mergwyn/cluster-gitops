@@ -50,10 +50,10 @@ service:
 metrics:
   prometheus:
     service:
-      enabled: false
+      enabled: true
     disableAPICheck: false
     serviceMonitor:
-      enabled: false
+      enabled: true
       metricRelabelings:
         - sourceLabels: [__name__]
           separator: ;
@@ -71,7 +71,9 @@ metrics:
       interval: 30s
       honorLabels: true
     prometheusRule:
-      enabled: false
+      enabled: true
+      additionalLabels:
+        release: kube-prometheus-stack
       rules:
         - alert: TraefikDown
           expr: up{job="traefik"} == 0

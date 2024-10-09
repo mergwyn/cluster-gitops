@@ -152,6 +152,8 @@ controller:
 #      namespace:
     rules:
       enabled: true
+      selector:
+        release: kube-prometheus-stack
 #      namespace:
       spec:
       - alert: ArgocdServiceNotSynced

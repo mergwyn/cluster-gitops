@@ -181,9 +181,8 @@ metrics:
   prometheusRule:
     autodetect: true
     enabled: true
-    # Additional labels to add to deployed PrometheusRule
-    additionalLabels: {}
-    # Rules to be deployed
+    additionalLabels:
+      release: kube-prometheus-stack
     spec: 
      - alert: VeleroBackupPartialFailures
        annotations:
