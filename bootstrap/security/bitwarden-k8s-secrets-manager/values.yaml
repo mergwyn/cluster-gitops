@@ -9,10 +9,10 @@ configs:
       name: bitwarden-access-token
 
     secrets:
-      - name: argocd-inital-admin-password
+      - name: argocd-inital-admin-secret
         namespace: argocd
         data:
-          admin.password:
+          password:
             secret: argocd_admin_password
         labels:
           app.kubernetes.io/part-of:
