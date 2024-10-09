@@ -38,6 +38,7 @@ spec:
         jsonPointers:
         - /spec/resourceManager
         - /spec/tolerations
+        - /metadata/annotations
       syncPolicy:
         automated:
           allowEmpty: true
