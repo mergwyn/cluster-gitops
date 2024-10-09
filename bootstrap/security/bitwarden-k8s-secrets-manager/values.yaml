@@ -28,7 +28,7 @@ configs:
             value: cloudcasa-kubeagent-manager
 
       - name: cloudflare-token-secret
-        namespace: cert-manager
+        namespace: security
         data:
           cloudflare-token:
             secret: cloudflare_api_token
