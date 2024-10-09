@@ -9,7 +9,7 @@ configs:
       name: bitwarden-access-token
 
     secrets:
-      - name: argocd-inital-admin-secret
+      - name: argocd-initial-admin-secret
         namespace: argocd
         data:
           password:
