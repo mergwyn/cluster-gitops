@@ -1,4 +1,7 @@
 ---
+apiVersions:
+- monitoring.coreos.com/v1
+
 repositories:
 - name: traefik
   url: https://helm.traefik.io/traefik
