@@ -119,10 +119,9 @@ persistence:
     enabled: true
     type: pvc
     retain: true
-    Claim: home-assistant-config
+    claim: home-assistant-config
     accessMode: ReadWriteOnce
     storageClass: openebs-zfspv
-    retain: true
     size: 10Gi
 
   backups:
