@@ -4,83 +4,83 @@ image:
   repository: ghcr.io/home-assistant/home-assistant
   tag: "2024.10.1"
 
-#!!env:
-#!!  TZ: Europe/London
-#!!
-#!!podAnnotations:
-#!!  pre.hook.backup.velero.io/command: |
-#!!    [
-#!!      "/bin/bash",
-#!!      "-c",
-#!!      "apk add sqlite"
-#!!    ]
-#!!#      "apk add sqlite && rm home-assistant_v2.sql' && sqlite3 home-assistant_v2.db '.dump' > home-assistant_v2.sql"
-#!!#  pre.hook.backup.velero.io/timeout: 3m
-#!!#  pre.hook.backup.velero.io/command: |
-#!!#    [
-#!!#      "/bin/bash",
-#!!#      "-c",
-#!!#      "apk add sqlite && sqlite3 home-assistant_v2.db '.backup backup-home-assistant_v2.db'"
-#!!#    ]
-#!!#  post.hook.backup.velero.io/timeout: 3m
-#!!#  post.hook.backup.velero.io/command: |
-#!!#    [
-#!!#      "/bin/bash",
-#!!#      "-c",
-#!!#      "rm -rf backup-home-assistant_v2.db || true'"
-#!!#    ]
-#!!#  post.hook.backup.velero.io/timeout: 3m
-#!!#  post.hook.restore.velero.io/command: |
-#!!#    [
-#!!#      "/bin/bash",
-#!!#      "-c",
-#!!#      "sleep 60 && rm -f home-assistant_v2.db home-assistant_v2.db-shm home-assistant_v2.db-wal && mv backup-home-assistant_v2.db home-assistant_v2.db"
-#!!#    ]
-#!!#  post.hook.restore.velero.io/timeout: 3m
-#!!
-#!!metrics:
-#!!  # -- Enable and configure a Prometheus serviceMonitor for the chart under this key.
-#!!  # @default -- See values.yaml
-#!!  enabled: true
-#!!  serviceMonitor:
-#!!    interval: 1m
-#!!    scrapeTimeout: 30s
-#!!    labels:
-#!!      release: kube-prometheus-stack
-#!!    ## See https://www.home-assistant.io/docs/authentication/ for where to find
-#!!    ## long lived access token creation under your account profile, which is
-#!!    ## needed to monitor Home Assistant
-#!!    bearerTokenSecret:
-#!!      name: 'home-assistant-prometheus'
-#!!      key: 'token'
-#!!
-#!!  # -- Enable and configure Prometheus Rules for the chart under this key.
-#!!  # @default -- See values.yaml
-#!!  prometheusRule:
-#!!    enabled: true
-#!!    labels:
-#!!      release: kube-prometheus-stack
-#!!    # -- Configure additionial rules for the chart under this key.
-#!!    # @default -- See prometheusrules.yaml
-#!!    rules:
-#!!      - alert: HomeAssistantAbsent
-#!!        annotations:
-#!!          description: Home Assistant has disappeared from Prometheus service discovery.
-#!!          summary: Home Assistant is down.
-#!!        expr: |
-#!!          absent(up{job=~".*home-assistant.*"} == 1)
-#!!        for: 5m
-#!!        labels:
-#!!          severity: critical
-#!!#      - alert: VWID3ChargingButtonAbsent
-#!!#        annotations:
-#!!#          description: THe charging button used in zappi automation has disapeared
-#!!#          summary: Possible issue with VW integration
-#!!#        expr: |
-#!!#          absent(homeassistant_entity_available{entity="button.my_id_3_start_charging"} == )
-#!!#        for: 5m
-#!!#        labels:
-#!!#          severity: critical
+env:
+  TZ: Europe/London
+
+podAnnotations:
+  pre.hook.backup.velero.io/command: |
+    [
+      "/bin/bash",
+      "-c",
+      "apk add sqlite"
+    ]
+#      "apk add sqlite && rm home-assistant_v2.sql' && sqlite3 home-assistant_v2.db '.dump' > home-assistant_v2.sql"
+#  pre.hook.backup.velero.io/timeout: 3m
+#  pre.hook.backup.velero.io/command: |
+#    [
+#      "/bin/bash",
+#      "-c",
+#      "apk add sqlite && sqlite3 home-assistant_v2.db '.backup backup-home-assistant_v2.db'"
+#    ]
+#  post.hook.backup.velero.io/timeout: 3m
+#  post.hook.backup.velero.io/command: |
+#    [
+#      "/bin/bash",
+#      "-c",
+#      "rm -rf backup-home-assistant_v2.db || true'"
+#    ]
+#  post.hook.backup.velero.io/timeout: 3m
+#  post.hook.restore.velero.io/command: |
+#    [
+#      "/bin/bash",
+#      "-c",
+#      "sleep 60 && rm -f home-assistant_v2.db home-assistant_v2.db-shm home-assistant_v2.db-wal && mv backup-home-assistant_v2.db home-assistant_v2.db"
+#    ]
+#  post.hook.restore.velero.io/timeout: 3m
+
+metrics:
+  # -- Enable and configure a Prometheus serviceMonitor for the chart under this key.
+  # @default -- See values.yaml
+  enabled: true
+  serviceMonitor:
+    interval: 1m
+    scrapeTimeout: 30s
+    labels:
+      release: kube-prometheus-stack
+    ## See https://www.home-assistant.io/docs/authentication/ for where to find
+    ## long lived access token creation under your account profile, which is
+    ## needed to monitor Home Assistant
+    bearerTokenSecret:
+      name: 'home-assistant-prometheus'
+      key: 'token'
+
+  # -- Enable and configure Prometheus Rules for the chart under this key.
+  # @default -- See values.yaml
+  prometheusRule:
+    enabled: true
+    labels:
+      release: kube-prometheus-stack
+    # -- Configure additionial rules for the chart under this key.
+    # @default -- See prometheusrules.yaml
+    rules:
+      - alert: HomeAssistantAbsent
+        annotations:
+          description: Home Assistant has disappeared from Prometheus service discovery.
+          summary: Home Assistant is down.
+        expr: |
+          absent(up{job=~".*home-assistant.*"} == 1)
+        for: 5m
+        labels:
+          severity: critical
+#      - alert: VWID3ChargingButtonAbsent
+#        annotations:
+#          description: THe charging button used in zappi automation has disapeared
+#          summary: Possible issue with VW integration
+#        expr: |
+#          absent(homeassistant_entity_available{entity="button.my_id_3_start_charging"} == )
+#        for: 5m
+#        labels:
+#          severity: critical
 
 ingress:
   main:
