@@ -106,28 +106,28 @@ ingress:
       - hosts:
         - "*.theclarkhome.com"
 
-probes:
-  liveness:
-    enabled: false
-  startup:
-    enabled: false
-  readiness:
-    enabled: false
-
-persistence:
-  config:
-    enabled: true
-    type: pvc
-    retain: true
-    Claim: home-assistant-config
-    accessMode: ReadWriteOnce
-    storageClass: openebs-zfspv
-    retain: true
-    size: 10Gi
-
-  backups:
-    type: nfs
-    server: 10.58.0.12
-    path: /srv/backup/home-assistant
-    mountPath: /config/backups
-    enabled: true
+#!!probes:
+#!!  liveness:
+#!!    enabled: false
+#!!  startup:
+#!!    enabled: false
+#!!  readiness:
+#!!    enabled: false
+#!!
+#!!persistence:
+#!!  config:
+#!!    enabled: true
+#!!    type: pvc
+#!!    retain: true
+#!!    Claim: home-assistant-config
+#!!    accessMode: ReadWriteOnce
+#!!    storageClass: openebs-zfspv
+#!!    retain: true
+#!!    size: 10Gi
+#!!
+#!!  backups:
+#!!    type: nfs
+#!!    server: 10.58.0.12
+#!!    path: /srv/backup/home-assistant
+#!!    mountPath: /config/backups
+#!!    enabled: true
