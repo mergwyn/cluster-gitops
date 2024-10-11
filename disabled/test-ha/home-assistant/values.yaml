@@ -81,53 +81,53 @@ image:
 #!!#        for: 5m
 #!!#        labels:
 #!!#          severity: critical
-#!!
-#!!ingress:
-#!!  main:
-#!!    enabled: true
-#!!    ingressClass: traefik
-#!!    annotations:
-#!!      hajimari.io/enable: "true"
-#!!      hajimari.io/icon: home-assistant
-#!!      hajimari.io/info: Home Automation
-#!!      hajimari.io/url: "https://hass.theclarkhome.com"
-#!!      hajimari.io/group: automation
-#!!      traefik.ingress.kubernetes.io/router.entrypoints: websecure
-#!!    hosts:
-#!!      - host: "hass.theclarkhome.com"
-#!!        paths:
-#!!          - path: /
-#!!            pathType: Prefix
-#!!            backend:
-#!!              name: home-assistant
-#!!              service:
-#!!                port: 8123
-#!!    tls:
-#!!      - hosts:
-#!!        - "*.theclarkhome.com"
-#!!
-#!!probes:
-#!!  liveness:
-#!!    enabled: false
-#!!  startup:
-#!!    enabled: false
-#!!  readiness:
-#!!    enabled: false
-#!!
-#!!persistence:
-#!!  config:
-#!!    enabled: true
-#!!    type: pvc
-#!!    retain: true
-#!!    Claim: home-assistant-config
-#!!    accessMode: ReadWriteOnce
-#!!    storageClass: openebs-zfspv
-#!!    retain: true
-#!!    size: 10Gi
-#!!
-#!!  backups:
-#!!    type: nfs
-#!!    server: 10.58.0.12
-#!!    path: /srv/backup/home-assistant
-#!!    mountPath: /config/backups
-#!!    enabled: true
+
+ingress:
+  main:
+    enabled: true
+    ingressClass: traefik
+    annotations:
+      hajimari.io/enable: "true"
+      hajimari.io/icon: home-assistant
+      hajimari.io/info: Home Automation
+      hajimari.io/url: "https://hass.theclarkhome.com"
+      hajimari.io/group: automation
+      traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    hosts:
+      - host: "hass.theclarkhome.com"
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              name: home-assistant
+              service:
+                port: 8123
+    tls:
+      - hosts:
+        - "*.theclarkhome.com"
+
+probes:
+  liveness:
+    enabled: false
+  startup:
+    enabled: false
+  readiness:
+    enabled: false
+
+persistence:
+  config:
+    enabled: true
+    type: pvc
+    retain: true
+    Claim: home-assistant-config
+    accessMode: ReadWriteOnce
+    storageClass: openebs-zfspv
+    retain: true
+    size: 10Gi
+
+  backups:
+    type: nfs
+    server: 10.58.0.12
+    path: /srv/backup/home-assistant
+    mountPath: /config/backups
+    enabled: true
