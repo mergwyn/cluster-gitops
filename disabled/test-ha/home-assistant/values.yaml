@@ -106,14 +106,14 @@ ingress:
       - hosts:
         - "*.theclarkhome.com"
 
-#!!probes:
-#!!  liveness:
-#!!    enabled: false
-#!!  startup:
-#!!    enabled: false
-#!!  readiness:
-#!!    enabled: false
-#!!
+probes:
+  liveness:
+    enabled: false
+  startup:
+    enabled: false
+  readiness:
+    enabled: false
+
 #!!persistence:
 #!!  config:
 #!!    enabled: true
