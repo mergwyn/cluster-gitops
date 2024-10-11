@@ -115,19 +115,19 @@ probes:
     enabled: false
 
 persistence:
-  config:
-    enabled: true
-    type: pvc
-    retain: true
-    claim: home-assistant-config
-    accessMode: ReadWriteOnce
-    storageClass: openebs-zfspv
-    retain: true
-    size: 10Gi
-
-#!!  backups:
-#!!    type: nfs
-#!!    server: 10.58.0.12
-#!!    path: /srv/backup/home-assistant
-#!!    mountPath: /config/backups
+#!!  config:
 #!!    enabled: true
+#!!    type: pvc
+#!!    retain: true
+#!!    claim: home-assistant-config
+#!!    accessMode: ReadWriteOnce
+#!!    storageClass: openebs-zfspv
+#!!    retain: true
+#!!    size: 10Gi
+#!!
+  backups:
+    type: nfs
+    server: 10.58.0.12
+    path: /srv/backup/home-assistant
+    mountPath: /config/backups
+    enabled: true
