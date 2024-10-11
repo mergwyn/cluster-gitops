@@ -8,7 +8,7 @@
   },
   "packageRules": [
     {
-      "packagePatterns": ["^ghcr.io\\/linuxserver\\/"],
+      "packagePatterns": ["^ghcr.io\\/linuxserver\\/", "^ghcr.io\\/linuxserver\\/.*\\/"],
       "versionScheme": "regex:^(?<compatibility>.*)\\.(?<major>.*)\\.(?<minor>.*)\\.(?<patch>.*)$"
     },
     {
