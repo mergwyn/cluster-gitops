@@ -1,0 +1,190 @@
+env:
+  TZ: Europe/London
+
+configs:
+  params:
+    # -- Run server without TLS
+    ## NOTE: This value should be set when you generate params by other means as it changes ports used by ingress template.
+    server.insecure: true
+    # -- Enables use of the Progressive Syncs capability
+    applicationsetcontroller.enable.progressive.syncs: true
+
+  cm:
+    kustomize.buildOptions: --enable-helm
+    create: true
+    # Enable inter-app sync wave
+    resource.customizations.health.argoproj.io_Application: |
+      hs = {}
+      hs.status = "Progressing"
+      hs.message = ""
+      if obj.status ~= nil then
+        if obj.status.health ~= nil then
+          hs.status = obj.status.health.status
+          if obj.status.health.message ~= nil then
+            hs.message = obj.status.health.message
+          end
+        end
+      end
+      return hs
+  cmp:
+    create: true
+    plugins:
+      helmfile: # helmfile plugin support
+        version: v1.0
+        init:
+          command: [sh, -c, 'echo "Initializing..."']
+        generate:
+          command:
+            - bash
+            - "-c"
+            - |
+              if [[ -v ENV_NAME ]]; then
+                helmfile -n "$ARGOCD_APP_NAMESPACE" -e $ENV_NAME template --include-crds -q
+              elif [[ -v ARGOCD_ENV_ENV_NAME ]]; then
+                helmfile -n "$ARGOCD_APP_NAMESPACE" -e "$ARGOCD_ENV_ENV_NAME" template --include-crds -q
+              else
+                helmfile -n "$ARGOCD_APP_NAMESPACE" template --include-crds -q
+              fi
+        discover:
+          fileName: "helmfile.yaml"
+
+repoServer:
+  extraContainers:
+    - name: helmfile
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+      image: ghcr.io/helmfile/helmfile:v0.168.0
+      imagePullPolicy: IfNotPresent
+      # Entrypoint should be Argo CD lightweight CMP server i.e. argocd-cmp-server
+      command: [/var/run/argocd/argocd-cmp-server]
+      env:
+        - name: HELM_CACHE_HOME
+          value: /tmp/helm/cache
+        - name: HELM_CONFIG_HOME
+          value: /tmp/helm/config
+        - name: HELMFILE_CACHE_HOME
+          value: /tmp/helmfile/cache
+        - name: HELMFILE_TEMPDIR
+          value: /tmp/helmfile/tmp
+      volumeMounts:
+        - mountPath: /var/run/argocd
+          name: var-files
+        - mountPath: /home/argocd/cmp-server/plugins
+          name: plugins
+        - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+          subPath: helmfile.yaml
+          name: argocd-cmp-cm
+        - mountPath: /tmp
+          name: cmp-tmp
+  volumes:
+    - name: argocd-cmp-cm
+      configMap:
+        name: argocd-cmp-cm
+    - emptyDir: {}
+      name: cmp-tmp
+
+extraObjects:
+  - kind: IngressRoute
+    apiVersion: traefik.io/v1alpha1
+    metadata:
+      name: argocd-server
+      namespace: argocd
+      annotations:
+        kubernetes.io/ingress.class: traefik-external
+    spec:
+      entryPoints:
+        - websecure
+      routes:
+        - kind: Rule
+          match: Host(`argocd.theclarkhome.com`)
+          priority: 10
+          services:
+            - name: argo-cd-argocd-server
+              port: 80
+        - kind: Rule
+          match: Host(`argocd.theclarkhome.com`) && Header(`Content-Type`, `application/grpc`)
+          priority: 11
+          services:
+            - name: argo-cd-argocd-server
+              port: 80
+              scheme: h2c
+      tls: {}
+#!!  - kind: VerticalPodAutoscaler
+#!!    apiVersion: autoscaling.k8s.io/v1
+#!!    metadata:
+#!!      namespace: argocd
+#!!      name: argocd-application-controller-vpa
+#!!    spec:
+#!!      targetRef:
+#!!        apiVersion: "apps/v1"
+#!!        kind:       StatefulSet
+#!!        name:       argo-cd-argocd-application-controller
+#!!      updatePolicy:
+#!!        updateMode: "Auto"
+#!!  - kind: VerticalPodAutoscaler
+#!!    apiVersion: autoscaling.k8s.io/v1
+#!!    metadata:
+#!!      namespace: argocd
+#!!      name: argocd-applicationset-controller-vpa
+#!!    spec:
+#!!      targetRef:
+#!!        apiVersion: "apps/v1"
+#!!        kind:       Deployment
+#!!        name:       argo-cd-argocd-applicationset-controller
+#!!      updatePolicy:
+#!!        updateMode: "Auto"
+#!!
+#!!controller:
+#!!  metrics:
+#!!    enabled: true
+#!!    serviceMonitor:
+#!!      enabled: true
+#!!#      namespace:
+#!!    rules:
+#!!      enabled: true
+#!!      selector:
+#!!        release: kube-prometheus-stack
+#!!#      namespace:
+#!!      spec:
+#!!      - alert: ArgocdServiceNotSynced
+#!!        expr: 'argocd_app_info{sync_status!="Synced"} != 0'
+#!!        for: 15m
+#!!        labels:
+#!!          severity: warning
+#!!        annotations:
+#!!          summary: ArgoCD service not synced (instance {{ $labels.instance }})
+#!!          description: "Service {{ $labels.name }} run by argo is currently not in sync.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+#!!      - alert: ArgocdServiceUnhealthy
+#!!        expr: 'argocd_app_info{health_status!="Healthy"} != 0'
+#!!        for: 15m
+#!!        labels:
+#!!          severity: warning
+#!!        annotations:
+#!!          summary: ArgoCD service unhealthy (instance {{ $labels.instance }})
+#!!          description: "Service {{ $labels.name }} run by argo is currently not healthy.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+#!!
+#!!      - alert: ArgoAppMissing
+#!!        expr: |
+#!!          absent(argocd_app_info) == 1
+#!!        for: 15m
+#!!        labels:
+#!!          severity: critical
+#!!        annotations:
+#!!          summary: "[Argo CD] No reported applications"
+#!!          description: >
+#!!            Argo CD has not reported any applications data for the past 15 minutes which
+#!!            means that it must be down or not functioning properly.  This needs to be
+#!!            resolved for this cloud to continue to maintain state.
+#!!      - alert: ArgoAppNotSynced
+#!!        expr: |
+#!!          argocd_app_info{sync_status!="Synced"} == 1
+#!!        for: 12h
+#!!        labels:
+#!!          severity: warning
+#!!        annotations:
+#!!          summary: "[{{`{{$labels.name}}`}}] Application not synchronized"
+#!!          description: >
+#!!            The application [{{`{{$labels.name}}`}} has not been synchronized for over
+#!!            12 hours which means that the state of this cloud has drifted away from the
+#!!            state inside Git.
