@@ -9,3 +9,4 @@ releases:
     version: 0.1.2
     values:
       - values.yaml
+      - token.yaml
