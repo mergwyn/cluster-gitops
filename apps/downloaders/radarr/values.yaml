@@ -1,7 +1,7 @@
 
 image:
   repository: lscr.io/linuxserver/radarr
-  tag: "5.11.0"
+  tag: "5.12.2"
 
 dnsPolicy: ClusterFirst
 
