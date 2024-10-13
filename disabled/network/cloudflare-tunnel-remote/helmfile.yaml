@@ -1,5 +1,5 @@
 ---
-repository:
+repositories:
   - name: cloudflare
     url: https://cloudflare.github.io/helm-charts
 
