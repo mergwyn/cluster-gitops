@@ -1,4 +1,3 @@
-
 ---
 global:
   # -- Set an override for the prefix of the fullname
@@ -19,15 +18,6 @@ controllers:
         image:
           repository: senexcrenshaw/streammaster
           tag: channels-0.15.0.51
-#        env:
-#          PUID: 1000
-#          PGID: 1000
-#          POSTGRES_USER: 'sm'
-#          ASPNETCORE_ENVIRONMENT: "Development"
-#          ASPNETCORE_Kestrel__Certificates__Default__Password: "password"
-#          ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
-#          ASPNETCORE_URLS: "https://+:443;http://+:80"
-#          STREAMMASTER_BASEHOSTURL: "http://localhost:7095"
 
 service:
   # Configure a service for the main application
@@ -37,19 +27,17 @@ service:
     ports:
       http:
         port: 7095
-      #7096:
-      #  port: 7096
 
 defaultPodOptions:
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
-        - matchExpressions:
-          - key: kubernetes.io/hostname
-            operator: In
-            values:
-            - foxtrot
+          - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                  - foxtrot
 
 ingress:
   streammaster:
@@ -70,7 +58,7 @@ ingress:
           - '*.theclarkhome.com'
 
 persistence:
-  config: # streammaster-claim0
+  config:
     type: persistentVolumeClaim
     storageClass: openebs-zfspv
     accessMode: ReadWriteOnce
@@ -79,7 +67,7 @@ persistence:
     globalMounts:
       - path: /root/.streammaster
 
-  logos: #streammaster-claim1
+  logos:
     type: persistentVolumeClaim
     storageClass: openebs-zfspv
     accessMode: ReadWriteOnce
@@ -87,10 +75,3 @@ persistence:
     retain: true
     globalMounts:
       - path: /root/.streammaster/tv-logos
-
-#  https: #streammaster-claim2
-#    accessMode: ReadWriteOnce
-#    size: 1G
-#    globalMounts:
-#      - path: /https
-#    

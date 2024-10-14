@@ -1,3 +1,4 @@
+---
 admissionController:
   replicas: 3
 backgroundController:
@@ -7,5 +8,5 @@ cleanupController:
 reportsController:
   replicas: 3
 
-#grafana:
-#  enabled: true
+# grafana:
+#   enabled: true

@@ -18,7 +18,7 @@ settings:
   VPN_TRAFFIC_PORT: 1194
   VPN_BLOCK_OTHER_TRAFFIC: false
   GATEWAY_ENABLE_DNSSEC: false
- 
+
 addons:
   vpn:
     enabled: true
@@ -34,9 +34,11 @@ addons:
       SERVER_COUNTRIES: "United Kingdom"
       OPENVPN_VERBOSITY: 1
       VPN_INTERFACE: "tun0"
-      FIREWALL: "off" # old vesion of variable
-      FIREWALL_ENABLED_DISABLING_IT_SHOOTS_YOU_IN_YOUR_FOOT: "off" # new version from 3.39.0
-      FIREWALL_DEBUG: "on"
+      # old vesion of variable
+      FIREWALL: "off"
+      # new version from 3.39.0
+      FIREWALL_ENABLED_DISABLING_IT_SHOOTS_YOU_IN_YOUR_FOOT: "off"
+      FIREWALL_DEBUG: "off"
       DOT: "off"
       FIREWALL_VPN_INPUT_PORTS: 64709
       FIREWALL_OUTBOUND_SUBNETS: "10.0.0.0/8"
@@ -44,4 +46,3 @@ addons:
     envFrom:
       - secretRef:
           name: privatevpn-ovn
-

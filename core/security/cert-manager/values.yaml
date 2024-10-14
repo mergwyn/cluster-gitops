@@ -1,5 +1,5 @@
+---
 installCRDs: false
-#replicaCount: 1
 
 extraArgs:
   - --dns01-recursive-nameservers=1.1.1.1:53,9.9.9.9:53
@@ -33,18 +33,18 @@ extraObjects:
               dnsZones:
                 - "theclarkhome.com"
 
-  - |
-    apiVersion: cert-manager.io/v1
-    kind: Certificate
-    metadata:
-      name: theclarkhome-com
-      namespace: kube-system
-    spec:
-      secretName: theclarkhome-com-tls
-      issuerRef:
-        name: letsencrypt-production
-        kind: ClusterIssuer
-      commonName: "*.theclarkhome.com"
-      dnsNames:
-      - "theclarkhome.com"
+    - |
+      apiVersion: cert-manager.io/v1
+      kind: Certificate
+      metadata:
+        name: theclarkhome-com
+        namespace: kube-system
+      spec:
+        secretName: theclarkhome-com-tls
+        issuerRef:
+          name: letsencrypt-production
+          kind: ClusterIssuer
+        commonName: "*.theclarkhome.com"
+        dnsNames:
+        - "theclarkhome.com"
       - "*.theclarkhome.com"
