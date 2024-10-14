@@ -1,10 +1,11 @@
+---
 repositories:
-- name: geek-cookbook
-  url: https://geek-cookbook.github.io/charts/
+  - name: geek-cookbook
+    url: https://geek-cookbook.github.io/charts/
 
 releases:
-- name: radarr
-  chart: geek-cookbook/radarr
-  version: 16.3.2
-  values:
-  - values.yaml
+  - name: radarr
+    chart: geek-cookbook/radarr
+    version: 16.3.2
+    values:
+      - values.yaml

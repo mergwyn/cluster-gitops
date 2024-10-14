@@ -1,15 +1,15 @@
 ---
 apiVersions:
-- monitoring.coreos.com/v1
+  - monitoring.coreos.com/v1
 
 repositories:
-- name: traefik
-  url: https://helm.traefik.io/traefik
+  - name: traefik
+    url: https://helm.traefik.io/traefik
 
 releases:
-- name: traefik
-  chart: traefik/traefik
-  version: 32.1.1
-  values:
-  - values.yaml
-  - values.yaml.gotmpl
+  - name: traefik
+    chart: traefik/traefik
+    version: 32.1.1
+    values:
+      - values.yaml
+      - values.yaml.gotmpl

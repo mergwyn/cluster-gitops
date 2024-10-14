@@ -1,11 +1,11 @@
 ---
 repositories:
-- name: geek-cookbook
-  url: https://geek-cookbook.github.io/charts/
+  - name: geek-cookbook
+    url: https://geek-cookbook.github.io/charts/
 
 releases:
-- name: mosquitto
-  chart: geek-cookbook/mosquitto
-  version: 4.8.2
-  values:
-  - values.yaml
+  - name: mosquitto
+    chart: geek-cookbook/mosquitto
+    version: 4.8.2
+    values:
+      - values.yaml

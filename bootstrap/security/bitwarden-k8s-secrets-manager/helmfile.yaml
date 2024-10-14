@@ -1,12 +1,12 @@
-
+---
 repositories:
-- name: bitwarden-k8s-secrets-manager
-  url: https://rhpds.github.io/bitwarden-k8s-secrets-manager
+  - name: bitwarden-k8s-secrets-manager
+    url: https://rhpds.github.io/bitwarden-k8s-secrets-manager
 
 releases:
-- name: bitwarden-k8s-secrets-manager
-  chart: bitwarden-k8s-secrets-manager/bitwarden-k8s-secrets-manager
-  version: 0.3.1
-  values:
-    - values.yaml.gotmpl
-    - values.yaml
+  - name: bitwarden-k8s-secrets-manager
+    chart: bitwarden-k8s-secrets-manager/bitwarden-k8s-secrets-manager
+    version: 0.3.1
+    values:
+      - values.yaml.gotmpl
+      - values.yaml

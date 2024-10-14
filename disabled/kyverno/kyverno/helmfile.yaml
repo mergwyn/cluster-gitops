@@ -1,19 +1,19 @@
 ---
 repositories:
-- name: kyverno
-  url: https://kyverno.github.io/kyverno/
-- name: bedag
-  url: https://bedag.github.io/helm-charts/
+  - name: kyverno
+    url: https://kyverno.github.io/kyverno/
+  - name: bedag
+    url: https://bedag.github.io/helm-charts/
 
 releases:
-- name: kyverno
-  chart: kyverno/kyverno
-  version: 3.2.7
-  values:
-  - values.yaml
+  - name: kyverno
+    chart: kyverno/kyverno
+    version: 3.2.7
+    values:
+      - values.yaml
 
-- name: kyverno-extra-manifests
-  chart: bedag/raw
-  version: 2.0.0
-  values:
-  - backup-all-volumes.yaml
+  - name: kyverno-extra-manifests
+    chart: bedag/raw
+    version: 2.0.0
+    values:
+      - backup-all-volumes.yaml

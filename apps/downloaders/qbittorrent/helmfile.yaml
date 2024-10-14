@@ -1,10 +1,11 @@
+---
 repositories:
-- name: geek-cookbook
-  url: https://geek-cookbook.github.io/charts/
+  - name: geek-cookbook
+    url: https://geek-cookbook.github.io/charts/
 
 releases:
-- name: qbittorrent
-  chart: geek-cookbook/qbittorrent
-  version: 13.5.2
-  values:
-  - values.yaml
+  - name: qbittorrent
+    chart: geek-cookbook/qbittorrent
+    version: 13.5.2
+    values:
+      - values.yaml
