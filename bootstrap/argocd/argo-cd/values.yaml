@@ -54,7 +54,7 @@ repoServer:
       securityContext:
         runAsNonRoot: true
         runAsUser: 999
-      image: ghcr.io/helmfile/helmfile:v0.168.0
+      image: ghcr.io/helmfile/helmfile:v0.169.0
       imagePullPolicy: IfNotPresent
       # Entrypoint should be Argo CD lightweight CMP server i.e. argocd-cmp-server
       command: [/var/run/argocd/argocd-cmp-server]
