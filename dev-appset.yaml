@@ -1,3 +1,4 @@
+---
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
@@ -5,16 +6,16 @@ metadata:
   namespace: argocd
 spec:
   generators:
-  - git:
-      repoURL: https://github.com/mergwyn/cluster-gitops.git
-      revision: main
-      directories:
-      - path: bootstrap/*/*
-      - path: core/*/*
-      - path: apps/*/*
-      #- exclude: true
-      #  path: apps/node-feature-discovery/*
-      
+    - git:
+        repoURL: https://github.com/mergwyn/cluster-gitops.git
+        revision: main
+        directories:
+          - path: bootstrap/*/*
+          - path: core/*/*
+          - path: apps/*/*
+          # - exclude: true
+          #   path: apps/node-feature-discovery/*
+
   template:
     metadata:
       name: '{{ path.basename }}'
@@ -40,5 +41,5 @@ spec:
           prune: true
           selfHeal: false
         syncOptions:
-        - ServerSideApply=true
-        - CreateNamespace=true
+          - ServerSideApply=true
+          - CreateNamespace=true

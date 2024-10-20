@@ -36,14 +36,14 @@ configs:
           app.kubernetes.io/name:
             value: cert-manager
 
-#      - name: cloudflare-tunnel-remote
-#        namespace: kube-system 
-#        data:
-#          tunnelToken:
-#            secret: cloudflare_tunnel_remote 
-#        labels:
-#          pod:
-#            value: cloudflared
+      # - name: cloudflare-tunnel-remote
+      #   namespace: kube-system
+      #   data:
+      #     tunnelToken:
+      #       secret: cloudflare_tunnel_remote
+      #   labels:
+      #     pod:
+      #       value: cloudflared
 
       - name: grafana-admin
         namespace: monitoring
@@ -58,7 +58,6 @@ configs:
           app.kubernetes.io/name:
             value: grafana
 
-# TODO confirm if this is used
       - name: idrivee2-s3
         namespace: backup
         data:
@@ -84,7 +83,6 @@ configs:
           app.kubernetes.io/name:
             value: velero
 
-# TODO confirm if this is used
       - name: minio-s3
         namespace: backup
         data:
@@ -169,9 +167,9 @@ configs:
           WIREGUARD_ENDPOINT_PORT:
             secret: privatevpn_wg
             key: WIREGUARD_ENDPOINT_PORT
-#          WIREGUARD_ALLOWED_IPS:
-#            secret: privatevpn_wg
-#            key: WIREGUARD_ALLOWED_IPS
+        #  WIREGUARD_ALLOWED_IPS:
+        #    secret: privatevpn_wg
+        #    key: WIREGUARD_ALLOWED_IPS
         labels:
           app.kubernetes.io/name:
             value: pod-gateway
@@ -202,9 +200,6 @@ serviceAccount:
   create: true
   # Annotations to add to the service account
   annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name:
 
 resources:
   requests:

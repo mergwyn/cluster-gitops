@@ -1,9 +1,9 @@
 ---
 configuration:
   uploaderType: kopia
-  #defaultVolumesToFsBackup: true
-  #defaultSnapshotMoveData: true
-  #features: EnableCSI
+  # defaultVolumesToFsBackup: true
+  # defaultSnapshotMoveData: true
+  # features: EnableCSI
   backupStorageLocation:
     - name: idrive
       provider: aws
@@ -35,7 +35,7 @@ configuration:
       provider: csi
 
 snapshotsEnabled: false
-#defaultVolumeSnapshotLocations: csi:seaweedfs
+# defaultVolumeSnapshotLocations: csi:seaweedfs
 
 resources:
   requests:
@@ -68,18 +68,18 @@ initContainers:
 #      - mountPath: /target
 #        name: plugins
 
-#credentials:
-#  useSecret: true
-#  name: cloud-credentials
-#  existingSecret:
-#  secretContents:
-#    cloud: |
-#      [default]
-#      aws_access_key_id=Unwarlike3-Keenly-Colt
-#      aws_secret_access_key=Choice4-Entourage-Equal
+# credentials:
+#   useSecret: true
+#   name: cloud-credentials
+#   existingSecret:
+#   secretContents:
+#     cloud: |
+#       [default]
+#       aws_access_key_id=Unwarlike3-Keenly-Colt
+#       aws_secret_access_key=Choice4-Entourage-Equal
 
 schedules:
-# idrive storage
+  # idrive storage
   daily-idrive:
     disabled: false
     schedule: "@daily"
@@ -101,7 +101,7 @@ schedules:
     template:
       ttl: "2190h"
       storageLocation: idrive
-# default storage
+  # default storage
   hourly-minio:
     disabled: false
     schedule: "@hourly"
@@ -154,66 +154,55 @@ metrics:
     annotations: {}
     additionalLabels: {}
 
-    # metrics.serviceMonitor.metricRelabelings Specify Metric Relabelings to add to the scrape endpoint
-    # ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#relabelconfig
-    # metricRelabelings: []
-    # metrics.serviceMonitor.relabelings [array] Prometheus relabeling rules
-    # relabelings: []
-    # ServiceMonitor namespace. Default to Velero namespace.
-    # namespace:
-    # ServiceMonitor connection scheme. Defaults to HTTP.
-    # scheme: ""
-    # ServiceMonitor connection tlsConfig. Defaults to {}.
-    # tlsConfig: {}
   nodeAgentPodMonitor:
     autodetect: true
     enabled: false
     annotations: {}
     additionalLabels: {}
-    # ServiceMonitor namespace. Default to Velero namespace.
-    # namespace:
-    # ServiceMonitor connection scheme. Defaults to HTTP.
-    # scheme: ""
-    # ServiceMonitor connection tlsConfig. Defaults to {}.
-    # tlsConfig: {}
-
 
   prometheusRule:
     autodetect: true
     enabled: true
     additionalLabels:
       release: kube-prometheus-stack
-    spec: 
-     - alert: VeleroBackupPartialFailures
-       annotations:
-         message: Velero backup {{ $labels.schedule }} has {{ $value | humanizePercentage }} partialy failed backups.
-       expr: |-
-         velero_backup_partial_failure_total{schedule!=""} / velero_backup_attempt_total{schedule!=""} > 0.25
-       for: 15m
-       labels:
-         severity: warning
-     - alert: VeleroBackupFailures
-       annotations:
-         message: Velero backup {{ $labels.schedule }} has {{ $value | humanizePercentage }} failed backups.
-       expr: |-
-         velero_backup_failure_total{schedule!=""} / velero_backup_attempt_total{schedule!=""} > 0.25
-       for: 15m
-       labels:
-         severity: warning
+    spec:
+      - alert: VeleroBackupPartialFailures
+        # yamllint disable-line rule:line-length
+        annotations:
+          # yamllint disable-line rule:line-length
+          message: Velero backup {{ $labels.schedule }} has {{ $value | humanizePercentage }} partialy failed backups.
+        # yamllint disable rule:line-length
+        expr: |-
+          velero_backup_partial_failure_total{schedule!=""} / velero_backup_attempt_total{schedule!=""} > 0.25
+        # yamllint enable rule:line-length
+        for: 15m
+        labels:
+          severity: warning
+      - alert: VeleroBackupFailures
+        annotations:
+          # yamllint disable-line rule:line-length
+          message: Velero backup {{ $labels.schedule }} has {{ $value | humanizePercentage }} failed backups.
+        # yamllint disable rule:line-length
+        expr: |-
+          velero_backup_failure_total{schedule!=""} / velero_backup_attempt_total{schedule!=""} > 0.25
+        # yamllint enable rule:line-length
+        for: 15m
+        labels:
+          severity: warning
 
-#extraObjects:
-#  velero:
-#    apiVersion: autoscaling.k8s.io/v1
-#    kind: VerticalPodAutoscaler
-#    metadata:
-#      namespace: velero
-#      name: velero-vpa
-#      #labels:
-#      #  app.kubernetes.io/name: velero
-#    spec:
-#      targetRef:
-#        apiVersion: "apps/v1"
-#        kind:       Deployment
-#        name:       velero
-#      updatePolicy:
-#        updateMode: "Auto"
+# extraObjects:
+#   velero:
+#     apiVersion: autoscaling.k8s.io/v1
+#     kind: VerticalPodAutoscaler
+#     metadata:
+#       namespace: velero
+#       name: velero-vpa
+#       #labels:
+#       #  app.kubernetes.io/name: velero
+#     spec:
+#       targetRef:
+#         apiVersion: "apps/v1"
+#         kind:       Deployment
+#         name:       velero
+#       updatePolicy:
+#         updateMode: "Auto"

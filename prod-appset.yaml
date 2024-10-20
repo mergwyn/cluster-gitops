@@ -1,3 +1,4 @@
+---
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
@@ -5,16 +6,16 @@ metadata:
   namespace: argocd
 spec:
   generators:
-  - git:
-      repoURL: https://github.com/mergwyn/cluster-gitops.git
-      revision: main
-      directories:
-      - path: bootstrap/*/*
-      - path: core/*/*
-      - path: apps/*/*
-      #- path: apps/downloaders/prowlarr
-      #  exclude: true
-      
+    - git:
+        repoURL: https://github.com/mergwyn/cluster-gitops.git
+        revision: main
+        directories:
+          - path: bootstrap/*/*
+          - path: core/*/*
+          - path: apps/*/*
+          # - path: apps/downloaders/prowlarr
+          #   exclude: true
+
   template:
     metadata:
       name: '{{ path.basename }}'
@@ -28,25 +29,26 @@ spec:
         server: https://kubernetes.default.svc
         namespace: '{{ path[1] }}'
       ignoreDifferences:
-      - kind: StatefulSet
-        group: '*'
-        name: mail
-        jsonPointers:
-        - /spec/volumeClaimTemplates
-        - /spec/template/metadata/annotations
-      - kind: GpuDevicePlugin
-        group: '*'
-        name: gpudeviceplugin
-        jsonPointers:
-        - /spec/resourceManager
-        - /spec/tolerations
-        - /metadata/annotations
+        - kind: StatefulSet
+          group: '*'
+          name: mail
+          jsonPointers:
+            - /spec/volumeClaimTemplates
+            - /spec/template/metadata/annotations
+        - kind: GpuDevicePlugin
+          group: '*'
+          name: gpudeviceplugin
+          jsonPointers:
+            - /spec/resourceManager
+            - /spec/tolerations
+            - /metadata/annotations
+
       syncPolicy:
         automated:
           allowEmpty: true
           prune: true
           selfHeal: false
         syncOptions:
-        - ServerSideApply=true
-        - CreateNamespace=true
-        - RespectIgnoreDifferences=true
+          - ServerSideApply=true
+          - CreateNamespace=true
+          - RespectIgnoreDifferences=true

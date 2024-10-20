@@ -1,4 +1,4 @@
-
+---
 image:
   repository: eclipse-mosquitto
   tag: 2.0.20
@@ -38,5 +38,4 @@ ingress:
                 port: 1883
     tls:
       - hosts:
-        - "*.theclarkhome.com"
-
+          - "*.theclarkhome.com"

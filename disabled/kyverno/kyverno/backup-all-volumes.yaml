@@ -1,3 +1,4 @@
+---
 resources:
   - apiVersion: kyverno.io/v1
     kind: ClusterPolicy
@@ -12,6 +13,7 @@ resources:
         policies.kyverno.io/subject: Pod, Annotation
         kyverno.io/kyverno-version: 1.9.2
         kyverno.io/kubernetes-version: "1.25"
+        # yamllint disable rule:line-length
         policies.kyverno.io/description: >-
           In order for Velero to backup volumes in a Pod using an opt-in approach, it
           requires an annotation on the Pod called `backup.velero.io/backup-volumes` with the
@@ -19,31 +21,34 @@ resources:
           automatically annotates Pods (and Pod controllers) which refer to a PVC so that
           all volumes are listed in the aforementioned annotation if a Namespace with the label
           `velero-backup-pvc=true`.
+        # yamllint enable rule:line-length
     spec:
       rules:
-      - name: backup-velero-pv
-        match:
-          any:
-          - resources:
-              kinds:
-              - Pod
-              namespaceSelector:
-                matchLabels:
-                  velero-backup-pvc: "true"
-        preconditions:
-          all:
-          - key: "{{ request.object.spec.volumes[?persistentVolumeClaim].name || '' | length(@) }}"
-            operator: GreaterThanOrEquals
-            value: 1
-          - key: "{{request.operation}}"
-            operator: Equals
-            value: CREATE
-        context:
-          - name: volumes
-            variable:
-              jmesPath: join(',',request.object.spec.volumes[?persistentVolumeClaim].name)
-        mutate:
-          patchStrategicMerge:
-            metadata:
-              annotations:
-                backup.velero.io/backup-volumes: "{{ volumes }}"
+        - name: backup-velero-pv
+          match:
+            any:
+              - resources:
+                  kinds:
+                    - Pod
+                  namespaceSelector:
+                    matchLabels:
+                      velero-backup-pvc: "true"
+          preconditions:
+            all:
+              # yamllint disable-line rule:line-length
+              - key: "{{ request.object.spec.volumes[?persistentVolumeClaim].name || '' | length(@) }}"
+                operator: GreaterThanOrEquals
+                value: 1
+              - key: "{{request.operation}}"
+                operator: Equals
+                value: CREATE
+          context:
+            - name: volumes
+              variable:
+                # yamllint disable-line rule:line-length
+                jmesPath: join(',',request.object.spec.volumes[?persistentVolumeClaim].name)
+          mutate:
+            patchStrategicMerge:
+              metadata:
+                annotations:
+                  backup.velero.io/backup-volumes: "{{ volumes }}"

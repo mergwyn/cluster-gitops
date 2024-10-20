@@ -1,6 +1,5 @@
-
 ---
-image: 
+image:
   repository: ghcr.io/home-assistant/home-assistant
   tag: "2024.10.2"
 
@@ -14,6 +13,7 @@ podAnnotations:
       "-c",
       "apk add sqlite"
     ]
+# yamllint disable rule:line-length
 #      "apk add sqlite && rm home-assistant_v2.sql' && sqlite3 home-assistant_v2.db '.dump' > home-assistant_v2.sql"
 #  pre.hook.backup.velero.io/timeout: 3m
 #  pre.hook.backup.velero.io/command: |
@@ -37,10 +37,9 @@ podAnnotations:
 #      "sleep 60 && rm -f home-assistant_v2.db home-assistant_v2.db-shm home-assistant_v2.db-wal && mv backup-home-assistant_v2.db home-assistant_v2.db"
 #    ]
 #  post.hook.restore.velero.io/timeout: 3m
+# yamllint enable rule:line-length
 
 metrics:
-  # -- Enable and configure a Prometheus serviceMonitor for the chart under this key.
-  # @default -- See values.yaml
   enabled: true
   serviceMonitor:
     interval: 1m
@@ -54,8 +53,6 @@ metrics:
       name: 'home-assistant-prometheus'
       key: 'token'
 
-  # -- Enable and configure Prometheus Rules for the chart under this key.
-  # @default -- See values.yaml
   prometheusRule:
     enabled: true
     labels:
@@ -65,6 +62,7 @@ metrics:
     rules:
       - alert: HomeAssistantAbsent
         annotations:
+          # yamllint disable-line rule:line-length
           description: Home Assistant has disappeared from Prometheus service discovery.
           summary: Home Assistant is down.
         expr: |
@@ -72,6 +70,7 @@ metrics:
         for: 5m
         labels:
           severity: critical
+# yamllint disable rule:line-length
 #      - alert: VWID3ChargingButtonAbsent
 #        annotations:
 #          description: THe charging button used in zappi automation has disapeared
@@ -81,6 +80,7 @@ metrics:
 #        for: 5m
 #        labels:
 #          severity: critical
+# yamllint enable rule:line-length
 
 ingress:
   main:
@@ -104,7 +104,7 @@ ingress:
                 port: 8123
     tls:
       - hosts:
-        - "*.theclarkhome.com"
+          - "*.theclarkhome.com"
 
 probes:
   liveness:
