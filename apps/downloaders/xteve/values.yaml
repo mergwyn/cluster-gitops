@@ -1,8 +1,7 @@
+---
 image:
-  #repository: alturismo/xteve
   repository: senexcrenshaw/xteve
   pullPolicy: Always
-  # Overrides the image tag whose default is the chart appVersion.
   tag: "2.5.3"
 
 env:
@@ -28,7 +27,6 @@ ingress:
     ingressClass: traefik
     annotations:
       traefik.ingress.kubernetes.io/router.entrypoints: websecure
-        #kubernetes.io/ingress.class: traefik
     hosts:
       - host: "xteve.theclarkhome.com"
         paths:
@@ -39,7 +37,7 @@ ingress:
                 port: 34400
     tls:
       - hosts:
-        - "*.theclarkhome.com"
+          - "*.theclarkhome.com"
 
 probes:
   liveness:

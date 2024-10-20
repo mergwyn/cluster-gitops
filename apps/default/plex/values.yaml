@@ -7,7 +7,7 @@ env:
   PLEX_MEDIA_SERVER_APPLICATION_SUPPORT_DIR: "/config"
   PLEX_CLAIM: "claim-LufEVYTg9R29o2qzZsLA"
   ALLOWED_NETWORKS: "10.0.0.0/8"
-  #ADVERTISE_IP: ""
+  # ADVERTISE_IP: ""
   PLEX_GID: "513"
   PLEX_PASS: "yes"
   PLEX_UID: "3001"
@@ -28,11 +28,11 @@ affinity:
   nodeAffinity:
     requiredDuringSchedulingIgnoredDuringExecution:
       nodeSelectorTerms:
-      - matchExpressions:
-        - key: kubernetes.io/hostname
-          operator: In
-          values:
-          - foxtrot
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - foxtrot
 
 resources:
   requests:
@@ -54,4 +54,3 @@ persistence:
     type: hostPath
     hostPath: /srv/media
     mountPath: /data
-

@@ -1,4 +1,4 @@
-
+---
 image:
   repository: lscr.io/linuxserver/radarr
   tag: "5.12.2"
@@ -33,7 +33,7 @@ ingress:
                 port: 7878
     tls:
       - hosts:
-        - "*.theclarkhome.com"
+          - "*.theclarkhome.com"
 
 persistence:
   config:

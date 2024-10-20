@@ -13,17 +13,18 @@ alertmanager:
     route:
       receiver: 'email-k8s-admin'
       routes:
-      - receiver: 'null'
-        matchers:
-          - alertname =~ "InfoInhibitor|Watchdog"
-      - receiver: 'email-k8s-admin'
+        - receiver: 'null'
+          matchers:
+            - alertname =~ "InfoInhibitor|Watchdog"
+        - receiver: 'email-k8s-admin'
     receivers:
-    - name: 'null'
-    - name: 'email-k8s-admin'
-      email_configs:
-      - to: gary@theclarkhome.com
-        from: email-k8s-admin@theclarkhome.com
-        smarthost: mail.default:587
+      - name: 'null'
+      - name: 'email-k8s-admin'
+        email_configs:
+          - to: gary@theclarkhome.com
+            from: email-k8s-admin@theclarkhome.com
+            smarthost: mail.default:587
+
   ingress:
     enabled: true
     ingressClass: traefik
@@ -33,7 +34,8 @@ alertmanager:
       - "alertmanager.theclarkhome.com"
     tls:
       - hosts:
-        - "*.theclarkhome.com"
+          - "*.theclarkhome.com"
+
 #  storage:
 #    volumeClaimTemplate:
 #      spec:
@@ -46,37 +48,20 @@ alertmanager:
 prometheus:
   prometheusSpec:
     serviceMonitorSelectorNilUsesHelmValues: false
-#    podMonitorSelectorNilUsesHelmValues: false
+    # podMonitorSelectorNilUsesHelmValues: false
     additionalScrapeConfigs:
-    - job_name: minio-job-v2
-      bearer_token: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJwcm9tZXRoZXVzIiwic3ViIjoibXltaW5pb2FkbWluIiwiZXhwIjo0ODY1MjQ0NzEyfQ.21LxcoJnfop1f4eqy2NedKaeTaDw7RhiWr_ZnjoUxo11pcoIlSNDwpW93dU2Gi4XMi-yv8piDm4FU0MAObPJhg
-      metrics_path: /minio/v2/metrics/cluster
-      scheme: http
-      static_configs:
-      - targets: ['foxtrot.theclarkhome.com:9000']
+      - job_name: minio-job-v2
+        # yamllint disable-line rule:line-length
+        bearer_token: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJwcm9tZXRoZXVzIiwic3ViIjoibXltaW5pb2FkbWluIiwiZXhwIjo0ODY1MjQ0NzEyfQ.21LxcoJnfop1f4eqy2NedKaeTaDw7RhiWr_ZnjoUxo11pcoIlSNDwpW93dU2Gi4XMi-yv8piDm4FU0MAObPJhg
+        metrics_path: /minio/v2/metrics/cluster
+        scheme: http
+        static_configs:
+          - targets: ['foxtrot.theclarkhome.com:9000']
 
-#      - job_name: minio-job-v3
-#        bearer_token: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJwcm9tZXRoZXVzIiwic3ViIjoiUTNBTTNVUTg2N1NQUVFBNDNQMkYiLCJleHAiOjQ4NzgwMjIzNjN9.ylUBXU1Sp9F5UTqso_BKFo4yi3m3XBx8HbNrt-VVrDVZHIWrR3KgayWhi8gyCQ3JayBaWseoIrvjMzn3ikFwVw
-#        metrics_path: /minio/metrics/v3
-#        scheme: https
-#        static_configs:
-#        - targets: ['foxtrot.theclarkhome.com:9000']
-#      - job_name: "seaweedfs-server"
-#        scrape_interval: 60s
-#        metrics_path: /metrics
-#        scheme: http
-#        static_configs:
-#          - targets: ['foxtrot.theclarkhome.com:9327']
-#      - job_name: "kopia-server"
-#        scrape_interval: 60s
-#        metrics_path: /metrics
-#        scheme: http
-#        static_configs:
-#          - targets: ['foxtrot.theclarkhome.com:8188']
     persistentVolumeClaimRetentionPolicy:
       whenDeleted: Retain
       whenScaled: Retain
-    storageSpec: 
+    storageSpec:
       volumeClaimTemplate:
         spec:
           storageClassName: openebs-zfspv
@@ -93,7 +78,7 @@ prometheus:
       - "prometheus.theclarkhome.com"
     tls:
       - hosts:
-        - "*.theclarkhome.com"
+          - "*.theclarkhome.com"
 
 
 grafana:
@@ -109,40 +94,44 @@ grafana:
       url: http://loki.monitoring.svc.cluster.local:3100
   dashboardProviders:
     dashboardproviders.yaml:
-     apiVersion: 1
-     providers:
-     - name: 'default'
-       orgId: 1
-       #folder: 'Default'
-       type: file
-       disableDeletion: true
-       editable: true
-       options:
-         path: /var/lib/grafana/dashboards/standard
+      apiVersion: 1
+      providers:
+        - name: 'default'
+          orgId: 1
+          # folder: 'Default'
+          type: file
+          disableDeletion: true
+          editable: true
+          options:
+            path: /var/lib/grafana/dashboards/standard
   dashboards:
     default:
-      #hwmon:
-      #  gnetId: 12950
-      #  datasource: Prometheus
-      #promtail:
-      #  gnetId: 15141
-      #  datasource: Loki
-      #minio:
-      #  gnetId: 13502
-      #  datasource: Prometheus
-      #minio-server:
-      #  name: "MinIO server"
-      #  url: "https://raw.githubusercontent.com/minio/minio/master/docs/metrics/prometheus/grafana/minio-dashboard.json"
-      #  datasource: Prometheus
-      #minio-bucket:
-      #  name: "MinIO bucket"
-      #  url: "https://raw.githubusercontent.com/minio/minio/master/docs/metrics/prometheus/grafana/bucket/minio-bucket.json"
-      #  datasource: Prometheus
-      #minio-node:
-      #  name: "MinIO node"
-      #  url: "https://raw.githubusercontent.com/minio/minio/master/docs/metrics/prometheus/grafana/node/minio-node.json"
-      #  datasource: Prometheus
+      # hwmon:
+      #   gnetId: 12950
+      #   datasource: Prometheus
+      # promtail:
+      #   gnetId: 15141
+      #   datasource: Loki
+      # minio:
+      #   gnetId: 13502
+      #   datasource: Prometheus
+      # minio-server:
+      #   name: "MinIO server"
+      # yamllint disable-line rule:line-length
+      #   url: "https://raw.githubusercontent.com/minio/minio/master/docs/metrics/prometheus/grafana/minio-dashboard.json"
+      #   datasource: Prometheus
+      # minio-bucket:
+      #   name: "MinIO bucket"
+      # yamllint disable-line rule:line-length
+      #   url: "https://raw.githubusercontent.com/minio/minio/master/docs/metrics/prometheus/grafana/bucket/minio-bucket.json"
+      #   datasource: Prometheus
+      # minio-node:
+      #   name: "MinIO node"
+      # yamllint disable-line rule:line-length
+      #   url: "https://raw.githubusercontent.com/minio/minio/master/docs/metrics/prometheus/grafana/node/minio-node.json"
+      #   datasource: Prometheus
       zfspv:
+        # yamllint disable-line rule:line-length
         url: "https://raw.githubusercontent.com/openebs/zfs-localpv/develop/deploy/sample/grafana-dashboard.json"
         datasource: Prometheus
   ingress:
@@ -154,7 +143,7 @@ grafana:
       - "grafana.theclarkhome.com"
     tls:
       - hosts:
-        - "*.theclarkhome.com"
+          - "*.theclarkhome.com"
   persistence:
     enabled: true
     type: pvc
@@ -186,51 +175,14 @@ prometheusOperator:
     enabled: true
 
 extraManifests:
-- kind: VerticalPodAutoscaler
-  apiVersion: autoscaling.k8s.io/v1
-  metadata:
-    name: kube-prometheus-stack-grafana-vpa
-  spec:
-    targetRef:
-      apiVersion: "apps/v1"
-      kind:       Deployment
-      name:       kube-prometheus-stack-grafana  
-    updatePolicy:
-      updateMode: "Auto"
-#- kind: VerticalPodAutoscaler
-#  apiVersion: autoscaling.k8s.io/v1
-#  metadata:
-#    namespace: monitoring
-#    name: kube-prometheus-stack-prometheus-operator-vpa
-#  spec:
-#    targetRef:
-#      apiVersion: "apps/v1"
-#      kind:       Deployment
-#      name:       kube-prometheus-stack-operator  
-#    updatePolicy:
-#      updateMode: "Auto"
-
-#additionalPrometheusRules:
-#  # TODO move to argocd
-#- name: argocd
-#  groups:
-#  - name: argocdEmbeddedExporter
-#
-#    rules:
-#      - alert: ArgocdServiceNotSynced
-#        expr: 'argocd_app_info{sync_status!="Synced"} != 0'
-#        for: 15m
-#        labels:
-#          severity: warning
-#        annotations:
-#          summary: ArgoCD service not synced (instance {{ $labels.instance }})
-#          description: "Service {{ $labels.name }} run by argo is currently not in sync.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-#
-#      - alert: ArgocdServiceUnhealthy
-#        expr: 'argocd_app_info{health_status!="Healthy"} != 0'
-#        for: 15m
-#        labels:
-#          severity: warning
-#        annotations:
-#          summary: ArgoCD service unhealthy (instance {{ $labels.instance }})
-#          description: "Service {{ $labels.name }} run by argo is currently not healthy.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+  - kind: VerticalPodAutoscaler
+    apiVersion: autoscaling.k8s.io/v1
+    metadata:
+      name: kube-prometheus-stack-grafana-vpa
+    spec:
+      targetRef:
+        apiVersion: "apps/v1"
+        kind: Deployment
+        name: kube-prometheus-stack-grafana
+      updatePolicy:
+        updateMode: "Auto"

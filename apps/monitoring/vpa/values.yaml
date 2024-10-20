@@ -1,6 +1,7 @@
 ---
 recommender:
-  #enabled: false
+  # enabled: false
   extraArgs:
     storage: prometheus
+    # yamllint disable-line rule:line-length
     prometheus-address: "http://kube-prometheus-stack-prometheus.monitoring:9090/"

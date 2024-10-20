@@ -33,7 +33,7 @@ ingress:
                 port: 9696
     tls:
       - hosts:
-        - "*.theclarkhome.com"
+          - "*.theclarkhome.com"
 
 persistence:
   config:
