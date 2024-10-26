@@ -6,6 +6,6 @@ repositories:
 releases:
   - name: kube-prometheus-stack
     chart: kube-prometheus-stack/kube-prometheus-stack
-    version: 65.4.0
+    version: 65.5.0
     values:
       - values.yaml
