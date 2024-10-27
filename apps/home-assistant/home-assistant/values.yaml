@@ -7,37 +7,29 @@ env:
   TZ: Europe/London
 
 podAnnotations:
+  # yamllint disable rule:line-length
   pre.hook.backup.velero.io/command: |
     [
       "/bin/bash",
       "-c",
-      "apk add sqlite"
+      "apk add sqlite && sqlite3 home-assistant_v2.db '.backup backup-home-assistant_v2.db'",
     ]
-# yamllint disable rule:line-length
-#      "apk add sqlite && rm home-assistant_v2.sql' && sqlite3 home-assistant_v2.db '.dump' > home-assistant_v2.sql"
-#  pre.hook.backup.velero.io/timeout: 3m
-#  pre.hook.backup.velero.io/command: |
-#    [
-#      "/bin/bash",
-#      "-c",
-#      "apk add sqlite && sqlite3 home-assistant_v2.db '.backup backup-home-assistant_v2.db'"
-#    ]
-#  post.hook.backup.velero.io/timeout: 3m
-#  post.hook.backup.velero.io/command: |
-#    [
-#      "/bin/bash",
-#      "-c",
-#      "rm -rf backup-home-assistant_v2.db || true'"
-#    ]
-#  post.hook.backup.velero.io/timeout: 3m
-#  post.hook.restore.velero.io/command: |
-#    [
-#      "/bin/bash",
-#      "-c",
-#      "sleep 60 && rm -f home-assistant_v2.db home-assistant_v2.db-shm home-assistant_v2.db-wal && mv backup-home-assistant_v2.db home-assistant_v2.db"
-#    ]
-#  post.hook.restore.velero.io/timeout: 3m
-# yamllint enable rule:line-length
+  pre.hook.backup.velero.io/timeout: 3m
+  # post.hook.backup.velero.io/command: |
+  #   [
+  #     "/bin/bash",
+  #     "-c",
+  #     "rm -rf backup-home-assistant_v2.db.backup || true'"
+  #   ]
+  # post.hook.backup.velero.io/timeout: 3m
+  # post.hook.restore.velero.io/command: |
+  #   [
+  #     "/bin/bash",
+  #     "-c",
+  #     "sleep 60 && rm -f home-assistant_v2.db home-assistant_v2.db-shm home-assistant_v2.db-wal && mv backup-home-assistant_v2.db home-assistant_v2.db"
+  #   ]
+  # post.hook.restore.velero.io/timeout: 3m
+  # yamllint enable rule:line-length
 
 metrics:
   enabled: true
