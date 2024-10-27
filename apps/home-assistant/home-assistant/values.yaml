@@ -12,7 +12,7 @@ podAnnotations:
     [
       "/bin/bash",
       "-c",
-      "apk add sqlite && sqlite3 home-assistant_v2.db '.backup backup-home-assistant_v2.db'",
+      "apk add sqlite && sqlite3 home-assistant_v2.db '.backup backup-home-assistant_v2.db'"
     ]
   pre.hook.backup.velero.io/timeout: 3m
   # post.hook.backup.velero.io/command: |
