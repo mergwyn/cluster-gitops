@@ -15,13 +15,13 @@ podAnnotations:
       "apk add sqlite && sqlite3 home-assistant_v2.db '.backup backup-home-assistant_v2.db'"
     ]
   pre.hook.backup.velero.io/timeout: 3m
-  # post.hook.backup.velero.io/command: |
-  #   [
-  #     "/bin/bash",
-  #     "-c",
-  #     "rm -rf backup-home-assistant_v2.db.backup || true'"
-  #   ]
-  # post.hook.backup.velero.io/timeout: 3m
+  post.hook.backup.velero.io/command: |
+    [
+      "/bin/bash",
+      "-c",
+      "rm -rf backup-home-assistant_v2.db.backup || true'"
+    ]
+  post.hook.backup.velero.io/timeout: 3m
   # post.hook.restore.velero.io/command: |
   #   [
   #     "/bin/bash",
