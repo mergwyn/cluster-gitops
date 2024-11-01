@@ -1,4 +1,6 @@
 ---
+apiVersionOverride:
+  podDisruptionBudget: policy/v1
 admissionController:
   replicas: 3
 backgroundController:
