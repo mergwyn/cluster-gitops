@@ -6,6 +6,7 @@ image:
 env:
   TZ: Europe/London
   PYTHONUSERBASE: "/config/deps"
+  PYTHONPATH: "/config/deps"
 
 podAnnotations:
   # yamllint disable rule:line-length
