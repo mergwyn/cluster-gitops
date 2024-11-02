@@ -6,6 +6,6 @@ repositories:
 releases:
   - name: kured
     chart: kubereboot/kured
-    version: 5.5.0
+    version: 5.5.1
     values:
       - values.yaml
