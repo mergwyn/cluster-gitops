@@ -45,6 +45,15 @@ configs:
       #     pod:
       #       value: cloudflared
 
+      - name: cluster1-tunnel-credentials
+        namespace: backup
+        data:
+          credentials.json:
+            secret: cluster1_tunnel_credentials
+        labels:
+          app.kubernetes.io/name:
+            value: cloudflare-tunnel-remote
+
       - name: grafana-admin
         namespace: monitoring
         data:
