@@ -46,7 +46,7 @@ configs:
       #       value: cloudflared
 
       - name: cluster1-tunnel-credentials
-        namespace: backup
+        namespace: network
         data:
           credentials.json:
             secret: cluster1_tunnel_credentials
