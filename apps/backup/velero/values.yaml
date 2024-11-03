@@ -161,7 +161,7 @@ metrics:
     additionalLabels: {}
 
   prometheusRule:
-    autodetect: true
+    autodetect: false
     enabled: true
     additionalLabels:
       release: kube-prometheus-stack
