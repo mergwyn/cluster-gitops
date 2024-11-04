@@ -39,11 +39,11 @@ snapshotsEnabled: false
 
 resources:
   requests:
-    cpu: 10m
+    cpu: 763m
     memory: 493M
   limits:
-    cpu: 2926m
-    memory: 11G
+    cpu: 763m
+    memory: 493M
 
 deployNodeAgent: true
 
@@ -149,14 +149,14 @@ metrics:
     prometheus.io/path: "/metrics"
 
   serviceMonitor:
-    autodetect: true
+    autodetect: false
     enabled: true
     annotations: {}
     additionalLabels: {}
 
   nodeAgentPodMonitor:
-    autodetect: true
-    enabled: false
+    autodetect: false
+    enabled: true
     annotations: {}
     additionalLabels: {}
 
