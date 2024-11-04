@@ -170,7 +170,7 @@ metrics:
         annotations:
           # yamllint disable-line rule:line-length
           message: Velero backup {{ $labels.schedule }} {{ $labels.namespace }} failed last backups
-        expr: velero_backup_last_status{schedule!=""} = 0
+        expr: velero_backup_last_status{schedule!=""} != 1
         for: 15m
         labels:
           severity: warning
