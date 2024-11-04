@@ -170,10 +170,9 @@ kubeScheduler:
 kubeProxy:
   enabled: false
 
-prometheusOperator:
-  verticalPodAutoscaler:
-    enabled: true
-
+# prometheusOperator:
+#   verticalPodAutoscaler:
+#     enabled: true
 # extraManifests:
 #   - kind: VerticalPodAutoscaler
 #     apiVersion: autoscaling.k8s.io/v1
