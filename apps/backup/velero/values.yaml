@@ -51,9 +51,9 @@ nodeAgent:
   resources:
     requests:
       cpu: 63m
-      memory: 921M
+      memory: 248M
     limits:
-      cpu: 63m
+      cpu: 109m
       memory: 921M
 
 initContainers:
