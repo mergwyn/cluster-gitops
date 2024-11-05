@@ -35,6 +35,14 @@ podAnnotations:
   # post.hook.restore.velero.io/timeout: 3m
   # yamllint enable rule:line-length
 
+resources:
+  requests:
+    cpu: 1168m
+    memory: 866M
+  limits:
+    cpu: 1168m
+    memory: 866M
+
 metrics:
   enabled: true
   serviceMonitor:
