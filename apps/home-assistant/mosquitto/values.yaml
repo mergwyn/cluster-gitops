@@ -3,6 +3,15 @@ image:
   repository: eclipse-mosquitto
   tag: 2.0.20
 
+
+resources:
+  requests:
+    cpu: 15m
+    memory: 105M
+  limits:
+    cpu: 15m
+    memory: 105M
+
 persistence:
   data:
     enabled: true
