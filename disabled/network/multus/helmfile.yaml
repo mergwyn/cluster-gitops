@@ -1,0 +1,7 @@
+---
+releases:
+  - name: multus
+    chart: oci://registry-1.docker.io/bitnamicharts/multus-cni
+    version: 2.1.18
+    values:
+      - values.yaml
