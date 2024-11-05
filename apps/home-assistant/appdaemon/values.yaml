@@ -20,6 +20,14 @@ persistence:
     existingClaim: home-assistant-config
     accessMode: ReadWriteOnce
 
+resources:
+  requests:
+    cpu: 48m
+    memory: 163M
+  limits:
+    cpu: 2176m
+    memory: 454M
+
 ingress:
   main:
     enabled: true
