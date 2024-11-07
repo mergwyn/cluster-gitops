@@ -1,13 +1,11 @@
 ---
 repositories:
-  - name: kyverno
-    url: https://kyverno.github.io/kyverno/
   - name: bedag
     url: https://bedag.github.io/helm-charts/
 
 releases:
   - name: kyverno
-    chart: kyverno/kyverno
+    chart: oci://ghcr.io/kyverno/charts/kyverno
     version: 3.3.2
     values:
       - values.yaml
