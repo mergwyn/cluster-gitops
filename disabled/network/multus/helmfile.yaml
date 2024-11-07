@@ -1,7 +1,15 @@
 ---
 releases:
-  - name: multus
-    chart: oci://registry-1.docker.io/bitnamicharts/multus-cni
-    version: 2.1.18
+  - name: whereabouts
+    chart: oci://registry-1.docker.io/bitnamicharts/whereabouts
+    version: 0.8.0
     values:
-      - values.yaml
+      - whereabouts-values.yaml
+
+  - name: multus-cni
+    chart: oci://registry-1.docker.io/bitnamicharts/multus-cni
+    version: 2.1.19
+    needs:
+      - whereabouts
+    values:
+      - multus-values.yaml
