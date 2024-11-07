@@ -1,11 +1,7 @@
 ---
-repositories:
-  - name: kubereboot
-    url: https://kubereboot.github.io/charts
-
 releases:
   - name: kured
-    chart: kubereboot/kured
+    chart: oci://ghcr.io/kubereboot/charts/kured
     version: 5.5.1
     values:
       - values.yaml
