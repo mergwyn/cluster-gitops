@@ -13,7 +13,7 @@ spec:
           - path: bootstrap/*/*
           - path: core/*/*
           - path: apps/*/*
-          # - path: apps/downloaders/prowlarr
+          # - path: apps/downloaders/*
           #   exclude: true
 
   template:
@@ -42,6 +42,11 @@ spec:
             - /spec/resourceManager
             - /spec/tolerations
             - /metadata/annotations
+        - kind: ClusterPolicy
+          group: '*'
+          name: backup-all-volumes
+          jsonPointers:
+            - /spec/rules/0/skipBackgroundRequests
 
       syncPolicy:
         automated:
