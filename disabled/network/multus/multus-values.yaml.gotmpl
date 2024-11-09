@@ -2,6 +2,8 @@
 hostCNIBinDir: /var/lib/rancher/k3s/data/cni
 hostCNINetDir: /var/lib/rancher/k3s/agent/etc/cni/net.d
 
+extraArgs:
+  - "--multus-kubeconfig-file-host={{`{{ .Values.hostCNINetDir }}`}}/multus.d/multus.kubeconfig"
 extraDeploy:
   - apiVersion: "k8s.cni.cncf.io/v1"
     kind: NetworkAttachmentDefinition
