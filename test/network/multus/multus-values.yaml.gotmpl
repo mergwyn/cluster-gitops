@@ -1,9 +1,13 @@
 ---
+hostCNIBinDir: /var/lib/rancher/k3s/data/cni
+hostCNINetDir: /var/lib/rancher/k3s/agent/etc/cni/net.d
+
 extraDeploy:
   - apiVersion: "k8s.cni.cncf.io/v1"
     kind: NetworkAttachmentDefinition
     metadata:
-      name: macvlan-conf
+      name: whereabouts-macvlan
+      namespace: {{ .Release.Namespace | default "default" }}
     spec:
       config: '{
           "cniVersion": "0.3.1",
@@ -13,7 +17,7 @@ extraDeploy:
           "ipam": {
             "type": "whereabputs
             "datastore": "kubernetes",
-            "kubernetes": { "kubeconfig": "/etc/cni/net.d/whereabouts.d/whereabouts.kubeconfig" },
+            "kubernetes": { "kubeconfig": {{`{{ .Values.hostCNIBinDir }}`}}/whereabouts.d/whereabouts.kubeconfig" },
             "subnet": "10.58.0.0/16",
             "rangeStart": "10.58.0.40",
             "rangeEnd": "10.58.0.47"
