@@ -117,6 +117,19 @@ configs:
           app.kubernetes.io/name:
             value: velero
 
+      - name: mqtt-credentials
+        namespace: home-assistant
+        data:
+          MQTT_USER:
+            secret: mqtt_credentials§
+            key: MQTT_USERMQTT_PASSWORD
+          MQTT_PASSWORD:
+            secret: mqtt_credentials§
+            key: MQTT_PASSWORD
+        labels:
+          app.kubernetes.io/name:
+            value: mosquitto
+
       - name: privatevpn-ovn
         namespace: network
         data:
