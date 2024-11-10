@@ -36,7 +36,7 @@ affinity:
 
 resources:
   requests:
-    cpu: 15m
+    cpu: 100m
     memory: 351M
     gpu.intel.com/i915: "1"
   limits:
