@@ -121,10 +121,10 @@ configs:
         namespace: home-assistant
         data:
           MQTT_USER:
-            secret: mqtt_credentials§
-            key: MQTT_USERMQTT_PASSWORD
+            secret: mqtt_credentials
+            key: MQTT_USER
           MQTT_PASSWORD:
-            secret: mqtt_credentials§
+            secret: mqtt_credentials
             key: MQTT_PASSWORD
         labels:
           app.kubernetes.io/name:
