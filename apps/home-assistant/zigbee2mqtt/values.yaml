@@ -1,0 +1,93 @@
+---
+image:
+  repository: koenkk/zigbee2mqtt
+  tag: 1.40.2
+
+env:
+  - name: TZ
+    value: Europe/London
+  - name: ZIGBEE2MQTT_DATA
+    value: /data
+  - name: ZIGBEE2MQTT_CONFIG_MQTT_USER
+    valueFrom:
+      secretKeyRef:
+        key: MQTT_USER
+        name: mqtt-credentials
+  - name: ZIGBEE2MQTT_CONFIG_MQTT_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        key: MQTT_PASSWORD
+        name: mqtt-credentials
+
+initContainers:
+  copy-config:
+    image: busybox
+    command:
+      - sh
+      - -c
+      - cp /app/configuration.yaml /data/configuration.yaml
+    volumeMounts:
+      - mountPath: /data
+        name: data
+      - mountPath: /app/configuration.yaml
+        name: zigbee2mqtt-settings
+        subPath: configuration.yaml
+
+service:
+  main:
+    ports:
+      http:
+        port: 8080
+
+# TODO enable ingress
+ingress:
+  # -- Enable and configure ingress settings for the chart under this key.
+  # @default -- See values.yaml
+  main:
+    enabled: false
+
+# @default -- See values.yaml
+persistence:
+  data:
+    enabled: true
+    mountPath: /data
+    type: pvc
+    storageClass: openebs-zfspv
+    accessMode: ReadWriteOnce
+    size: 1Gi
+
+config:
+  # These will be applied ONLY on first run
+  # Home Assistant integration (MQTT discovery)
+  homeassistant: true  # default: false
+
+  permit_join: false
+
+  # MQTT settings
+  mqtt:
+    # MQTT base topic for zigbee2mqtt MQTT messages
+    base_topic: zigbee2mqtt
+    # MQTT server URL
+    server: "mqtt://mosquitto:1883"
+    include_device_information: true
+
+  serial:
+    port: tcp://10.58.0.4:8888
+    adapter: ezsp
+
+  advanced:
+    network_key: GENERATE
+    log_output:
+      - console
+    log_level: info
+
+    last_seen: 'ISO_8601'
+
+    homeassistant_discovery_topic: 'homeassistant'
+    homeassistant_status_topic: 'homeassistant/status'
+
+  # Both of these need to be enabled for the webui
+  frontend:
+    port: 8080
+  experimental:
+    new_api: true

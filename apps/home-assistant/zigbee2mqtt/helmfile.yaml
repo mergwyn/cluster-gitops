@@ -1,0 +1,11 @@
+---
+repositories:
+  - name: lmatfy
+    url: https://lmatfy.github.io/charts/
+
+releases:
+  - name: zigbee2mqtt
+    chart: lmatfy/zigbee2mqtt
+    version: v0.1.7
+    values:
+      - values.yaml
