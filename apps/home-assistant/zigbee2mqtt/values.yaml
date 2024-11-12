@@ -91,3 +91,11 @@ config:
     port: 8080
   experimental:
     new_api: true
+
+resources:
+  requests:
+    cpu: 15m
+    memory: 184M
+  limits:
+    cpu: 15m
+    memory: 184M
