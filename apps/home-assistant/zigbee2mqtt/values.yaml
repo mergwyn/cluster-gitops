@@ -79,7 +79,7 @@ config:
     network_key: GENERATE
     log_output:
       - console
-    log_level: info
+    log_level: debug
 
     last_seen: 'ISO_8601'
 
@@ -92,10 +92,10 @@ config:
   experimental:
     new_api: true
 
-resources:
-  requests:
-    cpu: 15m
-    memory: 184M
-  limits:
-    cpu: 15m
-    memory: 184M
+# resources:
+#   requests:
+#     cpu: 15m
+#     memory: 184M
+#   limits:
+#     cpu: 15m
+#     memory: 184M
