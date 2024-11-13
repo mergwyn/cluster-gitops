@@ -6,7 +6,7 @@ repositories:
 releases:
   - name: kyverno
     chart: oci://ghcr.io/kyverno/charts/kyverno
-    version: 3.3.2
+    version: 3.3.3
     values:
       - values.yaml
 
