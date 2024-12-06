@@ -2,7 +2,7 @@
 releases:
   - name: whereabouts
     chart: oci://registry-1.docker.io/bitnamicharts/whereabouts
-    version: 1.1.16
+    version: 1.1.17
     values:
       - whereabouts-values.yaml
 
