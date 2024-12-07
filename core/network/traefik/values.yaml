@@ -23,6 +23,12 @@ ports:
   websecure:
     tls:
       enabled: true
+  mqtt:
+    protocol: TCP
+    port: 1833
+  mqtts:
+    protocol: TCP
+    port: 8883
 
 providers:
   kubernetesCRD:
