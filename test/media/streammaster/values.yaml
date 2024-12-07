@@ -18,6 +18,11 @@ controllers:
         image:
           repository: senexcrenshaw/streammaster
           tag: channels-0.15.0.51
+        resources:
+          requests:
+            gpu.intel.com/i915: "1"
+          limits:
+            gpu.intel.com/i915: "1"
 
 service:
   # Configure a service for the main application
@@ -27,17 +32,6 @@ service:
     ports:
       http:
         port: 7095
-
-defaultPodOptions:
-  affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-          - matchExpressions:
-              - key: kubernetes.io/hostname
-                operator: In
-                values:
-                  - foxtrot
 
 ingress:
   streammaster:
