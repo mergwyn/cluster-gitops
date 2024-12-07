@@ -30,9 +30,9 @@ configuration:
         s3ForcePathStyle: true
         s3Url: http://foxtrot.theclarkhome.com:9000
         publicUrl: http://foxtrot.theclarkhome.com:9000
-  volumeSnapshotLocation:
-    - name: openebs-zfspv
-      provider: csi
+  # volumeSnapshotLocation:
+  #   - name: openebs-zfspv
+  #     provider: csi
 
 snapshotsEnabled: false
 # defaultVolumeSnapshotLocations: csi:seaweedfs
