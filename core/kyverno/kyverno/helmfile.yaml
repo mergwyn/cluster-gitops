@@ -10,8 +10,14 @@ releases:
     values:
       - values.yaml
 
-  - name: kyverno-extra-manifests
+  - name: kyverno-backup-all-volumes-policy
     chart: bedag/raw
     version: 2.0.0
     values:
       - backup-all-volumes.yaml
+
+  - name: kyverno-add-velero-label-to-ns-policy
+    chart: bedag/raw
+    version: 2.0.0
+    values:
+      - add-velero-label-to-ns.yaml
