@@ -5,6 +5,19 @@ admissionController:
   replicas: 3
 backgroundController:
   replicas: 3
+  rbac:
+    clusterRole:
+      extraResources:
+        - apiGroups:
+            - ''
+          resources:
+            - namespaces
+          verbs:
+            - create
+            - update
+            - delete
+            - patch
+
 cleanupController:
   replicas: 3
 reportsController:
