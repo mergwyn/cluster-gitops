@@ -7,7 +7,7 @@ image:
 
 routed_namespaces:
   - downloaders
-  - vpn
+  - media
 
 settings:
   NOT_ROUTED_TO_GATEWAY_CIDRS: "10.0.0.0/8"
