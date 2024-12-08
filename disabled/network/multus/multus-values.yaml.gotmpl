@@ -1,29 +1,58 @@
 ---
-hostCNIBinDir: /var/lib/rancher/k3s/data/cni
+# vim: set filetype=yaml:
+
+# hostCNIBinDir: /var/lib/rancher/k3s/data/cni
+hostCNIBinDir: /var/lib/rancher/k3s/data/current/bin
 hostCNINetDir: /var/lib/rancher/k3s/agent/etc/cni/net.d
 
-extraArgs:
-  - "--multus-kubeconfig-file-host={{`{{ .Values.hostCNINetDir }}`}}/multus.d/multus.kubeconfig"
-extraDeploy:
-  - apiVersion: "k8s.cni.cncf.io/v1"
-    kind: NetworkAttachmentDefinition
-    metadata:
-      name: whereabouts-macvlan
-      namespace: {{ .Release.Namespace | default "default" }}
-    spec:
-      config: '{
-          "cniVersion": "0.3.1",
-          "name": "whereabouts-maclan",
-          "type": "macvlan",
-          "master": "br0",
-          "ipam": {
-            "type": "whereabputs
-            "datastore": "kubernetes",
-            "kubernetes": { "kubeconfig": {{`{{ .Values.hostCNIBinDir }}`}}/whereabouts.d/whereabouts.kubeconfig" },
-            "subnet": "10.58.0.0/16",
-            "rangeStart": "10.58.0.40",
-            "rangeEnd": "10.58.0.47"
-            "log_file" : "/tmp/whereabouts.log",
-            "log_level" : "debug"
-          }
-        }'
+image:
+  debug: true
+
+# diagnosticMode:
+#   enabled: true
+
+# extraVolumeMounts:
+#   - name: cni-current-bin-dir
+#     mountPath: /bitnami/multus-cni/host/opt/cni/extrabin
+#     mountPath: /var/lib/rancher/k3s/data/3345fdb78d4ac6f55d7d70b8ec401ed32d58d5af6b2e11412cd5a2d3c50ff3d1/bin
+
+# extraVolumes:
+#   - name: cni-current-bin-dir
+#     hostPath:
+#       path: /var/lib/rancher/k3s/data/3345fdb78d4ac6f55d7d70b8ec401ed32d58d5af6b2e11412cd5a2d3c50ff3d1/bin
+
+# extraEnvVars:
+#   - name: CNI_PATH
+#     value: /bitnami/multus-cni/host/opt/cni/extrabin
+
+# args:
+#   - "--multus-conf-file=auto"
+#   - "--cni-conf-dir={{`{{ .Values.CNIMountPath }}`}}/etc/cni/net.d"
+#   - "--multus-cni-conf-dir={{`{{ .Values.CNIMountPath }}`}}/etc/cni/net.d"
+#   - "--cni-bin-dir={{`{{ .Values.CNIMountPath }}`}}/opt/cni/bin"
+#   - "--multus-kubeconfig-file-host=/var/lib/rancher/k3s/agent/etc/cni/net.d/multus.d/multus.kubeconfig"
+#   - "--multus-log-level=debug"
+
+# extraDeploy:
+#   - apiVersion: "k8s.cni.cncf.io/v1"
+#     kind: NetworkAttachmentDefinition
+#     metadata:
+#       name: whereabouts-macvlan
+#       namespace: {{.Release.Namespace | default "default"}}
+#     spec:
+#       config: '{
+#           "cniVersion": "0.3.1",
+#           "name": "whereabouts-maclan",
+#           "type": "macvlan",
+#           "master": "br0",
+#           "ipam": {
+#             "type": "whereabouts
+#             "datastore": "kubernetes",
+#             "kubernetes": { "kubeconfig": {{`{{ .Values.hostCNIBinDir }}`}}/whereabouts.d/whereabouts.kubeconfig" },
+#             "subnet": "10.58.0.0/16",
+#             "rangeStart": "10.58.0.40",
+#             "rangeEnd": "10.58.0.47"
+#             "log_file" : "/tmp/whereabouts.log",
+#             "log_level" : "debug"
+#           }
+#         }'
