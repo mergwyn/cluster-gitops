@@ -35,4 +35,4 @@ resources:
             patchStrategicMerge:
               metadata:
                 labels:
-                  velero-backup-pvc: true
+                  velero-backup-pvc: "true"
