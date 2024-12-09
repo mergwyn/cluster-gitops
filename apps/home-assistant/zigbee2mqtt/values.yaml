@@ -92,10 +92,10 @@ config:
   experimental:
     new_api: true
 
-# resources:
-#   requests:
-#     cpu: 15m
-#     memory: 184M
-#   limits:
-#     cpu: 15m
-#     memory: 184M
+resources:
+  requests:
+    cpu: 15m
+    memory: 127M
+  limits:
+    cpu: 15m
+    memory: 231M
