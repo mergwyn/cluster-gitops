@@ -36,12 +36,12 @@ affinity:
 
 resources:
   requests:
-    cpu: 100m
-    memory: 351M
+    cpu: 2048m
+    memory: 672M
     gpu.intel.com/i915: "1"
   limits:
-    cpu: 1908m
-    memory: 1024M
+    cpu: 2048m
+    memory: 672M
     gpu.intel.com/i915: "1"
 
 persistence:
