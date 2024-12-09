@@ -1,0 +1,10 @@
+---
+repositories:
+  - name: fairwinds-stable
+    url: https://charts.fairwinds.com/stable
+
+releases:
+  - name: goldilocks
+    chart: fairwinds-stable/goldilocks
+    values:
+      - values.yaml
