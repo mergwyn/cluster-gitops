@@ -20,12 +20,12 @@ controllers:
           tag: 0.17.9
         resources:
           requests:
-            cpu: 92m
-            memory: 814M
+            cpu: 182m
+            memory: 1313M
             gpu.intel.com/i915: "1"
           limits:
-            cpu: 915m
-            memory: 1257M
+            cpu: 182m
+            memory: 1313M
             gpu.intel.com/i915: "1"
 
 service:
