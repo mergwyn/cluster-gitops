@@ -45,3 +45,11 @@ persistence:
     type: nfs
     server: 10.58.0.12
     path: /srv/media
+
+resources:
+  requests:
+    cpu: 10m
+    memory: 249M
+  limits:
+    cpu: 29m
+    memory: 2879M

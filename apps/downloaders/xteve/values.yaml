@@ -64,3 +64,11 @@ persistence:
     server: 10.58.0.12
     path: /srv/media/xmltv
     enabled: true
+
+resources:
+  requests:
+    cpu: 10m
+    memory: 110M
+  limits:
+    cpu: 13m
+    memory: 160M
