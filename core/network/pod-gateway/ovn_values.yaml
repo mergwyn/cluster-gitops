@@ -46,3 +46,11 @@ addons:
     envFrom:
       - secretRef:
           name: privatevpn-ovn
+
+resources:
+  requests:
+    cpu: 10m
+    memory: 53M
+  limits:
+    cpu: 61m
+    memory: 118M
