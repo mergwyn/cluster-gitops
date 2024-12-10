@@ -18,6 +18,8 @@ controllers:
         image:
           repository: senexcrenshaw/streammaster
           tag: 0.17.9
+        env:
+          POSTGRES_USER: postgres
         resources:
           requests:
             cpu: 182m
