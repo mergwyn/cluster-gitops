@@ -1,13 +1,17 @@
 ---
 global:
-  # -- Set an override for the prefix of the fullname
   nameOverride: streammaster
-  # -- Set the entire name definition
-  fullnameOverride:
-  # -- Set additional global labels. Helm templates can be used.
-  labels: {}
-  # -- Set additional global annotations. Helm templates can be used.
-  annotations: {}
+
+defaultPodOptions:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: NotIn
+                values:
+                  - golf
 
 controllers:
   streammaster:
@@ -20,15 +24,21 @@ controllers:
           tag: 0.17.9
         env:
           POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: sm123
+          PGDATA: /config/DB
+          POSTGRES_HOST: 127.0.0.1
+          POSTGRES_DB: StreamMaster
+          BACKUP_VERSIONS_TO_KEEP: 5
+
         resources:
           requests:
             cpu: 182m
             memory: 1313M
-            gpu.intel.com/i915: "1"
+            # gpu.intel.com/i915: "1"  # enable if vaapi used in sm
           limits:
             cpu: 182m
             memory: 1313M
-            gpu.intel.com/i915: "1"
+            # gpu.intel.com/i915: "1"  # enable if vaapi used in sm
 
 service:
   # Configure a service for the main application
@@ -64,8 +74,6 @@ persistence:
     accessMode: ReadWriteOnce
     retain: true
     size: 1G
-    globalMounts:
-      - path: /root/.streammaster
 
   logos:
     type: persistentVolumeClaim
@@ -73,5 +81,3 @@ persistence:
     accessMode: ReadWriteOnce
     size: 1G
     retain: true
-    globalMounts:
-      - path: /root/.streammaster/tv-logos
