@@ -79,13 +79,13 @@ repoServer:
           name: argocd-cmp-cm
         - mountPath: /tmp
           name: cmp-tmp
-  resources:
-    requests:
-      cpu: 15m
-      memory: 105M
-    limits:
-      cpu: 16m
-      memory: 140M
+#  resources:
+#    requests:
+#      cpu: 15m
+#      memory: 105M
+#    limits:
+#      cpu: 16m
+#      memory: 140M
   volumes:
     - name: argocd-cmp-cm
       configMap:
