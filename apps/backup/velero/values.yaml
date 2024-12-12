@@ -39,22 +39,22 @@ snapshotsEnabled: false
 
 resources:
   requests:
-    cpu: 763m
-    memory: 493M
+    cpu: 22m
+    memory: 549M
   limits:
-    cpu: 1000m
-    memory: 493M
+    cpu: 997m
+    memory: 1066M
 
 deployNodeAgent: true
 
 nodeAgent:
   resources:
     requests:
-      cpu: 63m
-      memory: 248M
+      cpu: 15m
+      memory: 549M
     limits:
-      cpu: 1000m
-      memory: 921M
+      cpu: 16m
+      memory: 1545M
 
 initContainers:
   - name: velero-plugin-for-aws
