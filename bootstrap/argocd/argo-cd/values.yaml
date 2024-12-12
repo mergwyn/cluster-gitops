@@ -79,6 +79,13 @@ repoServer:
           name: argocd-cmp-cm
         - mountPath: /tmp
           name: cmp-tmp
+  resources:
+    requests:
+      cpu: 15m
+      memory: 105M
+    limits:
+      cpu: 16m
+      memory: 140M
   volumes:
     - name: argocd-cmp-cm
       configMap:
@@ -113,18 +120,6 @@ extraObjects:
               port: 80
               scheme: h2c
       tls: {}
-  # - kind: VerticalPodAutoscaler
-  #   apiVersion: autoscaling.k8s.io/v1
-  #   metadata:
-  #     namespace: argocd
-  #     name: argocd-application-controller-vpa
-  #   spec:
-  #     targetRef:
-  #       apiVersion: "apps/v1"
-  #       kind: StatefulSet
-  #       name: argo-cd-argocd-application-controller
-  #     updatePolicy:
-  #       updateMode: "Auto"
 
 controller:
   metrics:
@@ -185,3 +180,46 @@ controller:
               12 hours which means that the state of this cloud has drifted away from the
               state inside Git.
             # yamllint enable rule:line-length
+
+  resources:
+    requests:
+      cpu: 62m
+      memory: 717M
+    limits:
+      cpu: 367m
+
+applicationSet:
+  resources:
+    requests:
+      cpu: 15m
+      memory: 105M
+    limits:
+      cpu: 34m
+      memory: 164M
+
+dex:
+  resources:
+    requests:
+      cpu: 15m
+      memory: 105M
+    limits:
+      cpu: 16m
+      memory: 117M
+
+notifications:
+  resources:
+    requests:
+      cpu: 15m
+      memory: 105M
+    limits:
+      cpu: 16m
+      memory: 117M
+
+redis:
+  resources:
+    requests:
+      cpu: 22m
+      memory: 105M
+    limits:
+      cpu: 52m
+      memory: 105M
