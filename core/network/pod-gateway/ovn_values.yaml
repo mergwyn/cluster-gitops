@@ -49,7 +49,7 @@ addons:
 
 resources:
   requests:
-    cpu: 10m
+    cpu: 40m
     memory: 53M
   limits:
     cpu: 61m
