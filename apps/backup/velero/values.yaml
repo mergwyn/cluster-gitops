@@ -50,7 +50,7 @@ deployNodeAgent: true
 nodeAgent:
   resources:
     requests:
-      cpu: 15m
+      cpu: 30m
       memory: 549M
     limits:
       cpu: 16m
