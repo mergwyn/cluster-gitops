@@ -53,7 +53,7 @@ nodeAgent:
       cpu: 30m
       memory: 549M
     limits:
-      cpu: 16m
+      cpu: 90m
       memory: 1545M
 
 initContainers:
