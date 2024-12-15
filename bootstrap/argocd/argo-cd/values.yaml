@@ -184,10 +184,10 @@ controller:
   resources:
     requests:
       cpu: 62m
-      memory: 717M
+      memory: 117M
     limits:
       cpu: 367m
-      memory: 117M
+      memory: 177M
 
 applicationSet:
   resources:
