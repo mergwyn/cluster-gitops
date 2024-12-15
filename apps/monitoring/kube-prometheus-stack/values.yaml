@@ -170,18 +170,11 @@ kubeScheduler:
 kubeProxy:
   enabled: false
 
-# prometheusOperator:
-#   verticalPodAutoscaler:
-#     enabled: true
-# extraManifests:
-#   - kind: VerticalPodAutoscaler
-#     apiVersion: autoscaling.k8s.io/v1
-#     metadata:
-#       name: kube-prometheus-stack-grafana-vpa
-#     spec:
-#       targetRef:
-#         apiVersion: "apps/v1"
-#         kind: Deployment
-#         name: kube-prometheus-stack-grafana
-#       updatePolicy:
-#         updateMode: "Auto"
+prometheusOperator:
+  resources:
+    requests:
+      cpu: 15m
+      memory: 105M
+    limits:
+      cpu: 15m
+      memory: 105M
