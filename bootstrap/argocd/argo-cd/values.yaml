@@ -186,7 +186,7 @@ controller:
       cpu: 22m
       memory: 443M
     limits:
-      cpu: 142m
+      cpu: 242m
       memory: 1175M
 
 applicationSet:
