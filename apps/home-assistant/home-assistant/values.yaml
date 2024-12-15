@@ -40,7 +40,7 @@ resources:
     cpu: 1168m
     memory: 866M
   limits:
-    cpu: 1168m
+    # cpu: 1168m
     memory: 866M
 
 metrics:

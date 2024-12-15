@@ -157,7 +157,7 @@ defaultRules:
 
 resources:
   limits:
-    cpu: 400m
+    # cpu: 400m
     memory: 512Mi
   requests:
     cpu: 200m
@@ -176,5 +176,5 @@ prometheusOperator:
       cpu: 15m
       memory: 105M
     limits:
-      cpu: 15m
+      # cpu: 15m
       memory: 105M

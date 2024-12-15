@@ -8,7 +8,7 @@ resources:
     cpu: 15m
     memory: 105M
   limits:
-    cpu: 15m
+    # cpu: 15m
     memory: 105M
 
 persistence:

@@ -25,7 +25,7 @@ resources:
     cpu: 48m
     memory: 163M
   limits:
-    cpu: 2176m
+    # cpu: 2176m
     memory: 454M
 
 ingress:

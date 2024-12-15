@@ -84,7 +84,7 @@ repoServer:
       cpu: 100m
       memory: 100M
     limits:
-      cpu: 300m
+      # cpu: 300m
       memory: 400M
   volumes:
     - name: argocd-cmp-cm
@@ -186,7 +186,7 @@ controller:
       cpu: 22m
       memory: 443M
     limits:
-      cpu: 242m
+      # cpu: 242m
       memory: 1175M
 
 server:
@@ -195,7 +195,7 @@ server:
       cpu: 15m
       memory: 105M
     limits:
-      cpu: 50m
+      # cpu: 50m
       memory: 164M
 
 applicationSet:
@@ -204,7 +204,7 @@ applicationSet:
       cpu: 15m
       memory: 105M
     limits:
-      cpu: 34m
+      # cpu: 34m
       memory: 164M
 
 dex:
@@ -213,7 +213,7 @@ dex:
       cpu: 15m
       memory: 105M
     limits:
-      cpu: 16m
+      # cpu: 16m
       memory: 117M
 
 notifications:
@@ -222,7 +222,7 @@ notifications:
       cpu: 15m
       memory: 105M
     limits:
-      cpu: 16m
+      # cpu: 16m
       memory: 117M
 
 redis:
@@ -231,5 +231,5 @@ redis:
       cpu: 22m
       memory: 105M
     limits:
-      cpu: 52m
+      # cpu: 52m
       memory: 105M

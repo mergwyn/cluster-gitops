@@ -42,7 +42,7 @@ resources:
     cpu: 22m
     memory: 549M
   limits:
-    cpu: 997m
+    # cpu: 997m
     memory: 1066M
 
 deployNodeAgent: true
@@ -53,7 +53,7 @@ nodeAgent:
       cpu: 30m
       memory: 549M
     limits:
-      cpu: 90m
+      # cpu: 90m
       memory: 1545M
 
 initContainers:
