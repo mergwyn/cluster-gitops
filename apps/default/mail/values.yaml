@@ -13,10 +13,10 @@ config:
 
 existingSecret: postfix-mail
 
-# resources:
-#   requests:
-#     cpu: 15m
-#     memory: 105M
-#   limits:
-#     cpu: 34m
-#     memory: 140M
+resources:
+  requests:
+    cpu: 15m
+    memory: 105M
+  limits:
+    cpu: 134m
+    memory: 240M
