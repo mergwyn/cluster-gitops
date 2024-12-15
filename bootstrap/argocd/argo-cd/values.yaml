@@ -79,7 +79,7 @@ repoServer:
           name: argocd-cmp-cm
         - mountPath: /tmp
           name: cmp-tmp
-  eesources:
+  resources:
     requests:
       cpu: 100m
       memory: 100M
