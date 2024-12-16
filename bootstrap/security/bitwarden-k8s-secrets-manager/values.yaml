@@ -18,6 +18,22 @@ configs:
           app.kubernetes.io/part-of:
             value: argo-cd
 
+      - name: argocd-secret
+        namespace: argocd
+        data:
+          server.secretkey:
+            secret: argocd_secret
+            key: server-secretkey
+          admin.password:
+            secret: argocd_secret
+            key: admin-password
+          admin.passwordMtime:
+            secret: argocd_secret
+            key: admin-passwordMtime
+        labels:
+          app.kubernetes.io/part-of:
+            value: argo-cd
+
       - name: cloudcasa-clusterid
         namespace: cloudcasa-io
         data:
