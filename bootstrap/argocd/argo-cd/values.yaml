@@ -81,11 +81,11 @@ repoServer:
           name: cmp-tmp
   resources:
     requests:
-      cpu: 100m
-      memory: 100M
+      cpu: 10m
+      memory: 110M
     limits:
       # cpu: 300m
-      memory: 400M
+      memory: 1400M
   volumes:
     - name: argocd-cmp-cm
       configMap:
@@ -183,8 +183,8 @@ controller:
 
   resources:
     requests:
-      cpu: 22m
-      memory: 443M
+      cpu: 47m
+      memory: 697M
     limits:
       # cpu: 242m
       memory: 1175M
@@ -196,7 +196,7 @@ server:
       memory: 105M
     limits:
       # cpu: 50m
-      memory: 164M
+      memory: 1416M
 
 applicationSet:
   resources:
@@ -205,7 +205,7 @@ applicationSet:
       memory: 105M
     limits:
       # cpu: 34m
-      memory: 164M
+      memory: 1183M
 
 dex:
   resources:
@@ -214,7 +214,7 @@ dex:
       memory: 105M
     limits:
       # cpu: 16m
-      memory: 117M
+      memory: 750M
 
 notifications:
   resources:
@@ -223,7 +223,7 @@ notifications:
       memory: 105M
     limits:
       # cpu: 16m
-      memory: 117M
+      memory: 750M
 
 redis:
   resources:
@@ -232,4 +232,4 @@ redis:
       memory: 105M
     limits:
       # cpu: 52m
-      memory: 105M
+      memory: 174M
