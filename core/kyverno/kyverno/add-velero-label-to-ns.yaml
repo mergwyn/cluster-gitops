@@ -23,7 +23,7 @@ resources:
               - resources:
                   kinds:
                     - Namespace
-                  names:
+                  namespaces:
                     - media
                     - default
                     - downloaders
