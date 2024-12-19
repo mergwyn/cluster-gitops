@@ -1,10 +1,10 @@
 ---
 apiVersionOverride:
   podDisruptionBudget: policy/v1
-admissionController:
-  replicas: 3
+#admissionController:
+#  replicas: 3
 backgroundController:
-  replicas: 3
+#  replicas: 3
   rbac:
     clusterRole:
       extraResources:
@@ -18,10 +18,10 @@ backgroundController:
             - delete
             - patch
 
-cleanupController:
-  replicas: 3
-reportsController:
-  replicas: 3
+#cleanupController:
+#  replicas: 3
+#reportsController:
+#  replicas: 3
 
 # grafana:
 #   enabled: true
