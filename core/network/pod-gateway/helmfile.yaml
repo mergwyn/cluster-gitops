@@ -8,5 +8,5 @@ releases:
     chart: angelnu/pod-gateway
     version: 6.5.1
     values:
-      - ovn_values.yaml
+      - values.yaml
       # - wg_values.yaml
