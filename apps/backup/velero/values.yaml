@@ -62,21 +62,11 @@ initContainers:
     volumeMounts:
       - mountPath: /target
         name: plugins
-#  - name: velero-plugin-for-csi
-#    image: velero/velero-plugin-for-csi:v0.5.0
-#    volumeMounts:
-#      - mountPath: /target
-#        name: plugins
-
-# credentials:
-#   useSecret: true
-#   name: cloud-credentials
-#   existingSecret:
-#   secretContents:
-#     cloud: |
-#       [default]
-#       aws_access_key_id=Unwarlike3-Keenly-Colt
-#       aws_secret_access_key=Choice4-Entourage-Equal
+  - name: velero-plugin-for-csi
+    image: velero/velero-plugin-for-csi:v0.7.1
+    volumeMounts:
+      - mountPath: /target
+        name: plugins
 
 schedules:
   # idrive storage
@@ -183,44 +173,3 @@ metrics:
         for: 15m
         labels:
           severity: warning
-
-      # - alert: VeleroBackupPartialFailures
-      #   # yamllint disable-line rule:line-length
-      #   annotations:
-      #     # yamllint disable-line rule:line-length
-      #     message: Velero backup {{ $labels.schedule }} has {{ $value | humanizePercentage }} partialy failed backups.
-      #   # yamllint disable rule:line-length
-      #   expr: |-
-      #     velero_backup_partial_failure_total{schedule!=""} / velero_backup_attempt_total{schedule!=""} > 0.25
-      #   # yamllint enable rule:line-length
-      #   for: 15m
-      #   labels:
-      #     severity: warning
-      # - alert: VeleroBackupFailures
-      #   annotations:
-      #     # yamllint disable-line rule:line-length
-      #     message: Velero backup {{ $labels.schedule }} has {{ $value | humanizePercentage }} failed backups.
-      #   # yamllint disable rule:line-length
-      #   expr: |-
-      #     velero_backup_failure_total{schedule!=""} / velero_backup_attempt_total{schedule!=""} > 0.25
-      #   # yamllint enable rule:line-length
-      #   for: 15m
-      #   labels:
-      #     severity: warning
-
-# extraObjects:
-#   velero:
-#     apiVersion: autoscaling.k8s.io/v1
-#     kind: VerticalPodAutoscaler
-#     metadata:
-#       namespace: velero
-#       name: velero-vpa
-#       #labels:
-#       #  app.kubernetes.io/name: velero
-#     spec:
-#       targetRef:
-#         apiVersion: "apps/v1"
-#         kind:       Deployment
-#         name:       velero
-#       updatePolicy:
-#         updateMode: "Auto"
