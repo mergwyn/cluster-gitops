@@ -31,12 +31,13 @@ configuration:
         s3Url: http://foxtrot.theclarkhome.com:9000
         publicUrl: http://foxtrot.theclarkhome.com:9000
   volumeSnapshotLocation:
-    - provider: aws
+    - name: default
+      provider: aws
       config:
         region: London
 
 snapshotsEnabled: false
-# defaultVolumeSnapshotLocations: csi:seaweedfs
+defaultVolumeSnapshotLocations: default
 
 initContainers:
   - name: velero-plugin-for-aws
