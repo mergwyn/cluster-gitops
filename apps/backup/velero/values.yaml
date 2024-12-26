@@ -3,7 +3,7 @@ configuration:
   uploaderType: kopia
   # defaultVolumesToFsBackup: true
   # defaultSnapshotMoveData: true
-  features: EnableCSI
+  #features: EnableCSI
   backupStorageLocation:
     - name: idrive
       provider: aws
