@@ -8,16 +8,16 @@ env:
   PYTHONUSERBASE: "/config/deps"
   PYTHONPATH: "/config/deps"
 
-podAnnotations:
+# podAnnotations:
   # yamllint disable rule:line-length
-  pre.hook.backup.velero.io/command: |
-    [
-      "/bin/bash",
-      "-c",
-      "--",
-      "apk add sqlite && sqlite3 home-assistant_v2.db '.backup backup-home-assistant_v2.db'"
-    ]
-  pre.hook.backup.velero.io/timeout: 3m
+  # pre.hook.backup.velero.io/command: |
+  #   [
+  #     "/bin/bash",
+  #     "-c",
+  #     "--",
+  #     "apk add sqlite && sqlite3 home-assistant_v2.db '.backup backup-home-assistant_v2.db'"
+  #   ]
+  # pre.hook.backup.velero.io/timeout: 3m
   # post.hook.backup.velero.io/command: |
   #   [
   #     "/bin/bash",
@@ -74,17 +74,6 @@ metrics:
         for: 5m
         labels:
           severity: critical
-# yamllint disable rule:line-length
-#      - alert: VWID3ChargingButtonAbsent
-#        annotations:
-#          description: THe charging button used in zappi automation has disapeared
-#          summary: Possible issue with VW integration
-#        expr: |
-#          absent(homeassistant_entity_available{entity="button.my_id_3_start_charging"} == )
-#        for: 5m
-#        labels:
-#          severity: critical
-# yamllint enable rule:line-length
 
 ingress:
   main:
