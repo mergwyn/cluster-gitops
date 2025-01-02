@@ -41,7 +41,7 @@ resources:
     memory: 866M
   limits:
     # cpu: 1168m
-    memory: 866M
+    memory: 1351M
 
 metrics:
   enabled: true
