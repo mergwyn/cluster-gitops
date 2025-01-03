@@ -1,0 +1,7 @@
+---
+releases:
+  - name: predbat
+    chart: oci://ghcr.io/bjw-s/helm/app-template
+    version: 3.6.0
+    values:
+      - values.yaml
