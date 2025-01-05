@@ -72,7 +72,7 @@ config:
     include_device_information: true
 
   serial:
-    port: tcp://10.58.0.4:8888
+    port: tcp://10.58.0.201:8888
     adapter: ezsp
 
   advanced:
