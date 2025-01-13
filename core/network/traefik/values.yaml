@@ -24,11 +24,17 @@ ports:
     tls:
       enabled: true
   mqtt:
+    port: 1883
+    expose:
+      default: true
+    exposedPort: 1883
     protocol: TCP
-    port: 1833
   mqtts:
-    protocol: TCP
     port: 8883
+    protocol: TCP
+    expose:
+      default: true
+    exposedPort: 8883
 
 providers:
   kubernetesCRD:
