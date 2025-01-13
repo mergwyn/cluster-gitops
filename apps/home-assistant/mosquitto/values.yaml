@@ -3,6 +3,20 @@ image:
   repository: eclipse-mosquitto
   tag: 2.0.20
 
+
+auth:
+  enable: true
+
+service:
+  mosquitto:
+    ports:
+      http:
+        enabled: false
+      mqtt:
+        enabled: true
+        port: 1883
+        protocol: TCP
+
 resources:
   requests:
     cpu: 15m
@@ -30,22 +44,22 @@ persistence:
     size: 10Gi
 
 # TODO convert this to an ingress route??
-ingress:
-  main:
-    enabled: false
-    ingressClass: traefik
-    annotations:
-      traefik.ingress.kubernetes.io/router.entrypoints: mqtt
-    hosts:
-      - host: "mosquitto.theclarkhome.com"
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              # name: main
-              service:
-                name: mqtt
-                port: 9001
-    tls:
-      - hosts:
-          - "*.theclarkhome.com"
+#ingress:
+#  main:
+#    enabled: true
+#    ingressClass: traefik
+#    annotations:
+#      traefik.ingress.kubernetes.io/router.entrypoints: mqtt
+#    hosts:
+#      - host: "mosquitto.theclarkhome.com"
+#        paths:
+#          - path: /
+#            pathType: Prefix
+#            backend:
+#              # name: main
+#              service:
+#                name: mqtt
+#                port: 1833
+#    tls:
+#      - hosts:
+#          - "*.theclarkhome.com"

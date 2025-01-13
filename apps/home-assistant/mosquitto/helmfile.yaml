@@ -9,3 +9,24 @@ releases:
     version: 4.8.2
     values:
       - values.yaml
+
+  - name: mosquitto-ingress-route
+    chart: bedag/raw
+    version: 2.0.0
+    values:
+      - resources:
+          - kind: IngressRouteTCP
+            apiVersion: traefik.io/v1alpha1
+            metadata:
+              name: mosquitto-ingress
+              namespace: home-assistant  # TODO change to Release.Namespace ?
+              annotations:
+                kubernetes.io/ingress.class: traefik-external
+            spec:
+              entryPoints:
+                - mqtt
+              routes:
+                - match: HostSNI(`*`)
+                  services:
+                    - name: mosquitto
+                      port: 1883
