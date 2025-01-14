@@ -84,7 +84,7 @@ configs:
             value: grafana
 
       - name: idrivee2-s3
-        namespace: backup
+        namespace: velero
         data:
           ACCESS_KEY_ID:
             secret: idrivee2_s3
@@ -100,7 +100,7 @@ configs:
             value: velero
 
       - name: idrivee2-s3-credentials
-        namespace: backup
+        namespace: velero
         data:
           cloud:
             secret: idrivee2_s3_credentials
@@ -109,7 +109,7 @@ configs:
             value: velero
 
       - name: minio-s3
-        namespace: backup
+        namespace: velero
         data:
           ACCESS_KEY_ID:
             secret: minio_s3
@@ -125,7 +125,7 @@ configs:
             value: velero
 
       - name: minio-s3-credentials
-        namespace: backup
+        namespace: velero
         data:
           cloud:
             secret: minio_s3_credentials
