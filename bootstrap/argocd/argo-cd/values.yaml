@@ -16,6 +16,15 @@ configs:
   cm:
     kustomize.buildOptions: --enable-helm
     create: true
+    # Exclude velero backups and restores
+    resource.exclusions: |
+      - apiGroups:
+          - "velero.io"
+        kinds:
+          - Backup
+          - Restore
+        clusters:
+          - "*"
     # Enable inter-app sync wave
     resource.customizations.health.argoproj.io_Application: |
       hs = {}
