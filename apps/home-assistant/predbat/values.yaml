@@ -25,7 +25,7 @@ controllers:
           repository: ghcr.io/coder/code-server
           # -- image tag
           # this example is not automatically updated, so be sure to use the latest image
-          tag: 4.19.0
+          tag: 4.96.2
         args:
           - --auth
           - "none"
