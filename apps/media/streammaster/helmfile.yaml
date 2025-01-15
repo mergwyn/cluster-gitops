@@ -1,12 +1,8 @@
 ---
 
-repositories:
-  - name: bjw-s
-    url: https://bjw-s.github.io/helm-charts
-
 releases:
   - name: streammaster
-    chart: bjw-s/app-template
+    chart: oci://ghcr.io/bjw-s/helm/app-template
     version: 3.6.1
     values:
       - values.yaml
