@@ -26,7 +26,7 @@ configuration:
         name: minio-s3-credentials
         key: cloud
       config:
-        region: London
+        region: Northallerton
         s3ForcePathStyle: true
         s3Url: http://foxtrot.theclarkhome.com:9000
         publicUrl: http://foxtrot.theclarkhome.com:9000
@@ -34,7 +34,7 @@ configuration:
     - name: default
       provider: aws
       config:
-        region: London
+        region: Northallerton
 
 snapshotsEnabled: false
 defaultVolumeSnapshotLocations: default
