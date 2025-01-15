@@ -7,6 +7,6 @@ repositories:
 releases:
   - name: streammaster
     chart: bjw-s/app-template
-    version: 3.6.0
+    version: 3.6.1
     values:
       - values.yaml
