@@ -18,24 +18,6 @@ controllers:
         image:
           repository: nipar44/predbat_addon
           tag: 8.8.20
-      code:
-        dependsOn: predbat
-        image:
-          # -- image repository
-          repository: ghcr.io/coder/code-server
-          # -- image tag
-          # this example is not automatically updated, so be sure to use the latest image
-          tag: 4.96.2
-        args:
-          - --auth
-          - "none"
-          - --user-data-dir
-          - "/config/.vscode"
-          - --extensions-dir
-          - "/config/.vscode"
-          - --port
-          - "8081"
-          - "/config"
 
 # TODO add init cintainer or similar to load config
 # TODO add code-server to edit config??
@@ -47,12 +29,6 @@ service:
     ports:
       http:
         port: 5052
-  code:
-    type: ClusterIP
-    controller: predbat
-    ports:
-      http:
-        port: 8081
 
 ingress:
   predbat:
@@ -67,11 +43,6 @@ ingress:
             pathType: Prefix
             service:
               identifier: predbat
-              port: http
-          - path: /code
-            pathType: Prefix
-            service:
-              identifier: code
               port: http
     tls:
       - hosts:
