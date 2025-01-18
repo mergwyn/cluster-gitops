@@ -1,0 +1,7 @@
+---
+releases:
+  - name: esphome
+    chart: oci://ghcr.io/gabe565/charts/esphome
+    version: 0.15.0
+    values:
+      - values.yaml
