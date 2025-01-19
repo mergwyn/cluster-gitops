@@ -30,54 +30,35 @@ controllers:
           tag: 2.0.0
 
         env:
-          - name: TZ
-            value: "Europe/London"
-          - name: ZIGBEE2MQTT_DATA
-            value: "/data"
-          - name: ZIGBEE2MQTT_CONFIG_ADVANCED_HOMEASSISTANT_DISCOVERY_TOPIC
-            value: "homeassistant"
-          - name: ZIGBEE2MQTT_CONFIG_ADVANCED_HOMEASSISTANT_STATUS_TOPIC
-            value: "homeassistant/status"
-          - name: ZIGBEE2MQTT_CONFIG_ADVANCED_LAST_SEEN
-            value: "ISO_8601"
-          - name: ZIGBEE2MQTT_CONFIG_ADVANCED_LOG_LEVEL
-            value: "info"
-          - name: ZIGBEE2MQTT_CONFIG_ADVANCED_LOG_OUTPUT
-            value: '["console"]'
-          - name: ZIGBEE2MQTT_CONFIG_ADVANCED_NETWORK_KEY
-            value: "GENERATE"
-          - name: ZIGBEE2MQTT_CONFIG_EXPERIMENTAL_NEW_API
-            value: true
-          - name: ZIGBEE2MQTT_CONFIG_FRONTEND_PORT
-            value: 8080
-          - name: ZIGBEE2MQTT_CONFIG_FRONTEND_URL
-            value: "https://zigbee2mqtt.theclarkhome.com"
-          - name: ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_ENABLED
-            value: true
-          - name: ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_DISCOVERY_TOPIC
-            value: "homeassistant"
-          # - name: ZIGBEE2MQTT_CONFIG_MQTT_BASE_TOPIC
-          #   value: "zigbee2mqtt"
-          - name: ZIGBEE2MQTT_CONFIG_MQTT_INCLUDE_DEVICE_INFORMATION
-            value: true
-          - name: ZIGBEE2MQTT_CONFIG_MQTT_PASSWORD
+          TZ: "Europe/London"
+          ZIGBEE2MQTT_DATA: "/data"
+          ZIGBEE2MQTT_CONFIG_ADVANCED_HOMEASSISTANT_DISCOVERY_TOPIC: "homeassistant"
+          ZIGBEE2MQTT_CONFIG_ADVANCED_HOMEASSISTANT_STATUS_TOPIC: "homeassistant/status"
+          ZIGBEE2MQTT_CONFIG_ADVANCED_LAST_SEEN: "ISO_8601"
+          ZIGBEE2MQTT_CONFIG_ADVANCED_LOG_LEVEL: "info"
+          ZIGBEE2MQTT_CONFIG_ADVANCED_LOG_OUTPUT: '["console"]'
+          ZIGBEE2MQTT_CONFIG_ADVANCED_NETWORK_KEY: "GENERATE"
+          ZIGBEE2MQTT_CONFIG_EXPERIMENTAL_NEW_API: true
+          ZIGBEE2MQTT_CONFIG_FRONTEND_PORT: 8080
+          ZIGBEE2MQTT_CONFIG_FRONTEND_URL: "https://zigbee2mqtt.theclarkhome.com"
+          ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_ENABLED: true
+          ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_DISCOVERY_TOPIC: "homeassistant"
+          # ZIGBEE2MQTT_CONFIG_MQTT_BASE_TOPIC: "zigbee2mqtt"
+          ZIGBEE2MQTT_CONFIG_MQTT_INCLUDE_DEVICE_INFORMATION: true
+          ZIGBEE2MQTT_CONFIG_MQTT_PASSWORD:
             valueFrom:
               secretKeyRef:
                 name: mqtt-credentials
                 key: MQTT_PASSWORD
-          - name: ZIGBEE2MQTT_CONFIG_MQTT_SERVER
-            value: "mqtt://mosquitto:1883"
-          - name: ZIGBEE2MQTT_CONFIG_MQTT_USER
+          ZIGBEE2MQTT_CONFIG_MQTT_SERVER: "mqtt://mosquitto:1883"
+          ZIGBEE2MQTT_CONFIG_MQTT_USER:
             valueFrom:
               secretKeyRef:
                 name: mqtt-credentials
                 key: MQTT_USER
-          - name: ZIGBEE2MQTT_CONFIG_PERMIT_JOIN
-            value: false
-          - name: ZIGBEE2MQTT_CONFIG_SERIAL_ADAPTER
-            value: "ezsp"
-          - name: ZIGBEE2MQTT_CONFIG_SERIAL_PORT
-            value: "tcp://zigbee1.theclarkhome.com:8888"
+          ZIGBEE2MQTT_CONFIG_PERMIT_JOIN: false
+          ZIGBEE2MQTT_CONFIG_SERIAL_ADAPTER: "ezsp"
+          ZIGBEE2MQTT_CONFIG_SERIAL_PORT: "tcp://zigbee1.theclarkhome.com:8888"
 
         resources:
           requests:
