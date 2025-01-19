@@ -12,7 +12,7 @@ controllers:
         fsGroupChangePolicy: OnRootMismatch
 
     containers:
-      app:
+      zigbee2mqtt:
         image:
           repository: ghcr.io/koenkk/zigbee2mqtt
           tag: 2.0.0
@@ -105,7 +105,7 @@ controllers:
             memory: 512Mi
 
 service:
-  app:
+  zigbee2mqtt:
     controller: zigbee2mqtt
     ports:
       http:
@@ -117,7 +117,7 @@ service:
         port: 12321
 
 ingress:
-  predbat:
+  zigbee2mqtt:
     enabled: true
     className: traefik
     annotations:
@@ -128,7 +128,7 @@ ingress:
           - path: /
             pathType: Prefix
             service:
-              identifier: app
+              identifier: zigbee2mqtt
               port: http
     tls:
       - hosts:
