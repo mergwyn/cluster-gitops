@@ -6,7 +6,14 @@ image:
 env:
   TZ: Europe/London
 
-# podAnnotations:
+podAnnotations:
+  k8s.v1.cni.cncf.io/networks: |
+    [{
+      "name":"macvlan-static",
+      "namespace": "network",
+      "ips": ["10.58.0.210"]
+    }]
+
   # yamllint disable rule:line-length
   # pre.hook.backup.velero.io/command: |
   #   [
@@ -78,11 +85,6 @@ ingress:
     enabled: true
     ingressClass: traefik
     annotations:
-      hajimari.io/enable: "true"
-      hajimari.io/icon: home-assistant
-      hajimari.io/info: Home Automation
-      hajimari.io/url: "https://hass.theclarkhome.com"
-      hajimari.io/group: automation
       traefik.ingress.kubernetes.io/router.entrypoints: websecure
     hosts:
       - host: "hass.theclarkhome.com"
