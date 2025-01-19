@@ -1,68 +1,125 @@
 ---
-image:
-  repository: koenkk/zigbee2mqtt
-  tag: 1.42.0
+controllers:
+  zigbee2mqtt:
+    annotations:
+      reloader.stakater.com/auto: "true"
 
-env:
-  - name: TZ
-    value: "Europe/London"
-  - name: ZIGBEE2MQTT_DATA
-    value: "/data"
-  - name: ZIGBEE2MQTT_CONFIG_ADVANCED_HOMEASSISTANT_DISCOVERY_TOPIC
-    value: "homeassistant"
-  - name: ZIGBEE2MQTT_CONFIG_ADVANCED_HOMEASSISTANT_STATUS_TOPIC
-    value: "homeassistant/status"
-  - name: ZIGBEE2MQTT_CONFIG_ADVANCED_LAST_SEEN
-    value: "ISO_8601"
-  - name: ZIGBEE2MQTT_CONFIG_ADVANCED_LOG_LEVEL
-    value: "info"
-  - name: ZIGBEE2MQTT_CONFIG_ADVANCED_LOG_OUTPUT
-    value: '["console"]'
-  - name: ZIGBEE2MQTT_CONFIG_ADVANCED_NETWORK_KEY
-    value: "GENERATE"
-  - name: ZIGBEE2MQTT_CONFIG_EXPERIMENTAL_NEW_API
-    value: true
-  - name: ZIGBEE2MQTT_CONFIG_FRONTEND_PORT
-    value: 8080
-  - name: ZIGBEE2MQTT_CONFIG_FRONTEND_URL
-    value: "https://zigbee2mqtt.theclarkhome.com"
-  - name: ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_ENABLED
-    value: true
-  - name: ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_DISCOVERY_TOPIC
-    value: "homeassistant"
-  - name: ZIGBEE2MQTT_CONFIG_MQTT_BASE_TOPIC
-    value: "zigbee2mqtt"
-  - name: ZIGBEE2MQTT_CONFIG_MQTT_INCLUDE_DEVICE_INFORMATION
-    value: true
-  - name: ZIGBEE2MQTT_CONFIG_MQTT_PASSWORD
-    valueFrom:
-      secretKeyRef:
-        name: mqtt-credentials
-        key: MQTT_PASSWORD
-  - name: ZIGBEE2MQTT_CONFIG_MQTT_SERVER
-    value: "mqtt://mosquitto:1883"
-  - name: ZIGBEE2MQTT_CONFIG_MQTT_USER
-    valueFrom:
-      secretKeyRef:
-        name: mqtt-credentials
-        key: MQTT_USER
-  - name: ZIGBEE2MQTT_CONFIG_PERMIT_JOIN
-    value: false
-  - name: ZIGBEE2MQTT_CONFIG_SERIAL_ADAPTER
-    value: "ezsp"
-  - name: ZIGBEE2MQTT_CONFIG_SERIAL_PORT
-    value: "mqtt://10.58.0.201:1883"
+    pod:
+      securityContext:
+        runAsUser: 2000
+        runAsGroup: 2000
+        fsGroup: 2000
+        fsGroupChangePolicy: OnRootMismatch
+
+    containers:
+      app:
+        image:
+          repository: ghcr.io/koenkk/zigbee2mqtt
+          tag: 2.0.0
+        env:
+          - name: TZ
+            value: "Europe/London"
+          - name: ZIGBEE2MQTT_DATA
+            value: "/data"
+          - name: ZIGBEE2MQTT_CONFIG_ADVANCED_HOMEASSISTANT_DISCOVERY_TOPIC
+            value: "homeassistant"
+          - name: ZIGBEE2MQTT_CONFIG_ADVANCED_HOMEASSISTANT_STATUS_TOPIC
+            value: "homeassistant/status"
+          - name: ZIGBEE2MQTT_CONFIG_ADVANCED_LAST_SEEN
+            value: "ISO_8601"
+          - name: ZIGBEE2MQTT_CONFIG_ADVANCED_LOG_LEVEL
+            value: "info"
+          - name: ZIGBEE2MQTT_CONFIG_ADVANCED_LOG_OUTPUT
+            value: '["console"]'
+          - name: ZIGBEE2MQTT_CONFIG_ADVANCED_NETWORK_KEY
+            value: "GENERATE"
+          - name: ZIGBEE2MQTT_CONFIG_EXPERIMENTAL_NEW_API
+            value: true
+          - name: ZIGBEE2MQTT_CONFIG_FRONTEND_PORT
+            value: 8080
+          - name: ZIGBEE2MQTT_CONFIG_FRONTEND_URL
+            value: "https://zigbee2mqtt.theclarkhome.com"
+          - name: ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_ENABLED
+            value: true
+          - name: ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_DISCOVERY_TOPIC
+            value: "homeassistant"
+          # - name: ZIGBEE2MQTT_CONFIG_MQTT_BASE_TOPIC
+          #   value: "zigbee2mqtt"
+          - name: ZIGBEE2MQTT_CONFIG_MQTT_INCLUDE_DEVICE_INFORMATION
+            value: true
+          - name: ZIGBEE2MQTT_CONFIG_MQTT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mqtt-credentials
+                key: MQTT_PASSWORD
+          - name: ZIGBEE2MQTT_CONFIG_MQTT_SERVER
+            value: "mqtt://mosquitto:1883"
+          - name: ZIGBEE2MQTT_CONFIG_MQTT_USER
+            valueFrom:
+              secretKeyRef:
+                name: mqtt-credentials
+                key: MQTT_USER
+          - name: ZIGBEE2MQTT_CONFIG_PERMIT_JOIN
+            value: false
+          - name: ZIGBEE2MQTT_CONFIG_SERIAL_ADAPTER
+            value: "ezsp"
+          - name: ZIGBEE2MQTT_CONFIG_SERIAL_PORT
+            value: "tcp://zigbee1.theclarkhome.com:8888"
+
+        resources:
+          requests:
+            cpu: 50m
+            memory: 384Mi
+          limits:
+            memory: 384Mi
+
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+              - ALL
+            add:
+              - NET_BIND_SERVICE
+
+      code-server:
+        image:
+          repository: ghcr.io/coder/code-server
+          tag: 4.96.2
+        args:
+          - --auth
+          - none
+          - --disable-telemetry
+          - --disable-update-check
+          - --user-data-dir
+          - /data/.code-server
+          - --extensions-dir
+          - /data/.code-server
+          - --port
+          - "12321"
+          - /data
+        resources:
+          requests:
+            cpu: 10m
+          limits:
+            memory: 512Mi
 
 service:
-  main:
+  app:
+    controller: zigbee2mqtt
     ports:
       http:
+        primary: true
         port: 8080
+      metrics:
+        port: 9000
+      code-server:
+        port: 12321
 
 ingress:
-  main:
+  predbat:
     enabled: true
-    ingressClass: traefik
+    className: traefik
     annotations:
       traefik.ingress.kubernetes.io/router.entrypoints: websecure
     hosts:
@@ -70,26 +127,19 @@ ingress:
         paths:
           - path: /
             pathType: Prefix
-            backend:
-              name: main
-              service:
-                port: 8080
+            service:
+              identifier: app
+              port: http
     tls:
       - hosts:
-          - "*.theclarkhome.com"
+          - '*.theclarkhome.com'
 
 persistence:
   data:
-    enabled: true
-    mountPath: /data
-    type: pvc
+    type: persistentVolumeClaim
     storageClass: openebs-zfspv
     accessMode: ReadWriteOnce
-    size: 1Gi
-
-resources:
-  requests:
-    cpu: 50m
-    memory: 384M
-  limits:
-    memory: 384M
+    retain: true
+    size: 1G
+    globalMounts:
+      - path: /data
