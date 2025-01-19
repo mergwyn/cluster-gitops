@@ -1,7 +1,7 @@
 ---
 releases:
   - name: esphome
-    chart: oci://ghcr.io/gabe565/charts/esphome
-    version: 0.15.0
+    chart: oci://ghcr.io/bjw-s/helm/app-template
+    version: 3.6.1
     values:
       - values.yaml

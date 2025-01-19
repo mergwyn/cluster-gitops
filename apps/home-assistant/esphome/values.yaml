@@ -1,26 +1,44 @@
 ---
-image:
-  repository: ghcr.io/esphome/esphome
-  tag: 2024.12.4
+controllers:
+  esphome:
+    pod:
+      annotations:
+        k8s.v1.cni.cncf.io/networks: |
+          [{
+            "name":"macvlan-static",
+            "namespace": "network",
+            "ips": ["10.58.0.211"]
+          }]
 
-# -- Environment variables.
-env:
-  ESPHOME_DASHBOARD_USE_PING: "true"
-  # ESPHOME_DASHBOARD_RELATIVE_URL: "/"
-  # ESPHOME_QUICKWIZARD:
-  # ESPHOME_IS_HA_ADDON:
-  DISABLE_HA_AUTHENTICATION: "true"
-  # USERNAME:
-  # PASSWORD:
+    containers:
+      esphome:
+        image:
+          repository: ghcr.io/esphome/esphome
+          tag: 2024.12.4
+        env:
+          ESPHOME_DASHBOARD_USE_PING: "true"
+          # ESPHOME_DASHBOARD_RELATIVE_URL: "/"
+          # ESPHOME_QUICKWIZARD:
+          # ESPHOME_IS_HA_ADDON:
+          DISABLE_HA_AUTHENTICATION: "true"
+          # USERNAME:
+          # PASSWORD:
 
 service:
-  main:
+  esphome:
+    controller: esphome
+    type: ClusterIP
     ports:
       http:
         port: 6052
 
+dnsConfig:
+  nameservers:
+    - 10.58.0.21
+    - 10.58.0.22
+
 ingress:
-  main:
+  esphome:
     enabled: true
     className: traefik
     annotations:
@@ -31,20 +49,15 @@ ingress:
           - path: /
             pathType: Prefix
             service:
-              identifier: main
-              port: 6052
+              identifier: esphome
+              port: http
     tls:
       - hosts:
           - '*.theclarkhome.com'
 
-dnsConfig:
-  nameservers:
-    - 10.58.0.21
-    - 10.58.0.22
-
 persistence:
   config:
-    enabled: true
+    type: persistentVolumeClaim
     storageClass: openebs-zfspv
     accessMode: ReadWriteOnce
     retain: true
