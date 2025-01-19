@@ -1,6 +1,18 @@
 ---
+global:
+  # -- Set an override for the prefix of the fullname
+  nameOverride: zigbee2mqtt
+  # -- Set the entire name definition
+  fullnameOverride:
+  # -- Set additional global labels. Helm templates can be used.
+  labels: {}
+  # -- Set additional global annotations. Helm templates can be used.
+  annotations: {}
+
 controllers:
   zigbee2mqtt:
+    enabled: true
+    type: deployment
     annotations:
       reloader.stakater.com/auto: "true"
 
@@ -16,6 +28,7 @@ controllers:
         image:
           repository: ghcr.io/koenkk/zigbee2mqtt
           tag: 2.0.0
+
         env:
           - name: TZ
             value: "Europe/London"
@@ -82,39 +95,13 @@ controllers:
             add:
               - NET_BIND_SERVICE
 
-      code-server:
-        image:
-          repository: ghcr.io/coder/code-server
-          tag: 4.96.2
-        args:
-          - --auth
-          - none
-          - --disable-telemetry
-          - --disable-update-check
-          - --user-data-dir
-          - /data/.code-server
-          - --extensions-dir
-          - /data/.code-server
-          - --port
-          - "12321"
-          - /data
-        resources:
-          requests:
-            cpu: 10m
-          limits:
-            memory: 512Mi
-
 service:
   zigbee2mqtt:
     controller: zigbee2mqtt
+    type: ClusterIP
     ports:
       http:
-        primary: true
         port: 8080
-      metrics:
-        port: 9000
-      code-server:
-        port: 12321
 
 ingress:
   zigbee2mqtt:
