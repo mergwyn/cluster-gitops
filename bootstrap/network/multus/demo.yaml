@@ -1,0 +1,32 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: multus-demo
+  labels:
+    app: multus-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: multus-demo
+  template:
+    metadata:
+      annotations:
+#        k8s.v1.cni.cncf.io/networks: network/macvlan-whereabouts@eth1
+       k8s.v1.cni.cncf.io/networks: |
+         [{
+           "name": "macvlan-static",
+           "namespace": "network",
+           "ips": ["10.58.0.211"]
+         }]
+      labels:
+        app: multus-demo
+    spec:
+      containers:
+        - name: shell
+          image: docker.io/rancher/mirrored-library-busybox:1.36.1
+          imagePullPolicy: IfNotPresent
+          command:
+            - sleep
+            - "3600"
