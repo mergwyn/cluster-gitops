@@ -52,7 +52,7 @@ persistence:
 resources:
   requests:
     cpu: 10m
-    memory: 94M
+    memory: 273M
   limits:
     # cpu: 170m
-    memory: 2G
+    memory: 515M
