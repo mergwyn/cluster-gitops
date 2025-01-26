@@ -1,4 +1,0 @@
----
-# hostCNIBinDir: /var/lib/rancher/k3s/data/current/bin
-hostCNIBinDir: /var/lib/rancher/k3s/data/cni
-hostCNINetDir: /var/lib/rancher/k3s/agent/etc/cni/net.d

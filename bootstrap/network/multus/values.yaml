@@ -1,0 +1,64 @@
+---
+# vim: set filetype=yaml:
+
+# hostCNIBinDir: /var/lib/rancher/k3s/data/current/bin
+hostCNIBinDir: /var/lib/rancher/k3s/data/cni
+hostCNINetDir: /var/lib/rancher/k3s/agent/etc/cni/net.d
+
+
+initContainers:
+  - name: cni-plugins
+    image: rancher/hardened-cni-plugins:v1.6.0-build20241022
+    securityContext:
+      privileged: true
+    volumeMounts:
+      - name: cni-bin-dir
+        mountPath: /host/opt/cni/bin
+    env:
+      # SKip everyhting but macvlan and ipvlan
+      - name: SKIP_CNI_BINARIES
+        # yamllint disable-line rule:line-length
+        value: "bandwidth,bridge,dhcp,firewall,flannel,host-device,host-local,loopback,portmap,ptp,sbr,static,tuning,vlan,vrf"
+
+extraDeploy:
+  - apiVersion: k8s.cni.cncf.io/v1
+    kind: NetworkAttachmentDefinition
+    metadata:
+      name: macvlan-static
+    spec:
+      config: |-
+        {
+          "cniVersion": "1.0.0",
+          "type": "macvlan",
+          "master": "br0",
+          "name": "macvlan-static",
+          "capabilities": { "ips": true },
+          "ipam": {
+            "type": "host-local",
+            "subnet": "10.58.0.0/24",
+            "gateway": "10.58.0.1",
+            "rangeStart": "10.58.0.210",
+            "rangeEnd": "10.58.0.239"
+          }
+        }
+
+# yamllint disable rule:line-length
+#   - apiVersion: k8s.cni.cncf.io/v1
+#     kind: NetworkAttachmentDefinition
+#     metadata:
+#       name: macvlan-whereabouts
+#     spec:
+#       config: |-
+#         {
+#           "cniVersion": "1.0.0",
+#           "type": "macvlan",
+#           "master": "br0",
+#           "mode" : "bridge",
+#           "ipam": {
+#             "type": "whereabouts",
+#             "configuration_path": "{{`{{ .Values.hostCNIBinDir }}`}}/whereabouts.d/whereabouts.conf",
+#             "gateway": "10.58.0.1",
+#             "rangeStart": "10.58.0.220",
+#             "rangeEnd": "10.58.0.239"
+#           }
+#         }
