@@ -2,6 +2,6 @@
 releases:
   - name: kube-prometheus-stack
     chart: oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
-    version: 68.4.4
+    version: 68.4.5
     values:
       - values.yaml
