@@ -3,6 +3,6 @@
 releases:
   - name: streammaster
     chart: oci://ghcr.io/bjw-s/helm/app-template
-    version: 3.6.1
+    version: 3.7.0
     values:
       - values.yaml
