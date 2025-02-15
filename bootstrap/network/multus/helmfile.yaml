@@ -3,7 +3,7 @@ releases:
 
   - name: multus-cni
     chart: oci://registry-1.docker.io/bitnamicharts/multus-cni
-    version: 2.2.5
+    version: 2.2.6
     values:
       - values.yaml
 
