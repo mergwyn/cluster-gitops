@@ -17,7 +17,7 @@ controllers:
       predbat:
         image:
           repository: nipar44/predbat_addon
-          tag: 8.13.0
+          tag: 8.15.0
 
 # TODO add init cintainer or similar to load config
 # TODO add code-server to edit config??
