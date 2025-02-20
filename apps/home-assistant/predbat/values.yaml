@@ -73,13 +73,13 @@ rawResources:
           - websecure
         routes:
           - kind: Rule
-            match: Host(`{{.Release.Name}}.theclarkhome.com`) && PathPrefix(`/`)
+            match: Host(`{{.Release.Name}}.{{.Values.global.domain}}`) && PathPrefix(`/`)
             priority: 10
             services:
               - name: predbat
                 port: *http
           - kind: Rule
-            match: Host(`{{.Release.Name}}.theclarkhome.com`) && PathRegexp(`^/code/.*`)
+            match: Host(`{{.Release.Name}}.{{.Values.global.domain}}`) && PathRegexp(`^/code/.*`)
             priority: 11
             services:
               - name: predbat
