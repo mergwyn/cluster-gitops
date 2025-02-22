@@ -21,10 +21,10 @@ controllers:
           repository: ghcr.io/coder/code-server
           tag: 4.97.2
         args: [
-          "--auth", "none",
-          "--user-data-dir", "/config/.vscode",
-          "--extensions-dir", "/config/.vscode",
-          "--port", "8081",
+          "--auth=none",
+          "--user-data-dir=/config/.vscode",
+          "--extensions-dir=/config/.vscode",
+          "--port=8081",
           "/config"
         ]
         securityContext:
