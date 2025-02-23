@@ -1,0 +1,110 @@
+---
+controllers:
+  matterbridge:
+    annotations:
+      reloader.stakater.com/auto: "true"
+
+    containers:
+      app:
+        image:
+          repository: docker.io/luligu/matterbridge
+          tag: 2.1.5
+        env:
+          TZ: Europe/London
+        resources:
+          requests:
+            cpu: 47m
+            memory: 2Gi
+          limits:
+            memory: 2Gi
+
+      code-server:
+        image:
+          repository: ghcr.io/coder/code-server
+          tag: 4.97.2
+        args:
+          - --auth=none
+          - --disable-telemetry
+          - --disable-update-check
+          - --user-data-dir=/root/.code-server
+          - --extensions-dir=/root/.code-server
+          - --port=12321
+          - /root/.matterbridge
+        resources:
+          requests:
+            cpu: 10m
+          limits:
+            memory: 1Gi
+
+service:
+  app:
+    controller: matterbridge
+    ports:
+      http:
+        port: &http 8283
+      websec-ep:
+        port: &websec-ep 433
+      matter-ep:
+        port: &websec-ep 5540
+        protocol: TCP
+      matter-ep-udp:
+        port: &websec-ep-upd 5540
+        protocol: UDP
+      code-server:
+        port: &code-server 12321
+
+persistence:
+  storage:
+    type: persistentVolumeClaim
+    storageClass: openebs-zfspv
+    accessMode: ReadWriteOnce
+    retain: true
+    size: 1G
+    globalMounts:
+      - path: /root
+        subPath: Matterbridge
+      - path: /root
+        subPath: .matterbridge
+      - path: /root
+        subPath: .code-server
+
+rawResources:
+  middleware:
+    apiVersion: traefik.io/v1alpha1
+    kind: Middleware
+    spec:
+      spec:
+        stripPrefixRegex:
+          regex:
+            - "^/code/"
+
+  ingress:
+    enabled: true
+    kind: IngressRoute
+    apiVersion: traefik.io/v1alpha1
+    annotations:
+      kubernetes.io/ingress.class: traefik-external
+    spec:
+      spec:
+        entryPoints:
+          - websecure
+        routes:
+          - kind: Rule
+            match: |
+              Host(`{{.Release.Name}}.{{.Values.global.domain}}`) &&
+              PathPrefix(`/`)
+            priority: 10
+            services:
+              - name: matterbridge
+                port: *http
+          - kind: Rule
+            match: |
+              Host(`{{.Release.Name}}.{{.Values.global.domain}}`) &&
+              PathRegexp(`^/code/.*`)
+            priority: 11
+            services:
+              - name: matterbridge
+                port: *code-server
+            middlewares:
+              - name: "{{.Release.Name}}-middleware"
+        tls: {}

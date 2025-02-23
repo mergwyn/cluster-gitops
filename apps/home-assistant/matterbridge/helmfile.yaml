@@ -1,0 +1,8 @@
+---
+releases:
+  - name: matterbridge
+    chart: oci://ghcr.io/bjw-s/helm/app-template
+    version: 3.7.1
+    values:
+      - ../../../settings/common.yaml
+      - values.yaml
