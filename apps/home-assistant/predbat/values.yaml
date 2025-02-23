@@ -24,8 +24,7 @@ controllers:
           - "--auth=none"
           - "--user-data-dir=/config/.vscode"
           - "--extensions-dir=/config/.vscode"
-          - "--port"
-          - &code-server '12321'
+          - "--port=12321"
           - "/config"
         securityContext:
           runAsUser: 0
@@ -38,7 +37,7 @@ service:
       http:
         port: &http 5052
       code-server:
-        port: *code-server
+        port: &code-server 12321
 
 persistence:
   config:
@@ -72,17 +71,13 @@ rawResources:
           - websecure
         routes:
           - kind: Rule
-            match: |
-              Host(`{{.Release.Name}}.{{.Values.global.domain}}`) &&
-              PathPrefix(`/`)
+            match: Host(`{{.Release.Name}}.{{.Values.global.domain}}`) && PathPrefix(`/`)
             priority: 10
             services:
               - name: predbat
                 port: *http
           - kind: Rule
-            match: |
-              Host(`{{.Release.Name}}.{{.Values.global.domain}}`) &&
-              PathRegexp(`^/code/.*`)
+            match: Host(`{{.Release.Name}}.{{.Values.global.domain}}`) && PathRegexp(`^/code/.*`)
             priority: 11
             services:
               - name: predbat
