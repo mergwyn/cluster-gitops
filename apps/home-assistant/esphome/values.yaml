@@ -14,7 +14,7 @@ controllers:
       esphome:
         image:
           repository: ghcr.io/esphome/esphome
-          tag: 2025.2.0
+          tag: 2025.2.1
         env:
           ESPHOME_DASHBOARD_USE_PING: "true"
           # ESPHOME_DASHBOARD_RELATIVE_URL: "/"
