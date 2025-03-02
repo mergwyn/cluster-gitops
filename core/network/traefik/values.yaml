@@ -35,6 +35,18 @@ ports:
     expose:
       default: true
     exposedPort: 8883
+  # matter-tcp:
+  #   port: 5540
+  #   expose:
+  #     default: true
+  #   exposedPort: 5540
+  #   protocol: TCP
+  # matter-udp:
+  #   port: 5540
+  #   expose:
+  #     default: true
+  #   exposedPort: 5540
+  #   protocol: UDP
 
 providers:
   kubernetesCRD:
