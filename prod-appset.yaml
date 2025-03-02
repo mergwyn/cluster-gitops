@@ -13,8 +13,8 @@ spec:
           - path: bootstrap/*/*
           - path: core/*/*
           - path: apps/*/*
-          # - path: apps/default/mail
-          #   exclude: true
+          - path: apps/downloaders/qbittorrent
+            exclude: true
 
   template:
     metadata:
@@ -46,6 +46,10 @@ spec:
           group: '*'
           jsonPointers:
             - /spec/rules/0/skipBackgroundRequests
+        - group: '*'
+          kind: Deployment
+          jqPathExpressions:
+            - .spec.template.spec.hostUsers
 
       syncPolicy:
         automated:
