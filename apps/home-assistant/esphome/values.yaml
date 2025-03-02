@@ -23,6 +23,19 @@ controllers:
           DISABLE_HA_AUTHENTICATION: "true"
           # USERNAME:
           # PASSWORD:
+      code-server:
+        dependsOn: esphome
+        image:
+          repository: ghcr.io/coder/code-server
+          tag: 4.97.2
+        args:
+          - "--auth=none"
+          - "--user-data-dir=/config/.code-server"
+          - "--extensions-dir=/config/.code-server"
+          - "--port=12321"
+          - "/config"
+        securityContext:
+          runAsUser: 0
 
 service:
   esphome:
@@ -30,30 +43,14 @@ service:
     type: ClusterIP
     ports:
       http:
-        port: 6052
+        port: &http 6052
+      code-server:
+        port: &code-server 12321
 
 dnsConfig:
   nameservers:
     - 10.58.0.21
     - 10.58.0.22
-
-ingress:
-  esphome:
-    enabled: true
-    className: traefik
-    annotations:
-      traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    hosts:
-      - host: "esphome.theclarkhome.com"
-        paths:
-          - path: /
-            pathType: Prefix
-            service:
-              identifier: esphome
-              port: http
-    tls:
-      - hosts:
-          - '*.theclarkhome.com'
 
 persistence:
   config:
@@ -64,3 +61,40 @@ persistence:
     size: 5G
     globalMounts:
       - path: /config
+
+rawResources:
+  middleware:
+    apiVersion: traefik.io/v1alpha1
+    kind: Middleware
+    spec:
+      spec:
+        stripPrefixRegex:
+          regex:
+            - "^/code/"
+
+  ingress:
+    enabled: true
+    kind: IngressRoute
+    apiVersion: traefik.io/v1alpha1
+    annotations:
+      kubernetes.io/ingress.class: traefik-external
+    spec:
+      spec:
+        entryPoints:
+          - websecure
+        routes:
+          - kind: Rule
+            match: Host(`{{.Release.Name}}.{{.Values.global.domain}}`) && PathPrefix(`/`)
+            priority: 10
+            services:
+              - name: esphome
+                port: *http
+          - kind: Rule
+            match: Host(`{{.Release.Name}}.{{.Values.global.domain}}`) && PathRegexp(`^/code/.*`)
+            priority: 11
+            services:
+              - name: esphome
+                port: *code-server
+            middlewares:
+              - name: "{{.Release.Name}}-middleware"
+        tls: {}
