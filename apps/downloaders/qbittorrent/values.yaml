@@ -52,4 +52,4 @@ resources:
     memory: 3481M
   limits:
     # cpu: 29m
-    memory: 4500M
+    memory: 5500M
