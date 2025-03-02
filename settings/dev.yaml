@@ -1,6 +1,6 @@
 ---
-env:
-  CLUSTER_EXTERNAL_SUBNET_PREFIX: 10.58.0
-  CLUSTER_LB: 48
-  CLUSTER_LB_CIDR: 29
-  CLUSTER_LB_RANGE: 10.58.0.48-10.58.0.63
+global:
+  clusterExternalSubnetPrefix: 10.58.0
+  clusterLB: 48
+  clusterLBCidr: 29
+  clusterLBRange: 10.58.0.48-10.58.0.63
