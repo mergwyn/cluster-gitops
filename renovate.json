@@ -3,7 +3,7 @@
   "extends": [
     "config:base"
   ],
-  "ignorePaths": ["disabled/**"],
+  "ignorePaths": ["disabled/**","archive/**"],
   "helm-values": {
     "fileMatch": ["(^|/).*values.*.yaml$"]
   },
