@@ -6,5 +6,6 @@ repositories:
 releases:
   - name: goldilocks
     chart: fairwinds-stable/goldilocks
+    version: 9.0.1
     values:
       - values.yaml
