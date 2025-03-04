@@ -2,10 +2,9 @@
 alias: &app matterhub
 controllers:
   *app:
-    type: statefulset
-
     annotations:
       reloader.stakater.com/auto: "true"
+      # yamllint disable-line rule:line-length
       secret.reloader.stakater.com/reload: &secret home-assistant-matter-hub-secret
 
     containers:
