@@ -37,6 +37,10 @@ configuration:
       provider: aws
       config:
         region: Northallerton
+    - name: idrive
+      provider: aws
+      config:
+        region: London
 
 snapshotsEnabled: false
 defaultVolumeSnapshotLocations: default
