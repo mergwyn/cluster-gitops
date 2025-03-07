@@ -2,18 +2,10 @@
 repositories:
   - name: kube-vip
     url: https://kube-vip.github.io/helm-charts
-  - name: bedag
-    url: https://bedag.github.io/helm-charts/
 
 releases:
   - name: kube-vip-cloud-provider
     chart: kube-vip/kube-vip-cloud-provider
     version: 0.2.5
-    # values:
-    #   - values.yaml
-
-  - name: kube-vip-extras
-    chart: bedag/raw
-    version: 2.0.0
     values:
-      - kubevip-cm.yaml
+      - values.yaml
