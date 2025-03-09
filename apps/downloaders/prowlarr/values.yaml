@@ -39,6 +39,7 @@ persistence:
   config:
     enabled: true
     type: pvc
+    retain: true
     storageClass: openebs-zfspv
 
 resources:
