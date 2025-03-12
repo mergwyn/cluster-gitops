@@ -178,3 +178,18 @@ prometheusOperator:
     limits:
       # cpu: 15m
       memory: 105M
+
+additionalPrometheusRulesMap:
+  additional-rules:
+    groups:
+      - name: additional-rules
+        rules:
+          - alert: HostOomKillDetected
+            expr: (increase(node_vmstat_oom_kill[1m]) > 0)
+            for: 0m
+            labels:
+              severity: warning
+            annotations:
+              summary: Host OOM kill detected (instance {{ $labels.instance }})
+              description: |-
+                "OOM kill detected\n VALUE = {{ $value }}\n LABELS = {{ $labels }}"
