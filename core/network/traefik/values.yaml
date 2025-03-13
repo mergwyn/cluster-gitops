@@ -19,7 +19,10 @@ deployment:
 ports:
   web:
     redirections:
-      port: websecure
+      entryPoint:
+        to: websecure
+        scheme: https
+        permanent: true
   websecure:
     tls:
       enabled: true
