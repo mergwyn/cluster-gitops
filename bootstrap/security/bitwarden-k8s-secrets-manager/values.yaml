@@ -206,9 +206,9 @@ configs:
           WIREGUARD_ADDRESSES:
             secret: privatevpn_wg
             key: WIREGUARD_ADDRESSES
-          WIREGUARDS_DNS:
+          WIREGUARD_DNS:
             secret: privatevpn_wg
-            key: WIREGUARDS_DNS
+            key: WIREGUARD_DNS
           WIREGUARD_PUBLIC_KEY:
             secret: privatevpn_wg
             key: WIREGUARD_PUBLIC_KEY
