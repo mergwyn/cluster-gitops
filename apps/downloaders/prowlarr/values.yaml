@@ -1,7 +1,7 @@
 ---
 image:
   repository: lscr.io/linuxserver/prowlarr
-  tag: "1.31.2"
+  tag: "1.32.2"
 
 dnsPolicy: ClusterFirst
 
