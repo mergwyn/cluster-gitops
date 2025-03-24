@@ -187,12 +187,6 @@ configs:
           OPENVPN_PASSWORD:
             secret: privatevpn_ovn
             key: OPENVPN_PASSWORD
-          SERVER_CITIES:
-            secret: privatevpn_ovn
-            key: SERVER_CITIES
-          DNS_ADDRESS:
-            secret: privatevpn_ovn
-            key: DNS_ADDRESS
         labels:
           app.kubernetes.io/name:
             value: pod-gateway
