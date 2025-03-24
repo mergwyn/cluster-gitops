@@ -21,7 +21,7 @@ controllers:
       streammaster:
         image:
           repository: carlreid/streammaster
-          tag: 0.11.3
+          tag: 0.12.0
           # repository: senexcrenshaw/streammaster
           # tag: 1.0.0
           # repository: alexphillips/streammaster
