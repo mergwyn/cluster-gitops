@@ -172,6 +172,15 @@ configs:
           app.kubernetes.io/name:
             value: pod-gateway
 
+      - name: privatevpn-ovn-conf
+        namespace: network
+        data:
+          vpnConfigfile:
+            secret: privatevpn_ovn_conf
+        labels:
+          app.kubernetes.io/name:
+            value: pod-gateway
+
       - name: privatevpn-wg
         namespace: network
         data:
