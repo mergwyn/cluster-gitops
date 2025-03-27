@@ -1,0 +1,82 @@
+---
+fullnameOverride: &name pod-gateway
+
+routed_namespaces:
+  - downloaders
+  - media
+
+image:
+  repository: ghcr.io/angelnu/pod-gateway
+  pullPolicy: Always
+  tag: v1.11.1
+
+podAnnotations:
+  secret.reloader.stakater.com/reload: "privatevpn-ovn,privatevpn-ovn-conf"
+  configmap.reloader.stakater.com/reload: *name
+
+addons:
+  vpn:
+    enabled: true
+    type: gluetun
+    gluetun:
+      image:
+        repository: docker.io/qmcgaw/gluetun
+        tag: v3.40.0
+    # add for https://github.com/qdm12/gluetun/issues/2606
+    securityContext:
+      privileged: true
+
+    configFileSecret: privatevpn-ovn-conf
+
+    networkPolicy:
+      enabled: false
+      egress:
+        - to:
+            - ipBlock:
+                cidr: 0.0.0.0/0
+          ports:
+            - port: &vpn_port 1195
+              protocol: UDP
+        - to:
+            - ipBlock:
+                cidr: 10.0.0.0/8
+    env:
+      TZ: Europe/London
+      VPN_TYPE: openvpn
+      VPN_SERVICE_PROVIDER: custom
+      OPENVPN_CUSTOM_CONFIG: /gluetun/config.conf
+      OPENVPN_ENDPOINT_PORT: *vpn_port
+      OPENVPN_VERBOSITY: 3  # debugging
+      DNS_KEEP_NAMESERVER: "on"  # Try with this disabled
+      DOT: "off"
+      # TODO different variables for different versions. Long name is for 3.40
+      # and later
+      FIREWALL_ENABLED_DISABLING_IT_SHOOTS_YOU_IN_YOUR_FOOT: "off"
+      FIREWALL: "off"
+      # FIREWALL_OUTBOUND_SUBNETS: "10.0.0.0/8"
+      # FIREWALL_VPN_INPUT_PORTS: 64709
+      LOG_LEVEL: debug
+      SERVER_COUNTRIES: ""  # Don't know why it is necessary to clear this var
+      UPDATER_PERIOD: 24h
+
+    envFrom:
+      - secretRef:
+          name: privatevpn-ovn  # USER and PASSWORD
+
+# TODO check which settings are used by pod gateway and not just passed through
+# to gluetun
+settings:
+  NOT_ROUTED_TO_GATEWAY_CIDRS: "10.0.0.0/8"
+  VPN_LOCAL_CIDRS: "10.0.0.0/8"
+  VPN_TRAFFIC_PORT: *vpn_port  # TODO which port settings are needed
+  VPN_ENDPOINT_PORT: *vpn_port  # TODO which port settings are needed
+  VPN_BLOCK_OTHER_TRAFFIC: false
+  GATEWAY_ENABLE_DNSSEC: false
+
+resources:
+  requests:
+    cpu: 40m
+    memory: 53M
+  limits:
+    # cpu: 61m
+    memory: 118M
