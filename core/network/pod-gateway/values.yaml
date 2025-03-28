@@ -9,16 +9,6 @@ routed_namespaces:
   - downloaders
   - media
 
-settings:
-  NOT_ROUTED_TO_GATEWAY_CIDRS: "10.0.0.0/8"
-  VPN_LOCAL_CIDRS: "10.0.0.0/8"
-  DNS_LOCAL_CIDRS: ""
-  VPN_INTERFACE: "tun0"
-  IPTABLES_NFT: "yes"
-  VPN_TRAFFIC_PORT: 1194
-  VPN_BLOCK_OTHER_TRAFFIC: false
-  GATEWAY_ENABLE_DNSSEC: false
-
 addons:
   vpn:
     enabled: true
@@ -30,25 +20,48 @@ addons:
     # add for https://github.com/qdm12/gluetun/issues/2606
     securityContext:
       privileged: true
+
+    networkPolicy:
+      enabled: true
+      egress:
+        - to:
+            - ipBlock:
+                cidr: 0.0.0.0/0
+          ports:
+            - port: &vpn_port 1194
+              protocol: UDP
+        - to:
+            - ipBlock:
+                cidr: 10.0.0.0/8
+
     env:
       TZ: Europe/London
-      VPN_TYPE: openvpn
       VPN_SERVICE_PROVIDER: privatevpn
-      SERVER_COUNTRIES: "United Kingdom"
-      OPENVPN_VERBOSITY: 1
-      VPN_INTERFACE: "tun0"
-      # old vesion of variable
-      FIREWALL: "off"
-      # new version from 3.39.0
-      FIREWALL_ENABLED_DISABLING_IT_SHOOTS_YOU_IN_YOUR_FOOT: "off"
-      FIREWALL_DEBUG: "off"
+      VPN_TYPE: openvpn
+      OPENVPN_VERBOSITY: 3  # for debugging only
+      DNS_KEEP_NAMESERVER: "on"  # Try with this disabled
       DOT: "off"
-      FIREWALL_VPN_INPUT_PORTS: 64709
-      FIREWALL_OUTBOUND_SUBNETS: "10.0.0.0/8"
-      VPN_ENDPOINT_PORT: 1194
+      FIREWALL_ENABLED_DISABLING_IT_SHOOTS_YOU_IN_YOUR_FOOT: "off"
+      FIREWALL: "off"
+      # FIREWALL_OUTBOUND_SUBNETS: "10.0.0.0/8"
+      # FIREWALL_VPN_INPUT_PORTS: 64709
+      # HEALTH_VPN_DURATION_ADDITION: 1800s  # for debugging only
+      # HEALTH_VPN_DURATION_INITIAL: 1800s  # for debugging only
+      LOG_LEVEL: debug  # for debugging only
+      # SERVER_CITIES: London2
+      # SERVER_COUNTRIES: "United Kingdom"
+      UPDATER_PERIOD: 24h
+
     envFrom:
       - secretRef:
           name: privatevpn-ovn
+
+settings:
+  NOT_ROUTED_TO_GATEWAY_CIDRS: "10.0.0.0/8"
+  VPN_LOCAL_CIDRS: "10.0.0.0/8"
+  # VPN_TRAFFIC_PORT: *vpn_port
+  VPN_BLOCK_OTHER_TRAFFIC: false
+  GATEWAY_ENABLE_DNSSEC: false
 
 resources:
   requests:
