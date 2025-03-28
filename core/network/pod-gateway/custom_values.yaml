@@ -29,7 +29,7 @@ addons:
     configFileSecret: privatevpn-ovn-conf
 
     networkPolicy:
-      enabled: false
+      enabled: true
       egress:
         - to:
             - ipBlock:
