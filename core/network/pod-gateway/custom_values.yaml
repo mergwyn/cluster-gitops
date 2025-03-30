@@ -8,7 +8,7 @@ routed_namespaces:
 image:
   repository: ghcr.io/angelnu/pod-gateway
   pullPolicy: Always
-  tag: v1.11.1
+  tag: v1.12.0
 
 podAnnotations:
   secret.reloader.stakater.com/reload: "privatevpn-ovn,privatevpn-ovn-conf"
