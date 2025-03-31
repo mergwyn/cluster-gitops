@@ -159,6 +159,22 @@ configs:
           app.kubernetes.io/name:
             value: mosquitto
 
+      - name: postfix-mail
+        namespace: default
+        data:
+          RELAYHOST:
+            secret: postfix_mail
+            key: RELAYHOST
+          RELAYHOST_PASSWORD:
+            secret: postfix_mail
+            key: RELAYHOST_PASSWORD
+          RELAYHOST_USERNAME:
+            secret: postfix_mail
+            key: RELAYHOST_USERNAME
+        labels:
+          app.kubernetes.io/name:
+            value: mail
+
       - name: privatevpn-ovn
         namespace: network
         data:
