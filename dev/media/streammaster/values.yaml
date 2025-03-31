@@ -36,12 +36,12 @@ controllers:
 
         resources:
           requests:
-            cpu: 600m
-            memory: 400M
+            cpu: 10m
+            memory: 670M
             # gpu.intel.com/i915: "1"  # enable if vaapi used in sm
           limits:
             # cpu: 1100m
-            memory: 999M
+            memory: 1572M
             # gpu.intel.com/i915: "1"  # enable if vaapi used in sm
 
 service:
