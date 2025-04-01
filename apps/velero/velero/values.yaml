@@ -65,11 +65,11 @@ deployNodeAgent: true
 nodeAgent:
   resources:
     requests:
-      cpu: 30m
-      memory: 549M
+      cpu: 350m
+      memory: 600M
     limits:
       # cpu: 90m
-      memory: 1545M
+      memory: 2G
 
 schedules:
   # idrive storage
