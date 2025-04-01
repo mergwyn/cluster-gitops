@@ -93,8 +93,8 @@ repoServer:
           name: cmp-tmp
   resources:
     requests:
-      cpu: 10m
-      memory: 110M
+      cpu: 20m
+      memory: 192M
     limits:
       # cpu: 300m
       memory: 1400M
