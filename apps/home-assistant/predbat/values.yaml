@@ -15,11 +15,15 @@ controllers:
         image:
           repository: nipar44/predbat_addon
           tag: v8.17.3
+        env:
+          TZ: "Europe/London"
       code-server:
         dependsOn: predbat
         image:
           repository: ghcr.io/coder/code-server
           tag: 4.98.2
+        env:
+          TZ: "Europe/London"
         args:
           - "--auth=none"
           - "--user-data-dir=/config/.vscode"
