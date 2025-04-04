@@ -7,6 +7,9 @@ image:
 auth:
   enable: true
 
+env:
+  TZ: Europe/London
+
 service:
   mosquitto:
     ports:
