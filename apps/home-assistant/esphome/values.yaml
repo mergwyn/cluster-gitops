@@ -16,6 +16,7 @@ controllers:
           repository: ghcr.io/esphome/esphome
           tag: 2025.2.2
         env:
+          TZ: "Europe/London"
           ESPHOME_DASHBOARD_USE_PING: "true"
           # ESPHOME_DASHBOARD_RELATIVE_URL: "/"
           # ESPHOME_QUICKWIZARD:
