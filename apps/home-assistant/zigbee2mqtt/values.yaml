@@ -79,7 +79,7 @@ controllers:
         dependsOn: zigbee2mqtt
         image:
           repository: ghcr.io/coder/code-server
-          tag: 4.98.2
+          tag: 4.99.1
         args:
           - "--auth=none"
           - "--user-data-dir=/data/.vscode"
