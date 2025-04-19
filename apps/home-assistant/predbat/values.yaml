@@ -14,14 +14,14 @@ controllers:
       predbat:
         image:
           repository: nipar44/predbat_addon
-          tag: v8.17.3
+          tag: v8.18.3
         env:
           TZ: "Europe/London"
       code-server:
         dependsOn: predbat
         image:
           repository: ghcr.io/coder/code-server
-          tag: 4.98.2
+          tag: 4.99.2
         env:
           TZ: "Europe/London"
         args:
