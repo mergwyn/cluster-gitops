@@ -42,11 +42,11 @@ podAnnotations:
 
 resources:
   requests:
-    cpu: 1168m
-    memory: 866M
+    cpu: 34m
+    memory: 1167M
   limits:
     # cpu: 1168m
-    memory: 1351M
+    memory: 2077M
 
 metrics:
   enabled: true
