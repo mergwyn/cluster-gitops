@@ -6,6 +6,9 @@ prometheus-node-exporter:
   commonLabels:
     jobLabel: node-exporter
 
+crds:
+  upgradeJob: enabled
+
 alertmanager:
   config:
     global:
