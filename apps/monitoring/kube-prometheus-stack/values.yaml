@@ -7,7 +7,9 @@ prometheus-node-exporter:
     jobLabel: node-exporter
 
 crds:
-  upgradeJob: enabled
+  enabled: true
+  upgradeJob:
+    enabled: true
 
 alertmanager:
   config:
