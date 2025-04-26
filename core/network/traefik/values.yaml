@@ -112,3 +112,40 @@ metrics:
           annotations:
             summary: "Traefik Down"
             description: "{{ $labels.pod }} on {{ $labels.nodename }} is down"
+
+ingressRoute:
+  dashboard:
+    enabled: true
+    matchRule: Host(`traefik.theclarkhome.com`) && (PathPrefix(`/dashboard`) || PathPrefix(`/api`))
+    entryPoints:
+      - websecure
+    middlewares:
+      - name: traefik-dashboard-basicauth
+        #namespace: "{{.Release.Namespace}}"
+    tls: {}
+
+
+extraObjects:
+  - apiVersion: traefik.io/v1alpha1
+    kind: Middleware
+    metadata:
+      name: traefik-dashboard-basicauth
+      namespace: "{{.Release.Namespace}}"
+      labels:
+        app.kubernetes.io/name: "{{.Release.Name}}"
+        app.kubernetes.io/instance: "{{.Release.Name}}-{{.Release.Namespace}}"
+    spec:
+      basicAuth:
+        secret: traefik-dashboard-auth
+
+  - apiVersion: traefik.io/v1alpha1
+    kind: TLSStore
+    metadata:
+      name: default
+      namespace: kube-system
+      labels:
+        app.kubernetes.io/name: "{{.Release.Name}}"
+        app.kubernetes.io/instance: "{{.Release.Name}}-{{.Release.Namespace}}"
+    spec:
+      defaultCertificate:
+        secretName: theclarkhome-com-tls
