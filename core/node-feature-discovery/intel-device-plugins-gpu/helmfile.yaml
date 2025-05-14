@@ -6,6 +6,6 @@ repositories:
 releases:
   - name: intel-device-plugins-gpu
     chart: intel/intel-device-plugins-gpu
-    version: 0.32.0
+    version: 0.32.1
     values:
       - values.yaml
