@@ -1,14 +1,14 @@
 ---
 
-defaultContainerOptions:
-  resources:
-    requests:
-      cpu: 10m
-      memory: 53M
-    limits:
-      memory: 100M
-
 controllers:
+  defaultContainerOptions:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 53M
+      limits:
+        memory: 100M
+
   esphome:
     pod:
       annotations:
