@@ -63,8 +63,7 @@ configs:
         discover:
           fileName: "helmfile.yaml"
   rbac:
-    policy:
-      default: "role:admin"
+    policy.default: role:admin
 
 repoServer:
   extraContainers:
