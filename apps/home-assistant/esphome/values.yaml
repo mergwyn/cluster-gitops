@@ -1,4 +1,14 @@
 ---
+
+defaultContainerOptions:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 53M
+    limits:
+      cpu: 12m
+      memory: 100M
+
 controllers:
   esphome:
     pod:
