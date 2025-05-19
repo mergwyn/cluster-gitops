@@ -6,6 +6,6 @@ repositories:
 releases:
   - name: velero
     chart: oci://ghcr.io/vmware-tanzu/charts/velero
-    version: 9.1.2
+    version: 9.1.3
     values:
       - values.yaml
