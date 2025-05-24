@@ -5,6 +5,6 @@ apiVersions:
 releases:
   - name: traefik
     chart: oci://ghcr.io/traefik/helm/traefik
-    version: 35.3.0
+    version: 35.4.0
     values:
       - values.yaml
