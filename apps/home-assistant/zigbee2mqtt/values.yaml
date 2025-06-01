@@ -27,7 +27,7 @@ controllers:
       zigbee2mqtt:
         image:
           repository: ghcr.io/koenkk/zigbee2mqtt
-          tag: 2.3.0
+          tag: 2.4.0
 
         env:
           TZ: "Europe/London"
