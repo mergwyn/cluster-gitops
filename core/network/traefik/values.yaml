@@ -1,7 +1,11 @@
 ---
-global:
-  sendanonymoususage: false
-  checknewversion: false
+globalArguments:
+  - "--global.sendanonymoususage=false"
+  - "--global.checknewversion=false"
+
+# global:
+#   sendanonymoususage: false
+#   checknewversion: false
 
 additionalArguments:
   - "--serversTransport.insecureSkipVerify=true"
