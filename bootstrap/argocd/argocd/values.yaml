@@ -15,6 +15,7 @@ configs:
 
   cm:
     kustomize.buildOptions: --enable-helm
+    application.resourceTrackingMethod: "annotation"
     create: true
     # Exclude velero backups and restores
     resource.exclusions: |
