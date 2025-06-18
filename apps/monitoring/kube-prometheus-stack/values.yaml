@@ -10,6 +10,7 @@ crds:
   enabled: true
   upgradeJob:
     enabled: true
+    forceConflicts: true
 
 alertmanager:
   config:
