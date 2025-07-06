@@ -14,7 +14,7 @@ controllers:
       predbat:
         image:
           repository: nipar44/predbat_addon
-          tag: v8.20.0
+          tag: v8.22.1
         env:
           TZ: "Europe/London"
       code-server:
