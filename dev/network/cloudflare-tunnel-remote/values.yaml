@@ -3,6 +3,10 @@ image:
   repository: cloudflare/cloudflared
   tag: 2025.7.0
 
+# tunnel:
+#   token:
+#     secretName: cloudflare-token-secret
+
 replicaCount: 1
 
 resources:

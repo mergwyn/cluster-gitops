@@ -2,6 +2,8 @@
 repositories:
   - name: cloudflare
     url: https://cloudflare.github.io/helm-charts
+    # use fork whilst waiting for https://github.com/cloudflare/helm-charts/pull/68
+    # url: https://dudo-home-lab.github.io/helm-charts
 
 releases:
   - name: cloudflare-tunnel-remote
