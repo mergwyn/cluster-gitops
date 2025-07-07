@@ -3,6 +3,9 @@ repositories:
   - name: geek-cookbook
     url: https://geek-cookbook.github.io/charts/
 
+  - name: bedag
+    url: https://bedag.github.io/helm-charts/
+
 releases:
   - name: mosquitto
     chart: geek-cookbook/mosquitto
