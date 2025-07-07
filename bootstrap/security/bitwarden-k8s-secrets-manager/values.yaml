@@ -46,7 +46,7 @@ configs:
       - name: cloudflare-token-secret
         namespace: security
         data:
-          token:
+          tunnel_token:
             secret: cloudflare_api_token
         labels:
           app.kubernetes.io/name:
