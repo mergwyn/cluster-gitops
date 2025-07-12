@@ -1,7 +1,7 @@
 ---
 image:
   repository: eclipse-mosquitto
-  tag: 2.0.21
+  tag: 2.0.22
 
 
 auth:
