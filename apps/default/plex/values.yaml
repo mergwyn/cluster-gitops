@@ -1,7 +1,7 @@
 ---
 image:
   repository: plexinc/pms-docker
-  tag: '1.41.8.9834-071366d65'
+  tag: '1.41.9.9961-46083195d'
 
 env:
   PLEX_MEDIA_SERVER_APPLICATION_SUPPORT_DIR: "/config"
