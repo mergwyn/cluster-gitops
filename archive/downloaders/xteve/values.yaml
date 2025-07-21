@@ -1,0 +1,74 @@
+---
+image:
+  repository: senexcrenshaw/xteve
+  pullPolicy: Always
+  tag: "2.5.3"
+
+env:
+  TZ: Europe/London
+  UMASK: "002"
+  XTEVE_UID: "3001"
+  XTEVE_GID: "513"
+
+command:
+  - sh
+  - -c
+  - /home/xteve/bin/xteve -port=34400 -config=/home/xteve/conf
+
+service:
+  xteve:
+    ports:
+      https:
+        port: 34400
+
+ingress:
+  xteve:
+    enabled: true
+    ingressClass: traefik
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    hosts:
+      - host: "xteve.theclarkhome.com"
+        paths:
+          - path: /
+            backend:
+              name: xteve
+              service:
+                port: 34400
+    tls:
+      - hosts:
+          - "*.theclarkhome.com"
+
+probes:
+  liveness:
+    enabled: false
+  startup:
+    enabled: false
+  readiness:
+    enabled: false
+
+dnsPolicy: ClusterFirst
+
+persistence:
+  config:
+    enabled: true
+    retain: true
+    mountPath: /home/xteve/conf
+    storageClass: openebs-zfspv
+  tmp:
+    type: hostPath
+    hostPath: /tmp/xteve
+    enabled: true
+  data:
+    type: nfs
+    server: 10.58.0.12
+    path: /srv/media/xmltv
+    enabled: true
+
+resources:
+  requests:
+    cpu: 10m
+    memory: 2G
+  limits:
+    # cpu: 13m
+    memory: 2G
