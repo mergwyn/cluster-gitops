@@ -90,3 +90,6 @@ alloy:
 
 loki:
   enabled: false
+
+minio:
+  enabled: false

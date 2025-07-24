@@ -28,6 +28,7 @@ resources:
                     - default
                     - downloaders
                     - monitoring
+                    - home-assistant
           mutate:
             targets:
               - apiVersion: v1
