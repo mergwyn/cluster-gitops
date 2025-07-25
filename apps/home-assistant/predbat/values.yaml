@@ -21,7 +21,7 @@ controllers:
         dependsOn: predbat
         image:
           repository: ghcr.io/coder/code-server
-          tag: 4.102.1
+          tag: 4.102.2
         env:
           TZ: "Europe/London"
         args:
