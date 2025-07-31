@@ -5,3 +5,28 @@ recommender:
     storage: prometheus
     # yamllint disable-line rule:line-length
     prometheus-address: "http://kube-prometheus-stack-prometheus.monitoring:9090/"
+  resources:
+    requests:
+      cpu: 15m
+      memory: 105M
+    limits:
+      # cpu:
+      memory: 124M
+
+updater:
+  resources:
+    requests:
+      cpu: 15m
+      memory: 105M
+    limits:
+      # cpu:
+      memory: 105M
+
+admissionController:
+  resources:
+    requests:
+      cpu: 15m
+      memory: 105M
+    limits:
+      # cpu:
+      memory: 124M
