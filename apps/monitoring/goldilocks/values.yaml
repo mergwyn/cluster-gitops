@@ -3,7 +3,7 @@ controller:
   flags:
     ignore-controller-kind: "Job,CronJob"
     on-by-default: true
-  limits:
+  resources:
     requests:
       cpu: 15m
       memory: 105M
@@ -25,7 +25,7 @@ dashboard:
     tls:
       - hosts:
           - "*.theclarkhome.com"
-  limits:
+  resources:
     requests:
       cpu: 15m
       memory: 105M
