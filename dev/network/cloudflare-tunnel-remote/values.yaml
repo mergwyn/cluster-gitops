@@ -7,7 +7,7 @@ image:
 #   token:
 #     secretName: cloudflare-token-secret
 
-replicaCount: 1
+replicaCount: 2
 
 resources:
   requests:
