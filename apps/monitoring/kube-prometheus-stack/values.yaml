@@ -37,13 +37,15 @@ alertmanager:
           - to: gary@theclarkhome.com
             from: email-k8s-admin@theclarkhome.com
             smarthost: mail.default:587
-  resources:
-    requests:
-      cpu: 15m
-      memory: 105M
-    limits:
-      # cpu: 15m
-      memory: 105M
+  spec:
+    resources:
+      requests:
+        cpu: 15m
+        memory: 105M
+      limits:
+        # cpu: 15m
+        memory: 105M
+
   ingress:
     enabled: true
     ingressClass: traefik
