@@ -180,10 +180,10 @@ grafana:
   resources:
     requests:
       cpu: 15m
-      memory: 248M
+      memory: 418M
     limits:
       # cpu: 15m
-      memory: 390M
+      memory: 3G
 
 additionalPrometheusRulesMap:
 
