@@ -177,14 +177,13 @@ grafana:
     type: pvc
     storageClassName: openebs-zfspv
     size: 10Gi
-  service:
-    resources:
-      requests:
-        cpu: 15m
-        memory: 248M
-      limits:
-        # cpu: 15m
-        memory: 390M
+  resources:
+    requests:
+      cpu: 15m
+      memory: 248M
+    limits:
+      # cpu: 15m
+      memory: 390M
 
 additionalPrometheusRulesMap:
 
