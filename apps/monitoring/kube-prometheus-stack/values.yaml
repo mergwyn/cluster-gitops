@@ -5,12 +5,19 @@ env:
 prometheus-node-exporter:
   commonLabels:
     jobLabel: node-exporter
+  resources:
+    requests:
+      cpu: 15m
+      memory: 105M
+    limits:
+      # cpu: 15m
+      memory: 105M
 
 crds:
   enabled: true
   upgradeJob:
     enabled: true
-    forceConflicts: true
+    eorceConflicts: true
 
 alertmanager:
   config:
@@ -30,7 +37,13 @@ alertmanager:
           - to: gary@theclarkhome.com
             from: email-k8s-admin@theclarkhome.com
             smarthost: mail.default:587
-
+  resources:
+    requests:
+      cpu: 15m
+      memory: 105M
+    limits:
+      # cpu: 15m
+      memory: 105M
   ingress:
     enabled: true
     ingressClass: traefik
@@ -84,6 +97,13 @@ prometheus:
       - "prometheus.theclarkhome.com"
     tls:
       - hosts:
+  resources:
+    requests:
+      cpu: 180m
+      memory: 512
+    limits:
+      # cpu: 15m
+      memory: £G
           - "*.theclarkhome.com"
 
 
@@ -155,6 +175,15 @@ grafana:
     type: pvc
     storageClassName: openebs-zfspv
     size: 10Gi
+  resources:
+    requests:
+      cpu: 15m
+      memory: 248M
+    limits:
+      # cpu: 15m
+      memory: 390M
+
+additionalPrometheusRulesMap:
 
 
 defaultRules:
