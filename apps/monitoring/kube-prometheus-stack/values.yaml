@@ -90,6 +90,14 @@ prometheus:
           resources:
             requests:
               storage: 50Gi
+    resources:
+      requests:
+        cpu: 180m
+        memory: 512M
+      limits:
+        # cpu: 15m
+        memory: 5G
+
   ingress:
     enabled: true
     ingressClass: traefik
@@ -99,15 +107,7 @@ prometheus:
       - "prometheus.theclarkhome.com"
     tls:
       - hosts:
-  resources:
-    requests:
-      cpu: 180m
-      memory: 512
-    limits:
-      # cpu: 15m
-      memory: £G
           - "*.theclarkhome.com"
-
 
 grafana:
   adminPassword: ""
@@ -216,6 +216,15 @@ prometheusOperator:
       # cpu: 15m
       memory: 105M
 
+kubeStateMetrics:
+  resources:
+    requests:
+      cpu: 15m
+      memory: 105M
+    limits:
+      # cpu: 15m
+      memory: 105M
+
 additionalPrometheusRulesMap:
   additional-rules:
     groups:
@@ -229,4 +238,5 @@ additionalPrometheusRulesMap:
             annotations:
               summary: Host OOM kill detected (instance {{ $labels.instance }})
               description: |-
+
                 "OOM kill detected\n VALUE = {{ $value }}\n LABELS = {{ $labels }}"
