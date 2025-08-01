@@ -216,7 +216,7 @@ prometheusOperator:
       # cpu: 15m
       memory: 105M
 
-kubeStateMetrics:
+kube-state-metrics:
   resources:
     requests:
       cpu: 15m
