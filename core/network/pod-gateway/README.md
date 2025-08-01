@@ -7,4 +7,4 @@ kubectl label namespace ${routed_namespace} routed-gateway=true
 ```
 
 #Notes
-The angelnu chart does not support setting resources
+The angelnu chart does not support setting resources for webhook
