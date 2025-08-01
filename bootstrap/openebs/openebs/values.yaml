@@ -12,6 +12,7 @@ openebs-crds:
 localpv-provisioner:
   rbac:
     create: true
+  localpv:
     resources:
       requests:
         cpu: 15m
