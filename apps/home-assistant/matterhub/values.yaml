@@ -7,6 +7,14 @@ controllers:
       # yamllint disable-line rule:line-length
       secret.reloader.stakater.com/reload: &secret home-assistant-matter-hub-secret
 
+    defaultContainerOptions:
+      resources:
+        requests:
+          cpu: 15m
+          memory: 145M
+        limits:
+          memory: 256M
+
     containers:
       *app :
         image:
