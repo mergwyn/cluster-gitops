@@ -9,3 +9,11 @@ serviceMonitor:
   enabled: true
   labels:
     release: kube-prometheus-stack
+
+resources:
+  requests:
+    cpu: 15m
+    memory: 105M
+  limits:
+    # cpu: 21m
+    memory: 105M
