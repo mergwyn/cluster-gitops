@@ -15,6 +15,11 @@
     {
       "packagePatterns": ["^plexinc\\/"],
       "versionScheme": "regex:^(?<compatibility>.*)\\.(?<major>.*)\\.(?<minor>.*)\\.(?<patch>.*)$"
+    },
+    {
+      "matchUpdateTypes": ["patch"],
+      "matchCurrentVersion": ">= 1.0.0",
+      "automerge": true
     }
   ]
 }
