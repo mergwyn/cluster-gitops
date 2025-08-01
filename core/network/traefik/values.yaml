@@ -79,6 +79,14 @@ service:
   loadBalancerSourceRanges: []
   externalIPs: []
 
+resources:
+  requests:
+    cpu: 15m
+    memory: 127M
+  limits:
+    # cpu: 21m
+    memory: 249M
+
 metrics:
   prometheus:
     service:
