@@ -10,6 +10,32 @@ podDnsConfig:
     - "1.1.1.1"
     - "9.9.9.9"
 
+resources:
+  requests:
+    cpu: 15m
+    memory: 105M
+  limits:
+    # cpu: 21m
+    memory: 122M
+
+webhook:
+  resources:
+    requests:
+      cpu: 15m
+      memory: 105M
+    limits:
+      # cpu: 21m
+      memory: 105M
+
+cainjector:
+  resources:
+    requests:
+      cpu: 15m
+      memory: 105M
+    limits:
+      # cpu: 21m
+      memory: 122M
+
 extraObjects:
   - |
     apiVersion: cert-manager.io/v1
