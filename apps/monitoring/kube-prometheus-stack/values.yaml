@@ -228,15 +228,23 @@ kube-state-metrics:
 additionalPrometheusRulesMap:
   additional-rules:
     groups:
-      - name: additional-rules
+      - name: oomkills
         rules:
           - alert: HostOomKillDetected
             expr: (increase(node_vmstat_oom_kill[1m]) > 0)
             for: 0m
             labels:
-              severity: warning
+              severity: critical
             annotations:
               summary: Host OOM kill detected (instance {{ $labels.instance }})
               description: |-
-
                 "OOM kill detected\n VALUE = {{ $value }}\n LABELS = {{ $labels }}"
+          - alert: OomKillEvents
+            annotations:
+              description: The pod {{$labels.pod}} in {{$labels.namespace}} was recently OOMkilled.
+              summary: Pod was OOMKilled
+            expr: sum by(namespace, pod) (kube_pod_container_status_last_terminated_reason{reason=“OOMKilled”}) > 0
+            for: 30s
+            labels:
+              issue: The pod {{$labels.pod}} in {{$labels.namespace}} was recently OOMkilled.
+              severity: critical
