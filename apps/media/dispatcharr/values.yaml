@@ -24,7 +24,7 @@ controllers:
             # gpu.intel.com/i915: "1"  # enable if vaapi used in sm
           limits:
             # cpu: 1100m
-            memory: 1572M
+            memory: 2G
             # gpu.intel.com/i915: "1"  # enable if vaapi used in sm
 
 service:
