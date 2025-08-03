@@ -1,5 +1,5 @@
 # TODO
-for backup repository configee https://velero.io/docs/v1.16/backup-repository-configuration/ap,
+for backup repository config see https://velero.io/docs/v1.16/backup-repository-configuration/
 
 need to specify --backup-repository-configmap in configuration.extraArgs
 and add config map in configMaps
