@@ -1,10 +1,7 @@
-# TODO
-for backup repository configee https://velero.io/docs/v1.16/backup-repository-configuration/ap,
+# NOTES
+For backup repository config see https://velero.io/docs/v1.16/backup-repository-configuration/
 
-need to specify --backup-repository-configmap in configuration.extraArgs
-and add config map in configMaps
-
-config map needs to look like:
+Specify `--backup-repository-configmap` in `configuration.extraArgs` and add config map in `configMaps`
 
 ```
 apiVersion: v1
