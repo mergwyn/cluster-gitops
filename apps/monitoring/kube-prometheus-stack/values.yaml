@@ -185,13 +185,6 @@ grafana:
       # cpu: 15m
       memory: 3G
 
-additionalPrometheusRulesMap:
-
-
-defaultRules:
-  rules:
-    kubeProxy: false
-
 resources:
   limits:
     # cpu: 400m
@@ -225,6 +218,11 @@ kube-state-metrics:
       # cpu: 15m
       memory: 105M
 
+defaultRules:
+  rules:
+    kubeProxy: false
+
+# yamllint disable rule:line-length
 additionalPrometheusRulesMap:
   additional-rules:
     groups:
@@ -239,12 +237,13 @@ additionalPrometheusRulesMap:
               summary: Host OOM kill detected (instance {{ $labels.instance }})
               description: |-
                 "OOM kill detected\n VALUE = {{ $value }}\n LABELS = {{ $labels }}"
-          - alert: OomKillEvents
-            annotations:
-              description: The pod {{$labels.pod}} in {{$labels.namespace}} was recently OOMkilled.
-              summary: Pod was OOMKilled
-            expr: sum by(namespace, pod) (kube_pod_container_status_last_terminated_reason{reason=“OOMKilled”}) > 0
-            for: 30s
-            labels:
-              issue: The pod {{$labels.pod}} in {{$labels.namespace}} was recently OOMkilled.
-              severity: critical
+#          - alert: OomKillEvents
+#            expr: (sum by(namespace, pod) (kube_pod_container_status_last_terminated_reason{reason=“OOMKilled”}) > 0)
+#            for: 30s
+#            labels:
+#              issue: The pod {{$labels.pod}} in {{$labels.namespace}} was recently OOMkilled.
+#              severity: critical
+#            annotations:
+#              description: |-
+#                "The pod {{$labels.pod}} in {{$labels.namespace}} was recently OOMkilled."
+#              summary: Pod was OOMKilled
