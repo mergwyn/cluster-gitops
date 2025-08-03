@@ -42,6 +42,18 @@ configuration:
       config:
         region: London
 
+  extraArgs:
+    - "--backup-repository-configmap"
+
+configMaps:
+  backup-repository-config:
+    data:
+      "kopia": |
+        {
+          "cacheLimitMB": 2048
+          "enableCompression": true
+        }
+
 snapshotsEnabled: false
 defaultVolumeSnapshotLocations: default
 
