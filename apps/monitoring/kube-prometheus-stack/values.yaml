@@ -213,10 +213,10 @@ kube-state-metrics:
   resources:
     requests:
       cpu: 15m
-      memory: 105M
+      memory: 279M
     limits:
       # cpu: 15m
-      memory: 105M
+      memory: 279M
 
 defaultRules:
   rules:
