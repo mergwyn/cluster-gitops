@@ -87,8 +87,8 @@ prometheus:
         scheme: https
         static_configs:
           - targets: ['blikvm.theclarkhome.com']
-          # tls_config:
-          #   insecure_skip_verify: true # For self-signed certificate  
+        tls_config:
+          insecure_skip_verify: true  # For self-signed certificate
 
     persistentVolumeClaimRetentionPolicy:
       whenDeleted: Retain
