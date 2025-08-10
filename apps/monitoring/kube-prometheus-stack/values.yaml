@@ -79,6 +79,17 @@ prometheus:
         static_configs:
           - targets: ['foxtrot.theclarkhome.com:9000']
 
+      - job_name: blikvm-v1
+        metrics_path: '/api/export/prometheus/metrics'
+        basic_auth:
+          username: admin
+          password: admin
+        scheme: https
+        static_configs:
+          - targets: ['blikvm.theclarkhome.com']
+          # tls_config:
+          #   insecure_skip_verify: true # For self-signed certificate  
+
     persistentVolumeClaimRetentionPolicy:
       whenDeleted: Retain
       whenScaled: Retain
