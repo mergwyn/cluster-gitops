@@ -9,6 +9,10 @@
   },
   "packageRules": [
     {
+      "packagePatterns": ["^ghcr.io/linuxserver//qbittorrent" ],
+      "versionScheme": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)_p(?<patch>\\d+)-r(?<build>\\d)-ls(?<revision>.+)$"
+    },
+    {
       "packagePatterns": ["^ghcr.io\\/linuxserver\\/", "^ghcr.io\\/linuxserver\\/.*\\/"],
       "versionScheme": "regex:^(?<compatibility>.*)\\.(?<major>.*)\\.(?<minor>.*)\\.(?<patch>.*)$"
     },
