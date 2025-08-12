@@ -1,7 +1,7 @@
 ---
 image:
   repository: lscr.io/linuxserver/qbittorrent
-  tag: 5.1.2-r1
+  tag: 5.1.2
 
 dnsPolicy: ClusterFirst
 
