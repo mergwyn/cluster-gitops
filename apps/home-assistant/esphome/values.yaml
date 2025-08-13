@@ -12,13 +12,13 @@ controllers:
             "ips": ["10.58.0.211"]
           }]
 
-#    defaultContainerOptions:
-#      resources:
-#        requests:
-#          cpu: 500m
-#          memory: 512M
-#        limits:
-#          memory: 1G
+    defaultContainerOptions:
+      resources:
+        requests:
+          cpu: 10m
+          memory: 204M
+        limits:
+          memory: 2G
 
     containers:
       esphome:
