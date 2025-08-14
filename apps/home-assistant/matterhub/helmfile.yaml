@@ -1,7 +1,7 @@
 ---
 releases:
   - name: matterhub
-    chart: oci://ghcr.io/bjw-s/helm/app-template
+    chart: oci://ghcr.io/bjw-s-labs/helm/app-template
     version: 3.7.3
     values:
       - ../../../settings/common.yaml
