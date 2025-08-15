@@ -70,6 +70,15 @@ configs:
           app.kubernetes.io/name:
             value: cloudflare-tunnel-remote
 
+      - name: gluetun-auth
+        namespace: network
+        data:
+          config.toml:
+            secret: gluetun_auth
+        labels:
+          app.kubernetes.io/name:
+            value: pod-gatway
+
       - name: grafana-admin
         namespace: monitoring
         data:
