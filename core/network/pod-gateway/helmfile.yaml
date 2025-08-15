@@ -12,9 +12,9 @@ releases:
       - custom_values.yaml
       # - wg_values.yaml
 
-  - name: gluetun-exporter
-    chart: oci://ghcr.io/bjw-s-labs/helm/app-template
-    version: 3.7.3
-    values:
-      - ../../../settings/common.yaml
-      - exporter-values.yaml
+#  - name: gluetun-exporter
+#    chart: oci://ghcr.io/bjw-s-labs/helm/app-template
+#    version: 3.7.3
+#    values:
+#      - ../../../settings/common.yaml
+#      - exporter-values.yaml
