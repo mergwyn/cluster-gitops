@@ -6,6 +6,6 @@ repositories:
 releases:
   - name: kube-vip
     chart: kube-vip/kube-vip
-    version: 0.7.1
+    version: 0.8.0
     values:
       - values.yaml
