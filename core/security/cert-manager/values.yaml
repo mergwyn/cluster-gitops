@@ -54,7 +54,7 @@ extraObjects:
                 email: gary@theclarkhome.com
                 apiTokenSecretRef:
                   name: cloudflare-token-secret
-                  key: cloudflare-token
+                  key: tunnelToken
             selector:
               dnsZones:
                 - "theclarkhome.com"
