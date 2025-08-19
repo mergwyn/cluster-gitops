@@ -4,11 +4,11 @@
     "config:recommended",
     "github>mergwyn/cluster-gitops//.renovate/versioning",
     "github>mergwyn/cluster-gitops//.renovate/autoMerge",
-    ":disableRateLimiting",
+    ":disableRateLimiting"
   ],
   "timezone": "Europe/London",
   "ignorePaths": ["disabled/**","archive/**"],
   "helm-values": {
-    "managerFilePatterns": ["(^|/).*values.*.yaml$"]
-  },
+  "managerFilePatterns": ["(^|/).*values.*.yaml$"]
+  }
 }
