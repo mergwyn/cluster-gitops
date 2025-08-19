@@ -1,7 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended".
+    "config:recommended",
     "github>mergwyn/cluster-gitops//.renovate/versioning.json5",
     "github>mergwyn/cluster-gitops//.renovate/autoMerge.json5"
   ],
