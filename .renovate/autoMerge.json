@@ -1,19 +1,19 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     {
-      description: "auto merge minors",
+      "description": "auto merge minors",
       "matchUpdateTypes": ["patch"],
       "matchCurrentVersion": "!/^0/",
       "automerge": true,
-      "ignoreTests": true,
+      "ignoreTests": true
     },
     {
-      description: "Auto merge KPS minors and patches",
-      matchDatasources: ["helm", "docker"],
-      automerge: true,
-      matchUpdateTypes: ["minor", "patch"],
-      matchDepNames: ["kube-prometheus-stack"],
-      ignoreTests: true,
-    },
-  ],
+      "description": "Auto merge KPS minors and patches",
+      "matchDatasources": ["helm", "docker"],
+      "automerge": true,
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchDepNames": ["kube-prometheus-stack"],
+      "ignoreTests": true
+    }
+  ]
 }
