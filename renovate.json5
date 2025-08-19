@@ -1,30 +1,12 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended"
+    "config:recommended",
+    "github>mergwyn/cluster-gitops//.renovate/versioning.json5",
+    "github>mergwyn/cluster-gitops//.renovate/autoMerge.json5",
   ],
   "ignorePaths": ["disabled/**","archive/**"],
   "helm-values": {
     "fileMatch": ["(^|/).*values.*.yaml$"]
   },
-  "packageRules": [
-    {
-      "packagePatterns": ["^(gh|ls)cr.io\\/linuxserver\\/qbittorrent/"],
-      "versionScheme": "regex:/^(?<major>]\d+)]\.(?<minor>]\d+)]\.(?<patch>]\d+)-r(?<build>]]\d)-ls(?<revision>.+)$"
-    },
-    {
-      "packagePatterns": ["^(gh|ls)cr.io\\/linuxserver\\/", "^ghcr.io\\/linuxserver\\/.*\\/"],
-      "versionScheme": "regex:^(?<compatibility>.*)\\.(?<major>.*)\\.(?<minor>.*)\\.(?<patch>.*)$"
-    },
-    {
-      "packagePatterns": ["^plexinc\\/"],
-      "versionScheme": "regex:^(?<compatibility>.*)\\.(?<major>.*)\\.(?<minor>.*)\\.(?<patch>.*)$"
-    },
-    {
-      "matchUpdateTypes": ["patch"],
-      "matchCurrentVersion": "!/^0/",
-      "automerge": true,
-      "ignoreTests": true
-    }
-  ]
 }
