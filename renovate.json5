@@ -1,30 +1,44 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended"
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: [
+    'config:recommended',
   ],
-  "ignorePaths": ["disabled/**","archive/**"],
-  "helm-values": {
-    "fileMatch": ["(^|/).*values.*.yaml$"]
+  ignorePaths: [
+    'disabled/**',
+    'archive/**',
+  ],
+  'helm-values': {
+    managerFilePatterns: [
+      '/(^|/).*values.*.yaml$/',
+    ],
   },
-  "packageRules": [
+  packageRules: [
     {
-      "packagePatterns": ["^(gh|ls)cr.io\\/linuxserver\\/qbittorrent/"],
-      "versionScheme": "regex:/^(?<major>]\d+)]\.(?<minor>]\d+)]\.(?<patch>]\d+)-r(?<build>]]\d)-ls(?<revision>.+)$"
+      versioning: 'regex:/^(?<major>]d+)].(?<minor>]d+)].(?<patch>]d+)-r(?<build>]]d)-ls(?<revision>.+)$',
+      matchPackageNames: [
+        '/^(gh|ls)cr.io\\/linuxserver\\/qbittorrent//',
+      ],
     },
     {
-      "packagePatterns": ["^(gh|ls)cr.io\\/linuxserver\\/", "^ghcr.io\\/linuxserver\\/.*\\/"],
-      "versionScheme": "regex:^(?<compatibility>.*)\\.(?<major>.*)\\.(?<minor>.*)\\.(?<patch>.*)$"
+      versioning: 'regex:^(?<compatibility>.*)\\.(?<major>.*)\\.(?<minor>.*)\\.(?<patch>.*)$',
+      matchPackageNames: [
+        '/^(gh|ls)cr.io\\/linuxserver\\//',
+        '/^ghcr.io\\/linuxserver\\/.*\\//',
+      ],
     },
     {
-      "packagePatterns": ["^plexinc\\/"],
-      "versionScheme": "regex:^(?<compatibility>.*)\\.(?<major>.*)\\.(?<minor>.*)\\.(?<patch>.*)$"
+      versioning: 'regex:^(?<compatibility>.*)\\.(?<major>.*)\\.(?<minor>.*)\\.(?<patch>.*)$',
+      matchPackageNames: [
+        '/^plexinc\\//',
+      ],
     },
     {
-      "matchUpdateTypes": ["patch"],
-      "matchCurrentVersion": "!/^0/",
-      "automerge": true,
-      "ignoreTests": true
-    }
-  ]
+      matchUpdateTypes: [
+        'patch',
+      ],
+      matchCurrentVersion: '!/^0/',
+      automerge: true,
+      ignoreTests: true,
+    },
+  ],
 }
