@@ -3,7 +3,7 @@
   "extends": [
     "config:recommended",
     "github>mergwyn/cluster-gitops//.renovate/versioning.json5",
-    "github>mergwyn/cluster-gitops//.renovate/autoMerge.json5",
+    //"github>mergwyn/cluster-gitops//.renovate/autoMerge.json5",
   ],
   "ignorePaths": ["disabled/**","archive/**"],
   "helm-values": {
