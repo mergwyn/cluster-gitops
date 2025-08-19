@@ -2,8 +2,8 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended",
-    "github>mergwyn/cluster-gitops//.renovate/versioning.json",
-    "github>mergwyn/cluster-gitops//.renovate/autoMerge.json",
+    "github>mergwyn/cluster-gitops//.renovate:versioning",
+    "github>mergwyn/cluster-gitops//.renovate:autoMerge",
   ],
   "ignorePaths": ["disabled/**","archive/**"],
   "helm-values": {
