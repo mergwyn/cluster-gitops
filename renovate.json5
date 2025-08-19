@@ -7,6 +7,6 @@
   ],
   "ignorePaths": ["disabled/**","archive/**"],
   "helm-values": {
-    "fileMatch": ["(^|/).*values.*.yaml$"]
+    "managerFilePatterns": ["(^|/).*values.*.yaml$"]
   },
 }
