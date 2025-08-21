@@ -43,6 +43,7 @@
       matchCurrentVersion: '!/^0/',
       automerge: true,
       ignoreTests: true,
+      minimumReleaseAge: '14d',
     },
     {
       description: 'Auto merge KPS minors and patches',
@@ -59,6 +60,7 @@
         'kube-prometheus-stack',
       ],
       ignoreTests: true,
+      minimumReleaseAge: '3d',
     },
   ],
 }
