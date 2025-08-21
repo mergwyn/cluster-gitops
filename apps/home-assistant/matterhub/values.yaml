@@ -43,7 +43,9 @@ controllers:
 
         securityContext:
           readOnlyRootFilesystem: false
-          capabilities: {drop: ["ALL"]}
+          capabilities:
+            drop:
+              - "ALL"
 
     pod:
       annotations:
