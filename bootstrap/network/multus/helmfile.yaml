@@ -1,15 +1,18 @@
 ---
-releases:
+repositories:
+  - name: angelnu
+    url: http://angelnu.github.io/helm-charts
 
-  - name: multus-cni
-    chart: oci://registry-1.docker.io/bitnamicharts/multus-cni
-    version: 2.2.21
+releases:
+  - name: multus
+    chart: angelnu/multus
+    version: 5.0.7
     values:
       - values.yaml
 
-#   - name: whereabouts
-#     chart: oci://registry-1.docker.io/bitnamicharts/whereabouts
-#     version: 1.2.2
-#     values:
-#       - hostCNIBinDir: /var/lib/rancher/k3s/data/cni
-#       - hostCNINetDir: /var/lib/rancher/k3s/agent/etc/cni/net.d
+  - name: multus-networks
+    chart: oci://ghcr.io/bjw-s/helm/app-template
+    version: 3.7.3
+    values:
+      - ../../../settings/common.yaml
+      - networks.yaml
