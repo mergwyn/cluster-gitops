@@ -1,41 +1,63 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:best-practices",
-    ":separateMultipleMajorReleases",
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: [
+    'config:best-practices',
+    ':separateMultipleMajorReleases',
   ],
-  "ignorePaths": ["disabled/**","archive/**"],
-  "minimumReleaseAge": "14d",
-  "helm-values": {
-    "fileMatch": ["(^|/).*values.*.yaml$"]
+  ignorePaths: [
+    'disabled/**',
+    'archive/**',
+  ],
+  minimumReleaseAge: '14d',
+  'helm-values': {
+    managerFilePatterns: [
+      '/(^|/).*values.*.yaml$/',
+    ],
   },
-  "packageRules": [
+  packageRules: [
     {
-      "packagePatterns": ["^(gh|ls)cr.io\\/linuxserver\\/qbittorrent/"],
-      "versionScheme": "regex:/^(?<major>]\d+)]\.(?<minor>]\d+)]\.(?<patch>]\d+)-r(?<build>]]\d)-ls(?<revision>.+)$"
+      versioning: 'regex:/^(?<major>]d+)].(?<minor>]d+)].(?<patch>]d+)-r(?<build>]]d)-ls(?<revision>.+)$',
+      matchPackageNames: [
+        '/^(gh|ls)cr.io\\/linuxserver\\/qbittorrent//',
+      ],
     },
     {
-      "packagePatterns": ["^(gh|ls)cr.io\\/linuxserver\\/", "^ghcr.io\\/linuxserver\\/.*\\/"],
-      "versionScheme": "regex:^(?<compatibility>.*)\\.(?<major>.*)\\.(?<minor>.*)\\.(?<patch>.*)$"
+      versioning: 'regex:^(?<compatibility>.*)\\.(?<major>.*)\\.(?<minor>.*)\\.(?<patch>.*)$',
+      matchPackageNames: [
+        '/^(gh|ls)cr.io\\/linuxserver\\//',
+        '/^ghcr.io\\/linuxserver\\/.*\\//',
+      ],
     },
     {
-      "packagePatterns": ["^plexinc\\/"],
-      "versionScheme": "regex:^(?<compatibility>.*)\\.(?<major>.*)\\.(?<minor>.*)\\.(?<patch>.*)$"
+      versioning: 'regex:^(?<compatibility>.*)\\.(?<major>.*)\\.(?<minor>.*)\\.(?<patch>.*)$',
+      matchPackageNames: [
+        '/^plexinc\\//',
+      ],
     },
     {
-      "description": "auto merge patches",
-      "matchUpdateTypes": ["patch"],
-      "matchCurrentVersion": "!/^0/",
-      "automerge": true,
-      "ignoreTests": true
+      description: 'auto merge patches',
+      matchUpdateTypes: [
+        'patch',
+      ],
+      matchCurrentVersion: '!/^0/',
+      automerge: true,
+      ignoreTests: true,
     },
     {
-      "description": "Auto merge KPS minors and patches",
-      "matchDatasources": ["helm", "docker"],
-      "automerge": true,
-      "matchUpdateTypes": ["minor", "patch"],
-      "matchDepNames": ["kube-prometheus-stack"],
-      "ignoreTests": true
-    }
-  ]
+      description: 'Auto merge KPS minors and patches',
+      matchDatasources: [
+        'helm',
+        'docker',
+      ],
+      automerge: true,
+      matchUpdateTypes: [
+        'minor',
+        'patch',
+      ],
+      matchDepNames: [
+        'kube-prometheus-stack',
+      ],
+      ignoreTests: true,
+    },
+  ],
 }
