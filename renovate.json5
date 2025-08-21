@@ -1,9 +1,11 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended"
+    "config:best-practices",
+    "default:separateMultipleMajorReleases",
   ],
   "ignorePaths": ["disabled/**","archive/**"],
+  "minimumReleaseAge": "14d",
   "helm-values": {
     "fileMatch": ["(^|/).*values.*.yaml$"]
   },
