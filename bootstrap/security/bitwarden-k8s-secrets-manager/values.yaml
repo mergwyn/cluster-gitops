@@ -73,8 +73,8 @@ configs:
       - name: esphome-secret
         namespace: home-assistant
         data:
-          secrets.yaml:
-            nested:
+          nested:
+            secrets.yaml:
               mqtt_user:
                 secret: mqtt_credentials
                 key: MQTT_USER
