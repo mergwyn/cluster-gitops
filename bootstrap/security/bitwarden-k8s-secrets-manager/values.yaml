@@ -73,24 +73,25 @@ configs:
       - name: esphome-secret
         namespace: home-assistant
         data:
-          mqtt_user:
-            secret: mqtt_credentials
-            key: MQTT_USER
-          mqtt_password:
-            secret: mqtt_credentials
-            key: MQTT_PASSWORD
-          wifi_ssid:
-            secret: wifi_credentials
-            key: wifi_ssid
-          wifi_password:
-            secret: wifi_credentials
-            key: wifi_password
-          octopus_account:
-            secret: octopus_credentials
-            key: octopus_account
-          octopus_api_key:
-            secret: octopus_credentials
-            key: octopus_api_key
+          secrets.yaml:
+            mqtt_user:
+              secret: mqtt_credentials
+              key: MQTT_USER
+            mqtt_password:
+              secret: mqtt_credentials
+              key: MQTT_PASSWORD
+            wifi_ssid:
+              secret: wifi_credentials
+              key: wifi_ssid
+            wifi_password:
+              secret: wifi_credentials
+              key: wifi_password
+            octopus_account:
+              secret: octopus_credentials
+              key: octopus_account
+            octopus_api_key:
+              secret: octopus_credentials
+              key: octopus_api_key
         labels:
           app.kubernetes.io/name:
             value: esphome
