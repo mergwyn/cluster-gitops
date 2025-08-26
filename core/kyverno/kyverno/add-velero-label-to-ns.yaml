@@ -5,7 +5,7 @@ resources:
     metadata:
       name: add-velero-label-to-ns.yaml
       annotations:
-        policies.kyverno.io/title: Label Velero bavkup PVC
+        policies.kyverno.io/title: Label Velero backup PVC
         policies.kyverno.io/category: Other
         policies.kyverno.io/severity: medium
         policies.kyverno.io/subject: Namespace
@@ -13,7 +13,7 @@ resources:
         policies.kyverno.io/minversion: 1.7.0
         kyverno.io/kubernetes-version: "1.23"
         policies.kyverno.io/description: >-
-          Add label to ensure velero will backup pvc in specified narmnespaces
+          Add label to ensure velero will backup pvc in specified namespaces
     spec:
       mutateExistingOnPolicyUpdate: true
       rules:
@@ -27,7 +27,6 @@ resources:
             targets:
               - apiVersion: v1
                 kind: Namespace
-                #  name: "{{request.object.metadata.name}}"
                 preconditions:
                   any:
                     - key: "{{target.metadata.name}}"
