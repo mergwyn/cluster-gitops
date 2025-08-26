@@ -23,16 +23,21 @@ resources:
               - resources:
                   kinds:
                     - Namespace
-                  names:
-                    - media
-                    - default
-                    - downloaders
-                    - monitoring
-                    - home-assistant
           mutate:
             targets:
               - apiVersion: v1
                 kind: Namespace
+                #  name: "{{request.object.metadata.name}}"
+                preconditions:
+                  any:
+                    - key: "{{target.metadata.name}}"
+                      operator: AnyIn
+                      value:
+                        - media
+                        - default
+                        - downloaders
+                        - monitoring
+                        - home-assistant
             patchStrategicMerge:
               metadata:
                 labels:
