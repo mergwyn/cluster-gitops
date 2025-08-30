@@ -6,6 +6,6 @@ releases:
   - name: reloader
     # chart: oci://ghcr.io/stakater/charts/reloader
     chart: stakater/reloader
-    version: 2.2.0
+    version: 2.2.2
     values:
       - values.yaml
