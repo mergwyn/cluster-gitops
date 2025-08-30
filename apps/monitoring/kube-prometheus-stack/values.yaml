@@ -17,7 +17,7 @@ crds:
   enabled: true
   upgradeJob:
     enabled: true
-    eorceConflicts: true
+    forceConflicts: true
 
 alertmanager:
   config:
