@@ -1,11 +1,12 @@
 ---
-alias: &app matterhub
+.alias: &app matterhub
+.secret: &secret home-assistant-matter-hub-secret
+
 controllers:
-  *app:
+  *app :
     annotations:
       reloader.stakater.com/auto: "true"
-      # yamllint disable-line rule:line-length
-      secret.reloader.stakater.com/reload: &secret home-assistant-matter-hub-secret
+      secret.reloader.stakater.com/reload: *secret
 
     defaultContainerOptions:
       resources:
