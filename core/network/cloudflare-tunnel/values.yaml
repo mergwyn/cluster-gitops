@@ -18,8 +18,6 @@ cloudflare:
       service: http://radarr.downloaders:7878
     - hostname: hass.theclarkhome.com
       service: http://home-assistant.home-assistant:8123
-    - hostname: goldilocks.theclarkhome.com
-      service: http://goldilocks.monitoring:8080
 
 replicaCount: 2
 
