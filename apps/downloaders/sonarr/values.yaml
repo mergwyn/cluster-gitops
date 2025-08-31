@@ -18,9 +18,9 @@ service:
         port: 8989
 
 ingress:
-  sonarr:
+  internal:
     enabled: true
-    ingressClass: traefik
+    ingressClassName: traefik
     annotations:
       traefik.ingress.kubernetes.io/router.entrypoints: websecure
     hosts:
@@ -34,6 +34,18 @@ ingress:
     tls:
       - hosts:
           - "*.theclarkhome.com"
+
+  external:
+    enabled: true
+    ingressClassName: cloudflare-tunnel
+    annotations:
+      cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
+    hosts:
+      - host: "sonarr.theclarkhome.com"
+        paths:
+          - path: /
+            backend:
+              name: sonarr
 
 persistence:
   config:
