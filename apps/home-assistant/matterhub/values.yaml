@@ -92,15 +92,15 @@ ingress:
     tls:
       - hosts:
           - '*.theclarkhome.com'
-  matterhub-external:
-    enabled: true
-    className: cloudflare-tunnel
-    annotations:
-      cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
-    hosts:
-      - host: "matterhub.theclarkhome.com"
-        paths:
-          - path: /
+#   matterhub-external:
+#     enabled: true
+#     className: cloudflare-tunnel
+#     annotations:
+#       cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
+#     hosts:
+#       - host: "matterhub.theclarkhome.com"
+#         paths:
+#           - path: /
 
 persistence:
   data:
