@@ -1,5 +1,5 @@
 #Notes
-Install local managed tunnel as per guide:
+Install local managed tunnel as per guide: https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/do-more-with-tunnels/local-management/create-local-tunnel/
 
 ```
 cloudflared tunnel login
