@@ -62,6 +62,12 @@ addons:
     envFrom:
       - secretRef:
           name: privatevpn-ovn  # USER and PASSWORD
+    
+    additionalVolumeMounts:
+      - mountPath: /gluetun/auth/config.toml
+        name: gluetun-auth
+        readOnly: true
+        subPath: config.toml
 
 # TODO check which settings are used by pod gateway and not just passed through
 # to gluetun
@@ -72,6 +78,23 @@ settings:
   VPN_ENDPOINT_PORT: *vpn_port  # TODO which port settings are needed
   VPN_BLOCK_OTHER_TRAFFIC: false
   GATEWAY_ENABLE_DNSSEC: false
+
+configMaps:
+  auth-config:
+    # -- Enables or disables the configMap
+    enabled: true
+    data:
+      {}
+      # foo: bar
+
+persistence:
+  gluetun-auth:
+    enabled: true
+    type: secret
+    name: gluetun-auth
+    subPath: config.toml
+    mountPath: /gluetun/auth/config.toml
+    readOnly: true
 
 resources:
   requests:
