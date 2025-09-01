@@ -61,6 +61,22 @@ configs:
       #     pod:
       #       value: cloudflared
 
+      - name: cloudflare-tunnel-secret
+        namespace: network
+        data:
+          accountID:
+            secret: cloudflare_cluster1_secret
+            key: accountID
+          tunnelName:
+            secret: cloudflare_cluster1_secret
+            key: tunnelName
+          apiToken:
+            secret: cloudflare_cluster1_secret
+            key: apiToken
+        labels:
+          app.kubernetes.io/name:
+            value: cloudflare-tunnel-ingress-controller
+
       - name: cluster1-tunnel-credentials
         namespace: network
         data:
