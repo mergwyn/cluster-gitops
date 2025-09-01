@@ -54,3 +54,9 @@ persistence:
     type: hostPath
     hostPath: /srv/media
     mountPath: /data
+  config-new:
+    type: persistentVolumeClaim
+    storageClass: openebs-zfspv
+    accessMode: ReadWriteOnce
+    retain: true
+    size: 10G
