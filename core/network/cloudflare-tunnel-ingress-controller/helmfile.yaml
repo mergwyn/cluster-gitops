@@ -1,0 +1,11 @@
+---
+repositories:
+  - name: strrl.dev
+    url: https://helm.strrl.dev
+
+releases:
+  - name: cloudflare-tunnel-ingress-controller
+    chart: strrl.dev/cloudflare-tunnel-ingress-controller
+    version: 0.0.18
+    values:
+      - values.yaml

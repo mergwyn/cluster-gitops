@@ -1,0 +1,40 @@
+---
+# Default values for cloudflare-tunnel-ingress-controller.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+cloudflare:
+  secretRef:
+    name: cloudflare-tunnel-secret
+    accountIDKey: accountID
+    tunnelNameKey: tunnelName
+    apiTokenKey: apiToken
+
+ingressClass:
+  name: cloudflare-tunnel
+  controllerValue: strrl.dev/cloudflare-tunnel-ingress-controller
+  isDefaultClass: false
+
+replicaCount: 2
+
+image:
+  repository: cr.strrl.dev/strrl/cloudflare-tunnel-ingress-controller
+  tag: 0.0.18
+
+cloudflared:
+  image:
+    repository: cloudflare/cloudflared
+    pullPolicy: IfNotPresent
+    tag: 2025.8.1
+  replicaCount: 2
+
+# cloudflaredServiceMonitor:
+#   create: false
+#   jobLabel: ""
+#   interval: ""
+#   scrapeTimeout: ""
+#   honorLabels: false
+#   metricRelabelings: []
+#   relabelings: []
+#   labels: {}
+#   scheme: http
