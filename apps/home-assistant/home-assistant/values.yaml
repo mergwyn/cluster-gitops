@@ -83,10 +83,10 @@ metrics:
 ingress:
   main:
     enabled: true
-    ingressClass: traefik
+    ingressClassName: traefik
     annotations:
       traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    hosts:
+    hosts: &hosts
       - host: "hass.theclarkhome.com"
         paths:
           - path: /
@@ -98,6 +98,12 @@ ingress:
     tls:
       - hosts:
           - "*.theclarkhome.com"
+  external:
+    enabled: true
+    ingressClassName: cloudflare-tunnel
+    annotations:
+      cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
+    hosts: *hosts
 
 probes:
   liveness:
