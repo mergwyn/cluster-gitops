@@ -18,12 +18,12 @@ service:
         port: 7878
 
 ingress:
-  radarr:
+  internal:
     enabled: true
-    ingressClass: traefik
+    ingressClassName: traefik
     annotations:
       traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    hosts:
+    hosts: &hosts
       - host: "radarr.theclarkhome.com"
         paths:
           - path: /
@@ -34,6 +34,12 @@ ingress:
     tls:
       - hosts:
           - "*.theclarkhome.com"
+  external:
+    enabled: true
+    ingressClassName: cloudflare-tunnel
+    annotations:
+      cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
+    hosts: *hosts
 
 persistence:
   config:
