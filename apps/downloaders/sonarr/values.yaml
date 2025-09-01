@@ -24,7 +24,7 @@ ingress:
     annotations:
       traefik.ingress.kubernetes.io/router.entrypoints: websecure
     hosts:
-      - host: "sonarr.theclarkhome.com"
+      - host: &host "sonarr.theclarkhome.com"
         paths:
           - path: /
             backend:
@@ -41,7 +41,7 @@ ingress:
     annotations:
       cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
     hosts:
-      - host: "sonarr.theclarkhome.com"
+      - host: *host
         paths:
           - path: /
             backend:
