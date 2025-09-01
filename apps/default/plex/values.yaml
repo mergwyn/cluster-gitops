@@ -55,7 +55,8 @@ persistence:
     hostPath: /srv/media
     mountPath: /data
   config-new:
-    type: persistentVolumeClaim
+    enabled: true
+    type: pvc
     storageClass: openebs-zfspv
     accessMode: ReadWriteOnce
     retain: true
