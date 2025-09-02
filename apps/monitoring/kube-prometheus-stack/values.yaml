@@ -17,7 +17,7 @@ crds:
   enabled: true
   upgradeJob:
     enabled: true
-    forceConflicts: true
+    #forceConflicts: true
 
 alertmanager:
   config:
@@ -36,7 +36,7 @@ alertmanager:
         email_configs:
           - to: gary@theclarkhome.com
             from: email-k8s-admin@theclarkhome.com
-            smarthost: mail.default:587
+            smarthost: mail.system:587
   spec:
     resources:
       requests:
