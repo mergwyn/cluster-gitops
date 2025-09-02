@@ -1,0 +1,24 @@
+---
+releases:
+
+  - name: &certs external-secrets-bws-certs
+    chart: oci://ghcr.io/bjw-s-labs/helm/app-template
+    version: 4.2.0
+    values:
+      - sdk-certs.yaml
+
+  - name: &es external-secrets-bws
+    chart: oci://ghcr.io/external-secrets/charts/external-secrets
+    version: 0.19.2
+    needs:
+      - *certs
+    values:
+      - values.yaml
+
+  - name: external-secrets-bws-secretstore
+    chart: oci://ghcr.io/bjw-s-labs/helm/app-template
+    version: 4.2.0
+    needs:
+      - *es
+    values:
+      - clustersecretstore.yaml

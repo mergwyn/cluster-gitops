@@ -1,0 +1,5 @@
+---
+# TODO remove token before commit to github
+cloudflare:
+  # yamllint disable rule:line-length
+  tunnel_token: eyJhIjoiNTgwMzlmY2ZlNWE2NmZjZDlhZjNiOTNiZThiMDkyMzkiLCJ0IjoiNTI0MjA3MjEtZTBhYi00ZjBhLWJlNjctYmUzNTc4MGQ0NTc3IiwicyI6Ik56azNOelV3TXpVdE16QmpZeTAwTkdRNUxXSTBObU10TnpBNE9EWXdaV0UxTXprNCJ9
