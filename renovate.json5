@@ -43,6 +43,7 @@
       matchCurrentVersion: '!/^0/',
       automerge: true,
       ignoreTests: true,
+      internalChecksFilter: 'strict',
     },
     {
       description: 'Auto merge KPS minors and patches',
@@ -60,6 +61,7 @@
       ],
       ignoreTests: true,
       minimumReleaseAge: '3 days',
+      internalChecksFilter: 'strict',
     },
   ],
 }
