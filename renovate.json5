@@ -9,7 +9,8 @@
     'disabled/**',
     'archive/**',
   ],
-  minimumReleaseAge: '14 days',
+  minimumReleaseAge: '3 days',
+  internalChecksFilter: 'strict',
   'helm-values': {
     managerFilePatterns: [
       '/(^|/).*values.*.yaml$/',
@@ -43,7 +44,6 @@
       matchCurrentVersion: '!/^0/',
       automerge: true,
       ignoreTests: true,
-      internalChecksFilter: 'strict',
     },
     {
       description: 'Auto merge KPS minors and patches',
@@ -60,8 +60,6 @@
         'kube-prometheus-stack',
       ],
       ignoreTests: true,
-      minimumReleaseAge: '3 days',
-      internalChecksFilter: 'strict',
     },
   ],
 }
