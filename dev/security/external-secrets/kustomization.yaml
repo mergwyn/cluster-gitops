@@ -1,0 +1,15 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - stores/bitwarden.yaml
+
+helmCharts:
+  - name: external-secrets
+    repo: oci://ghcr.io/external-secrets/charts
+    version: 0.19.2
+    includeCRDs: true
+    releaseName: external-secrets
+    valuesFile: values.yaml

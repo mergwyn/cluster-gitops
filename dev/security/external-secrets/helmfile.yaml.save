@@ -1,0 +1,56 @@
+---
+repositories:
+  - name: bedag
+    url: https://bedag.github.io/helm-charts/
+
+releases:
+
+  - name: &certs external-secrets-certs
+    chart: bedag/raw
+    version: 2.0.0
+    values:
+      # - certificates.yaml
+      #- resources:
+      - {{tpl (.Files.Get "hack.yaml") . | nindent 4}}
+      #- hack.yaml
+
+#    hooks:
+#      - events: ["cleanup"]
+#        showlogs: true
+#        command: "kubectl"
+#        args:
+#          - "wait"
+#          - "-n {{.Release.Namespace}}"
+#          - "--for=condition=complete"
+#          - "--timeout=60s"
+#
+#  - name: &es external-secrets
+#    chart: oci://ghcr.io/external-secrets/charts/external-secrets
+#    version: 0.19.2
+#    needs:
+#      - *certs
+#    values:
+#      - values.yaml
+##    hooks:
+##      - events: ["cleanup"]
+##        showlogs: true
+##        command: "kubectl"
+##        args:
+##          - "wait"
+##          - "-n {{.Release.Namespace}}"
+##          - "--for=condition=complete"
+##          - "--timeout=60s"
+##          - "Certificate/external-secrets-bws-certs-bitwarden-tls-certs"
+##
+#  - name: external-secrets-secretstore
+#    chart: oci://ghcr.io/bjw-s-labs/helm/app-template
+#    version: 4.2.0
+#    needs:
+#      - *es
+#    values:
+#      - clustersecretstore.yaml
+##    hooks:
+##      - events: ["cleanup"]
+##        showlogs: true
+##        command: "kubectl"
+##        args: ["wait", "--for=condition=complete", "--timeout=3600s", "job/myjob"]
