@@ -220,7 +220,7 @@ configs:
 
       - name: postfix-mail
         namespace: default
-        data:
+        data: &postfix_data
           RELAYHOST:
             secret: postfix_mail
             key: RELAYHOST
@@ -230,6 +230,13 @@ configs:
           RELAYHOST_USERNAME:
             secret: postfix_mail
             key: RELAYHOST_USERNAME
+        labels:
+          app.kubernetes.io/name:
+            value: mail
+
+      - name: postfix-mail
+        namespace: system
+        data: *postfix_data
         labels:
           app.kubernetes.io/name:
             value: mail
