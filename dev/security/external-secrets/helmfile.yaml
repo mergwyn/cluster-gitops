@@ -1,0 +1,38 @@
+---
+releases:
+#    hooks:
+#      - events: ["cleanup"]
+#        showlogs: true
+#        command: "kubectl"
+#        args:
+#          - "wait"
+#          - "-n {{.Release.Namespace}}"
+#          - "--for=condition=complete"
+#          - "--timeout=60s"
+#
+  - name: &es external-secrets
+    chart: oci://ghcr.io/external-secrets/charts/external-secrets
+    version: 0.19.2
+#    needs:
+#      - *certs
+    values:
+      - values.yaml
+
+##    hooks:
+##      - events: ["cleanup"]
+##        showlogs: true
+##        command: "kubectl"
+##        args:
+##          - "wait"
+##          - "-n {{.Release.Namespace}}"
+##          - "--for=condition=complete"
+##          - "--timeout=60s"
+##          - "Certificate/external-secrets-bws-certs-bitwarden-tls-certs"
+##
+
+
+  - name: external-secrets-manifests
+    chart: ./manifests
+    values:
+      - ./manifests/bitwarden.yaml
+      - ./manifests/certificates.yaml
