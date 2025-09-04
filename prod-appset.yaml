@@ -50,6 +50,12 @@ spec:
           kind: Deployment
           jqPathExpressions:
             - .spec.template.spec.hostUsers
+        - group: '*'
+          kind: ExternalSecret
+          jqPathExpressions:
+            - .spec.dataFrom.*.extract.conversionStrategy
+            - .spec.dataFrom.*.extract.decodingStrategy
+            - .spec.dataFrom.*.extract.metadataPolicy
 
       syncPolicy:
         automated:
