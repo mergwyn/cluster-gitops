@@ -234,12 +234,12 @@ configs:
           app.kubernetes.io/name:
             value: mail
 
-      - name: postfix-mail
-        namespace: system
-        data: *postfix_data
-        labels:
-          app.kubernetes.io/name:
-            value: mail
+      # - name: postfix-mail
+      #   namespace: system
+      #   data: *postfix_data
+      #   labels:
+      #     app.kubernetes.io/name:
+      #       value: mail
 
       - name: privatevpn-ovn
         namespace: network
