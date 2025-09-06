@@ -4,13 +4,17 @@
     "config:recommended",
     ":configMigration",
     ":separateMultipleMajorReleases",
+    "packageRules": [
+      {
+        "minimumReleaseAge": "7 days",
+        "internalChecksFilter": "strict",
+      },
+    ],
   ],
   ignorePaths: [
     'disabled/**',
     'archive/**',
   ],
-  minimumReleaseAge: '3 days',
-  internalChecksFilter: 'strict',
   'helm-values': {
     managerFilePatterns: [
       '/(^|/).*values.*.yaml$/',
