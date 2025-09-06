@@ -4,13 +4,16 @@
     "config:recommended",
     ":configMigration",
     ":separateMultipleMajorReleases",
-    { "packageRules": [
-      {
-        "minimumReleaseAge": "7 days",
-        "internalChecksFilter": "strict",
-      },
-    ],}
   ],
+  "major": {
+    "minimumReleaseAge": "21 days"
+  },
+  "minor": {
+    "minimumReleaseAge": "8 days"
+  },
+  "patch": {
+    "minimumReleaseAge": "3 days"
+  }
   ignorePaths: [
     'disabled/**',
     'archive/**',
