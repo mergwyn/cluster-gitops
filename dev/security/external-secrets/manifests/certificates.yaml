@@ -12,7 +12,7 @@ metadata:
   name: bitwarden-bootstrap-certificate
 spec:
   # this is discouraged but required by ios
-  # commonName: cert-manager-bitwarden-tls
+  commonName: cert-manager-bitwarden-tls
   isCA: true
   secretName: "bitwarden-tls-certs"
   subject:

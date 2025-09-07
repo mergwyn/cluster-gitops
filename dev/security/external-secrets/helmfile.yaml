@@ -1,38 +1,19 @@
 ---
+# yaml-language-server: $schema=https://json.schemastore.org/helmfile
+
+repositories:
+  - name: bedag
+    url: https://bedag.github.io/helm-charts/
+
 releases:
-#    hooks:
-#      - events: ["cleanup"]
-#        showlogs: true
-#        command: "kubectl"
-#        args:
-#          - "wait"
-#          - "-n {{.Release.Namespace}}"
-#          - "--for=condition=complete"
-#          - "--timeout=60s"
-#
-  - name: &es external-secrets
+  - name: external-secrets
     chart: oci://ghcr.io/external-secrets/charts/external-secrets
     version: 0.19.2
-#    needs:
-#      - *certs
     values:
       - values.yaml
 
-##    hooks:
-##      - events: ["cleanup"]
-##        showlogs: true
-##        command: "kubectl"
-##        args:
-##          - "wait"
-##          - "-n {{.Release.Namespace}}"
-##          - "--for=condition=complete"
-##          - "--timeout=60s"
-##          - "Certificate/external-secrets-bws-certs-bitwarden-tls-certs"
-##
-
-
-  - name: external-secrets-manifests
-    chart: ./manifests
+  - name: bitwarden-store
+    chart: bedag/raw
+    version: 2.0.0
     values:
-      - ./manifests/bitwarden.yaml
-      - ./manifests/certificates.yaml
+      - bitwarden-store.yaml
