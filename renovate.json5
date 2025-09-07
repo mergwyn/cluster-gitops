@@ -5,6 +5,7 @@
     ":separateMultipleMajorReleases",
     "schedule:weekly",
   ],
+  "internalChecksFilter": "strict",
   "major": {
     "minimumReleaseAge": "21 days"
   },
