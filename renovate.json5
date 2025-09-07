@@ -1,8 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended",
-    ":configMigration",
+    "config:best-oractices",
     ":separateMultipleMajorReleases",
     "schedule:weekly",
   ],
