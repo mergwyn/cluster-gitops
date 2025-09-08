@@ -5,6 +5,7 @@
     ":separateMultipleMajorReleases",
     "schedule:weekly",
   ],
+  "timezone": "Europe/London",
   "internalChecksFilter": "strict",
   "major": {
     "minimumReleaseAge": "21 days"
