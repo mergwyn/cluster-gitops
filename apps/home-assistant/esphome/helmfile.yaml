@@ -1,4 +1,8 @@
 ---
+repositories:
+  - name: bedag
+    url: https://bedag.github.io/helm-charts/
+
 releases:
   - name: esphome
     chart: oci://ghcr.io/bjw-s-labs/helm/app-template
@@ -6,3 +10,9 @@ releases:
     values:
       - ../../../settings/common.yaml
       - values.yaml
+
+  - name: esphome-secret
+    chart: bedag/raw
+    version: 2.0.0
+    values:
+      - externalsecret.yaml
