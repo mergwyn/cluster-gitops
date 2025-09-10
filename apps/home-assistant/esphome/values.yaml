@@ -1,10 +1,12 @@
 ---
+# yamllint disable-line rule:line-length
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 
 controllers:
-
-  esphome:
+  &app esphome:
     pod:
       annotations:
+        reloader.stakater.com/auto: "true"
         k8s.v1.cni.cncf.io/networks: |
           [{
             "name":"macvlan-static",
@@ -21,10 +23,10 @@ controllers:
           memory: 2G
 
     containers:
-      esphome:
+      app:
         image:
           repository: ghcr.io/esphome/esphome
-          tag: 2025.8.3
+          tag: 2025.7.5
         env:
           TZ: "Europe/London"
           ESPHOME_DASHBOARD_USE_PING: "true"
@@ -34,11 +36,11 @@ controllers:
           DISABLE_HA_AUTHENTICATION: "true"
           # USERNAME:
           # PASSWORD:
-      code-server:
-        dependsOn: esphome
+      &code code-server:
+        dependsOn: app
         image:
           repository: ghcr.io/coder/code-server
-          tag: 4.103.2
+          tag: 4.103.1
         args:
           - "--auth=none"
           - "--user-data-dir=/config/.code-server"
@@ -49,19 +51,25 @@ controllers:
           runAsUser: 0
 
 service:
-  esphome:
-    controller: esphome
+  *app:
+    controller: *app
     type: ClusterIP
     ports:
       http:
         port: &http 6052
-      code-server:
+      *code:
         port: &code-server 12321
 
 dnsConfig:
   nameservers:
     - 10.58.0.21
     - 10.58.0.22
+
+configMaps:
+  secrets:
+    enabled: true
+    data:
+      secrets.yaml: "<<: !include .secrets/secrets.yaml"
 
 persistence:
   config:
@@ -72,6 +80,20 @@ persistence:
     size: 5G
     globalMounts:
       - path: /config
+  secrets-cm:
+    type: configMap
+    name: esphome
+    globalMounts:
+      - path: /config/secrets.yaml
+        subPath: secrets.yaml
+  secrets-file:
+    type: secret
+    name: esphome-secret
+    globalMounts:
+      - path: /config/.secrets
+        # subPath: secrets.yaml
+        readOnly: true
+
 
 rawResources:
   middleware:
@@ -95,16 +117,18 @@ rawResources:
           - websecure
         routes:
           - kind: Rule
+            # yamllint disable-line rule:line-length
             match: Host(`{{.Release.Name}}.{{.Values.global.domain}}`) && PathPrefix(`/`)
             priority: 10
             services:
-              - name: esphome
+              - name: *app
                 port: *http
           - kind: Rule
+            # yamllint disable-line rule:line-length
             match: Host(`{{.Release.Name}}.{{.Values.global.domain}}`) && PathRegexp(`^/code/.*`)
             priority: 11
             services:
-              - name: esphome
+              - name: *app
                 port: *code-server
             middlewares:
               - name: "{{.Release.Name}}-middleware"
