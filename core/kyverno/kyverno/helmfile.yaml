@@ -10,6 +10,12 @@ releases:
     values:
       - values.yaml
 
+  - name: kyverno-policies
+    chart: oci://ghcr.io/kyverno/charts/kyverno-policies
+    version: 3.5.1
+    values:
+      - policy-values.yaml
+
   - name: kyverno-backup-all-volumes-policy
     chart: bedag/raw
     version: 2.0.0
