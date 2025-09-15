@@ -23,13 +23,13 @@ configs:
         data:
           server.secretkey:
             secret: argocd_secret
-            key: server-secretkey
+            key: server.secretkey
           admin.password:
             secret: argocd_secret
-            key: admin-password
+            key: admin.password
           admin.passwordMtime:
             secret: argocd_secret
-            key: admin-passwordMtime
+            key: admin.passwordMtime
         labels:
           app.kubernetes.io/part-of:
             value: argo-cd
