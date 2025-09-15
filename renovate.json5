@@ -3,7 +3,7 @@
   "extends": [
     "config:best-practices",
     ":separateMultipleMajorReleases",
-    "schedule:weekly",
+    // "schedule:weekly",
   ],
   "timezone": "Europe/London",
   "internalChecksFilter": "strict",
