@@ -72,7 +72,7 @@ repoServer:
       securityContext:
         runAsNonRoot: true
         runAsUser: 999
-      image: ghcr.io/helmfile/helmfile:v1.1.6
+      image: ghcr.io/helmfile/helmfile:v1.1.7@sha256:f27a13c904081bd928f32e8cfb69f3838c6a693502c1e7b7715a31097a5eda23
       imagePullPolicy: IfNotPresent
       command: [/var/run/argocd/argocd-cmp-server]
       env:
