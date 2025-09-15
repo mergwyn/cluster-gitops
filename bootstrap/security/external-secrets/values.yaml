@@ -29,7 +29,7 @@ bitwarden-sdk-server:
   enabled: true
   podAnnotations:
     secret.reloader.stakater.com/reload: |
-      'bitwarden,bitwarden-tls-certs,bitwarden-css-certs'
+      'bitwarden-access-token,bitwarden-tls-certs,bitwarden-css-certs'
 
 
 # CSS for bitwarden and associated certificates
