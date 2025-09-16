@@ -11,7 +11,7 @@ configs:
     applicationsetcontroller.enable.progressive.syncs: true
 
   secret:
-    createSecret: false  # managed by bitwarden
+    createSecret: false  # managed by external-secrets/bitwarden
 
   cm:
     kustomize.buildOptions: --enable-helm
@@ -26,74 +26,35 @@ configs:
           - Restore
         clusters:
           - "*"
-    # Enable inter-app sync wave
-    # resource.customizations.health.argoproj.io_Application: |
-    #   hs = {}
-    #   hs.status = "Progressing"
-    #   hs.message = ""
-    #   if obj.status ~= nil then
-    #     if obj.status.health ~= nil then
-    #       hs.status = obj.status.health.status
-    #       if obj.status.health.message ~= nil then
-    #         hs.message = obj.status.health.message
-    #       end
-    #     end
-    #   end
-    #   return hs
-  cmp:
-    create: true
-    plugins:
-      helmfile:
-        version: v1.0
-        init:
-          command: [sh, -c, 'echo "Initializing..."']
-        generate:
-          command:
-            # yamllint disable rule:line-length
-            - bash
-            - "-c"
-            - |
-              if [[ -v ENV_NAME ]]; then
-                helmfile -n "$ARGOCD_APP_NAMESPACE" -e $ENV_NAME template --include-crds -q
-              elif [[ -v ARGOCD_ENV_ENV_NAME ]]; then
-                helmfile -n "$ARGOCD_APP_NAMESPACE" -e "$ARGOCD_ENV_ENV_NAME" template --include-crds -q
-              else
-                helmfile -n "$ARGOCD_APP_NAMESPACE" template --include-crds -q
-              fi
-            # yamllint enable rule:line-length
-        discover:
-          fileName: "helmfile.yaml"
   rbac:
     policy.default: role:admin
 
 repoServer:
+  volumes:
+    - name: age-secret-keys
+      secret:
+        secretName: argocd-age-secret-keys
+    - name: helmfile-cmp-tmp
+      emptyDir: {}
   extraContainers:
-    - name: helmfile
+    - name: helmfile-plugin
+      image: travisghansen/argo-cd-helmfile:v0.3.13
+      command: [/var/run/argocd/argocd-cmp-server]
+      env:
+        - name: SOPS_AGE_KEY_FILE
+          value: /sops/age/keys.txt
       securityContext:
         runAsNonRoot: true
         runAsUser: 999
-      image: ghcr.io/helmfile/helmfile:v1.1.6
-      imagePullPolicy: IfNotPresent
-      command: [/var/run/argocd/argocd-cmp-server]
-      env:
-        - name: HELM_CACHE_HOME
-          value: /tmp/helm/cache
-        - name: HELM_CONFIG_HOME
-          value: /tmp/helm/config
-        - name: HELMFILE_CACHE_HOME
-          value: /tmp/helmfile/cache
-        - name: HELMFILE_TEMPDIR
-          value: /tmp/helmfile/tmp
       volumeMounts:
+        - mountPath: /sops/age
+          name: age-secret-keys
         - mountPath: /var/run/argocd
           name: var-files
         - mountPath: /home/argocd/cmp-server/plugins
           name: plugins
-        - mountPath: /home/argocd/cmp-server/config/plugin.yaml
-          subPath: helmfile.yaml
-          name: argocd-cmp-cm
         - mountPath: /tmp
-          name: cmp-tmp
+          name: helmfile-cmp-tmp
   resources:
     requests:
       cpu: 20m
@@ -101,12 +62,6 @@ repoServer:
     limits:
       # cpu: 300m
       memory: 1400M
-  volumes:
-    - name: argocd-cmp-cm
-      configMap:
-        name: argocd-cmp-cm
-    - emptyDir: {}
-      name: cmp-tmp
 
 extraObjects:
   - kind: IngressRoute
