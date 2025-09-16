@@ -167,4 +167,4 @@ rawResources:
           creationPolicy: Owner
         dataFrom:
           - extract:
-              key: postfix_mail
+              key: mqtt_credentials
