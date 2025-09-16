@@ -91,7 +91,7 @@ ingress:
               port: http
     tls:
       - hosts:
-          - '*.theclarkhome.com'
+          - "*.{{.Values.global.domain}}"
 #   matterhub-external:
 #     enabled: true
 #     className: cloudflare-tunnel

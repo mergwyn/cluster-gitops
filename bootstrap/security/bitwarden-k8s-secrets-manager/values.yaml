@@ -133,18 +133,18 @@ configs:
           app.kubernetes.io/name:
             value: grafana
 
-      - name: home-assistant-matter-hub-secret
-        namespace: home-assistant
-        data:
-          HAMH_HOME_ASSISTANT_URL:
-            secret: matter_ha_access_token
-            key: HOME_ASSISTANT_URL
-          HAMH_HOME_ASSISTANT_ACCESS_TOKEN:
-            secret: matter_ha_access_token
-            key: HOME_ASSISTANT_ACCESS_TOKEN
-        labels:
-          app.kubernetes.io/name:
-            value: matterhub
+#      - name: home-assistant-matter-hub-secret
+#        namespace: home-assistant
+#        data:
+#          HAMH_HOME_ASSISTANT_URL:
+#            secret: matter_ha_access_token
+#            key: HOME_ASSISTANT_URL
+#          HAMH_HOME_ASSISTANT_ACCESS_TOKEN:
+#            secret: matter_ha_access_token
+#            key: HOME_ASSISTANT_ACCESS_TOKEN
+#        labels:
+#          app.kubernetes.io/name:
+#            value: matterhub
 
       - name: home-assistant-prometheus
         namespace: home-assistant

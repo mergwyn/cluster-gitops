@@ -6,3 +6,4 @@ releases:
     values:
       - ../../../settings/common.yaml
       - values.yaml
+      - externalsecret.yaml
