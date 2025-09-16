@@ -1,0 +1,70 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: cluster-gitops
+  namespace: argocd
+spec:
+  generators:
+    - git:
+        repoURL: https://github.com/mergwyn/cluster-gitops.git
+        revision: dev-secrets
+        directories:
+          - path: core/security/*
+          - path: bootstrap/security/external-secrets
+          - path: bootstrap/argocd/*
+          # - path: core/*/*
+          # - path: apps/*/*
+          # - path: apps/downloaders/prowlarr
+          #   exclude: true
+
+  template:
+    metadata:
+      name: '{{ path.basename }}'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/mergwyn/cluster-gitops.git
+        targetRevision: dev-secrets
+        path: '{{ path }}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{ path[1] }}'
+      ignoreDifferences:
+        - kind: StatefulSet
+          group: '*'
+          name: mail
+          jsonPointers:
+            - /spec/volumeClaimTemplates
+            - /spec/template/metadata/annotations
+        - kind: GpuDevicePlugin
+          group: '*'
+          name: gpudeviceplugin
+          jsonPointers:
+            - /spec/resourceManager
+            - /spec/tolerations
+            - /metadata/annotations
+        - kind: ClusterPolicy
+          group: '*'
+          jsonPointers:
+            - /spec/rules/0/skipBackgroundRequests
+        - group: '*'
+          kind: Deployment
+          jqPathExpressions:
+            - .spec.template.spec.hostUsers
+        - group: '*'
+          kind: ExternalSecret
+          jqPathExpressions:
+            - .spec.dataFrom[].extract.conversionStrategy
+            - .spec.dataFrom[].extract.decodingStrategy
+            - .spec.dataFrom[].extract.metadataPolicy
+
+      syncPolicy:
+        automated:
+          allowEmpty: true
+          prune: true
+          selfHeal: false
+        syncOptions:
+          - ServerSideApply=true
+          - CreateNamespace=true
+          - RespectIgnoreDifferences=true
