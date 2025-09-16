@@ -16,7 +16,7 @@ helmDefaults:
 releases:
   - name: kube-prometheus-stack
     chart: oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
-    version: 77.5.0
+    version: 77.6.2
 
 #  - name: traefik
 #    chart: oci://ghcr.io/traefik/helm/traefik
