@@ -32,7 +32,9 @@ controllers:
         env:
           TZ: "Europe/London"
           ZIGBEE2MQTT_DATA: "/data"
+          # yamllint disable-line rule:line-length
           ZIGBEE2MQTT_CONFIG_ADVANCED_HOMEASSISTANT_DISCOVERY_TOPIC: "homeassistant"
+          # yamllint disable-line rule:line-length
           ZIGBEE2MQTT_CONFIG_ADVANCED_HOMEASSISTANT_STATUS_TOPIC: "homeassistant/status"
           ZIGBEE2MQTT_CONFIG_ADVANCED_LAST_SEEN: "ISO_8601"
           ZIGBEE2MQTT_CONFIG_ADVANCED_LOG_LEVEL: "info"
@@ -40,7 +42,8 @@ controllers:
           ZIGBEE2MQTT_CONFIG_ADVANCED_NETWORK_KEY: "GENERATE"
           ZIGBEE2MQTT_CONFIG_EXPERIMENTAL_NEW_API: true
           ZIGBEE2MQTT_CONFIG_FRONTEND_PORT: 8080
-          ZIGBEE2MQTT_CONFIG_FRONTEND_URL: "https://zigbee2mqtt.theclarkhome.com"
+          # yamllint disable-line rule:line-length
+          ZIGBEE2MQTT_CONFIG_FRONTEND_URL: "https://zigbee2mqtt.{{.Values.global.domain}}"
           ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_ENABLED: true
           ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_DISCOVERY_TOPIC: "homeassistant"
           # ZIGBEE2MQTT_CONFIG_MQTT_BASE_TOPIC: "zigbee2mqtt"
@@ -48,17 +51,17 @@ controllers:
           ZIGBEE2MQTT_CONFIG_MQTT_PASSWORD:
             valueFrom:
               secretKeyRef:
-                name: mqtt-credentials
+                name: "{{.Release.Name}}-mqtt-credentials"
                 key: MQTT_PASSWORD
           ZIGBEE2MQTT_CONFIG_MQTT_SERVER: "mqtt://mosquitto:1883"
           ZIGBEE2MQTT_CONFIG_MQTT_USER:
             valueFrom:
               secretKeyRef:
-                name: mqtt-credentials
+                name: "{{.Release.Name}}-mqtt-credentials"
                 key: MQTT_USER
           ZIGBEE2MQTT_CONFIG_PERMIT_JOIN: false
           ZIGBEE2MQTT_CONFIG_SERIAL_ADAPTER: "ezsp"
-          ZIGBEE2MQTT_CONFIG_SERIAL_PORT: "tcp://zigbee1.theclarkhome.com:8888"
+          ZIGBEE2MQTT_CONFIG_SERIAL_PORT: "tcp://zigbee1.{{.Values.global.domain}}:8888"
 
         resources:
           requests:
@@ -79,6 +82,7 @@ controllers:
         dependsOn: zigbee2mqtt
         image:
           repository: ghcr.io/coder/code-server
+          # yamllint disable-line rule:line-length
           tag: 4.104.0@sha256:238313c385e9191b3da18316e2fb72116ed150ed09efe9be5977f5e07fd88dc4
         args:
           - "--auth=none"
@@ -131,12 +135,14 @@ rawResources:
           - websecure
         routes:
           - kind: Rule
+            # yamllint disable-line rule:line-length
             match: Host(`{{.Release.Name}}.{{.Values.global.domain}}`) && PathPrefix(`/`)
             priority: 10
             services:
               - name: zigbee2mqtt
                 port: *http
           - kind: Rule
+            # yamllint disable-line rule:line-length
             match: Host(`{{.Release.Name}}.{{.Values.global.domain}}`) && PathRegexp(`^/code/.*`)
             priority: 11
             services:
@@ -145,3 +151,20 @@ rawResources:
             middlewares:
               - name: "{{.Release.Name}}-middleware"
         tls: {}
+
+  mqtt-credentials:
+    enabled: true
+    kind: ExternalSecret
+    apiVersion: external-secrets.io/v1
+    spec:
+      spec:
+        refreshInterval: 5m
+        secretStoreRef:
+          kind: ClusterSecretStore
+          name: bitwarden
+        target:
+          name: mqtt-credentials
+          creationPolicy: Owner
+        dataFrom:
+          - extract:
+              key: postfix_mail

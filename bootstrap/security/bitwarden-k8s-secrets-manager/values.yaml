@@ -205,18 +205,18 @@ configs:
           app.kubernetes.io/name:
             value: velero
 
-      - name: mqtt-credentials
-        namespace: home-assistant
-        data:
-          MQTT_USER:
-            secret: mqtt_credentials
-            key: MQTT_USER
-          MQTT_PASSWORD:
-            secret: mqtt_credentials
-            key: MQTT_PASSWORD
-        labels:
-          app.kubernetes.io/name:
-            value: mosquitto
+#      - name: mqtt-credentials
+#        namespace: home-assistant
+#        data:
+#          MQTT_USER:
+#            secret: mqtt_credentials
+#            key: MQTT_USER
+#          MQTT_PASSWORD:
+#            secret: mqtt_credentials
+#            key: MQTT_PASSWORD
+#        labels:
+#          app.kubernetes.io/name:
+#            value: mosquitto
 
       - name: postfix-mail
         namespace: default
