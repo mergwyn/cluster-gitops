@@ -1,0 +1,23 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/helmfile
+
+helmDefaults:
+  cleanupOnFail: true
+  wait: true
+  waitForJobs: true
+  args:  # make sure sync and apply don't work
+    - --include-crds
+    - --no-hooks
+#  postRenderer: bash
+#  postRendererArgs:
+#    - -c
+#    - yq ea --exit-status 'select(.kind == "CustomResourceDefinition")' -
+
+releases:
+  - name: kube-prometheus-stack
+    chart: oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
+    version: 77.5.0
+
+#  - name: traefik
+#    chart: oci://ghcr.io/traefik/helm/traefik
+#    version: 37.1.0
