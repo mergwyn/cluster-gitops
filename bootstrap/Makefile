@@ -1,6 +1,6 @@
 cluster := devcluster
-crds := crds-helmfile.yaml
-releases := releases-helmfile
+crds := helmfile.d/01-crds.yaml
+releases := helmfile.d/02-releases.yaml
 appset := test-appset.yaml
 argons := argocd
 keys := /home/gary/.config/sops/age/keys.txt

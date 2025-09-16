@@ -14,14 +14,14 @@ releases:
     chart: oci://quay.io/jetstack/charts/cert-manager
     version: v1.18.2
     values:
-      - ../core/security/cert-manager/values.yaml
+      - ../../core/security/cert-manager/values.yaml
   
   - name: cert-manager-resources
     namespace: security
     chart: bedag/raw
     version: 2.0.0
     values:
-     - ../core/security/cert-manager/resources.yaml
+     - ../../core/security/cert-manager/resources.yaml
     needs:
       - security/cert-manager
 
@@ -30,7 +30,7 @@ releases:
     chart: oci://ghcr.io/external-secrets/charts/external-secrets
     version: 0.19.2
     values:
-      - ../bootstrap/security/external-secrets/values.yaml
+      - ../../bootstrap/security/external-secrets/values.yaml
     needs:
       - security/cert-manager-resources
 
@@ -39,14 +39,14 @@ releases:
     chart: bedag/raw
     version: 2.0.0
     secrets:
-     - ../bootstrap/security/external-secrets/bitwarden-access-token-sops.yaml
+     - ../../bootstrap/security/external-secrets/bitwarden-access-token-sops.yaml
 
   - name: bitwarden-store
     namespace: security
     chart: bedag/raw
     version: 2.0.0
     values:
-      - ../bootstrap/security/external-secrets/bitwarden-store.yaml
+      - ../../bootstrap/security/external-secrets/bitwarden-store.yaml
     needs:
       - security/external-secrets
       - security/bitwarden-access-token
@@ -56,7 +56,7 @@ releases:
     chart: bedag/raw
     version: 2.0.0
     values:
-      - ../bootstrap/argocd/argocd/externalsecret.yaml
+      - ../../bootstrap/argocd/argocd/externalsecret.yaml
     needs:
       - security/bitwarden-store
 
@@ -65,7 +65,7 @@ releases:
     chart: oci://ghcr.io/argoproj/argo-helm/argo-cd
     version: 8.3.5
     values:
-      - ../bootstrap/argocd/argocd/values.yaml
+      - ../../bootstrap/argocd/argocd/values.yaml
     needs:
       - argocd/argocd-externalsecret
 
