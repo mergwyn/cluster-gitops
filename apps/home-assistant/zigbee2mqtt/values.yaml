@@ -151,20 +151,3 @@ rawResources:
             middlewares:
               - name: "{{.Release.Name}}-middleware"
         tls: {}
-
-  mqtt-credentials:
-    enabled: true
-    kind: ExternalSecret
-    apiVersion: external-secrets.io/v1
-    spec:
-      spec:
-        refreshInterval: 5m
-        secretStoreRef:
-          kind: ClusterSecretStore
-          name: bitwarden
-        target:
-          name: "{{.Release.Name}}-mqtt-credentials"
-          creationPolicy: Owner
-        dataFrom:
-          - extract:
-              key: mqtt_credentials
