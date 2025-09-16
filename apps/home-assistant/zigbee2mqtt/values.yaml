@@ -163,7 +163,7 @@ rawResources:
           kind: ClusterSecretStore
           name: bitwarden
         target:
-          name: mqtt-credentials
+          name: "{{.Release.Name}}-mqtt-credentials"
           creationPolicy: Owner
         dataFrom:
           - extract:
