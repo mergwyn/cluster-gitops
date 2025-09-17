@@ -9,6 +9,8 @@ routed_namespaces:
   - downloaders
   - media
 
+annotations:
+  reloader.stakater.com/auto: "true"
 addons:
   vpn:
     enabled: true
