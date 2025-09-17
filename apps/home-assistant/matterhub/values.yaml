@@ -1,23 +1,21 @@
 ---
-.alias: &app matterhub
-.secret: &secret home-assistant-matter-hub-secret
+# yamllint disable-line rule:line-length
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 
 controllers:
-  *app :
+  matterhub:
     annotations:
       reloader.stakater.com/auto: "true"
-      secret.reloader.stakater.com/reload: *secret
-
-    defaultContainerOptions:
-      resources:
-        requests:
-          cpu: 15m
-          memory: 145M
-        limits:
-          memory: 256M
-
+    pod:
+      annotations:
+        k8s.v1.cni.cncf.io/networks: |
+          [{
+            "name":"macvlan-static",
+            "namespace": "network",
+            "ips": ["10.58.0.213"]
+          }]
     containers:
-      *app:
+      app:
         image:
           repository: ghcr.io/t0bst4r/home-assistant-matter-hub
           tag: 3.0.0-alpha.72
@@ -32,7 +30,7 @@ controllers:
 
         envFrom:
           - secretRef:
-              name: *secret
+              name: home-assistant-matter-hub-secret
 
         probes:
           liveness:
@@ -47,15 +45,13 @@ controllers:
           capabilities:
             drop:
               - "ALL"
+        resources:
+          requests:
+            cpu: 15m
+            memory: 145M
+          limits:
+            memory: 256M
 
-    pod:
-      annotations:
-        k8s.v1.cni.cncf.io/networks: |
-          [{
-            "name":"macvlan-static",
-            "namespace": "network",
-            "ips": ["10.58.0.213"]
-          }]
 
 defaultPodOptions:
   hostNetwork: true
@@ -69,14 +65,14 @@ defaultPodOptions:
     seccompProfile: {type: RuntimeDefault}
 
 service:
-  *app :
-    controller: *app
+  app:
+    forceRename: "{{.Release.Name}}"
     ports:
       http:
         port: *port
 
 ingress:
-  *app :
+  app:
     enabled: true
     className: traefik
     annotations:
@@ -87,20 +83,11 @@ ingress:
           - path: /
             pathType: Prefix
             service:
-              identifier: *app
+              identifier: app
               port: http
     tls:
       - hosts:
           - "*.{{.Values.global.domain}}"
-#   matterhub-external:
-#     enabled: true
-#     className: cloudflare-tunnel
-#     annotations:
-#       cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
-#     hosts:
-#       - host: "matterhub.theclarkhome.com"
-#         paths:
-#           - path: /
 
 persistence:
   data:
