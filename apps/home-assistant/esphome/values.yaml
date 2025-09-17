@@ -3,7 +3,7 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 
 controllers:
-  &app esphome:
+  esphome:
     pod:
       annotations:
         reloader.stakater.com/auto: "true"
@@ -14,14 +14,6 @@ controllers:
             "ips": ["10.58.0.211"]
           }]
 
-    defaultContainerOptions:
-      resources:
-        requests:
-          cpu: 10m
-          memory: 204M
-        limits:
-          memory: 2G
-
     containers:
       app:
         image:
@@ -30,35 +22,48 @@ controllers:
         env:
           TZ: "Europe/London"
           ESPHOME_DASHBOARD_USE_PING: "true"
-          # ESPHOME_DASHBOARD_RELATIVE_URL: "/"
-          # ESPHOME_QUICKWIZARD:
-          # ESPHOME_IS_HA_ADDON:
           DISABLE_HA_AUTHENTICATION: "true"
-          # USERNAME:
-          # PASSWORD:
-      &code code-server:
+        resources:
+          requests:
+            cpu: 5m
+            memory: 512Mi
+          limits:
+            memory: 3G
+
+      code-server:
         dependsOn: app
         image:
           repository: ghcr.io/coder/code-server
           tag: 4.103.1
         args:
-          - "--auth=none"
-          - "--user-data-dir=/config/.code-server"
-          - "--extensions-dir=/config/.code-server"
-          - "--port=12321"
-          - "/config"
+          - --auth=none
+          - --disable-telemetry
+          - --disable-update-check
+          - --user-data-dir
+          - /config/.code-server
+          - --extensions-dir
+          - /config/.code-server
+          - --port
+          - "12321"
+          - /config
         securityContext:
           runAsUser: 0
+        resources:
+          requests:
+            cpu: 10m
+          limits:
+            memory: 512Mi
 
 service:
-  *app:
-    controller: *app
-    type: ClusterIP
+  app:
+    forceRename: "{{.Release.Name}}"
     ports:
       http:
-        port: &http 6052
-      *code:
-        port: &code-server 12321
+        port: &http-port 6052
+  code-server:
+    ports:
+      http:
+        port: &code-server-port 12321
 
 dnsConfig:
   nameservers:
@@ -94,7 +99,6 @@ persistence:
         # subPath: secrets.yaml
         readOnly: true
 
-
 rawResources:
   middleware:
     apiVersion: traefik.io/v1alpha1
@@ -121,15 +125,15 @@ rawResources:
             match: Host(`{{.Release.Name}}.{{.Values.global.domain}}`) && PathPrefix(`/`)
             priority: 10
             services:
-              - name: *app
-                port: *http
+              - name: "{{.Release.Name}}"
+                port: *http-port
           - kind: Rule
             # yamllint disable-line rule:line-length
             match: Host(`{{.Release.Name}}.{{.Values.global.domain}}`) && PathRegexp(`^/code/.*`)
             priority: 11
             services:
-              - name: *app
-                port: *code-server
+              - name: "{{.Release.Name}}-code-server"
+                port: *code-server-port
             middlewares:
               - name: "{{.Release.Name}}-middleware"
         tls: {}
