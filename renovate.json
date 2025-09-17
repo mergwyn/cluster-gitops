@@ -2,8 +2,8 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:best-practices",
-    ":separateMultipleMajorReleases",
-    // "schedule:weekly"
+    // "schedule:weekly",
+    ":separateMultipleMajorReleases"
   ],
   "timezone": "Europe/London",
   "internalChecksFilter": "strict",
