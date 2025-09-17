@@ -14,14 +14,14 @@ releases:
     chart: oci://quay.io/jetstack/charts/cert-manager
     version: v1.18.2
     values:
-      - ../../core/security/cert-manager/values.yaml
-  
+      - ../../boostrap/security/cert-manager/values.yaml
+
   - name: cert-manager-resources
     namespace: security
     chart: bedag/raw
     version: 2.0.0
     values:
-     - ../../core/security/cert-manager/resources.yaml
+      - ../../core/security/cert-manager/resources.yaml
     needs:
       - security/cert-manager
 
@@ -39,7 +39,7 @@ releases:
     chart: bedag/raw
     version: 2.0.0
     secrets:
-     - ../../bootstrap/security/external-secrets/bitwarden-access-token-sops.yaml
+      - ../../bootstrap/security/external-secrets/bitwarden-access-token-sops.yaml
 
   - name: bitwarden-store
     namespace: security
@@ -68,4 +68,3 @@ releases:
       - ../../bootstrap/argocd/argocd/values.yaml
     needs:
       - argocd/argocd-externalsecret
-
