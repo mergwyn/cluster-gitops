@@ -12,7 +12,7 @@ releases:
 
   - name: multus-networks
     chart: oci://ghcr.io/bjw-s-labs/helm/app-template
-    version: 4.2.0
+    version: 4.3.0
     values:
       - ../../../settings/common.yaml
       - networks.yaml
