@@ -6,7 +6,7 @@
     "helpers:pinGitHubActionDigests",
     ":configMigration",
     // ":pinDevDependencies",
-    "abandonments:recommended"
+    "abandonments:recommended",
     // "config:best-practices",
     ":pinDigestsDisabled",
     // "schedule:weekly",
