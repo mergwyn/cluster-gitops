@@ -4,6 +4,7 @@ fullnameOverride: &name pod-gateway
 routed_namespaces:
   - downloaders
   - media
+  - media-vpn
 
 image:
   repository: ghcr.io/angelnu/pod-gateway
@@ -62,7 +63,7 @@ addons:
     envFrom:
       - secretRef:
           name: privatevpn-ovn  # USER and PASSWORD
-    
+
     additionalVolumeMounts:
       - mountPath: /gluetun/auth/config.toml
         name: gluetun-auth

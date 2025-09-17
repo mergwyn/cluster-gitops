@@ -241,27 +241,27 @@ configs:
       #     app.kubernetes.io/name:
       #       value: mail
 
-      - name: privatevpn-ovn
-        namespace: network
-        data:
-          OPENVPN_USER:
-            secret: privatevpn_ovn
-            key: OPENVPN_USER
-          OPENVPN_PASSWORD:
-            secret: privatevpn_ovn
-            key: OPENVPN_PASSWORD
-        labels:
-          app.kubernetes.io/name:
-            value: pod-gateway
+#      - name: privatevpn-ovn
+#        namespace: network
+#        data:
+#          OPENVPN_USER:
+#            secret: privatevpn_ovn
+#            key: OPENVPN_USER
+#          OPENVPN_PASSWORD:
+#            secret: privatevpn_ovn
+#            key: OPENVPN_PASSWORD
+#        labels:
+#          app.kubernetes.io/name:
+#            value: pod-gateway
 
-      - name: privatevpn-ovn-conf
-        namespace: network
-        data:
-          vpnConfigfile:
-            secret: privatevpn_ovn_conf
-        labels:
-          app.kubernetes.io/name:
-            value: pod-gateway
+#      - name: privatevpn-ovn-conf
+#        namespace: network
+#        data:
+#          vpnConfigfile:
+#            secret: privatevpn_ovn_conf
+#        labels:
+#          app.kubernetes.io/name:
+#            value: pod-gateway
 
       - name: privatevpn-wg
         namespace: network

@@ -18,3 +18,9 @@ releases:
 #    values:
 #      - ../../../settings/common.yaml
 #      - exporter-values.yaml
+
+  - name: pod-gateway-externalsecret
+    chart: bedag/raw
+    version: 2.0.0
+    values:
+      - externalsecret.yaml
