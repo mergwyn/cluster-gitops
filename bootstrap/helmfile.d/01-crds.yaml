@@ -18,6 +18,6 @@ releases:
     chart: oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
     version: 77.9.1
 
-#  - name: traefik
-#    chart: oci://ghcr.io/traefik/helm/traefik
-#    version: 37.1.0
+  - name: traefik-crds
+    chart: oci://ghcr.io/traefik/helm/traefik-crds
+    version: 1.11.0
