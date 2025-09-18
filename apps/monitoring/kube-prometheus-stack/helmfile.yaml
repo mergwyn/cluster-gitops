@@ -5,3 +5,4 @@ releases:
     version: 77.9.1
     values:
       - values.yaml
+      - externalsecret.yaml

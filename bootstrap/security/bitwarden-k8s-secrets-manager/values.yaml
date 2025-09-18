@@ -120,18 +120,18 @@ configs:
 #          app.kubernetes.io/name:
 #            value: pod-gatway
 
-      - name: grafana-admin
-        namespace: monitoring
-        data:
-          admin-user:
-            secret: grafana_admin
-            key: admin-user
-          admin-password:
-            secret: grafana_admin
-            key: admin-password
-        labels:
-          app.kubernetes.io/name:
-            value: grafana
+#      - name: grafana-admin
+#        namespace: monitoring
+#        data:
+#          admin-user:
+#            secret: grafana_admin
+#            key: admin-user
+#          admin-password:
+#            secret: grafana_admin
+#            key: admin-password
+#        labels:
+#          app.kubernetes.io/name:
+#            value: grafana
 
 #      - name: home-assistant-matter-hub-secret
 #        namespace: home-assistant

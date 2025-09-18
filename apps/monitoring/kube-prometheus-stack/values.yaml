@@ -232,8 +232,8 @@ kube-state-metrics:
 defaultRules:
   rules:
     kubeProxy: false
-    # yamllint disable-line rule:line-length
-    KubeClientCertificateExpiration: false  # See https://github.com/prometheus-community/helm-charts/issues/3441
+    # See https://github.com/prometheus-community/helm-charts/issues/3441
+    KubeClientCertificateExpiration: false
 
 # yamllint disable rule:line-length
 additionalPrometheusRulesMap:
