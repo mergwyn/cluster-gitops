@@ -14,8 +14,9 @@ additionalArguments:
 
 deployment:
   enabled: true
-  replicas: 1
-  annotations: {}
+  replicas: 2
+  annotations:
+    secret.reloader.stakater.com/reload: "auto"
   podAnnotations: {}
   additionalContainers: []
   initContainers: []
@@ -142,7 +143,6 @@ extraObjects:
     kind: Middleware
     metadata:
       name: traefik-dashboard-basicauth
-      namespace: "{{.Release.Namespace}}"
       labels:
         app.kubernetes.io/name: "{{.Release.Name}}"
         app.kubernetes.io/instance: "{{.Release.Name}}-{{.Release.Namespace}}"
@@ -161,3 +161,25 @@ extraObjects:
     spec:
       defaultCertificate:
         secretName: theclarkhome-com-tls
+
+  - apiVersion: external-secrets.io/v1
+    kind: ExternalSecret
+    metadata:
+      name: &secret traefik-dashboard-auth
+      labels:
+        app.kubernetes.io/name: "{{.Release.Name}}"
+        app.kubernetes.io/instance: "{{.Release.Name}}-{{.Release.Namespace}}"
+    spec:
+      refreshInterval: 5m
+      secretStoreRef:
+        kind: ClusterSecretStore
+        name: bitwarden
+      target:
+        name: *secret
+        creationPolicy: Owner
+        template:
+          data:
+            users: '{"admin":"{{`{{.admin}}`}}"}'
+      dataFrom:
+        - extract:
+            key: traefik_dashboard_auth

@@ -291,14 +291,14 @@ configs:
           app.kubernetes.io/name:
             value: pod-gateway
 
-      - name: traefik-dashboard-auth
-        namespace: network
-        data:
-          users:
-            secret: traefik_dashboard_auth
-        labels:
-          app.kubernetes.io/name:
-            value: traefik
+#      - name: traefik-dashboard-auth
+#        namespace: network
+#        data:
+#          users:
+#            secret: traefik_dashboard_auth
+#        labels:
+#          app.kubernetes.io/name:
+#            value: traefik
 
 
 deploy: true
