@@ -11,6 +11,8 @@ releases:
       # - values.yaml
       - custom_values.yaml
       # - wg_values.yaml
+    secrets:
+      - privatevpn-conf-sops.yaml
 
 #  - name: gluetun-exporter
 #    chart: oci://ghcr.io/bjw-s-labs/helm/app-template

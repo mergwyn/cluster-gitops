@@ -12,8 +12,7 @@ image:
   tag: v1.13.0
 
 podAnnotations:
-  secret.reloader.stakater.com/reload: "privatevpn-ovn,privatevpn-ovn-conf"
-  configmap.reloader.stakater.com/reload: *name
+  secret.reloader.stakater.com/reload: "auto"
 
 addons:
   vpn:
@@ -27,7 +26,8 @@ addons:
     securityContext:
       privileged: true
 
-    configFileSecret: privatevpn-ovn-conf
+    # TODO convert this to 'configFile'??
+    #configFileSecret: privatevpn-ovn-conf
 
     networkPolicy:
       enabled: true
