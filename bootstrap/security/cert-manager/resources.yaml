@@ -1,27 +1,5 @@
 ---
 resources:
-  # External Secret for cloudflare token
-  # - apiVersion: external-secrets.io/v1
-  #   kind: ExternalSecret
-  #   metadata:
-  #     name: cloudflare-cert-manager-token
-  #     labels:
-  #       app.kubernetes.io/name: cert-manager-reources
-  #     annotations:
-  #       meta.helm.sh/release-name: cert-manager-reources
-  #       meta.helm.sh/release-namespace: security
-  #   spec:
-  #     refreshInterval: 5m
-  #     secretStoreRef:
-  #       kind: ClusterSecretStore
-  #       name: bitwarden
-  #     target:
-  #       name: cloudflare-cert-manager-token
-  #       creationPolicy: Owner
-  #     dataFrom:
-  #       - extract:
-  #           key: cloudflare_cert_manager_token
-
   # Production tls certificates
   - apiVersion: cert-manager.io/v1
     kind: ClusterIssuer

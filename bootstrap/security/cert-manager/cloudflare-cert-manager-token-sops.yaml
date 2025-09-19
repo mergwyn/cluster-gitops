@@ -1,0 +1,29 @@
+resources:
+    - apiVersion: v1
+      kind: Secret
+      metadata:
+        name: cloudflare-cert-manager-token
+        labels:
+            app.kubernetes.io/managed-by: Helm
+        annotations:
+            meta.helm.sh/release-name: cert-manager-cloudflare-token
+            meta.helm.sh/release-namespace: security
+      type: Opaque
+      data:
+        #ENC[AES256_GCM,data:6N2rhwvOrDkoSazI7Z/C,iv:IMZhCtxvnAW4aZSzb6dAFFrZR/7F9TkaepQqL3Fs0fM=,tag:ZIRHfmU3aS8thqV1sJttig==,type:comment]
+        tunnelToken: ENC[AES256_GCM,data:7XqA/iPhDxdB9TgOjtkD9oWWak2VoRyz2JL98GmzmOpSs7f4N4mJznc32jIqkF7kjSkSegncpuU=,iv:59z6yYwaD5Q9ttEuPg6mGBf71qCveirUTXcRvtS6s5I=,tag:R3Y9nxnmJi1gMA2rLyc0zw==,type:str]
+sops:
+    age:
+        - recipient: age1kxa0h4zt4txae7wdjy5pck2jvzalmg4mrryuw3qqpzp2jl44n3tqmd0vyp
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA0cS9xTnhxUEtaY0ZxcUZK
+            ajE3YVBkUG5GNTIrWEw4dTd5Qk5YM0t4RUdNClJ2aVo5WnhsczhEQ3Rlb3FYSnZq
+            TzVMK3pJRmVLSnZ3VDhYb1AxdnAwZkEKLS0tIFhvTnZTdGtxa3hEZzdCQWJDdVAr
+            VzE3WFcza2xIclYvTXMydkZrbzVhUlUKayHLCOW79ywWWLzLBANIgkyic0FxjXjA
+            YizK9YtURxrHWTzGdZ5u0NGInsYb9TZkEiAB1JW7+PqZ2djMFvKLpA==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2025-09-19T17:22:40Z"
+    mac: ENC[AES256_GCM,data:wCO0JPaiqEbCA6/s6Ccz0GgPsDXki8EsqlbvLKoj5nWApErFfnMvbgv+gkp4hLxggORblhTYdr7SJ05MjUDCGFoU57AFcQfGxJa8/EndolZvGIzC/sUqN7te/UYUe7rFszuZRbnLjO09T8OdOMJHzoGFboXLONVm+zyPZcphCIc=,iv:mpp//Ne+xdYF3804sRomZh6zp0pSsrzn+s1bsOVW3SY=,tag:WwzdIINjY50cvF1FmvI6ew==,type:str]
+    encrypted_regex: ^(data|stringData|configFile)$
+    version: 3.10.2
