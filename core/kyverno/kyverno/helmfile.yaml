@@ -12,7 +12,7 @@ releases:
 
   - name: kyverno-policies
     chart: oci://ghcr.io/kyverno/charts/kyverno-policies
-    version: 3.5.1
+    version: 3.5.2
     values:
       - policy-values.yaml
 
