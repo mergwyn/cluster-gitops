@@ -1,10 +1,39 @@
 ---
-resources:
+extraObjects:
+  # External Secret for cloudflare token
+  - |
+    apiVersion: external-secrets.io/v1
+    kind: ExternalSecret
+    metadata:
+      name: cloudflare-cert-manager-token
+      labels:
+        app.kubernetes.io/name: "{{.Release.Name}}"
+      annotations:
+        meta.helm.sh/release-name: "{{.Release.Name}}"
+        meta.helm.sh/release-namespace: "{{.Release.Namespace}}"
+    spec:
+      refreshInterval: 5m
+      secretStoreRef:
+        kind: ClusterSecretStore
+        name: bitwarden
+      target:
+        name: cloudflare-cert-manager-token
+        creationPolicy: Owner
+      dataFrom:
+        - extract:
+            key: cloudflare_cert_manager_token
+
   # Production tls certificates
-  - apiVersion: cert-manager.io/v1
+  - |
+    apiVersion: cert-manager.io/v1
     kind: ClusterIssuer
     metadata:
       name: letsencrypt-production
+      labels:
+        app.kubernetes.io/name: "{{.Release.Name}}"
+      annotations:
+        meta.helm.sh/release-name: "{{.Release.Name}}"
+        meta.helm.sh/release-namespace: "{{.Release.Namespace}}"
     spec:
       acme:
         server: https://acme-v02.api.letsencrypt.org/directory
@@ -16,17 +45,23 @@ resources:
               cloudflare:
                 email: gary@theclarkhome.com
                 apiTokenSecretRef:
-                  name: cloudflare-token-secret
+                  name: cloudflare-cert-manager-token
                   key: tunnelToken
             selector:
               dnsZones:
                 - "theclarkhome.com"
 
-  - apiVersion: cert-manager.io/v1
+  - |
+    apiVersion: cert-manager.io/v1
     kind: Certificate
     metadata:
       name: theclarkhome-com
       namespace: kube-system
+      labels:
+        app.kubernetes.io/name: "{{.Release.Name}}"
+      annotations:
+        meta.helm.sh/release-name: "{{.Release.Name}}"
+        meta.helm.sh/release-namespace: "{{.Release.Namespace}}"
     spec:
       secretName: theclarkhome-com-tls
       issuerRef:
@@ -39,25 +74,43 @@ resources:
 
 
   # Self signed certficates
-  - apiVersion: cert-manager.io/v1
+  - |
+    apiVersion: cert-manager.io/v1
     kind: ClusterIssuer
     metadata:
       name: cluster-selfsigned-issuer
+      labels:
+        app.kubernetes.io/name: "{{.Release.Name}}"
+      annotations:
+        meta.helm.sh/release-name: "{{.Release.Name}}"
+        meta.helm.sh/release-namespace: "{{.Release.Namespace}}"
     spec:
       selfSigned: {}
 
-  - apiVersion: cert-manager.io/v1
+  - |
+    apiVersion: cert-manager.io/v1
     kind: ClusterIssuer
     metadata:
       name: cluster-signed-issuer
+      labels:
+        app.kubernetes.io/name: "{{.Release.Name}}"
+      annotations:
+        meta.helm.sh/release-name: "{{.Release.Name}}"
+        meta.helm.sh/release-namespace: "{{.Release.Namespace}}"
     spec:
       ca:
         secretName: cluster-signed-issuer-secret
 
-  - apiVersion: cert-manager.io/v1
+  - |
+    apiVersion: cert-manager.io/v1
     kind: Certificate
     metadata:
       name: &name cluster-signed-issuer
+      labels:
+        app.kubernetes.io/name: "{{.Release.Name}}"
+      annotations:
+        meta.helm.sh/release-name: "{{.Release.Name}}"
+        meta.helm.sh/release-namespace: "{{.Release.Namespace}}"
     spec:
       isCA: true
       commonName: *name

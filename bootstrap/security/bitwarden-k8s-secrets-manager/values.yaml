@@ -9,30 +9,30 @@ configs:
       name: bitwarden-access-token
 
     secrets:
-#      - name: argocd-initial-admin-secret
-#        namespace: argocd
-#        data:
-#          password:
-#            secret: argocd_admin_password
-#        labels:
-#          app.kubernetes.io/part-of:
-#            value: argo-cd
-#
-#      - name: argocd-secret
-#        namespace: argocd
-#        data:
-#          server.secretkey:
-#            secret: argocd_secret
-#            key: server.secretkey
-#          admin.password:
-#            secret: argocd_secret
-#            key: admin.password
-#          admin.passwordMtime:
-#            secret: argocd_secret
-#            key: admin.passwordMtime
-#        labels:
-#          app.kubernetes.io/part-of:
-#            value: argo-cd
+      #  - name: argocd-initial-admin-secret
+      #    namespace: argocd
+      #    data:
+      #      password:
+      #        secret: argocd_admin_password
+      #    labels:
+      #      app.kubernetes.io/part-of:
+      #        value: argo-cd
+      #
+      #  - name: argocd-secret
+      #    namespace: argocd
+      #    data:
+      #      server.secretkey:
+      #        secret: argocd_secret
+      #        key: server.secretkey
+      #      admin.password:
+      #        secret: argocd_secret
+      #        key: admin.password
+      #      admin.passwordMtime:
+      #        secret: argocd_secret
+      #        key: admin.passwordMtime
+      #    labels:
+      #      app.kubernetes.io/part-of:
+      #        value: argo-cd
 
       - name: cloudcasa-clusterid
         namespace: cloudcasa-io
@@ -43,14 +43,14 @@ configs:
           app:
             value: cloudcasa-kubeagent-manager
 
-      - name: cloudflare-token-secret
-        namespace: security
-        data:
-          tunnelToken:
-            secret: cloudflare_api_token
-        labels:
-          app.kubernetes.io/name:
-            value: cert-manager
+      #  - name: cloudflare-token-secret
+      #    namespace: security
+      #    data:
+      #      tunnelToken:
+      #        secret: cloudflare_api_token
+      #    labels:
+      #      app.kubernetes.io/name:
+      #        value: cert-manager
 
       # - name: cloudflare-tunnel-remote
       #   namespace: kube-system
@@ -86,65 +86,65 @@ configs:
           app.kubernetes.io/name:
             value: cloudflare-tunnel-remote
 
-#      - name: esphome-secret
-#        namespace: home-assistant
-#        data:
-#          mqtt_user:
-#            secret: mqtt_credentials
-#            key: MQTT_USER
-#          mqtt_password:
-#            secret: mqtt_credentials
-#            key: MQTT_PASSWORD
-#          wifi_ssid:
-#            secret: wifi_credentials
-#            key: wifi_ssid
-#          wifi_password:
-#            secret: wifi_credentials
-#            key: wifi_password
-#          octopus_account:
-#            secret: octopus_credentials
-#            key: octopus_account
-#          octopus_api_key:
-#            secret: octopus_credentials
-#            key: octopus_api_key
-#        labels:
-#          app.kubernetes.io/name:
-#            value: esphome
+      #  - name: esphome-secret
+      #    namespace: home-assistant
+      #    data:
+      #      mqtt_user:
+      #        secret: mqtt_credentials
+      #        key: MQTT_USER
+      #      mqtt_password:
+      #        secret: mqtt_credentials
+      #        key: MQTT_PASSWORD
+      #      wifi_ssid:
+      #        secret: wifi_credentials
+      #        key: wifi_ssid
+      #      wifi_password:
+      #        secret: wifi_credentials
+      #        key: wifi_password
+      #      octopus_account:
+      #        secret: octopus_credentials
+      #        key: octopus_account
+      #      octopus_api_key:
+      #        secret: octopus_credentials
+      #        key: octopus_api_key
+      #    labels:
+      #      app.kubernetes.io/name:
+      #        value: esphome
 
-#      - name: gluetun-auth
-#        namespace: network
-#        data:
-#          config.toml:
-#            secret: gluetun_auth
-#        labels:
-#          app.kubernetes.io/name:
-#            value: pod-gatway
+      #  - name: gluetun-auth
+      #    namespace: network
+      #    data:
+      #      config.toml:
+      #        secret: gluetun_auth
+      #    labels:
+      #      app.kubernetes.io/name:
+      #        value: pod-gatway
 
-#      - name: grafana-admin
-#        namespace: monitoring
-#        data:
-#          admin-user:
-#            secret: grafana_admin
-#            key: admin-user
-#          admin-password:
-#            secret: grafana_admin
-#            key: admin-password
-#        labels:
-#          app.kubernetes.io/name:
-#            value: grafana
+      #  - name: grafana-admin
+      #    namespace: monitoring
+      #    data:
+      #      admin-user:
+      #        secret: grafana_admin
+      #        key: admin-user
+      #      admin-password:
+      #        secret: grafana_admin
+      #        key: admin-password
+      #    labels:
+      #      app.kubernetes.io/name:
+      #        value: grafana
 
-#      - name: home-assistant-matter-hub-secret
-#        namespace: home-assistant
-#        data:
-#          HAMH_HOME_ASSISTANT_URL:
-#            secret: matter_ha_access_token
-#            key: HOME_ASSISTANT_URL
-#          HAMH_HOME_ASSISTANT_ACCESS_TOKEN:
-#            secret: matter_ha_access_token
-#            key: HOME_ASSISTANT_ACCESS_TOKEN
-#        labels:
-#          app.kubernetes.io/name:
-#            value: matterhub
+      #  - name: home-assistant-matter-hub-secret
+      #    namespace: home-assistant
+      #    data:
+      #      HAMH_HOME_ASSISTANT_URL:
+      #        secret: matter_ha_access_token
+      #        key: HOME_ASSISTANT_URL
+      #      HAMH_HOME_ASSISTANT_ACCESS_TOKEN:
+      #        secret: matter_ha_access_token
+      #        key: HOME_ASSISTANT_ACCESS_TOKEN
+      #    labels:
+      #      app.kubernetes.io/name:
+      #        value: matterhub
 
       - name: home-assistant-prometheus
         namespace: home-assistant
@@ -155,68 +155,68 @@ configs:
           app.kubernetes.io/name:
             value: home-assistant
 
-#      - name: idrivee2-s3
-#        namespace: velero
-#        data:
-#          ACCESS_KEY_ID:
-#            secret: idrivee2_s3
-#            key: ACCESS_KEY_ID
-#          ENDPOINT:
-#            secret: idrivee2_s3
-#            key: ENDPOINT
-#          SECRET_ACCESS_KEY:
-#            secret: idrivee2_s3
-#            key: SECRET_ACCESS_KEY
-#        labels:
-#          app.kubernetes.io/name:
-#            value: velero
-#
-#      - name: idrivee2-s3-credentials
-#        namespace: velero
-#        data:
-#          cloud:
-#            secret: idrivee2_s3_credentials
-#        labels:
-#          app.kubernetes.io/name:
-#            value: velero
-#
-#      - name: minio-s3
-#        namespace: velero
-#        data:
-#          ACCESS_KEY_ID:
-#            secret: minio_s3
-#            key: ACCESS_KEY_ID
-#          ENDPOINT:
-#            secret: minio_s3
-#            key: ENDPOINT
-#          SECRET_ACCESS_KEY:
-#            secret: minio_s3
-#            key: SECRET_ACCESS_KEY
-#        labels:
-#          app.kubernetes.io/name:
-#            value: velero
-#
-#      - name: minio-s3-credentials
-#        namespace: velero
-#        data:
-#          cloud:
-#            secret: minio_s3_credentials
-#        labels:
-#          app.kubernetes.io/name:
-#            value: velero
+      #  - name: idrivee2-s3
+      #    namespace: velero
+      #    data:
+      #      ACCESS_KEY_ID:
+      #        secret: idrivee2_s3
+      #        key: ACCESS_KEY_ID
+      #      ENDPOINT:
+      #        secret: idrivee2_s3
+      #        key: ENDPOINT
+      #      SECRET_ACCESS_KEY:
+      #        secret: idrivee2_s3
+      #        key: SECRET_ACCESS_KEY
+      #    labels:
+      #      app.kubernetes.io/name:
+      #        value: velero
+      #
+      #  - name: idrivee2-s3-credentials
+      #    namespace: velero
+      #    data:
+      #      cloud:
+      #        secret: idrivee2_s3_credentials
+      #    labels:
+      #      app.kubernetes.io/name:
+      #        value: velero
+      #
+      #  - name: minio-s3
+      #    namespace: velero
+      #    data:
+      #      ACCESS_KEY_ID:
+      #        secret: minio_s3
+      #        key: ACCESS_KEY_ID
+      #      ENDPOINT:
+      #        secret: minio_s3
+      #        key: ENDPOINT
+      #      SECRET_ACCESS_KEY:
+      #        secret: minio_s3
+      #        key: SECRET_ACCESS_KEY
+      #    labels:
+      #      app.kubernetes.io/name:
+      #        value: velero
+      #
+      #  - name: minio-s3-credentials
+      #    namespace: velero
+      #    data:
+      #      cloud:
+      #        secret: minio_s3_credentials
+      #    labels:
+      #      app.kubernetes.io/name:
+      #        value: velero
 
-#      - name: mqtt-credentials
-#        namespace: home-assistant
-#        data:
-#          MQTT_USER:
-#            secret: mqtt_credentials
-#            key: MQTT_USER
-#          MQTT_PASSWORD:
-#            secret: mqtt_credentials
-#            key: MQTT_PASSWORD
-#        labels:
-#          app.kubernetes.io/name:
-#            value: mosquitto
+      #  - name: mqtt-credentials
+      #    namespace: home-assistant
+      #    data:
+      #      MQTT_USER:
+      #        secret: mqtt_credentials
+      #        key: MQTT_USER
+      #      MQTT_PASSWORD:
+      #        secret: mqtt_credentials
+      #        key: MQTT_PASSWORD
+      #    labels:
+      #      app.kubernetes.io/name:
+      #        value: mosquitto
 
       - name: postfix-mail
         namespace: default
@@ -241,27 +241,27 @@ configs:
       #     app.kubernetes.io/name:
       #       value: mail
 
-#      - name: privatevpn-ovn
-#        namespace: network
-#        data:
-#          OPENVPN_USER:
-#            secret: privatevpn_ovn
-#            key: OPENVPN_USER
-#          OPENVPN_PASSWORD:
-#            secret: privatevpn_ovn
-#            key: OPENVPN_PASSWORD
-#        labels:
-#          app.kubernetes.io/name:
-#            value: pod-gateway
+      #  - name: privatevpn-ovn
+      #    namespace: network
+      #    data:
+      #      OPENVPN_USER:
+      #        secret: privatevpn_ovn
+      #        key: OPENVPN_USER
+      #      OPENVPN_PASSWORD:
+      #        secret: privatevpn_ovn
+      #        key: OPENVPN_PASSWORD
+      #    labels:
+      #      app.kubernetes.io/name:
+      #        value: pod-gateway
 
-#      - name: privatevpn-ovn-conf
-#        namespace: network
-#        data:
-#          vpnConfigfile:
-#            secret: privatevpn_ovn_conf
-#        labels:
-#          app.kubernetes.io/name:
-#            value: pod-gateway
+      #  - name: privatevpn-ovn-conf
+      #    namespace: network
+      #    data:
+      #      vpnConfigfile:
+      #        secret: privatevpn_ovn_conf
+      #    labels:
+      #      app.kubernetes.io/name:
+      #        value: pod-gateway
 
       - name: privatevpn-wg
         namespace: network
@@ -291,14 +291,14 @@ configs:
           app.kubernetes.io/name:
             value: pod-gateway
 
-#      - name: traefik-dashboard-auth
-#        namespace: network
-#        data:
-#          users:
-#            secret: traefik_dashboard_auth
-#        labels:
-#          app.kubernetes.io/name:
-#            value: traefik
+      # - name: traefik-dashboard-auth
+      #   namespace: network
+      #   data:
+      #     users:
+      #       secret: traefik_dashboard_auth
+      #   labels:
+      #     app.kubernetes.io/name:
+      #       value: traefik
 
 
 deploy: true

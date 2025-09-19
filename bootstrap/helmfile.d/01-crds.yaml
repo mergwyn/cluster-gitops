@@ -14,10 +14,17 @@ helmDefaults:
 #    - yq ea --exit-status 'select(.kind == "CustomResourceDefinition")' -
 
 releases:
+  - name: cert-manager
+    chart: oci://quay.io/jetstack/charts/cert-manager
+    namespace: security
+    version: v1.18.2
+
   - name: kube-prometheus-stack
+    namespace: monitoring
     chart: oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
     version: 77.9.1
 
   - name: traefik-crds
+    namespace: network
     chart: oci://ghcr.io/traefik/helm/traefik-crds
     version: 1.11.0
