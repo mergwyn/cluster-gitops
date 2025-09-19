@@ -59,7 +59,7 @@ metrics:
     ## long lived access token creation under your account profile, which is
     ## needed to monitor Home Assistant
     bearerTokenSecret:
-      name: 'home-assistant-prometheus'
+      name: 'home-assistant-prometheus-token'
       key: 'token'
 
   prometheusRule:
