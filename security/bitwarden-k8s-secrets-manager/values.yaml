@@ -8,7 +8,7 @@ configs:
     accessTokenSecret:
       name: bitwarden-access-token
 
-    secrets:
+    secrets: []
       #  - name: argocd-initial-admin-secret
       #    namespace: argocd
       #    data:
@@ -34,14 +34,14 @@ configs:
       #      app.kubernetes.io/part-of:
       #        value: argo-cd
 
-      - name: cloudcasa-clusterid
-        namespace: cloudcasa-io
-        data:
-          cluster_id:
-            secret: cloudcasa_clusterid
-        labels:
-          app:
-            value: cloudcasa-kubeagent-manager
+      # - name: cloudcasa-clusterid
+      #   namespace: cloudcasa-io
+      #   data:
+      #     cluster_id:
+      #       secret: cloudcasa_clusterid
+      #   labels:
+      #     app:
+      #       value: cloudcasa-kubeagent-manager
 
       #  - name: cloudflare-token-secret
       #    namespace: security
@@ -77,14 +77,14 @@ configs:
       #     app.kubernetes.io/name:
       #       value: cloudflare-tunnel-ingress-controller
 
-      - name: cluster1-tunnel-credentials
-        namespace: network
-        data:
-          credentials.json:
-            secret: cluster1_tunnel_credentials
-        labels:
-          app.kubernetes.io/name:
-            value: cloudflare-tunnel-remote
+      # - name: cluster1-tunnel-credentials
+      #   namespace: network
+      #   data:
+      #     credentials.json:
+      #       secret: cluster1_tunnel_credentials
+      #   labels:
+      #     app.kubernetes.io/name:
+      #       value: cloudflare-tunnel-remote
 
       #  - name: esphome-secret
       #    namespace: home-assistant
@@ -263,33 +263,33 @@ configs:
       #      app.kubernetes.io/name:
       #        value: pod-gateway
 
-      - name: privatevpn-wg
-        namespace: network
-        data:
-          WIREGUARD_PRIVATE_KEY:
-            secret: privatevpn_wg
-            key: WIREGUARD_PRIVATE_KEY
-          WIREGUARD_ADDRESSES:
-            secret: privatevpn_wg
-            key: WIREGUARD_ADDRESSES
-          WIREGUARD_DNS:
-            secret: privatevpn_wg
-            key: WIREGUARD_DNS
-          WIREGUARD_PUBLIC_KEY:
-            secret: privatevpn_wg
-            key: WIREGUARD_PUBLIC_KEY
-          WIREGUARD_ENDPOINT_IP:
-            secret: privatevpn_wg
-            key: WIREGUARD_ENDPOINT_IP
-          WIREGUARD_ENDPOINT_PORT:
-            secret: privatevpn_wg
-            key: WIREGUARD_ENDPOINT_PORT
-        #  WIREGUARD_ALLOWED_IPS:
-        #    secret: privatevpn_wg
-        #    key: WIREGUARD_ALLOWED_IPS
-        labels:
-          app.kubernetes.io/name:
-            value: pod-gateway
+      # - name: privatevpn-wg
+      #   namespace: network
+      #   data:
+      #     WIREGUARD_PRIVATE_KEY:
+      #       secret: privatevpn_wg
+      #       key: WIREGUARD_PRIVATE_KEY
+      #     WIREGUARD_ADDRESSES:
+      #       secret: privatevpn_wg
+      #       key: WIREGUARD_ADDRESSES
+      #     WIREGUARD_DNS:
+      #       secret: privatevpn_wg
+      #       key: WIREGUARD_DNS
+      #     WIREGUARD_PUBLIC_KEY:
+      #       secret: privatevpn_wg
+      #       key: WIREGUARD_PUBLIC_KEY
+      #     WIREGUARD_ENDPOINT_IP:
+      #       secret: privatevpn_wg
+      #       key: WIREGUARD_ENDPOINT_IP
+      #     WIREGUARD_ENDPOINT_PORT:
+      #       secret: privatevpn_wg
+      #       key: WIREGUARD_ENDPOINT_PORT
+      #     WIREGUARD_ALLOWED_IPS:
+      #       secret: privatevpn_wg
+      #       key: WIREGUARD_ALLOWED_IPS
+      #   labels:
+      #     app.kubernetes.io/name:
+      #       value: pod-gateway
 
       # - name: traefik-dashboard-auth
       #   namespace: network
