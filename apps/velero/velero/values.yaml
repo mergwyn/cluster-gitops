@@ -9,7 +9,7 @@ configuration:
       provider: aws
       bucket: velero
       credential:
-        name: minio-s3-credentials
+        name: minio-s3-conf
         key: cloud
       config:
         region: Northallerton
@@ -21,7 +21,7 @@ configuration:
       provider: aws
       bucket: velero
       credential:
-        name: idrivee2-s3-credentials
+        name: idrivee2-s3-conf
         key: cloud
       config:
         region: London

@@ -155,55 +155,55 @@ configs:
           app.kubernetes.io/name:
             value: home-assistant
 
-      - name: idrivee2-s3
-        namespace: velero
-        data:
-          ACCESS_KEY_ID:
-            secret: idrivee2_s3
-            key: ACCESS_KEY_ID
-          ENDPOINT:
-            secret: idrivee2_s3
-            key: ENDPOINT
-          SECRET_ACCESS_KEY:
-            secret: idrivee2_s3
-            key: SECRET_ACCESS_KEY
-        labels:
-          app.kubernetes.io/name:
-            value: velero
-
-      - name: idrivee2-s3-credentials
-        namespace: velero
-        data:
-          cloud:
-            secret: idrivee2_s3_credentials
-        labels:
-          app.kubernetes.io/name:
-            value: velero
-
-      - name: minio-s3
-        namespace: velero
-        data:
-          ACCESS_KEY_ID:
-            secret: minio_s3
-            key: ACCESS_KEY_ID
-          ENDPOINT:
-            secret: minio_s3
-            key: ENDPOINT
-          SECRET_ACCESS_KEY:
-            secret: minio_s3
-            key: SECRET_ACCESS_KEY
-        labels:
-          app.kubernetes.io/name:
-            value: velero
-
-      - name: minio-s3-credentials
-        namespace: velero
-        data:
-          cloud:
-            secret: minio_s3_credentials
-        labels:
-          app.kubernetes.io/name:
-            value: velero
+#      - name: idrivee2-s3
+#        namespace: velero
+#        data:
+#          ACCESS_KEY_ID:
+#            secret: idrivee2_s3
+#            key: ACCESS_KEY_ID
+#          ENDPOINT:
+#            secret: idrivee2_s3
+#            key: ENDPOINT
+#          SECRET_ACCESS_KEY:
+#            secret: idrivee2_s3
+#            key: SECRET_ACCESS_KEY
+#        labels:
+#          app.kubernetes.io/name:
+#            value: velero
+#
+#      - name: idrivee2-s3-credentials
+#        namespace: velero
+#        data:
+#          cloud:
+#            secret: idrivee2_s3_credentials
+#        labels:
+#          app.kubernetes.io/name:
+#            value: velero
+#
+#      - name: minio-s3
+#        namespace: velero
+#        data:
+#          ACCESS_KEY_ID:
+#            secret: minio_s3
+#            key: ACCESS_KEY_ID
+#          ENDPOINT:
+#            secret: minio_s3
+#            key: ENDPOINT
+#          SECRET_ACCESS_KEY:
+#            secret: minio_s3
+#            key: SECRET_ACCESS_KEY
+#        labels:
+#          app.kubernetes.io/name:
+#            value: velero
+#
+#      - name: minio-s3-credentials
+#        namespace: velero
+#        data:
+#          cloud:
+#            secret: minio_s3_credentials
+#        labels:
+#          app.kubernetes.io/name:
+#            value: velero
 
 #      - name: mqtt-credentials
 #        namespace: home-assistant

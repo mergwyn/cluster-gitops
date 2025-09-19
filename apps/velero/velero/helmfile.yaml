@@ -9,3 +9,4 @@ releases:
     version: 10.1.1
     values:
       - values.yaml
+      - externalsecret.yaml
