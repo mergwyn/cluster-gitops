@@ -14,8 +14,16 @@ releases:
     chart: oci://quay.io/jetstack/charts/cert-manager
     version: v1.18.2
     values:
-      - ../../boostrap/security/cert-manager/values.yaml
-      - ../../core/security/cert-manager/resources.yaml
+      - ../../bootstrap/security/cert-manager/values.yaml
+
+  - name: cert-manager-resources
+    namespace: security
+    chart: bedag/raw
+    version: 2.0.0
+    values:
+      - ../../bootstrap/security/cert-manager/resources.yaml
+    needs:
+      - security/cert-manager
 
   - name: external-secrets
     namespace: security
