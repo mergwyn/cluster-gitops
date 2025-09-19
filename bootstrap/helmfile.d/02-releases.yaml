@@ -9,6 +9,13 @@ repositories:
     url: https://bedag.github.io/helm-charts/
 
 releases:
+  - name: cert-manager-cloudflare-token
+    chart: bedag/raw
+    version: 2.0.0
+    secrets:
+      - ../../bootstrap/security/cert-manager/cloudflare-cert-manager-token-sops.yaml
+
+  - name: cert-manager
   - name: cert-manager
     namespace: security
     chart: oci://quay.io/jetstack/charts/cert-manager
