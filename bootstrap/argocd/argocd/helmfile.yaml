@@ -9,7 +9,7 @@ repositories:
 releases:
   - name: argocd
     chart: oci://ghcr.io/argoproj/argo-helm/argo-cd
-    version: 8.5.0
+    version: 8.5.2
     values:
       - values.yaml
 
