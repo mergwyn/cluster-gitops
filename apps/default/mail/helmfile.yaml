@@ -2,6 +2,8 @@
 repositories:
   - name: bokysan
     url: https://bokysan.github.io/docker-postfix/
+  - name: bedag
+    url: https://bedag.github.io/helm-charts/
 
 releases:
   - name: mail
@@ -9,3 +11,9 @@ releases:
     version: 4.4.0
     values:
       - values.yaml
+
+  - name: mail-external-secret
+    chart: bedag/raw
+    version: 2.0.0
+    values:
+      - externalsecret.yaml
