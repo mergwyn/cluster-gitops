@@ -1,8 +1,19 @@
 ---
+repositories:
+  - name: bedag
+    url: https://bedag.github.io/helm-charts/
+
 releases:
   - name: cert-manager
     chart: oci://quay.io/jetstack/charts/cert-manager
     version: v1.18.2
     values:
       - values.yaml
+
+  - name: cert-manager-resources
+    chart: bedag/raw
+    version: 2.0.0
+    values:
       - resources.yaml
+    needs:
+      - cert-manager

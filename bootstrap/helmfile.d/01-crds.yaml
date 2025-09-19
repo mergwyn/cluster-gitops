@@ -16,8 +16,10 @@ helmDefaults:
 releases:
   - name: cert-manager
     chart: oci://quay.io/jetstack/charts/cert-manager
-    namespace: security
     version: v1.18.2
+    values:
+      - crds:
+          enabled: true
 
   - name: kube-prometheus-stack
     namespace: monitoring
