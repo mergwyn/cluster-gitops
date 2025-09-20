@@ -34,7 +34,7 @@ controllers:
         dependsOn: app
         image:
           repository: ghcr.io/coder/code-server
-          tag: 4.104.0
+          tag: 4.104.1
         args:
           - --auth=none
           - --disable-telemetry
