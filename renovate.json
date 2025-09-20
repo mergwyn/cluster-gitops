@@ -23,6 +23,7 @@
   "patch": {
     "minimumReleaseAge": "3 days"
   },
+  "internalChecksAsSuccess": "true",
   "ignorePaths": [ "disabled/**", "archive/**" ],
   "helm-values": { "managerFilePatterns": [ "/(^|/).*values.*.yaml$/" ] },
   "packageRules": [
