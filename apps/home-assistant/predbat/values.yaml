@@ -1,12 +1,11 @@
 ---
 # TODO add init cintainer or similar to load config
 
-alias: &app predbat
 global:
-  nameOverride: *app
+  nameOverride: predbat
 
 controllers:
-  *app :
+  predbat:
     annotations:
       reloader.stakater.com/auto: "true"
     enabled: true
@@ -21,37 +20,44 @@ controllers:
           memory: 256M
 
     containers:
-      *app :
+      app:
         image:
           repository: nipar44/predbat_addon
           tag: v8.24.2
         env:
           TZ: "Europe/London"
       code-server:
-        dependsOn: *app
+        dependsOn: app
         image:
           repository: ghcr.io/coder/code-server
+          # yamllint disable-line rule:line-length
           tag: 4.104.1@sha256:66b4f0e6d32da53b0cf6af7cb0894b4078a93f2e160a9270c539e12e1ebf278d
         env:
           TZ: "Europe/London"
         args:
-          - "--auth=none"
-          - "--user-data-dir=/config/.vscode"
-          - "--extensions-dir=/config/.vscode"
-          - "--port=12321"
-          - "/config"
+          - --auth=none
+          - --disable-telemetry
+          - --disable-update-check
+          - --user-data-dir
+          - /config/.code-server
+          - --extensions-dir
+          - /config/.code-server
+          - --port
+          - "12321"
+          - /config
         securityContext:
           runAsUser: 0
 
 service:
-  *app :
-    controller: *app
-    type: ClusterIP
+  app:
+    forceRename: "{{.Release.Name}}"
     ports:
       http:
-        port: &http 5052
-      code-server:
-        port: &code-server 12321
+        port: &http_port 5052
+  code-server:
+    ports:
+      http:
+        port: &code-server_port 12321
 
 persistence:
   config:
@@ -85,17 +91,19 @@ rawResources:
           - websecure
         routes:
           - kind: Rule
+            # yamllint disable-line rule:line-length
             match: Host(`{{.Release.Name}}.{{.Values.global.domain}}`) && PathPrefix(`/`)
             priority: 10
             services:
-              - name: *app
-                port: *http
+              - name: "{{.Release.Name}}"
+                port: *http_port
           - kind: Rule
+            # yamllint disable-line rule:line-length
             match: Host(`{{.Release.Name}}.{{.Values.global.domain}}`) && PathRegexp(`^/code/.*`)
             priority: 11
             services:
-              - name: *app
-                port: *code-server
+              - name: "{{.Release.Name}}-code-server"
+                port: *code-server_port
             middlewares:
               - name: "{{.Release.Name}}-middleware"
         tls: {}
