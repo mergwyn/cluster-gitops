@@ -6,6 +6,6 @@ repositories:
 releases:
   - name: kube-vip-cloud-provider
     chart: kube-vip/kube-vip-cloud-provider
-    version: 0.2.6
+    version: 0.2.7
     values:
       - values.yaml
