@@ -33,6 +33,7 @@ resources:
                       operator: AnyIn
                       value:
                         - media
+                        - media-vpn
                         - default
                         - downloaders
                         - monitoring
