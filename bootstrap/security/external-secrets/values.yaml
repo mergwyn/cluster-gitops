@@ -29,6 +29,7 @@ grafanaDashboard:
 
 bitwarden-sdk-server:
   enabled: true
+  replicaCount: 2
   podAnnotations:
     secret.reloader.stakater.com/reload: |
       'bitwarden-access-token,bitwarden-tls-certs,bitwarden-css-certs'
