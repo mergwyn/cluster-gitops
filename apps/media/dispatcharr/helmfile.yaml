@@ -1,0 +1,9 @@
+---
+
+releases:
+  - name: dispatcharr
+    chart: oci://ghcr.io/bjw-s-labs/helm/app-template
+    version: 4.3.0
+    values:
+      - ../../../settings/common.yaml
+      - values.yaml

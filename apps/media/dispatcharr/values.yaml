@@ -1,0 +1,70 @@
+---
+global:
+  nameOverride: &app dispatcharr
+
+controllers:
+  *app :
+    enabled: true
+    type: deployment
+    containers:
+      *app :
+        image:
+          repository: ghcr.io/dispatcharr/dispatcharr
+          tag: latest
+        env:
+          DISPATCHARR_ENV: aio
+          REDIS_HOST: localhost
+          CELERY_BROKER_URL: redis://localhost:6379/0
+          DISPATCHARR_LOG_LEVEL: info
+
+        resources:
+          requests:
+            cpu: 600m
+            memory: 670M
+            # gpu.intel.com/i915: "1"  # enable if vaapi used in sm
+          limits:
+            # cpu: 1100m
+            memory: 2G
+            # gpu.intel.com/i915: "1"  # enable if vaapi used in sm
+
+service:
+  # Configure a service for the main application
+  *app :
+    controller: *app
+    type: ClusterIP
+    ports:
+      http:
+        port: 9191
+
+ingress:
+  internal:
+    enabled: true
+    className: traefik
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    hosts: &hosts
+      - host: "{{.Release.Name}}.{{.Values.global.domain}}"
+        paths:
+          - path: /
+            pathType: Prefix
+            service:
+              identifier: *app
+              port: http
+    tls:
+      - hosts:
+          - '*.theclarkhome.com'
+  external:
+    enabled: true
+    className: cloudflare-tunnel
+    annotations:
+      cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
+    hosts: *hosts
+
+
+persistence:
+  data:
+    type: persistentVolumeClaim
+    storageClass: openebs-zfspv
+    accessMode: ReadWriteOnce
+    retain: true
+    size: 1G
