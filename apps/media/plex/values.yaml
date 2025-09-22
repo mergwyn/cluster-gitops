@@ -45,10 +45,12 @@ resources:
     # gpu.intel.com/i915: "1"
 
 persistence:
-  config:
-    enabled: true
-    type: hostPath
-    hostPath: /opt/appdata/plex
+  # config:
+  #   enabled: true
+  #   type: hostPath
+  #   hostPath: /opt/appdata/plex
+  #   globalMounts:
+  #     - path: /config-old
   data:
     enabled: true
     type: hostPath
@@ -61,3 +63,5 @@ persistence:
     accessMode: ReadWriteOnce
     retain: true
     size: 10G
+    globalMounts:
+      - path: /config
