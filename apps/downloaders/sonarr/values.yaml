@@ -91,6 +91,7 @@ ingress:
 persistence:
   config:
     enabled: true
+    forceRename: "{{ .Release.Name }}-config"
     retain: true
     storageClass: openebs-zfspv
     accessMode: ReadWriteOnce

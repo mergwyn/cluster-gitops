@@ -1,10 +1,11 @@
 ---
+repositories:
+  - name: geek-cookbook
+    url: https://geek-cookbook.github.io/charts/
 
 releases:
   - name: sonarr
-    chart: oci://ghcr.io/bjw-s-labs/helm/app-template
-    version: 4.3.0
+    chart: geek-cookbook/sonarr
+    version: 16.3.2
     values:
-      - ../../../settings/common.yaml
       - values.yaml
-      - externalsecret.yaml
