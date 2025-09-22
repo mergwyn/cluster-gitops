@@ -4,6 +4,7 @@ resources:
     kind: ClusterSecretStore
     metadata:
       name: bitwarden
+      namespace: security
     spec:
       provider:
         bitwardensecretsmanager:
