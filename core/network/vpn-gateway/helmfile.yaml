@@ -1,0 +1,21 @@
+---
+repositories:
+  - name: angelnu
+    url: http://angelnu.github.io/helm-charts
+  - name: bedag
+    url: https://bedag.github.io/helm-charts/
+
+releases:
+  - name: vpn-gateway
+    chart: angelnu/pod-gateway
+    version: 6.5.1
+    values:
+      - values.yaml
+    secrets:
+      - privatevpn-ovn-conf-sops.yaml
+
+  - name: pod-gateway-externalsecret
+    chart: bedag/raw
+    version: 2.0.0
+    values:
+      - externalsecret.yaml
