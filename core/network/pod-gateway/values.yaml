@@ -8,6 +8,7 @@ image:
 routed_namespaces:
   - downloaders
   - media
+  - vpn
 
 annotations:
   reloader.stakater.com/auto: "true"
