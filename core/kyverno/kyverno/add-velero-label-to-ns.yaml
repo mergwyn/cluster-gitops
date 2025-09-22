@@ -32,12 +32,13 @@ resources:
                     - key: "{{target.metadata.name}}"
                       operator: AnyIn
                       value:
-                        - media
-                        - media-vpn
                         - default
                         - downloaders
-                        - monitoring
                         - home-assistant
+                        - media
+                        - monitoring
+                        - vpn
+
             patchStrategicMerge:
               metadata:
                 labels:
