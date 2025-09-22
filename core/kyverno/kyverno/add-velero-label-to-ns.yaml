@@ -33,7 +33,6 @@ resources:
                       operator: AnyIn
                       value:
                         - default
-                        - downloaders
                         - home-assistant
                         - media
                         - monitoring
