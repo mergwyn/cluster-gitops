@@ -52,6 +52,7 @@ persistence:
     enabled: true
     retain: true
     storageClass: openebs-zfspv
+    size: 2G
   data:
     enabled: true
     type: nfs
