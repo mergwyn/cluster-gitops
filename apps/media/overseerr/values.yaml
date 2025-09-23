@@ -1,0 +1,70 @@
+---
+
+controllers:
+  overseerr:
+    enabled: true
+    type: deployment
+    annotations:
+      reloader.stakater.com/auto: "true"
+    containers:
+      app:
+        image:
+          repository: ghcr.io/sct/overseerr
+          tag: 1.34.0
+        env:
+          TZ: "Europe/London"
+          LOG_LEVEL: debug
+
+        resources:
+          requests:
+            cpu: 600m
+            memory: 670M
+            # gpu.intel.com/i915: "1"  # enable if vaapi used in sm
+          limits:
+            # cpu: 1100m
+            memory: 2G
+            # gpu.intel.com/i915: "1"  # enable if vaapi used in sm
+
+service:
+  # Configure a service for the main application
+  app:
+    forceRename: "{{.Release.Name}}"
+    type: ClusterIP
+    ports:
+      http:
+        port: 5055
+
+ingress:
+  internal:
+    enabled: true
+    className: traefik
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    hosts: &hosts
+      - host: "{{.Release.Name}}.{{.Values.global.domain}}"
+        paths:
+          - path: /
+            pathType: Prefix
+            service:
+              identifier: app
+              port: http
+    tls:
+      - hosts:
+          - "*.{{.Values.global.domain}}"
+  external:
+    enabled: true
+    className: cloudflare-tunnel
+    annotations:
+      cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
+    hosts: *hosts
+
+
+persistence:
+  config:
+    type: persistentVolumeClaim
+    storageClass: openebs-zfspv
+    accessMode: ReadWriteOnce
+    retain: true
+    size: 1G
+    globalMounts:
+      - path: /app/config
