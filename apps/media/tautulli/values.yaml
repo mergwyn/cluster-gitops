@@ -1,0 +1,102 @@
+---
+
+controllers:
+  tautulli:
+    enabled: true
+    type: deployment
+    annotations:
+      reloader.stakater.com/auto: "true"
+    #pod:
+    #  securityContext:
+    #    runAsuser: nouser
+    #    runAsGroup: nogroup
+    #    fsGroup: nogroup
+    containers:
+      app:
+        image:
+          repository: ghcr.io/home-operations/tautulli
+          tag: 2.16.0
+        env:
+          TZ: "Europe/London"
+
+        probes:
+          liveness: &probes
+            enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /status
+                port: &port 8181
+              initialDelaySeconds: 0
+              periodSeconds: 10
+              timeoutSeconds: 1
+              failureThreshold: 3
+          readiness: *probes
+
+        resources:
+          requests:
+            cpu: 10m
+           #  memory: 670M
+          limits:
+            memory: 1G
+
+service:
+  # Configure a service for the main application
+  app:
+    forceRename: "{{.Release.Name}}"
+    type: ClusterIP
+    ports:
+      http:
+        port: *port
+
+ingress:
+  internal:
+    enabled: true
+    className: traefik
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    hosts: &hosts
+      - host: "{{.Release.Name}}.{{.Values.global.domain}}"
+        paths:
+          - path: /
+            pathType: Prefix
+            service:
+              identifier: app
+              port: http
+    tls:
+      - hosts:
+          - "*.{{.Values.global.domain}}"
+
+#  external:
+#    enabled: true
+#    className: cloudflare-tunnel
+#    annotations:
+#      cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
+#    hosts: *hosts
+
+
+persistence:
+  config:
+    type: persistentVolumeClaim
+    storageClass: openebs-zfspv
+    accessMode: ReadWriteOnce
+    retain: true
+    size: 1G
+    globalMounts:
+      - path: /app/config
+#  config-cache:
+#    type: persistentVolumeClaim
+#    storageClass: openebs-zfspv
+#    accessMode: ReadWriteOnce
+#    size: 1G
+#    globalMounts:
+#      - path: /config/cache
+  tmpfs:
+    type: emptyDir
+    advancedMounts:
+      tautulli:
+        app:
+          - path: /config/logs
+            subPath: logs
+          - path: /tmp
+            subPath: tmp
