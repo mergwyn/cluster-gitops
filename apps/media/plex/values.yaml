@@ -38,19 +38,19 @@ resources:
   requests:
     cpu: 15m
     memory: 921M
-    # gpu.intel.com/i915: "1"
+    gpu.intel.com/i915: "1"
   limits:
     # cpu: 2928m
     memory: 1.5G
-    # gpu.intel.com/i915: "1"
+    gpu.intel.com/i915: "1"
 
 persistence:
-  # config:
-  #   enabled: true
-  #   type: hostPath
-  #   hostPath: /opt/appdata/plex
-  #   globalMounts:
-  #     - path: /config-old
+  config:
+    enabled: true
+    type: hostPath
+    hostPath: /opt/appdata/plex
+    globalMounts:
+      - path: /config-old
   data:
     enabled: true
     type: hostPath
