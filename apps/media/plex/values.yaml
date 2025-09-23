@@ -51,10 +51,12 @@ persistence:
     hostPath: /opt/appdata/plex
     globalMounts:
       - path: /config-old
-  data:
-    enabled: true
-    type: hostPath
     hostPath: /srv/media
+  nfs-nas-media:
+    enabled: true
+    type: nfs
+    server: 10.58.0.12
+    path: /srv/media
     mountPath: /data
   config-new:
     enabled: true
