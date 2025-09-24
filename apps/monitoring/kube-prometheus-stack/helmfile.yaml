@@ -2,7 +2,7 @@
 releases:
   - name: kube-prometheus-stack
     chart: oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
-    version: 77.10.0
+    version: 77.11.0
     values:
       - values.yaml
       - externalsecret.yaml
