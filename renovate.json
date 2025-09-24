@@ -10,6 +10,7 @@
     // "config:best-practices",
     ":pinDigestsDisabled",
     // "schedule:weekly",
+    "mergeConfidence:all-badges",
     ":separateMultipleMajorReleases"
   ],
   "timezone": "Europe/London",
