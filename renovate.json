@@ -26,7 +26,7 @@
   },
   "internalChecksAsSuccess": "true",
   "ignorePaths": [ "disabled/**", "archive/**" ],
-  "helm-values": { "managerFilePatterns": [ "/(^|/).*values.*.yaml$/" ] },
+  "helm-values": { "managerFilePatterns": [ "/(^|/).*values.*.yaml(?:\\.gotmpl)?$/" ] },
   "packageRules": [
     {
       "versioning": "regex:/^(?<major>]d+)].(?<minor>]d+)].(?<patch>]d+)-r(?<build>]]d)-ls(?<revision>.+)$",
