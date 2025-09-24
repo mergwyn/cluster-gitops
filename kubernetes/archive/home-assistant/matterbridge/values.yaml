@@ -15,7 +15,7 @@ controllers:
       app:
         image:
           repository: docker.io/luligu/matterbridge
-          tag: 2.2.1
+          tag: 2.2.9
         env:
           TZ: Europe/London
         resources:
