@@ -13,9 +13,6 @@ spec:
           - path: bootstrap/*/*
           - path: core/*/*
           - path: apps/*/*
-          - path: kubernetes/bootstrap/*/*
-          - path: kubernetes/core/*/*
-          - path: kubernetes/apps/*/*
           # - path: apps/downloaders/prowlarr
           #   exclude: true
 
