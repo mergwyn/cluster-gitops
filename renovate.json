@@ -52,10 +52,12 @@
       "ignoreTests": true
     },
     {
-      "description": "Auto merge KPS minors and patches",
+      "description": "Auto merge minors and patches",
       "automerge": true,
       "matchUpdateTypes": [ "minor", "patch" ],
-      "matchDepNames": [ "kube-prometheus-stack" ],
+      "matchPackageNames": [
+        "/kube-prometheus-stack/"
+      ],
       "ignoreTests": true
     }
   ]
