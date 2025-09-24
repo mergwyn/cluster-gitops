@@ -5,7 +5,10 @@ repositories:
 
 releases:
   - name: velero
-    chart: oci://ghcr.io/vmware-tanzu/charts/velero
+    # chart: oci://ghcr.io/vmware-tanzu/charts/velero
+    # can't use oci and minimumReleaseAge
+    # see https://github.com/renovatebot/renovate/issues/37196
+    chart: vmware-tanzu/charts/velero
     version: 10.1.3
     values:
       - values.yaml
