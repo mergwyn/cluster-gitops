@@ -6,6 +6,6 @@ repositories:
 releases:
   - name: node-feature-discovery
     chart: node-feature-discovery/node-feature-discovery
-    version: 0.17.3
+    version: 0.17.4
     values:
       - values.yaml
