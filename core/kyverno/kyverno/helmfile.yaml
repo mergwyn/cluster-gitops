@@ -15,15 +15,21 @@ releases:
     version: 3.5.2
     values:
       - policy-values.yaml
+    needs:
+      - kyverno
 
   - name: kyverno-backup-all-volumes-policy
     chart: bedag/raw
     version: 2.0.0
     values:
       - backup-all-volumes.yaml
+    needs:
+      - kyverno
 
   - name: kyverno-add-velero-label-to-ns-policy
     chart: bedag/raw
     version: 2.0.0
     values:
       - add-velero-label-to-ns.yaml
+    needs:
+      - kyverno
