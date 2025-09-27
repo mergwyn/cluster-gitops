@@ -13,8 +13,8 @@ spec:
           - path: bootstrap/*/*
           - path: core/*/*
           - path: apps/*/*
-          # - path: apps/downloaders/prowlarr
-          #   exclude: true
+          - path: core/kyverno/kyverno
+            exclude: true
 
   template:
     metadata:
