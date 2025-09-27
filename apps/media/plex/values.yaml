@@ -65,4 +65,4 @@ persistence:
     retain: true
     size: 10G
     globalMounts:
-      - path: /config
+      - path: /config-new
