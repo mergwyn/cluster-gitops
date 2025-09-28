@@ -11,7 +11,7 @@ repositories:
 releases:
   - name: cert-manager-cloudflare-token
     chart: bedag/raw
-    version: 2.0.0
+    version: 2.0.2
     secrets:
       - ../../../bootstrap/security/cert-manager/cloudflare-cert-manager-token-sops.yaml
 
@@ -26,7 +26,7 @@ releases:
   - name: cert-manager-resources
     namespace: security
     chart: bedag/raw
-    version: 2.0.0
+    version: 2.0.2
     values:
       - ../../../bootstrap/security/cert-manager/resources.yaml
     needs:
@@ -44,14 +44,14 @@ releases:
   - name: bitwarden-access-token
     namespace: security
     chart: bedag/raw
-    version: 2.0.0
+    version: 2.0.2
     secrets:
       - ../../../bootstrap/security/external-secrets/bitwarden-access-token-sops.yaml
 
   - name: bitwarden-store
     namespace: security
     chart: bedag/raw
-    version: 2.0.0
+    version: 2.0.2
     values:
       - ../../../bootstrap/security/external-secrets/bitwarden-store.yaml
     needs:
@@ -61,7 +61,7 @@ releases:
   - name: argocd-externalsecret
     namespace: argocd
     chart: bedag/raw
-    version: 2.0.0
+    version: 2.0.2
     values:
       - ../../../bootstrap/argocd/argocd/externalsecret.yaml
     needs:

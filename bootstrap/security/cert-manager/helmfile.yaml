@@ -6,7 +6,7 @@ repositories:
 releases:
   - name: cert-manager-cloudflare-token
     chart: bedag/raw
-    version: 2.0.0
+    version: 2.0.2
     secrets:
       - cloudflare-cert-manager-token-sops.yaml
 
@@ -18,7 +18,7 @@ releases:
 
   - name: cert-manager-resources
     chart: bedag/raw
-    version: 2.0.0
+    version: 2.0.2
     values:
       - resources.yaml
     needs:
