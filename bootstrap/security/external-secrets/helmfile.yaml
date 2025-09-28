@@ -14,13 +14,13 @@ releases:
 
   - name: bitwarden-access-token
     chart: bedag/raw
-    version: 2.0.0
+    version: 2.0.2
     secrets:
      - bitwarden-access-token-sops.yaml
 
   - name: bitwarden-store
     chart: bedag/raw
-    version: 2.0.0
+    version: 2.0.2
     values:
       - bitwarden-store.yaml
     needs:

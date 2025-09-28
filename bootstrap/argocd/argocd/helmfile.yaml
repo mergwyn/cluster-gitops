@@ -15,6 +15,6 @@ releases:
 
   - name: argocd-externalsecret
     chart: bedag/raw
-    version: 2.0.0
+    version: 2.0.2
     values:
       - externalsecret.yaml

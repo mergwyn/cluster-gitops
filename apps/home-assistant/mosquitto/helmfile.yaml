@@ -15,7 +15,7 @@ releases:
 
   - name: mosquitto-ingress-route
     chart: bedag/raw
-    version: 2.0.0
+    version: 2.0.2
     values:
       - resources:
           - kind: IngressRouteTCP
