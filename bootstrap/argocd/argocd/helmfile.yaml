@@ -9,12 +9,12 @@ repositories:
 releases:
   - name: argocd
     chart: oci://ghcr.io/argoproj/argo-helm/argo-cd
-    version: 8.5.6
+    version: 8.5.7
     values:
       - values.yaml
 
   - name: argocd-externalsecret
     chart: bedag/raw
-    version: 2.0.0
+    version: 2.0.2
     values:
       - externalsecret.yaml

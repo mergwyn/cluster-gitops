@@ -6,6 +6,6 @@ repositories:
 releases:
   - name: vpa
     chart: fairwinds-stable/vpa
-    version: 4.8.1
+    version: 4.9.0
     values:
       - values.yaml
