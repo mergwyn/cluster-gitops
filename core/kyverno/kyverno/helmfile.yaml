@@ -1,35 +1,45 @@
 ---
-repositories:
-  - name: bedag
-    url: https://bedag.github.io/helm-charts/
+bases:
+  - ../../../bases/defaults.yaml
+  - ../../../bases/repositories.yaml
+
+templates:
+  raw:
+    chart: bedag/raw
+    version: 2.0.0
+    needs:
+      - kyverno
 
 releases:
   - name: kyverno
-    chart: oci://ghcr.io/kyverno/charts/kyverno
+    # chart: oci://ghcr.io/kyverno/charts/kyverno
+    chart: kyverno/kyverno
     version: 3.5.2
     values:
       - values.yaml
 
-#  - name: kyverno-policies
-#    chart: oci://ghcr.io/kyverno/charts/kyverno-policies
-#    version: 3.5.2
-#    values:
-#      - policy-values.yaml
-#    needs:
-#      - kyverno
-#
-  - name: kyverno-backup-all-volumes-policy
-    chart: bedag/raw
-    version: 2.0.2
-    values:
-      - backup-all-volumes.yaml
-    needs:
-      - kyverno
+  #  - name: kyverno-policies
+  #    chart: oci://ghcr.io/kyverno/charts/kyverno-policies
+  #    version: 3.5.2
+  #    values:
+  #      - policy-values.yaml
+  #    needs:
+  #      - kyverno
 
   - name: kyverno-add-velero-label-to-ns-policy
-    chart: bedag/raw
-    version: 2.0.2
+    inherit:
+      - template: raw
     values:
       - add-velero-label-to-ns.yaml
-    needs:
-      - kyverno
+
+  - name: kyverno-backup-all-volumes-policy
+    inherit:
+      - template: raw
+    values:
+      - backup-all-volumes.yaml
+
+  - name: kyverno-set-pv-to-retain-on-keep-policy
+    inherit:
+      - template: raw
+    values:
+      - set-pv-to-retain-on-keep.yaml

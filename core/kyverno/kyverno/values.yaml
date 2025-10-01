@@ -31,6 +31,16 @@ backgroundController:
             - update
             - delete
             - patch
+        - apiGroups:
+            - ''
+          resources:
+            - persistentvolumes
+            - persistentvolumeclaims
+          verbs:
+            - create
+            - update
+            - get
+            - list
 
 crds:
   migration:
