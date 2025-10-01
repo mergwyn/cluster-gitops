@@ -3,13 +3,6 @@ bases:
   - ../../../bases/defaults.yaml
   - ../../../bases/repositories.yaml
 
-templates:
-  raw:
-    chart: bedag/raw
-    version: 2.0.0
-    needs:
-      - kyverno
-
 releases:
   - name: kyverno
     # chart: oci://ghcr.io/kyverno/charts/kyverno
@@ -27,19 +20,25 @@ releases:
   #      - kyverno
 
   - name: kyverno-add-velero-label-to-ns-policy
-    inherit:
-      - template: raw
+    chart: bedag/raw
+    version: 2.0.0
+    needs:
+
     values:
       - add-velero-label-to-ns.yaml
 
   - name: kyverno-backup-all-volumes-policy
-    inherit:
-      - template: raw
+    chart: bedag/raw
+    version: 2.0.0
+    needs:
+      - kyverno
     values:
       - backup-all-volumes.yaml
 
   - name: kyverno-set-pv-to-retain-on-keep-policy
-    inherit:
-      - template: raw
+    chart: bedag/raw
+    version: 2.0.0
+    needs:
+      - kyverno
     values:
       - set-pv-to-retain-on-keep.yaml
