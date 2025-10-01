@@ -1,11 +1,14 @@
 ---
+bases:
+  - ../../../bases/defaults.yaml
+  - ../../../bases/repositories.yaml
 repositories:
   - name: bedag
     url: https://bedag.github.io/helm-charts/
 
 releases:
   - name: esphome
-    chart: oci://ghcr.io/bjw-s-labs/helm/app-template
+    chart: bjw-s-labs/app-template
     version: 4.3.0
     values:
       - ../../../settings/common.yaml

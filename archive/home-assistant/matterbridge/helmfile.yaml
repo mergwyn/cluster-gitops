@@ -1,7 +1,10 @@
 ---
+bases:
+  - ../../../bases/defaults.yaml
+  - ../../../bases/repositories.yaml
 releases:
   - name: matterbridge
-    chart: oci://ghcr.io/bjw-s-labs/helm/app-template
+    chart: bjw-s-labs/app-template
     version: 3.7.2
     values:
       - ../../../settings/common.yaml
