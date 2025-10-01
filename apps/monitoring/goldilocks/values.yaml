@@ -3,7 +3,6 @@ controller:
   flags:
     ignore-controller-kind: "Job,CronJob"
     on-by-default: true
-    enable-cpu-limit-recommendation: false
 
   resources:
     requests:
