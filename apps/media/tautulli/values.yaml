@@ -84,13 +84,13 @@ persistence:
     size: 1G
     globalMounts:
       - path: /app/config
-#  config-cache:
-#    type: persistentVolumeClaim
-#    storageClass: openebs-zfspv
-#    accessMode: ReadWriteOnce
-#    size: 1G
-#    globalMounts:
-#      - path: /config/cache
+  config-cache:
+    type: persistentVolumeClaim
+    storageClass: openebs-zfspv
+    accessMode: ReadWriteOnce
+    size: 1G
+    globalMounts:
+      - path: /app/config/cache
   tmpfs:
     type: emptyDir
     advancedMounts:
