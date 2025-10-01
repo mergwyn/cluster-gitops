@@ -188,6 +188,8 @@ grafana:
     type: pvc
     storageClassName: openebs-zfspv
     size: 10Gi
+    annotations:
+      helm.sh/resource-policy: "keep"
   resources:
     requests:
       cpu: 15m
