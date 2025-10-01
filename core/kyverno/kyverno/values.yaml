@@ -9,6 +9,14 @@ webhooksCleanup:
 
 admissionController:
   replicas: 3
+  resources:
+    limits:
+      cpu: null
+  initContainer:
+    resources:
+      limits:
+        cpu: null
+
 backgroundController:
   replicas: 3
   rbac:
@@ -23,6 +31,12 @@ backgroundController:
             - update
             - delete
             - patch
+
+crds:
+  migration:
+    podResources:
+      limits:
+        cpu: null
 
 features:
   generateValidatingAdmissionPolicy:

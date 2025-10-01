@@ -3,3 +3,7 @@ cm:
   data:
     cidr-global: "10.58.0.32/30"  # TODO make a parameter via overlay
     skip-end-ips-in-cidr: true
+
+resources:
+  limits:
+    cpu: null

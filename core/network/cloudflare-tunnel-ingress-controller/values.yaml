@@ -17,6 +17,10 @@ ingressClass:
 
 replicaCount: 2
 
+resources:
+  limits:
+    cpu: null
+
 image:
   repository: cr.strrl.dev/strrl/cloudflare-tunnel-ingress-controller
   tag: 0.0.18
