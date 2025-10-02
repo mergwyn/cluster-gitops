@@ -1,68 +1,108 @@
 ---
-image:
-  repository: lscr.io/linuxserver/sonarr
-  tag: "4.0.15"
+controllers:
+  sonarr:
+    annotations:
+      reloader.stakater.com/auto: "true"
+    containers:
+      app:
+        image:
+          repository: ghcr.io/home-operations/sonarr
+          tag: 4.0.15.2940@sha256:ca6c735014bdfb04ce043bf1323a068ab1d1228eea5bab8305ca0722df7baf78
+        env:
+          SONARR__APP__INSTANCENAME: Sonarr
+          SONARR__APP__THEME: dark
+          SONARR__AUTH__METHOD: External
+          SONARR__AUTH__REQUIRED: DisabledForLocalAddresses
+          SONARR__LOG__DBENABLED: "False"
+          SONARR__LOG__LEVEL: info
+          SONARR__SERVER__PORT: &port 8989
+          SONARR__UPDATE__BRANCH: develop
+          TZ: Europe/London
+        envFrom:
+          - secretRef:
+              name: "{{ .Release.Name }}-api-key"
+        probes:
+          liveness: &probes
+            enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /ping
+                port: *port
+              initialDelaySeconds: 0
+              periodSeconds: 10
+              timeoutSeconds: 1
+              failureThreshold: 3
+          readiness: *probes
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities: {drop: ["ALL"]}
+        resources:
+          requests:
+            cpu: 100m
+            memory: 324M
+          limits:
+            memory: 2300M
 
-dnsPolicy: ClusterFirst
-
-env:
-  TZ: Europe/London
-  UMASK: "002"
-  PUID: "3001"
-  PGID: "513"
+defaultPodOptions:
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 3001
+    runAsGroup: 513
+    fsGroup: 513
+    fsGroupChangePolicy: OnRootMismatch
 
 service:
-  sonarr:
+  app:
+    forceRename: "{{.Release.Name}}"
     ports:
-      https:
-        port: 8989
+      http:
+        port: *port
 
 ingress:
-  main:
+  app:
     enabled: true
-    ingressClassName: traefik
+    className: traefik
     annotations:
       traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    hosts:
-      - host: &host "sonarr.theclarkhome.com"
+    hosts: &hosts
+      - host: "{{.Release.Name}}.{{.Values.global.domain}}"
         paths:
           - path: /
-            backend:
-              name: sonarr
-              service:
-                port: 8989
+            service:
+              identifier: app
+              port: http
     tls:
       - hosts:
-          - "*.theclarkhome.com"
-
+          - "*.{{.Values.global.domain}}"
   external:
     enabled: true
-    ingressClassName: cloudflare-tunnel
+    className: cloudflare-tunnel
     annotations:
       cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
-    hosts:
-      - host: *host
-        paths:
-          - path: /
-            backend:
-              name: sonarr
+    hosts: *hosts
 
 persistence:
   config:
     enabled: true
+    forceRename: "{{ .Release.Name }}-config"
     retain: true
     storageClass: openebs-zfspv
+    accessMode: ReadWriteOnce
     size: 2G
+  config-cache:
+    storageClass: openebs-zfspv
+    accessMode: ReadWriteOnce
+    size: 2G
+    globalMounts:
+      - path: /config/MediaCover
   data:
     enabled: true
     type: nfs
     server: 10.58.0.12
     path: /srv/media
-
-resources:
-  requests:
-    cpu: 10m
-    memory: 324M
-  limits:
-    # cpu: 29m
-    memory: 2300M
+    globalMounts:
+      - path: /data
+  tmp:
+    type: emptyDir
