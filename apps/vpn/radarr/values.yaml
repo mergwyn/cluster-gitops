@@ -9,7 +9,7 @@ controllers:
           repository: ghcr.io/home-operations/radarr
           tag: 6.0.1
         env:
-          RADARR__APP__INSTANCENAME: Sonarr
+          RADARR__APP__INSTANCENAME: "{{ .Release.Name }}"
           RADARR__APP__THEME: dark
           RADARR__AUTH__METHOD: External
           RADARR__AUTH__REQUIRED: DisabledForLocalAddresses
