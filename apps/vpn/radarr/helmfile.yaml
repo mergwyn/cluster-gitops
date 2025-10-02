@@ -1,11 +1,13 @@
 ---
-repositories:
-  - name: geek-cookbook
-    url: https://geek-cookbook.github.io/charts/
+bases:
+  - ../../../bases/defaults.yaml
+  - ../../../bases/repositories.yaml
 
 releases:
   - name: radarr
-    chart: geek-cookbook/radarr
-    version: 16.3.2
+    chart: bjw-s-labs/app-template
+    version: 4.3.0
     values:
+      - ../../../settings/common.yaml
       - values.yaml
+      - externalsecret.yaml
