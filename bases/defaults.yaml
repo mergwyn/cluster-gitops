@@ -1,0 +1,3 @@
+---
+helmDefaults:
+  wait: true
