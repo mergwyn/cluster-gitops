@@ -43,7 +43,7 @@ controllers:
             cpu: 100m
             memory: 183M
           limits:
-            memory: 313M
+            memory: 512M
 
 defaultPodOptions:
   securityContext:
