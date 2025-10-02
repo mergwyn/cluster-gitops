@@ -1,51 +1,108 @@
 ---
-image:
-  repository: lscr.io/linuxserver/prowlarr
-  tag: "1.37.0"
+controllers:
+  prowlarr:
+    annotations:
+      reloader.stakater.com/auto: "true"
+    containers:
+      app:
+        image:
+          repository: ghcr.io/home-operations/prowlarr
+          tag: 2.1.2.5186
+        env:
+          RADARR__APP__INSTANCENAME: Sonarr
+          RADARR__APP__THEME: dark
+          RADARR__AUTH__METHOD: External
+          RADARR__AUTH__REQUIRED: DisabledForLocalAddresses
+          RADARR__LOG__DBENABLED: "False"
+          RADARR__LOG__LEVEL: info
+          RADARR__SERVER__PORT: &port 9696
+          RADARR__UPDATE__BRANCH: develop
+          TZ: Europe/London
+        envFrom:
+          - secretRef:
+              name: "{{ .Release.Name }}-api-key"
+        probes:
+          liveness: &probes
+            enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /ping
+                port: *port
+              initialDelaySeconds: 0
+              periodSeconds: 10
+              timeoutSeconds: 1
+              failureThreshold: 3
+          readiness: *probes
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities: {drop: ["ALL"]}
+        resources:
+          requests:
+            cpu: 100m
+            memory: 183M
+          limits:
+            memory: 313M
 
-dnsPolicy: ClusterFirst
-
-env:
-  TZ: Europe/London
-  UMASK: "002"
-  PUID: "3001"
-  PGID: "513"
+defaultPodOptions:
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 3001
+    runAsGroup: 513
+    fsGroup: 513
+    fsGroupChangePolicy: OnRootMismatch
 
 service:
-  prowlarr:
+  app:
+    forceRename: "{{.Release.Name}}"
     ports:
-      https:
-        port: 9696
+      http:
+        port: *port
 
 ingress:
-  prowlarr:
+  app:
     enabled: true
-    ingressClass: traefik
+    className: traefik
     annotations:
       traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    hosts:
-      - host: "prowlarr.theclarkhome.com"
+    hosts: &hosts
+      - host: "{{.Release.Name}}.{{.Values.global.domain}}"
         paths:
           - path: /
-            backend:
-              name: prowlarr
-              service:
-                port: 9696
+            service:
+              identifier: app
+              port: http
     tls:
       - hosts:
-          - "*.theclarkhome.com"
+          - "*.{{.Values.global.domain}}"
+  external:
+    enabled: true
+    className: cloudflare-tunnel
+    annotations:
+      cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
+    hosts: *hosts
 
 persistence:
   config:
     enabled: true
-    type: pvc
+    forceRename: "{{ .Release.Name }}-config"
     retain: true
     storageClass: openebs-zfspv
-
-resources:
-  requests:
-    cpu: 20m
-    memory: 183M
-  limits:
-    # cpu: 40m
-    memory: 313M
+    accessMode: ReadWriteOnce
+    size: 2Gi
+  config-cache:
+    storageClass: openebs-zfspv
+    accessMode: ReadWriteOnce
+    size: 2Gi
+    globalMounts:
+      - path: /config/MediaCover
+  data:
+    enabled: true
+    type: nfs
+    server: 10.58.0.12
+    path: /srv/media
+    globalMounts:
+      - path: /data
+  tmp:
+    type: emptyDir
