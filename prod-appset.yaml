@@ -5,6 +5,9 @@ metadata:
   name: cluster-gitops
   namespace: argocd
 spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+
   generators:
     - git:
         repoURL: https://github.com/mergwyn/cluster-gitops.git
@@ -13,21 +16,31 @@ spec:
           - path: bootstrap/*/*
           - path: core/*/*
           - path: apps/*/*
-          - path: core/kyverno/kyverno
-            exclude: true
 
   template:
     metadata:
-      name: '{{ path.basename }}'
+      name: '{{ .path.basename }}'
     spec:
       project: default
       source:
         repoURL: https://github.com/mergwyn/cluster-gitops.git
         targetRevision: main
-        path: '{{ path }}'
+        path: '{{ .path.path }}'
       destination:
         server: https://kubernetes.default.svc
-        namespace: '{{ path[1] }}'
+        namespace: '{{ index .path.segments 1 }}'
+
+      syncPolicy:
+        automated:
+          enabled: true
+          allowEmpty: true
+          prune: true
+          selfHeal: false
+        syncOptions:
+          - ServerSideApply=true
+          - CreateNamespace=true
+          - RespectIgnoreDifferences=true
+
       ignoreDifferences:
         - kind: StatefulSet
           group: '*'
@@ -56,13 +69,3 @@ spec:
             - .spec.dataFrom[].extract.conversionStrategy
             - .spec.dataFrom[].extract.decodingStrategy
             - .spec.dataFrom[].extract.metadataPolicy
-
-      syncPolicy:
-        automated:
-          allowEmpty: true
-          prune: true
-          selfHeal: false
-        syncOptions:
-          - ServerSideApply=true
-          - CreateNamespace=true
-          - RespectIgnoreDifferences=true
