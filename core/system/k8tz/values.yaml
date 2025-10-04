@@ -1,0 +1,22 @@
+---
+namespace: system  #"{{.Release.Namespace}}"
+createNamespace: false
+replicaCount: 3
+timezone: Europe/London
+cronJobTimeZone: true
+
+webhook:
+  certManager:
+    enabled: true
+    issuerRef:
+      name: cluster-selfsigned-issuer
+      kind: ClusterIssuer
+# affinity:
+#   podAntiAffinity:
+#     preferredDuringSchedulingIgnoredDuringExecution:
+#       - weight: 1
+#         podAffinityTerm:
+#           labelSelector:
+#             matchLabels:
+#               app.kubernetes.io/name: k8tz
+#           topologyKey: kubernetes.io/hostname

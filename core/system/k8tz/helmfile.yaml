@@ -1,0 +1,12 @@
+---
+bases:
+  - ../../../bases/defaults.yaml
+  - ../../../bases/repositories.yaml
+
+releases:
+  - name: k8tz
+    chart: oci://ghcr.io/home-operations/charts-mirror/k8tz
+    version: 0.18.0
+    values:
+      - ../../../settings/common.yaml
+      - values.yaml
