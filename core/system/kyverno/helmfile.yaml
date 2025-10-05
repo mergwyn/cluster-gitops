@@ -23,7 +23,7 @@ releases:
 
   - name: kyverno-add-velero-label-to-ns-policy
     chart: bedag/raw
-    version: 2.0.0
+    version: 2.0.2
     needs:
 
     values:
@@ -31,7 +31,7 @@ releases:
 
   - name: kyverno-backup-all-volumes-policy
     chart: bedag/raw
-    version: 2.0.0
+    version: 2.0.2
     needs:
       - kyverno
     values:
@@ -39,7 +39,7 @@ releases:
 
   - name: kyverno-set-pv-to-retain-on-keep-policy
     chart: bedag/raw
-    version: 2.0.0
+    version: 2.0.2
     needs:
       - kyverno
     values:
