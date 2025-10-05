@@ -10,7 +10,7 @@ controllers:
       *app :
         image:
           repository: ghcr.io/dispatcharr/dispatcharr
-          tag: 0.10.2
+          tag: 0.10.3
         env:
           DISPATCHARR_ENV: aio
           REDIS_HOST: localhost
