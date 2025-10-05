@@ -4,7 +4,7 @@ repositories:
     url: https://bjw-s-labs.github.io/helm-charts
 
 releases:
-  - name: zigbee2mqtt
+  - name: matterhub
     chart: bjw-s-labs/app-template
     version: 4.3.0
     values:
