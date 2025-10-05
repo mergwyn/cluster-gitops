@@ -1,14 +1,14 @@
 ---
+bases:
+  - ../../../bases/defaults.yaml
+  - ../../../bases/repositories.yaml
+
 apiVersions:
   - monitoring.coreos.com/v1
 
-repositories:
-  - name: bedag
-    url: https://bedag.github.io/helm-charts/
-
 releases:
   - name: argocd
-    chart: oci://ghcr.io/argoproj/argo-helm/argo-cd
+    chart: argoproj/argo-cd
     version: 8.5.8
     values:
       - values.yaml

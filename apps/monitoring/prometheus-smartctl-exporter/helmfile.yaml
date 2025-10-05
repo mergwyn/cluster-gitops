@@ -1,8 +1,12 @@
 ---
+bases:
+  - ../../../bases/defaults.yaml
+  - ../../../bases/repositories.yaml
+
 releases:
   - name: prometheus-smartctl-exporter
     # yamllint disable-line rule:line-length
-    chart: oci://ghcr.io/prometheus-community/charts/prometheus-smartctl-exporter
+    chart: prometheus-community/prometheus-smartctl-exporter
     version: 0.16.0
     values:
       - values.yaml

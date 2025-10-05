@@ -1,13 +1,13 @@
 ---
-# yaml-language-server: $schema=https://json.schemastore.org/helmfile
+bases:
+  - ../../../bases/defaults.yaml
+  - ../../../bases/repositories.yaml
 
-repositories:
-  - name: bedag
-    url: https://bedag.github.io/helm-charts/
+# yaml-language-server: $schema=https://json.schemastore.org/helmfile
 
 releases:
   - name: external-secrets
-    chart: oci://ghcr.io/external-secrets/charts/external-secrets
+    chart: external-secrets/external-secrets
     version: 0.19.2
     values:
       - values.yaml
