@@ -16,3 +16,5 @@ repositories:
     url: https://charts.external-secrets.io/
   - name: traefik
     url: https://traefik.github.io/charts/
+  - name: jetstack
+    url: https://charts.jetstack.io/
