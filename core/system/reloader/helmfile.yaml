@@ -2,6 +2,7 @@
 repositories:
   - name: stakater
     url: https://stakater.github.io/stakater-charts
+
 releases:
   - name: reloader
     # chart: oci://ghcr.io/stakater/charts/reloader

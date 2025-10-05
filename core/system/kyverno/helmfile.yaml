@@ -1,7 +1,9 @@
 ---
-bases:
-  - ../../../bases/defaults.yaml
-  - ../../../bases/repositories.yaml
+repositories:
+  - name: bedag
+    url: https://bedag.github.io/helm-charts/
+  - name: kyverno
+    url: https://kyverno.github.io/kyverno/
 
 releases:
   - name: kyverno

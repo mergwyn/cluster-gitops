@@ -2,7 +2,6 @@
 repositories:
   - name: openebs
     url: https://openebs.github.io/openebs
-
   - name: bedag
     url: https://bedag.github.io/helm-charts/
 

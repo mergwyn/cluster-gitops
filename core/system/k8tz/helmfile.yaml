@@ -1,11 +1,11 @@
 ---
-bases:
-  - ../../../bases/defaults.yaml
-  - ../../../bases/repositories.yaml
+repositories:
+  - name: k8tz
+    url: https://k8tz.github.io/k8tz/
 
 releases:
   - name: k8tz
-    chart: oci://ghcr.io/home-operations/charts-mirror/k8tz
+    chart: k8tz/k8tz
     version: 0.18.0
     values:
       - ../../../settings/common.yaml

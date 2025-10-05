@@ -1,7 +1,9 @@
 ---
-bases:
-  - ../../../bases/defaults.yaml
-  - ../../../bases/repositories.yaml
+repositories:
+  - name: bedag
+    url: https://bedag.github.io/helm-charts/
+  - name: jetstack
+    url: https://charts.jetstack.io/
 
 releases:
   - name: cert-manager-cloudflare-token

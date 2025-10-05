@@ -1,10 +1,10 @@
 ---
-bases:
-  - ../../../bases/defaults.yaml
-  - ../../../bases/repositories.yaml
-
 apiVersions:
   - monitoring.coreos.com/v1
+
+repositories:
+  - name: traefik
+    url: https://traefik.github.io/charts/
 
 releases:
   - name: traefik
