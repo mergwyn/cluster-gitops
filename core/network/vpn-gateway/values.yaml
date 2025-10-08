@@ -1,16 +1,11 @@
 ---
-fullnameOverride: &name vpn-gateway
-
-routed_namespaces:
-  - vpn
 
 image:
   repository: ghcr.io/angelnu/pod-gateway
-  pullPolicy: Always
   tag: v1.13.0
-
-podAnnotations:
-  secret.reloader.stakater.com/reload: "auto"
+webhook:
+  controllerAnnotations:
+    reloader.stakater.com/auto: "true"
 
 addons:
   vpn:
@@ -20,86 +15,59 @@ addons:
       image:
         repository: docker.io/qmcgaw/gluetun
         tag: v3.40.0
-    # add for https://github.com/qdm12/gluetun/issues/2606
-    securityContext:
-      privileged: true
 
-    # TODO convert this to 'configFile'??
-    #configFileSecret: privatevpn-ovn-conf
+    env:
+      VPN_SERVICE_PROVIDER: custom
+      VPN_TYPE: wireguard
+      VPN_INTERFACE: wg0
+      DOT: "off"
+      FIREWALL: "off"
+      # SERVER_COUNTRIES: "United Kingdom"
+
+      # FIREWALL_ENABLED_DISABLING_IT_SHOOTS_YOU_IN_YOUR_FOOT: "off"
+      # DNS_KEEP_NAMESERVER: "on"
+      # HEALTH_VPN_DURATION_INITIAL: "600s"
+      # LOG_LEVEL: debug
+      # WIREGUARD_IMPLEMENTATION: userspace
+
+    envFrom:
+      - secretRef:
+          name: privatevpn-wg
+
+#    livenessProbe:
+#      exec:
+#        command:
+#          - sh
+#          - -c
+#          - if [ $(wget -q -O- https://ipinfo.io/country) == 'UK' ]; then exit 0; else exit $?; fi
+#      initialDelaySeconds: 30
+#      periodSeconds: 60
+#      failureThreshold: 3
 
     networkPolicy:
       enabled: true
+
       egress:
         - to:
             - ipBlock:
                 cidr: 0.0.0.0/0
           ports:
-            - port: &vpn_port 1195
+            # VPN traffic
+            - port: &vpn_port 3389
               protocol: UDP
         - to:
             - ipBlock:
                 cidr: 10.0.0.0/8
-    env:
-      TZ: Europe/London
-      VPN_TYPE: openvpn
-      VPN_SERVICE_PROVIDER: custom
-      OPENVPN_CUSTOM_CONFIG: /gluetun/config.conf
-      OPENVPN_ENDPOINT_PORT: *vpn_port
-      OPENVPN_VERBOSITY: 3  # debugging
-      DNS_KEEP_NAMESERVER: "on"  # Try with this disabled
-      DOT: "off"
-      # TODO different variables for different versions. Long name is for 3.40
-      # and later
-      FIREWALL_ENABLED_DISABLING_IT_SHOOTS_YOU_IN_YOUR_FOOT: "off"
-      FIREWALL: "off"
-      # FIREWALL_OUTBOUND_SUBNETS: "10.0.0.0/8"
-      # FIREWALL_VPN_INPUT_PORTS: 64709
-      LOG_LEVEL: debug
-      SERVER_COUNTRIES: ""  # Don't know why it is necessary to clear this var
-      UPDATER_PERIOD: 24h
 
-    envFrom:
-      - secretRef:
-          name: privatevpn-ovn  # USER and PASSWORD
+routed_namespaces:
+  - vpn
 
-    additionalVolumeMounts:
-      - mountPath: /gluetun/auth/config.toml
-        name: gluetun-auth
-        readOnly: true
-        subPath: config.toml
-
-
-# TODO check which settings are used by pod gateway and not just passed through
-# to gluetun
 settings:
-  NOT_ROUTED_TO_GATEWAY_CIDRS: "10.0.0.0/8"
-  VPN_LOCAL_CIDRS: "10.0.0.0/8"
-  VPN_TRAFFIC_PORT: *vpn_port  # TODO which port settings are needed
-  VPN_ENDPOINT_PORT: *vpn_port  # TODO which port settings are needed
-  VPN_BLOCK_OTHER_TRAFFIC: false
-  GATEWAY_ENABLE_DNSSEC: false
-
-configMaps:
-  auth-config:
-    # -- Enables or disables the configMap
-    enabled: true
-    data:
-      {}
-      # foo: bar
-
-persistence:
-  gluetun-auth:
-    enabled: true
-    type: secret
-    name: gluetun-auth
-    subPath: config.toml
-    mountPath: /gluetun/auth/config.toml
-    readOnly: true
-
-resources:
-  requests:
-    cpu: 40m
-    memory: 53M
-  limits:
-    # cpu: 61m
-    memory: 118M
+  # -- If using a VPN, interface name created by it
+  VPN_INTERFACE: wg0
+  # -- Prevent non VPN traffic to leave the gateway
+  VPN_BLOCK_OTHER_TRAFFIC: true
+  # -- If VPN_BLOCK_OTHER_TRAFFIC is true, allow VPN traffic over this port
+  VPN_TRAFFIC_PORT: *vpn_port
+  # -- Traffic to these IPs will be send through the K8S gateway
+  VPN_LOCAL_CIDRS: "10.0.0.0/8 192.168.0.0/16"
