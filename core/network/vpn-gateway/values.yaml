@@ -10,7 +10,6 @@ routed_namespaces:
 
 image:
   repository: ghcr.io/angelnu/pod-gateway
-  pullPolicy: Always
   tag: v1.13.0
 
 podAnnotations:
