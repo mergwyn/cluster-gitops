@@ -1,6 +1,10 @@
 ---
 fullnameOverride: &name vpn-gateway
 
+controller:
+  annotations:
+    reloader.stakater.com/auto: "true"
+
 routed_namespaces:
   - vpn
 
