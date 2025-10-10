@@ -11,7 +11,7 @@ repositories:
 releases:
   - name: argocd
     chart: argoproj/argo-cd
-    version: 8.5.8
+    version: 8.6.0
     values:
       - values.yaml
 
