@@ -23,21 +23,18 @@
   },
   "packageRules": [
     {
-      // Any non-plumbing type update
-      matchUpdateTypes: ["major", "minor", "patch"],
-      minimumReleaseAge: 3 days,
+      "matchUpdateTypes": ["major", "minor", "patch"],
+      "minimumReleaseAge": "3 days"
     },
     {
-      // Dependencies (minor)
-      matchDepTypes: ["dependencies"],
-      matchUpdateTypes: ["minor"],
-      minimumReleaseAge: 5 days,
+      "matchDepTypes": ["dependencies"],
+      "matchUpdateTypes": ["minor"],
+      "minimumReleaseAge": "5 days"
     },
     {
-      // Dependencies (major)
-      matchDepTypes: ["dependencies"],
-      matchUpdateTypes: ["major"],
-      minimumReleaseAge: 14 days,
+      "matchDepTypes": ["dependencies"],
+      "matchUpdateTypes": ["major"],
+      "minimumReleaseAge": "14 days"
     },
     {
       "versioning": "regex:/^(?<major>]d+)].(?<minor>]d+)].(?<patch>]d+)-r(?<build>]]d)-ls(?<revision>.+)$",
