@@ -11,14 +11,12 @@
   ],
   "timezone": "Europe/London",
   "internalChecksFilter": "strict",
+  "minimumReleaseAge": "3 days",
   "major": {
     "minimumReleaseAge": "21 days"
   },
   "minor": {
     "minimumReleaseAge": "8 days"
-  },
-  "patch": {
-    "minimumReleaseAge": "3 days"
   },
   "internalChecksAsSuccess": true,
   "ignorePaths": [
