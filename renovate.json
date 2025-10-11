@@ -1,10 +1,11 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended",
-    "helpers:pinGitHubActionDigests",
-    ":configMigration",
-    "abandonments:recommended",
+    "config:best-practices",
+    // "config:recommended",
+    // "helpers:pinGitHubActionDigests",
+    // ":configMigration",
+    // "abandonments:recommended",
     // ":pinDigestsDisabled",
     "mergeConfidence:all-badges",
     ":separateMultipleMajorReleases"
