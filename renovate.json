@@ -5,7 +5,7 @@
     "helpers:pinGitHubActionDigests",
     ":configMigration",
     "abandonments:recommended",
-    ":pinDigestsDisabled",
+    // ":pinDigestsDisabled",
     "mergeConfidence:all-badges",
     ":separateMultipleMajorReleases"
   ],
