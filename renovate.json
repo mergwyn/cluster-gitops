@@ -27,12 +27,12 @@
       "minimumReleaseAge": "3 days"
     },
     {
-      "matchDepTypes": ["dependencies"],
+      "matchDataSources": ["docker"],
       "matchUpdateTypes": ["minor"],
       "minimumReleaseAge": "5 days"
     },
     {
-      "matchDepTypes": ["dependencies"],
+      "matchDataSources": ["docker"],
       "matchUpdateTypes": ["major"],
       "minimumReleaseAge": "14 days"
     },
