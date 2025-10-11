@@ -29,6 +29,11 @@
       matchDepNames: [
         "ghcr.io/bjw-s/helm/app-template",
         "ghcr.io/argoproj/argo-helm/argo-cd",
+        "docker.io/qmcgaw/gluetun",
+        "ghcr.io/kubereboot/charts/kured",
+        "ghcr.io/prometheus-community/charts/kube-prometheus-stack",
+        "quay.io/jetstack/charts/cert-manager",
+        "ghcr.io/external-secrets/charts/external-secrets",
         "cr.strrl.dev/strrl/cloudflare-tunnel-ingress-controller"
       ],
       pinDigests: false
