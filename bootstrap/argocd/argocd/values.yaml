@@ -38,7 +38,7 @@ repoServer:
       emptyDir: {}
   extraContainers:
     - name: helmfile-plugin
-      image: travisghansen/argo-cd-helmfile:v0.3.13
+      image: travisghansen/argo-cd-helmfile:v0.3.13@sha256:1251e329f72cadaf55860b9029d13c887559b5f20287915f21d32d722aaeef2e
       command: [/var/run/argocd/argocd-cmp-server]
       env:
         - name: SOPS_AGE_KEY_FILE
