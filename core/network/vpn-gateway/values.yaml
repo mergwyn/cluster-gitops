@@ -10,7 +10,7 @@ routed_namespaces:
 
 image:
   repository: ghcr.io/angelnu/pod-gateway
-  tag: v1.13.0
+  tag: v1.13.0@sha256:a5b032e15f7570493977b330a5a86dcffebb807d35685ad803e47afb62d105f2
 
 podAnnotations:
   secret.reloader.stakater.com/reload: "auto"

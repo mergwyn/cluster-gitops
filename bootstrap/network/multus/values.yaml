@@ -2,12 +2,12 @@
 image:
   # -- multus installer tag
   repository: ghcr.io/k8snetworkplumbingwg/multus-cni
-  tag: v4.2.2-thick
+  tag: v4.2.2-thick@sha256:a60a21ee1d00c9f215b0b2fa03b3d5e384ab7ddb9ea0d231d36aef220e95a69c
 
 cni:
   image:
     repository: rancher/hardened-cni-plugins
-    tag: v1.6.0-build20241022
+    tag: v1.6.0-build20241022@sha256:900cfe5a70ca5749220c7a1363bf3e563ea48764b83b2fc9d078b9a0f8226ab0
 
   paths:
     bin: /var/lib/rancher/k3s/data/cni
