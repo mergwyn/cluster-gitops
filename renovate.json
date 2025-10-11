@@ -24,6 +24,16 @@
   },
   "packageRules": [
     {
+      description: ["Don't pin digests for packages that don't have/need a digest"],
+      matchDatasources: ["docker"],
+      matchDepNames: [
+        "ghcr.io/bjw-s/helm/app-template",
+        "ghcr.io/argoproj/argo-helm/argo-cd",
+        "cr.strrl.dev/strrl/cloudflare-tunnel-ingress-controller"
+      ],
+      pinDigests: false
+    },
+    {
       "matchUpdateTypes": ["major", "minor", "patch"],
       "minimumReleaseAge": "3 days"
     },
