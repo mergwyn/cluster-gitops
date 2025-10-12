@@ -43,7 +43,7 @@ configuration:
         region: London
 
   extraArgs:
-    - "--backup-repository-configmap=backup-repository-config"
+    - "--backup-repository-configmap=velero-backup-repository-config"
 
 configMaps:
   backup-repository-config:
