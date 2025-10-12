@@ -1,4 +1,8 @@
 ---
+
+annotations:
+  reloader.stakater.com/auto: "true"
+
 configuration:
   uploaderType: kopia
   # defaultVolumesToFsBackup: true
