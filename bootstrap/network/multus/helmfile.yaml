@@ -2,7 +2,7 @@
 repositories:
   - name: bjw-s-labs
     url: https://bjw-s-labs.github.io/helm-charts
-  - name: angenlu
+  - name: angelnu
     url: https://angelnu.github.io/helm-charts
 
 releases:
