@@ -7,6 +7,12 @@ helmDefaults:
 repositories:
   - name: bedag
     url: https://bedag.github.io/helm-charts/
+  - name: jetstack
+    url: https://charts.jetstack.io/
+  - name: external-secrets
+    url: https://charts.external-secrets.io/
+  - name: argoproj
+    url: https://argoproj.github.io/argo-helm/
 
 releases:
   - name: cert-manager-cloudflare-token
@@ -18,8 +24,8 @@ releases:
   - name: cert-manager
   - name: cert-manager
     namespace: security
-    chart: oci://quay.io/jetstack/charts/cert-manager
-    version: v1.18.2
+    chart: jetstack/cert-manager
+    version: v1.19.0
     values:
       - ../../../bootstrap/security/cert-manager/values.yaml
 
@@ -34,7 +40,7 @@ releases:
 
   - name: external-secrets
     namespace: security
-    chart: oci://ghcr.io/external-secrets/charts/external-secrets
+    chart: external-secrets/external-secrets
     version: 0.20.2
     values:
       - ../../../bootstrap/security/external-secrets/values.yaml
@@ -69,8 +75,8 @@ releases:
 
   - name: argocd
     namespace: argocd
-    chart: oci://ghcr.io/argoproj/argo-helm/argo-cd
-    version: 8.5.10
+    chart: argoproj/argo-cd
+    version: 8.6.0
     values:
       - ../../../bootstrap/argocd/argocd/values.yaml
     needs:
