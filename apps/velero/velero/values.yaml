@@ -50,7 +50,7 @@ configMaps:
     data:
       "kopia": |
         {
-          "cacheLimitMB": 2048
+          "cacheLimitMB": 2048,
           "enableCompression": true
         }
 
