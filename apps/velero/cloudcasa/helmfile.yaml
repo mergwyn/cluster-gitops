@@ -6,6 +6,6 @@ repositories:
 releases:
   - name: clouldcasa
     chart: cloudcasa/cloudcasa
-    version: 3.4.2
+    version: 3.4.5
     secrets:
       - values.yaml
