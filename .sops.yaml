@@ -5,6 +5,6 @@ creation_rules:
     age: >-
       age1kxa0h4zt4txae7wdjy5pck2jvzalmg4mrryuw3qqpzp2jl44n3tqmd0vyp
   - path_regex: cloudcasa/values.yaml$
-    encrypted_regex: ^(cluster_id)$
+    encrypted_regex: ^(clusterID|cluster_id)$
     age: >-
       age1kxa0h4zt4txae7wdjy5pck2jvzalmg4mrryuw3qqpzp2jl44n3tqmd0vyp
