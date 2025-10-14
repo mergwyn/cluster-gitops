@@ -14,7 +14,7 @@ config:
 existingSecret: postfix-mail
 
 persistence:
-  storageClass: openebs-hostpath
+  storageClass: openebs-zfspv
 
 resources:
   requests:
