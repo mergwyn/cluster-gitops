@@ -13,6 +13,9 @@ config:
 
 existingSecret: postfix-mail
 
+persistance:
+  storageClass: openebs-hostpath
+
 resources:
   requests:
     cpu: 15m
