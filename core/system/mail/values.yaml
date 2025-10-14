@@ -13,7 +13,7 @@ config:
 
 existingSecret: postfix-mail
 
-persistance:
+persistence:
   storageClass: openebs-hostpath
 
 resources:
