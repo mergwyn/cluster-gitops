@@ -6,7 +6,7 @@ ndm:
 openebs-crds:
   csi:
     volumeSnapshots:
-      enabled: false
+      enabled: true
       keep: false
 
 localpv-provisioner:
