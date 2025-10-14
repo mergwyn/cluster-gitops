@@ -6,11 +6,6 @@ controllers:
     type: deployment
     annotations:
       reloader.stakater.com/auto: "true"
-    #pod:
-    #  securityContext:
-    #    runAsuser: nouser
-    #    runAsGroup: nogroup
-    #    fsGroup: nogroup
     containers:
       app:
         image:
@@ -39,6 +34,13 @@ controllers:
            #  memory: 670M
           limits:
             memory: 1G
+defaultPodOptions:
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 65534
+    runAsGroup: 65534
+    fsGroup: 65534
+    fsGroupChangePolicy: OnRootMismatch
 
 service:
   # Configure a service for the main application
@@ -83,14 +85,14 @@ persistence:
     retain: true
     size: 1G
     globalMounts:
-      - path: /app/config
+      - path: /config
   config-cache:
     type: persistentVolumeClaim
     storageClass: openebs-zfspv
     accessMode: ReadWriteOnce
     size: 1G
     globalMounts:
-      - path: /app/config/cache
+      - path: /config/cache
   tmpfs:
     type: emptyDir
     advancedMounts:
