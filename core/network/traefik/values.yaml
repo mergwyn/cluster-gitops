@@ -170,7 +170,6 @@ extraObjects:
         app.kubernetes.io/name: "{{.Release.Name}}"
         app.kubernetes.io/instance: "{{.Release.Name}}-{{.Release.Namespace}}"
     spec:
-      refreshPolicy: OnChange
       secretStoreRef:
         kind: ClusterSecretStore
         name: bitwarden
