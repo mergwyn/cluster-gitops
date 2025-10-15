@@ -1,17 +1,24 @@
 ---
 
 annotations:
-  reloader.stakater.com/auto: "true"
+  secret.reloader.stakater.com/reload: "minio-s3-conf,idrivee2-s3-conf"
+  configmap.reloader.stakater.com/reload: "velero-backup-repository-config"
+
+snapshotsEnabled: false
+defaultBackupStorageLocation: default
+# defaultVolumeSnapshotLocations: [default]
 
 configuration:
   uploaderType: kopia
   # defaultVolumesToFsBackup: true
-  # defaultSnapshotMoveData: true
-  # features: EnableCSI
+  defaultSnapshotMoveData: true
+  features: EnableCSI
+
   backupStorageLocation:
     - name: default
       provider: aws
       bucket: velero
+      default: true
       credential:
         name: minio-s3-conf
         key: cloud
@@ -39,6 +46,7 @@ configuration:
   volumeSnapshotLocation:
     - name: default
       provider: aws
+      default: true
       config:
         region: Northallerton
     - name: idrive
@@ -57,9 +65,6 @@ configMaps:
           "cacheLimitMB": 2048,
           "enableCompression": true
         }
-
-snapshotsEnabled: false
-defaultVolumeSnapshotLocations: default
 
 initContainers:
   - name: velero-plugin-for-aws
@@ -95,18 +100,21 @@ schedules:
     template:
       ttl: "168h"
       storageLocation: idrive
+      # volumeSnapshotLocations: [idrive]
   weekly-idrive:
     disabled: false
     schedule: "@weekly"
     template:
       ttl: "672h"
       storageLocation: idrive
+      # volumeSnapshotLocations: [idrive]
   monthly-idrive:
     disabled: false
     schedule: "@monthly"
     template:
       ttl: "2190h"
       storageLocation: idrive
+      # volumeSnapshotLocations: [idrive]
   # default storage
   hourly-minio:
     disabled: false
@@ -114,24 +122,28 @@ schedules:
     template:
       ttl: "24h"
       storageLocation: default
+      # volumeSnapshotLocations: [default]
   daily-minio:
     disabled: false
     schedule: "@daily"
     template:
       ttl: "168h"
       storageLocation: default
+      # volumeSnapshotLocations: [default]
   weekly-minio:
     disabled: false
     schedule: "@weekly"
     template:
       ttl: "672h"
       storageLocation: default
+      # volumeSnapshotLocations: [default]
   monthly-minio:
     disabled: false
     schedule: "@monthly"
     template:
       ttl: "2190h"
       storageLocation: default
+      # volumeSnapshotLocations: [default]
 
 metrics:
   enabled: true
