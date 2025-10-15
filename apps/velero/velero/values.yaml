@@ -100,21 +100,21 @@ schedules:
     template:
       ttl: "168h"
       storageLocation: idrive
-      # volumeSnapshotLocations: [idrive]
+      volumeSnapshotLocations: &idrivesnap null  # [idrive]
   weekly-idrive:
     disabled: false
     schedule: "@weekly"
     template:
       ttl: "672h"
       storageLocation: idrive
-      # volumeSnapshotLocations: [idrive]
+      volumeSnapshotLocations: *idrivesnap
   monthly-idrive:
     disabled: false
     schedule: "@monthly"
     template:
       ttl: "2190h"
       storageLocation: idrive
-      # volumeSnapshotLocations: [idrive]
+      volumeSnapshotLocations: *idrivesnap
   # default storage
   hourly-minio:
     disabled: false
@@ -122,28 +122,28 @@ schedules:
     template:
       ttl: "24h"
       storageLocation: default
-      # volumeSnapshotLocations: [default]
+      volumeSnapshotLocations: &defaultsnap null  # [default]
   daily-minio:
     disabled: false
     schedule: "@daily"
     template:
       ttl: "168h"
       storageLocation: default
-      # volumeSnapshotLocations: [default]
+      volumeSnapshotLocations: *defaultsnap
   weekly-minio:
     disabled: false
     schedule: "@weekly"
     template:
       ttl: "672h"
       storageLocation: default
-      # volumeSnapshotLocations: [default]
+      volumeSnapshotLocations: *defaultsnap
   monthly-minio:
     disabled: false
     schedule: "@monthly"
     template:
       ttl: "2190h"
       storageLocation: default
-      # volumeSnapshotLocations: [default]
+      volumeSnapshotLocations: *defaultsnap
 
 metrics:
   enabled: true
