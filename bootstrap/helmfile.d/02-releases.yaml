@@ -19,7 +19,7 @@ releases:
     chart: bedag/raw
     version: 2.0.2
     secrets:
-      - ../../../bootstrap/security/cert-manager/cloudflare-cert-manager-token-sops.yaml
+      - ../../../wave1/security/cert-manager/cloudflare-cert-manager-token-sops.yaml
 
   - name: cert-manager
   - name: cert-manager
@@ -27,14 +27,14 @@ releases:
     chart: jetstack/cert-manager
     version: v1.19.0
     values:
-      - ../../../bootstrap/security/cert-manager/values.yaml
+      - ../../../wave1/security/cert-manager/values.yaml
 
   - name: cert-manager-resources
     namespace: security
     chart: bedag/raw
     version: 2.0.2
     values:
-      - ../../../bootstrap/security/cert-manager/resources.yaml
+      - ../../../wave1/security/cert-manager/resources.yaml
     needs:
       - security/cert-manager
 
@@ -43,7 +43,7 @@ releases:
     chart: external-secrets/external-secrets
     version: 0.20.2
     values:
-      - ../../../bootstrap/security/external-secrets/values.yaml
+      - ../../../wave1/security/external-secrets/values.yaml
     needs:
       - security/cert-manager-resources
 
@@ -52,14 +52,14 @@ releases:
     chart: bedag/raw
     version: 2.0.2
     secrets:
-      - ../../../bootstrap/security/external-secrets/bitwarden-access-token-sops.yaml
+      - ../../../wave1/security/external-secrets/bitwarden-access-token-sops.yaml
 
   - name: bitwarden-store
     namespace: security
     chart: bedag/raw
     version: 2.0.2
     values:
-      - ../../../bootstrap/security/external-secrets/bitwarden-store.yaml
+      - ../../../wave1/security/external-secrets/bitwarden-store.yaml
     needs:
       - security/external-secrets
       - security/bitwarden-access-token
@@ -69,7 +69,7 @@ releases:
     chart: bedag/raw
     version: 2.0.2
     values:
-      - ../../../bootstrap/argocd/argocd/externalsecret.yaml
+      - ../../../wave1/argocd/argocd/externalsecret.yaml
     needs:
       - security/bitwarden-store
 
@@ -78,6 +78,6 @@ releases:
     chart: argoproj/argo-cd
     version: 8.6.0
     values:
-      - ../../../bootstrap/argocd/argocd/values.yaml
+      - ../../../wave1/argocd/argocd/values.yaml
     needs:
       - argocd/argocd-externalsecret
