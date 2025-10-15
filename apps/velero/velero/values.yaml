@@ -100,7 +100,7 @@ schedules:
     template:
       ttl: "168h"
       storageLocation: idrive
-      volumeSnapshotLocations: &idrivesnap null  # [idrive]
+      volumeSnapshotLocations: &idrivesnap []  # [idrive]
   weekly-idrive:
     disabled: false
     schedule: "@weekly"
@@ -122,7 +122,7 @@ schedules:
     template:
       ttl: "24h"
       storageLocation: default
-      volumeSnapshotLocations: &defaultsnap null  # [default]
+      volumeSnapshotLocations: &defaultsnap []  # [default]
   daily-minio:
     disabled: false
     schedule: "@daily"
