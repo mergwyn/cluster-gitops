@@ -10,8 +10,8 @@ resources:
             meta.helm.sh/release-namespace: security
       type: Opaque
       data:
-        #ENC[AES256_GCM,data:6N2rhwvOrDkoSazI7Z/C,iv:IMZhCtxvnAW4aZSzb6dAFFrZR/7F9TkaepQqL3Fs0fM=,tag:ZIRHfmU3aS8thqV1sJttig==,type:comment]
-        tunnelToken: ENC[AES256_GCM,data:7XqA/iPhDxdB9TgOjtkD9oWWak2VoRyz2JL98GmzmOpSs7f4N4mJznc32jIqkF7kjSkSegncpuU=,iv:59z6yYwaD5Q9ttEuPg6mGBf71qCveirUTXcRvtS6s5I=,tag:R3Y9nxnmJi1gMA2rLyc0zw==,type:str]
+        #ENC[AES256_GCM,data:5TrFAUmvN2Gl8P9Oi1rqPKbPiQxzM9qX74HQLcm1XvaJllqBCcIXLEqPyGfn5chSIrm7vMuP6SoGuiJH8wKKKI4=,iv:wTER2KY99PDbKhIbg+wnApZMx2TQISpuTuemQNEhQTc=,tag:A2WZRAYpvODiuwk3/+BB5Q==,type:comment]
+        tunnelToken: ENC[AES256_GCM,data:Wio/kbwQ6KNTAau4DYa7h9INpP+kXqJXYl6whKmzImXzEYENVeDWM7VS+eP20qqpdI8109XxzYM=,iv:2LWrbgbIO9WYKufKrkmxiAIEnqWxyxfGIEfqTATSAwY=,tag:We6r9gvNhgx0CCyLT/uSSg==,type:str]
 sops:
     age:
         - recipient: age1kxa0h4zt4txae7wdjy5pck2jvzalmg4mrryuw3qqpzp2jl44n3tqmd0vyp
@@ -23,7 +23,7 @@ sops:
             VzE3WFcza2xIclYvTXMydkZrbzVhUlUKayHLCOW79ywWWLzLBANIgkyic0FxjXjA
             YizK9YtURxrHWTzGdZ5u0NGInsYb9TZkEiAB1JW7+PqZ2djMFvKLpA==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-09-19T17:22:40Z"
-    mac: ENC[AES256_GCM,data:wCO0JPaiqEbCA6/s6Ccz0GgPsDXki8EsqlbvLKoj5nWApErFfnMvbgv+gkp4hLxggORblhTYdr7SJ05MjUDCGFoU57AFcQfGxJa8/EndolZvGIzC/sUqN7te/UYUe7rFszuZRbnLjO09T8OdOMJHzoGFboXLONVm+zyPZcphCIc=,iv:mpp//Ne+xdYF3804sRomZh6zp0pSsrzn+s1bsOVW3SY=,tag:WwzdIINjY50cvF1FmvI6ew==,type:str]
+    lastmodified: "2025-10-16T15:22:49Z"
+    mac: ENC[AES256_GCM,data:TQJTGbNfXsLYRq6zvEmzzung1XE1jhkvU040e8knOw64qRo9W42r4grOOp647de0NBtX3QOB9HcPuPZHHVUqaX0MGXaugTpSOTzD4F2vb/Ichlpxrh5mStbeo7u9zf7yKUCKRVmqvAVnoO9y/9GPZbPFgukMcVwWknSk6R3m6xs=,iv:LhWDxPeW/uI6L0DOcL33yYswsPUzLeA+24W+qjhUf9w=,tag:jiQAL8ZtZvKKljmaiQR+fg==,type:str]
     encrypted_regex: ^(data|stringData|configFile)$
     version: 3.10.2
