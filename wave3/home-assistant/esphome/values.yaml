@@ -6,7 +6,7 @@ controllers:
   esphome:
     pod:
       annotations:
-        reloader.stakater.com/auto: "true"
+        secret.reloader.stakater.com/reload: esphome-secret
         k8s.v1.cni.cncf.io/networks: |
           [{
             "name":"macvlan-static",
@@ -71,10 +71,16 @@ dnsConfig:
     - 10.58.0.22
 
 configMaps:
-  secrets:
+  secrets-cm:
     enabled: true
     data:
       secrets.yaml: "<<: !include .secrets/secrets.yaml"
+  kopiaignore:
+    enabled: true
+    data:
+      .kopiaignore: |
+        .esphome
+        .code-server/logs
 
 persistence:
   config:
@@ -85,9 +91,15 @@ persistence:
     size: 5G
     globalMounts:
       - path: /config
+  kopiaignore:
+    type: configMap
+    name: "{{.Release.Name}}-kopiaignore"
+    globalMounts:
+      - path: /config/.kopiaignore
+        subPath: .kopiaignore
   secrets-cm:
     type: configMap
-    name: esphome
+    name: "{{.Release.Name}}-secrets-cm"
     globalMounts:
       - path: /config/secrets.yaml
         subPath: secrets.yaml
