@@ -76,7 +76,7 @@ releases:
   - name: argocd
     namespace: argocd
     chart: argoproj/argo-cd
-    version: 8.6.2
+    version: 8.6.3
     values:
       - ../../../wave1/argocd/argocd/values.yaml
     needs:
