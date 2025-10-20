@@ -91,6 +91,12 @@ persistence:
     size: 5G
     globalMounts:
       - path: /config
+  build:
+    enabled: true
+    type: emptyDir
+    globalMounts:
+      - path: /config/.esphome
+        readOnly: false
   kopiaignore:
     type: configMap
     name: "{{.Release.Name}}-kopiaignore"
