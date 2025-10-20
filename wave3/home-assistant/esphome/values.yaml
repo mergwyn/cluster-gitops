@@ -79,8 +79,8 @@ configMaps:
     enabled: true
     data:
       .kopiaignore: |
-        .esphome
-        .code-server/logs
+        /.esphome
+        /.code-server/logs
 
 persistence:
   config:
