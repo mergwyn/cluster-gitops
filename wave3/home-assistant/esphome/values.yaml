@@ -53,7 +53,7 @@ controllers:
             cpu: 10m
             memory: 443M
           limits:
-            cpu: null
+            # cpu: null
             memory: 919M
 
 service:
