@@ -14,6 +14,21 @@ controllers:
             "ips": ["10.58.0.211"]
           }]
 
+    initContainers:
+      kopiaignore: &container
+        image:
+          repository: docker.io/library/alpine
+          tag: 3.22
+        command: ["/bin/sh", "-c"]
+        args:
+          - |-
+            tee /config/.kopiaignore <<!
+            /.esphome
+            /.code-server/logs
+            !
+        securityContext:
+          runAsUser: 0
+
     containers:
       app:
         image:
@@ -75,14 +90,9 @@ dnsConfig:
 configMaps:
   secrets-cm:
     enabled: true
+    forceRename: "{{.Release.Name}}-secrets-cm"
     data:
       secrets.yaml: "<<: !include .secrets/secrets.yaml"
-  kopiaignore:
-    enabled: true
-    data:
-      .kopiaignore: |
-        /.esphome
-        /.code-server/logs
 
 persistence:
   config:
@@ -99,12 +109,6 @@ persistence:
     globalMounts:
       - path: /config/.esphome
         readOnly: false
-  kopiaignore:
-    type: configMap
-    name: "{{.Release.Name}}-kopiaignore"
-    globalMounts:
-      - path: /config/.kopiaignore
-        subPath: .kopiaignore
   secrets-cm:
     type: configMap
     name: "{{.Release.Name}}-secrets-cm"
