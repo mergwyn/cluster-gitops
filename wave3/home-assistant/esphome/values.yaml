@@ -15,7 +15,7 @@ controllers:
           }]
 
     initContainers:
-      kopiaignore: &container
+      kopiaignore:
         image:
           repository: docker.io/library/alpine
           tag: 3.22@sha256:4b7ce07002c69e8f3d704a9c5d6fd3053be500b7f1c69fc0d80990c2ad8dd412
@@ -33,6 +33,7 @@ controllers:
       app:
         image:
           repository: ghcr.io/esphome/esphome
+          # yamllint disable-line rule:line-length
           tag: 2025.9.3@sha256:e62d2475f3d2df9012e18eea3dcb62b026364492bb4df46fb97e0a6c2e1e4aa4
         env:
           TZ: "Europe/London"
@@ -49,6 +50,7 @@ controllers:
         dependsOn: app
         image:
           repository: ghcr.io/coder/code-server
+          # yamllint disable-line rule:line-length
           tag: 4.105.1@sha256:2d48970bd2084aa34a522d772b6a437981ea80407465b3bf7958553985c570e1
         args:
           - --auth=none
@@ -154,6 +156,8 @@ rawResources:
           - kind: Rule
             # yamllint disable-line rule:line-length
             match: Host(`{{.Release.Name}}.{{.Values.global.domain}}`) && PathRegexp(`^/code/.*`)
+            # yamllint disable-line rule:line-length
+            # match: Host(`{{.Release.Name}}-editor.{{.Values.global.domain}}`) && PathRegexp(`/`)
             priority: 11
             services:
               - name: "{{.Release.Name}}-code-server"
