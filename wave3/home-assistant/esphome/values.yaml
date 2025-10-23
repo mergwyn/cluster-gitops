@@ -68,7 +68,7 @@ controllers:
           runAsUser: 0
         envFrom:
           - secretRef:
-            name: "{{.Release.Name}}-github"
+              name: "{{.Release.Name}}-github"
         resources:
           requests:
             cpu: 10m
