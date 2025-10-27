@@ -10,7 +10,7 @@ repositories:
 releases:
   - name: external-secrets
     chart: external-secrets/external-secrets
-    version: 0.20.3
+    version: 0.20.4
     values:
       - values.yaml
 

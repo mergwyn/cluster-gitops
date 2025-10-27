@@ -41,7 +41,7 @@ releases:
   - name: external-secrets
     namespace: security
     chart: external-secrets/external-secrets
-    version: 0.20.3
+    version: 0.20.4
     values:
       - ../../../wave1/security/external-secrets/values.yaml
     needs:
