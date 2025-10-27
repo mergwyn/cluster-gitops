@@ -6,7 +6,7 @@ controllers:
     containers:
       app:
         image:
-          repository: lscr.io/linuxserver/radarr
+          repository: ghcr.io/home-operations/radarr
           tag: 5.28.0
         env:
           RADARR__APP__INSTANCENAME: "{{ .Release.Name }}"
