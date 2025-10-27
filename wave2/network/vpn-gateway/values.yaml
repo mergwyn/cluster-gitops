@@ -53,19 +53,15 @@ addons:
       - secretRef:
           name: privatevpn-ovn  # USER and PASSWORD
 
-#    livenessProbe:
-#      exec:
-#        command:
-#          - sh
-#          - -c
-#          - <-
-#            if [ $(wget -q -O- https://ipinfo.io/country) == 'GB' ];
-#            then exit 0;
-#            else exit $?;
-#            fi
-#      initialDelaySeconds: 30
-#      periodSeconds: 60
-#      failureThreshold: 3
+    livenessProbe:
+      exec:
+        command:
+          - sh
+          - -c
+          - if [ $(wget -q -O- https://ipinfo.io/country) == 'GB' ]; then exit 0; else exit $?; fi
+      initialDelaySeconds: 30
+      periodSeconds: 60
+      failureThreshold: 3
 
     networkPolicy:
       enabled: true
