@@ -6,8 +6,8 @@ controllers:
     containers:
       app:
         image:
-          repository: lscr.io/linuxserver/sonarr
-          tag: 4.0.15@sha256:fbe67c25693dc5f3de220c5691f374576ae265df782c16918cc071b630490bd7
+          repository: ghcr.io/home-operations/sonarr
+          tag: 4.0.15
         env:
           SONARR__APP__INSTANCENAME: "{{ .Release.Name }}"
           SONARR__APP__THEME: dark
