@@ -6,8 +6,8 @@ controllers:
     containers:
       app:
         image:
-          repository: ghcr.io/home-operations/prowlarr
-          tag: 2.1.5.5216@sha256:affb671fa367f4b7029d58f4b7d04e194e887ed6af1cf5a678f3c7aca5caf6ca
+          repository: lscr.io/linuxserver/prowlarr
+          tag: 2.1.5
         env:
           PROWLARR__APP__INSTANCENAME: "{{ .Release.Name }}"
           PROWLARR__APP__THEME: dark
