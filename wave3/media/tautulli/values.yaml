@@ -10,7 +10,7 @@ controllers:
       app:
         image:
           repository: lscr.io/linuxserver/tautulli
-          tag: 2.16.0
+          tag: 2.16.0@sha256:661569466728b2818150adef5fe0bba4db4fbfdcece8cf4b868f686f83d8cff2
         env:
           TZ: "Europe/London"
 
