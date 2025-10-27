@@ -30,24 +30,12 @@ addons:
     # TODO convert this to 'configFile'??
     #configFileSecret: privatevpn-ovn-conf
 
-    networkPolicy:
-      enabled: true
-      egress:
-        - to:
-            - ipBlock:
-                cidr: 0.0.0.0/0
-          ports:
-            - port: &vpn_port 1195
-              protocol: UDP
-        - to:
-            - ipBlock:
-                cidr: 10.0.0.0/8
     env:
       TZ: Europe/London
       VPN_TYPE: openvpn
       VPN_SERVICE_PROVIDER: custom
       OPENVPN_CUSTOM_CONFIG: /gluetun/config.conf
-      OPENVPN_ENDPOINT_PORT: *vpn_port
+      OPENVPN_ENDPOINT_PORT: &vpn_port 1195
       OPENVPN_VERBOSITY: 3  # debugging
       DNS_KEEP_NAMESERVER: "on"  # Try with this disabled
       DOT: "off"
@@ -64,6 +52,33 @@ addons:
     envFrom:
       - secretRef:
           name: privatevpn-ovn  # USER and PASSWORD
+
+    livenessProbe:
+      exec:
+        command:
+          - sh
+          - -c
+          - <-
+            if [ $(wget -q -O- https://ipinfo.io/country) == 'GB' ];
+            then exit 0;
+            else exit $?;
+            fi
+      initialDelaySeconds: 30
+      periodSeconds: 60
+      failureThreshold: 3
+
+    networkPolicy:
+      enabled: true
+      egress:
+        - to:
+            - ipBlock:
+                cidr: 0.0.0.0/0
+          ports:
+            - port: *vpn_port
+              protocol: UDP
+        - to:
+            - ipBlock:
+                cidr: 10.0.0.0/8
 
     additionalVolumeMounts:
       - mountPath: /gluetun/auth/config.toml
