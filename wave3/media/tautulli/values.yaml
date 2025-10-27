@@ -9,8 +9,8 @@ controllers:
     containers:
       app:
         image:
-          repository: ghcr.io/home-operations/tautulli
-          tag: 2.16.0@sha256:2a092f86a51f5718111097b0fced33eaa876b5904a543b7504f92357a4f75635
+          repository: lscr.io/linuxserver/tautulli
+          tag: 2.16.0
         env:
           TZ: "Europe/London"
 
