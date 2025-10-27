@@ -7,7 +7,7 @@ controllers:
       app:
         image:
           repository: lscr.io/linuxserver/sabnzbd
-          tag: 4.5.5
+          tag: 4.5.5@sha256:37fc318dc632106eac00f096661f43ca513793bf51913bcbd989ba921b3409c8
         env:
           SABNZBD__PORT: &port 8080
           TZ: Europe/London
