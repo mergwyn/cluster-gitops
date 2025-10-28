@@ -1,11 +1,12 @@
 ---
 repositories:
-  - name: geek-cookbook
-    url: https://geek-cookbook.github.io/charts/
+  - name: bjw-s-labs
+    url: https://bjw-s-labs.github.io/helm-charts
 
 releases:
   - name: qbittorrent
-    chart: geek-cookbook/qbittorrent
-    version: 13.5.2
+    chart: bjw-s-labs/app-template
+    version: 4.4.0
     values:
+      - ../../../settings/common.yaml
       - values.yaml
