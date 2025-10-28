@@ -78,6 +78,7 @@ persistence:
   config:
     enabled: true
     retain: true
+    forceRename: "{{.Release.Name}}"
     storageClass: openebs-zfspv
     accessMode: ReadWriteOnce
     size: 1Gi
