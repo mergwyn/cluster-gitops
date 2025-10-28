@@ -6,7 +6,7 @@ controllers:
     containers:
       app:
         image:
-          repository: lscr.io/linuxserver/qbittorrent
+          repository: ghcr.io/home-operations/qbittorrent
           tag: 5.1.2
         env:
           QBT_WEBUI_PORT: &port 8080
