@@ -23,7 +23,7 @@ resources:
 
 image:
   repository: cr.strrl.dev/strrl/cloudflare-tunnel-ingress-controller
-  tag: 0.0.18
+  tag: 0.0.21
 
 cloudflared:
   image:
