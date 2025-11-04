@@ -148,7 +148,7 @@ extraObjects:
         app.kubernetes.io/instance: "{{.Release.Name}}-{{.Release.Namespace}}"
     spec:
       basicAuth:
-        secret: traefik-dashboard-auth
+        secret: traefik-dashboard-secret
 
   - apiVersion: traefik.io/v1alpha1
     kind: TLSStore
@@ -165,7 +165,7 @@ extraObjects:
   - apiVersion: external-secrets.io/v1
     kind: ExternalSecret
     metadata:
-      name: &secret traefik-dashboard-auth
+      name: traefik-dashboard-basicauth
       labels:
         app.kubernetes.io/name: "{{.Release.Name}}"
         app.kubernetes.io/instance: "{{.Release.Name}}-{{.Release.Namespace}}"
@@ -174,11 +174,11 @@ extraObjects:
         kind: ClusterSecretStore
         name: bitwarden
       target:
-        name: *secret
+        name: traefik-dashboard-secret
         creationPolicy: Owner
         template:
           data:
-            users: '{"admin":"{{`{{.admin}}`}}"}'
+            users: "{{`{{ htpasswd .username .password }}`}}"
       dataFrom:
         - extract:
-            key: traefik_dashboard_auth
+            key: traefik_dashboard
