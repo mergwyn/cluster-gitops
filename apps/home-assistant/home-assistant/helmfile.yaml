@@ -1,19 +1,13 @@
 ---
 repositories:
-  - name: geek-cookbook
-    url: https://geek-cookbook.github.io/charts/
-  - name: bedag
-    url: https://bedag.github.io/helm-charts/
+  - name: bjw-s-labs
+    url: https://bjw-s-labs.github.io/helm-charts
 
 releases:
   - name: home-assistant
-    chart: geek-cookbook/home-assistant
-    version: 13.5.0
+    chart: bjw-s-labs/app-template
+    version: 4.4.0
     values:
+      - ../../../settings/common.yaml
       - values.yaml
-
-  - name: home-assistant-external-secret
-    chart: bedag/raw
-    version: 2.0.2
-    values:
-      - externalsecret.yaml
+      - externalsecrets.yaml

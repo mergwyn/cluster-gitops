@@ -1,131 +1,266 @@
 ---
-image:
-  repository: ghcr.io/home-assistant/home-assistant
-  tag: "2025.10.4@sha256:449140e073d8d7814098cd62dfdbb326ad043f51a3c4d4721889369f46751d52"
 
-env:
-  TZ: Europe/London
+# hostname to use for ingress
+global:
+  host: hass
 
-podAnnotations:
-  k8s.v1.cni.cncf.io/networks: |
-    [{
-      "name":"macvlan-static",
-      "namespace": "network",
-      "ips": ["10.58.0.210"]
-    }]
+defaultPodOptions:
+  automountServiceAccountToken: false
+  securityContext:
+    runAsUser: 0
+    runAsGroup: 0
+    fsGroup: 0
 
-  # yamllint disable rule:line-length
-  # pre.hook.backup.velero.io/command: |
-  #   [
-  #     "/bin/bash",
-  #     "-c",
-  #     "--",
-  #     "apk add sqlite && sqlite3 home-assistant_v2.db '.backup backup-home-assistant_v2.db'"
-  #   ]
-  # pre.hook.backup.velero.io/timeout: 3m
-  # post.hook.backup.velero.io/command: |
-  #   [
-  #     "/bin/bash",
-  #     "-c",
-  #     "--",
-  #     "rm -f backup-home-assistant_v2.db || true"
-  #   ]
-  # post.hook.backup.velero.io/timeout: 3m
-  # post.hook.restore.velero.io/command: |
-  #   [
-  #     "/bin/bash",
-  #     "-c",
-  #     "sleep 60 && rm -f home-assistant_v2.db home-assistant_v2.db-shm home-assistant_v2.db-wal && mv backup-home-assistant_v2.db home-assistant_v2.db"
-  #   ]
-  # post.hook.restore.velero.io/timeout: 3m
-  # yamllint enable rule:line-length
-
-resources:
-  requests:
-    cpu: 34m
-    memory: 1167M
-  limits:
-    # cpu: 1168m
-    memory: 2077M
-
-metrics:
-  enabled: true
-  serviceMonitor:
-    interval: 1m
-    scrapeTimeout: 30s
-    labels:
-      release: kube-prometheus-stack
-    ## See https://www.home-assistant.io/docs/authentication/ for where to find
-    ## long lived access token creation under your account profile, which is
-    ## needed to monitor Home Assistant
-    bearerTokenSecret:
-      name: 'home-assistant-prometheus-token'
-      key: 'token'
-
-  prometheusRule:
-    enabled: true
-    labels:
-      release: kube-prometheus-stack
-    # -- Configure additionial rules for the chart under this key.
-    # @default -- See prometheusrules.yaml
-    rules:
-      - alert: HomeAssistantAbsent
-        annotations:
-          # yamllint disable-line rule:line-length
-          description: Home Assistant has disappeared from Prometheus service discovery.
-          summary: Home Assistant is down.
-        expr: |
-          absent(up{job=~".*home-assistant.*"} == 1)
-        for: 5m
-        labels:
-          severity: critical
-
-ingress:
-  main:
-    enabled: true
-    ingressClassName: traefik
+controllers:
+  home-assistant:
     annotations:
-      traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    hosts: &hosts
-      - host: "hass.theclarkhome.com"
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              name: home-assistant
-              service:
-                port: 8123
-    tls:
-      - hosts:
-          - "*.theclarkhome.com"
-  external:
-    enabled: true
-    ingressClassName: cloudflare-tunnel
-    annotations:
-      cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
-    hosts: *hosts
+      secret.reloader.stakater.com/reload: <-
+        {{.Release.Name}}-secret,
+        {{.Release.Name}}-github,
+        {{.Release.Name}}-prometheus
 
-probes:
-  liveness:
-    enabled: false
-  startup:
-    enabled: false
-  readiness:
-    enabled: false
+    pod:
+      annotations:
+        k8s.v1.cni.cncf.io/networks: |
+          [{
+            "name":"macvlan-static",
+            "namespace": "network",
+            "ips": ["10.58.0.210"]
+          }]
+
+    initContainers:
+      kopiaignore:
+        image:
+          repository: docker.io/library/alpine
+          tag: 3.22@sha256:4b7ce07002c69e8f3d704a9c5d6fd3053be500b7f1c69fc0d80990c2ad8dd412
+        command: ["/bin/sh", "-c"]
+        # TODO better handling for database backup
+        args:
+          - |-
+            tee /config/.kopiaignore <<!
+            /.code-server/logs
+            /.git
+            /.venv
+            !
+        securityContext:
+          runAsUser: 0
+      github-setup:
+        # Connect to config repo
+        image:
+          repository: docker.io/library/ubuntu
+          tag: 24.04
+        command: ["/bin/sh", "-c"]
+        args:
+          - |-
+            set -x
+            cd /config
+            # Need to initialise repository?
+            if [ ! -d .git ] ; then
+              # This container will never have git installed
+              apt update && apt install -y git
+              # Prepare to clone
+              mkdir temp-dir
+              git clone https://github.com/mergwyn/home-assistant-config temp-dir
+              mv temp-dir/.git .
+              rm -rf temp-dir
+              # Finally get files
+              git checkout .
+            fi
+        securityContext:
+          runAsUser: 0
+
+    containers:
+      app:
+        image:
+          repository: ghcr.io/home-assistant/home-assistant
+          tag: "2025.10.4"
+        env:
+          TZ: Europe/London
+          VENV_FOLDER: /venv
+        resources:
+          requests:
+            cpu: 47m
+            memory: 1167M
+          limits:
+            memory: 2077M
+
+#      code-server:
+#        image:
+#          repository: ghcr.io/coder/code-server
+#          tag: 4.105.1
+#        args:
+#          - --auth
+#          - none
+#          - --disable-telemetry
+#          - --disable-update-check
+#          - --user-data-dir
+#          - /config/.code-server
+#          - --extensions-dir
+#          - /config/.code-server
+#          # - --install-extension
+#          # - trunk.io
+#          - --port
+#          - "12321"
+#          - /config
+#        env:
+#          TZ: Europe/London
+#          HASS_SERVER: http://localhost:8123
+#        envFrom:
+#          - secretRef:
+#              name: "{{.Release.Name}}-github"
+#        resources:
+#          requests:
+#            cpu: 10m
+#          limits:
+#            memory: 2Gi
+
+service:
+  app:
+    forceRename: "{{.Release.Name}}"
+    ports:
+      http:
+        port: &http-port 8123
+  code-server:
+    ports:
+      http:
+        port: &code-server-port 12321
+
+serviceMonitor:
+  app:
+    enabled: true
+    serviceName: "{{.Release.Name}}"
+    endpoints:
+      - port: http
+        scheme: http
+        interval: 1m
+        scrapeTimeout: 30s
+        path: /api/prometheus
+        bearerTokenSecret:
+          name: home-assistant-prometheus
+          key: token
 
 persistence:
   config:
-    enabled: true
-    type: pvc
-    retain: true
-    claim: home-assistant-config
-    accessMode: ReadWriteOnce
+    type: persistentVolumeClaim
     storageClass: openebs-zfspv
+    accessMode: ReadWriteOnce
+    retain: true
     size: 10Gi
-
+    globalMounts:
+      - path: /config
   backups:
+    enabled: true
     type: nfs
     server: 10.58.0.12
     path: /srv/backup/home-assistant
-    mountPath: /config/backups
+    globalMounts:
+      - path: /config/backups
+  cache:
+    type: persistentVolumeClaim
+    storageClass: openebs-zfspv
+    accessMode: ReadWriteOnce
+    retain: true
+    size: 1Gi
+    advancedMounts:
+      home-assistant:
+        app:
+          - path: /config/.venv
+            subPath: hass-venv
+  secrets:
+    type: secret
+    name: "{{.Release.Name}}-secret"
+    advancedMounts:
+      home-assistant:
+        app:
+          - path: /config/secrets.yaml
+            subPath: secrets.yaml
+            readOnly: true
+#  tmpfs:
+#    type: emptyDir
+#    advancedMounts:
+#      home-assistant:
+#        app:
+#          - path: /tmp
+#            subPath: hass-tmp
+#        code-server:
+#          - path: /tmp
+#            subPath: code-server-tmp
+#          - path: /nonexistent
+#            subPath: nonexistent
+
+ingress:
+  external:
     enabled: true
+    className: cloudflare-tunnel
+    annotations:
+      cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
+    hosts:
+      - host: "{{.Values.global.host}}.{{.Values.global.domain}}"
+        paths:
+          - path: /
+            pathType: Prefix
+            service:
+              identifier: app
+              port: http
+    tls:
+      - hosts:
+          - "*.{{.Values.global.domain}}"
+
+rawResources:
+  middleware:
+    apiVersion: traefik.io/v1alpha1
+    kind: Middleware
+    spec:
+      spec:
+        stripPrefixRegex:
+          regex:
+            - "^/code/"
+
+  ingress:
+    enabled: true
+    kind: IngressRoute
+    apiVersion: traefik.io/v1alpha1
+    annotations:
+      kubernetes.io/ingress.class: traefik-external
+    spec:
+      spec:
+        entryPoints:
+          - websecure
+        routes:
+          - kind: Rule
+            # yamllint disable-line rule:line-length
+            match: Host(`{{.Values.global.host}}.{{.Values.global.domain}}`) && PathPrefix(`/`)
+            priority: 10
+            services:
+              - name: "{{.Release.Name}}"
+                port: *http-port
+#          - kind: Rule
+#            # yamllint disable-line rule:line-length
+#            match: Host(`{{.Values.global.host}}.{{.Values.global.domain}}`) && PathRegexp(`^/code/.*`)
+#            priority: 11
+#            services:
+#              - name: "{{.Release.Name}}-code-server"
+#                port: *code-server-port
+#            middlewares:
+#              - name: "{{.Release.Name}}-middleware"
+        tls: {}
+
+  rule:
+    kind: PrometheusRule
+    apiVersion: monitoring.coreos.com/v1
+    spec:
+      spec:
+        groups:
+          - name: home-assistant
+            rules:
+              - alert: HomeAssistantAbsent
+                annotations:
+                  description: |
+                    Home Assistant has disappeared from
+                    Prometheus service discovery.
+                  summary: Home Assistant is down.
+                expr: |
+                  absent(up{job=~".*home-assistant.*"} == 1)
+                for: 5m
+                labels:
+                  severity: critical
