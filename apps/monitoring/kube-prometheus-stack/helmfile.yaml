@@ -6,7 +6,7 @@ repositories:
 releases:
   - name: kube-prometheus-stack
     chart: prometheus-community/kube-prometheus-stack
-    version: 79.1.0
+    version: 79.1.1
     values:
       - values.yaml
       - externalsecret.yaml
