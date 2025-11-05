@@ -100,7 +100,7 @@ controllers:
             memory: 443M
           limits:
             # cpu: null
-            memory: 919M
+            memory: 2G
 
 service:
   app:
