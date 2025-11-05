@@ -48,7 +48,7 @@ controllers:
         # Connect to config repo
         image:
           repository: docker.io/library/ubuntu
-          tag: 24.04
+          tag: 24.04@sha256:66460d557b25769b102175144d538d88219c077c678a49af4afca6fbfc1b5252
         command: ["/bin/sh", "-c"]
         args:
           - |-
@@ -73,7 +73,7 @@ controllers:
       app:
         image:
           repository: ghcr.io/home-assistant/home-assistant
-          tag: "2025.10.4"
+          tag: "2025.10.4@sha256:449140e073d8d7814098cd62dfdbb326ad043f51a3c4d4721889369f46751d52"
         env:
           TZ: Europe/London
           VENV_FOLDER: /venv
