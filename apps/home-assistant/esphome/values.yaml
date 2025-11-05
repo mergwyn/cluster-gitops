@@ -46,7 +46,7 @@ controllers:
               apt update && apt install -y git
               # Prepare to clone
               mkdir temp-dir
-              git clone https://github.com/mergwyn/{{.Release.Name}}-config temp-dir
+              git clone https://github.com/mergwyn/esphome-config temp-dir
               mv temp-dir/.git .
               rm -rf temp-dir
               # Finally get files
