@@ -34,7 +34,7 @@ controllers:
         # Set up config repo
         image:
           repository: docker.io/library/ubuntu
-          tag: 24.04@sha256:66460d557b25769b102175144d538d88219c077c678a49af4afca6fbfc1b5252
+          tag: 25.10@sha256:9b61739164b58f2263067bd3ab31c7746ded4cade1f9d708e6f1b047b408a470
         command: ["/bin/sh", "-c"]
         args:
           - |-
