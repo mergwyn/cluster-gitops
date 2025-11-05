@@ -30,6 +30,30 @@ controllers:
             !
         securityContext:
           runAsUser: 0
+      github-setup:
+        # Set up config repo
+        image:
+          repository: docker.io/library/ubuntu
+          tag: 24.04
+        command: ["/bin/sh", "-c"]
+        args:
+          - |-
+            set -x
+            cd /config
+            # Need to initialise repository?
+            if [ ! -d .git ] ; then
+              # This container will never have git installed
+              apt update && apt install -y git
+              # Prepare to clone
+              mkdir temp-dir
+              git clone https://github.com/mergwyn/{{.Release.Name}}-config temp-dir
+              mv temp-dir/.git .
+              rm -rf temp-dir
+              # Finally get files
+              git checkout .
+            fi
+        securityContext:
+          runAsUser: 0
 
     containers:
       app:
