@@ -17,7 +17,7 @@ controllers:
           cpu: 10m
           memory: 94M
         limits:
-          memory: 256M
+          memory: 512M
 
     containers:
       app:
