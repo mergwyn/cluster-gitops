@@ -9,8 +9,14 @@ globalArguments:
 
 additionalArguments:
   - "--serversTransport.insecureSkipVerify=true"
-  - "--log.level=INFO"
   - "--metrics.prometheus=true"
+
+logs:
+  general:
+    level: INFO
+    enabled: true
+  access:
+    enabled: false
 
 deployment:
   enabled: true
