@@ -8,7 +8,7 @@ repositories:
 releases:
   - name: cloudflare-tunnel-ingress-controller
     chart: strrl.dev/cloudflare-tunnel-ingress-controller
-    version: 0.0.18
+    version: 0.0.21
     values:
       - values.yaml
 
