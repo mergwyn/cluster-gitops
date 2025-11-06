@@ -120,10 +120,10 @@ service:
     ports:
       http:
         port: &http-port 8123
-  code-server:
-    ports:
-      http:
-        port: &code-server-port 12321
+#  code-server:
+#    ports:
+#      http:
+#        port: &code-server-port 12321
 
 serviceMonitor:
   app:
