@@ -1,68 +1,118 @@
 ---
-image:
-  repository: eclipse-mosquitto
-  tag: 2.0.22@sha256:fd9982f5ed92a6c2a90805601d2275f8fbd7f2d47c4cb3836f7db0bdc7a91bec
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+
+configMaps:
+  config:
+    data:
+      mosquitto.conf: |
+        allow_anonymous true  # Not in original
+        autosave_interval 1800
+        connection_messages false  # Not in original
+        listener 1883
+        log_type all
+        password_file /mosquitto/external_config/passwords
+        per_listener_settings false
+        persistence_location /mosquitto/data
+        persistence true
 
 
-auth:
-  enable: true
-
-env:
-  TZ: Europe/London
-
-service:
+controllers:
   mosquitto:
-    ports:
-      http:
-        enabled: false
-      mqtt:
-        enabled: true
-        port: 1883
-        protocol: TCP
+    pod:
+      annotations:
+        secret.reloader.stakater.com/reload: "{{.Release.Name}}-secret"
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1883
+        runAsGroup: 1883
+        fsGroup: 1883
 
-resources:
-  requests:
-    cpu: 15m
-    memory: 105M
-  limits:
-    # cpu: 15m
-    memory: 105M
+    initContainers:
+      init-config:
+        image:
+          repository: public.ecr.aws/docker/library/eclipse-mosquitto
+          tag: 2.0.22
+        command: ["/bin/sh", "-c"]
+        args:
+          - |-
+            set -x
+            cp /tmp/secret/* /mosquitto/external_config/
+            mosquitto_passwd -U /mosquitto/external_config/passwords
+
+    containers:
+      app:
+        env:
+          TZ: Europe/London
+        image:
+          repository: public.ecr.aws/docker/library/eclipse-mosquitto
+          tag: 2.0.22
+        probes:
+          liveness:
+            enabled: true
+          readiness:
+            enabled: true
+        resources:
+          requests:
+            cpu: 15m
+            memory: 105M
+          limits:
+            memory: 105M
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+              - ALL
 
 persistence:
   data:
     enabled: true
-    mountPath: /mosquitto/data
-    type: pvc
     retain: true
     storageClass: openebs-zfspv
     accessMode: ReadWriteOnce
     size: 10Gi
-  configinc:
-    enabled: true
-    mountPath: /mosquitto/configinc
-    type: pvc
-    retain: true
-    storageClass: openebs-zfspv
-    accessMode: ReadWriteOnce
-    size: 10Gi
+    globalMounts:
+      - path: /mosquitto/data
+  config-file:
+    type: configMap
+    identifier: config
+    advancedMounts:
+      mosquitto:
+        app:
+          - path: /mosquitto/config/mosquitto.conf
+            subPath: mosquitto.conf
+  password-file:
+    type: secret
+    name: "{{.Release.Name}}-secret"
+    defaultMode: 0600
+    advancedMounts:
+      mosquitto:
+        init-config:
+          - path: /tmp/secret
+  external-config:
+    type: emptyDir
+    globalMounts:
+      - path: /mosquitto/external_config
 
-# TODO convert this to an ingress route??
-#ingress:
-#  main:
-#    enabled: true
-#    ingressClass: traefik
-#    annotations:
-#      traefik.ingress.kubernetes.io/router.entrypoints: mqtt
-#    hosts:
-#      - host: "mosquitto.theclarkhome.com"
-#        paths:
-#          - path: /
-#            pathType: Prefix
-#            backend:
-#              # name: main
-#              service:
-#                name: mqtt
-#                port: 1833
-#    tls:
-#      - hosts:
-#          - "*.theclarkhome.com"
+service:
+  app:
+    forceRename: "{{.Release.Name}}"
+    ports:
+      mqtt:
+        port: &port 1883
+
+rawResources:
+  ingressroute:
+    kind: IngressRouteTCP
+    apiVersion: traefik.io/v1alpha1
+    annotations:
+      kubernetes.io/ingress.class: traefik-external
+    spec:
+      spec:
+        entryPoints:
+          - mqtt
+        routes:
+          - match: HostSNI(`*`)
+            services:
+              - name: "{{.Release.Name}}"
+                port: *port
