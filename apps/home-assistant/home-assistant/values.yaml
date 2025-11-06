@@ -8,8 +8,8 @@ defaultPodOptions:
   automountServiceAccountToken: false
   securityContext:
     runAsUser: 0
-    runAsGroup: 0
-    fsGroup: 0
+#    runAsGroup: 0
+#    fsGroup: 0
 
 controllers:
   home-assistant:
