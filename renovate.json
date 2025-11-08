@@ -6,11 +6,9 @@
     ":separateMultipleMajorReleases",
     "schedule:automergeEarlyMondays"
   ],
-  {
-    "schedule": [
-      "* 2-6 * * 0,3,5"
-    ]
-  },
+  "schedule": [
+    "* 2-6 * * 0,3,5"
+  ],
   "timezone": "Europe/London",
   "internalChecksFilter": "strict",
   "internalChecksAsSuccess": true,
