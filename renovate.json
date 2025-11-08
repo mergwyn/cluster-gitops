@@ -3,8 +3,14 @@
   "extends": [
     "config:best-practices",
     "mergeConfidence:all-badges",
-    ":separateMultipleMajorReleases"
+    ":separateMultipleMajorReleases",
+    "schedule:automergeEarlyMondays"
   ],
+  {
+    "schedule": [
+      "* 2-6 * * 0,3,5"
+    ]
+  },
   "timezone": "Europe/London",
   "internalChecksFilter": "strict",
   "internalChecksAsSuccess": true,
