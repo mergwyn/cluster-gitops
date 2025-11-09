@@ -8,8 +8,8 @@ defaultPodOptions:
   automountServiceAccountToken: false
   securityContext:
     runAsUser: 0
-#    runAsGroup: 0
-#    fsGroup: 0
+    runAsGroup: 0
+    fsGroup: 0
 
 controllers:
   home-assistant:
@@ -77,6 +77,9 @@ controllers:
         env:
           TZ: Europe/London
           VENV_FOLDER: /venv
+        envFrom:
+          - secretRef:
+              name: "{{.Release.Name}}-github"
         resources:
           requests:
             cpu: 47m
@@ -120,10 +123,10 @@ service:
     ports:
       http:
         port: &http-port 8123
-#  code-server:
-#    ports:
-#      http:
-#        port: &code-server-port 12321
+  code-server:
+    ports:
+      http:
+        port: &code-server-port 12321
 
 serviceMonitor:
   app:
