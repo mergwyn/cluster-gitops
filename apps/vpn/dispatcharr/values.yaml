@@ -21,9 +21,11 @@ controllers:
           requests:
             cpu: 600m
             memory: 1738M
+            # enable gpu if ffmpeg profile being used
             gpu.intel.com/i915: "1"
           limits:
             memory: 4G
+            # enable gpu if ffmpeg profile being used
             gpu.intel.com/i915: "1"
 
 service:
