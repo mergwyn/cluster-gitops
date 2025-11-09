@@ -32,7 +32,7 @@ affinity:
             - key: kubernetes.io/hostname
               operator: In
               values:
-                - foxtrot
+                - charlie
 
 resources:
   requests:
