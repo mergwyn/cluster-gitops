@@ -23,7 +23,7 @@ controllers:
             memory: 670M
             gpu.intel.com/i915: "1"
           limits:
-            memory: 2G
+            memory: 3G
             gpu.intel.com/i915: "1"
 
 service:
