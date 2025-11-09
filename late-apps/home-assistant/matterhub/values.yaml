@@ -18,7 +18,8 @@ controllers:
       app:
         image:
           repository: ghcr.io/t0bst4r/home-assistant-matter-hub
-          tag: 3.0.0-alpha.72@sha256:5385a15c6df084f8ac9aa18804d835eb3ab920d773f26067426dccf7b9fd3c74
+          # yamllint disable-line rule:line-length
+          tag: 3.0.1
 
         env:
           TZ: "Europe/London"
