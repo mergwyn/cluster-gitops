@@ -1,62 +1,99 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+
 image:
-  repository: plexinc/pms-docker
-  tag: '1.42.2.10156-f737b826c@sha256:9c03c26b9479ba9a09935f3367459bfdc8d21545f42ed2a13258983c5be1b252'
 
 env:
-  PLEX_MEDIA_SERVER_APPLICATION_SUPPORT_DIR: "/config"
-  PLEX_CLAIM: "claim-LufEVYTg9R29o2qzZsLA"
-  ALLOWED_NETWORKS: "10.0.0.0/8"
-  # ADVERTISE_IP: ""
-  PLEX_GID: "513"
-  PLEX_PASS: "yes"
-  PLEX_UID: "3001"
-  TZ: Europe/London
-  UMASK: "002"
+
+controllers:
+  plex:
+    annotations:
+      reloader.stakater.com/auto: "true"
+
+    initContainers:
+      kopiaignore:
+        image:
+          repository: docker.io/library/alpine
+          tag: 3.22@sha256:4b7ce07002c69e8f3d704a9c5d6fd3053be500b7f1c69fc0d80990c2ad8dd412
+        command: ["/bin/sh", "-c"]
+        # TODO better handling for database backup
+        args:
+          - |-
+            tee /config/.kopiaignore <<!
+            Plex Media Server/Cache
+            Plex Media Server/Logs
+            Plex Media Server/Media
+            Plex Media Server/Metadata
+            !
+        securityContext:
+          runAsUser: 0
+
+    containers:
+      app:
+        image:
+          repository: plexinc/pms-docker
+          tag: '1.42.2.10156-f737b826c@sha256:9c03c26b9479ba9a09935f3367459bfdc8d21545f42ed2a13258983c5be1b252'
+        env:
+          TZ: Europe/London
+          ALLOWED_NETWORKS: "10.0.0.0/8"
+          PLEX_CLAIM: "claim-LufEVYTg9R29o2qzZsLA"
+          PLEX_MEDIA_SERVER_APPLICATION_SUPPORT_DIR: "/config"
+          PLEX_PASS: "yes"
+          PLEX_UID: "3001"
+          PLEX_GID: "513"
+          UMASK: "002"
+
+        probes:
+          liveness: &probes
+            enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /identity
+                port: &port 32400
+              initialDelaySeconds: 0
+              periodSeconds: 10
+              timeoutSeconds: 1
+              failureThreshold: 3
+          readiness: *probes
+          startup:
+            enabled: true
+            spec:
+              failureThreshold: 30
+              periodSeconds: 10
+
+        resources:
+          requests:
+            cpu: 15m
+            memory: 921M
+            gpu.intel.com/i915: "1"
+          limits:
+            # cpu: 2928m
+            memory: 1.5G
+            gpu.intel.com/i915: "1"
 
 service:
-  main:
+  app:
     type: LoadBalancer
     loadBalancerIP: "10.58.0.34"
     ports:
-      https:
-        protocol: HTTPS
-        port: 32400
-        targetPort: 32400
-
-affinity:
-  nodeAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      nodeSelectorTerms:
-        - matchExpressions:
-            - key: kubernetes.io/hostname
-              operator: In
-              values:
-                - charlie
-
-resources:
-  requests:
-    cpu: 15m
-    memory: 921M
-    gpu.intel.com/i915: "1"
-  limits:
-    # cpu: 2928m
-    memory: 1.5G
-    gpu.intel.com/i915: "1"
+      http:
+        port: *port
 
 persistence:
   config:
     enabled: true
-    type: pvc
+    #forceRename: "{{ .Release.Name }}-config"
+    retain: true
     storageClass: openebs-zfspv
     accessMode: ReadWriteOnce
-    retain: true
-    size: 10G
-    globalMounts:
-      - path: /config
-  nfs-nas-media:
+    size: 1Gi
+  data:
     enabled: true
     type: nfs
     server: 10.58.0.12
     path: /srv/media
-    mountPath: /data
+    globalMounts:
+      - path: /data
+  tmp:
+    type: emptyDir

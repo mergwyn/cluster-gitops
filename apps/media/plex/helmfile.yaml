@@ -1,34 +1,12 @@
 ---
 repositories:
-  - name: geek-cookbook
-    url: https://geek-cookbook.github.io/charts/
-    # - name: bedag
-    #   url: https://bedag.github.io/helm-charts/
+  - name: bjw-s-labs
+    url: https://bjw-s-labs.github.io/helm-charts
 
 releases:
   - name: plex
-    chart: geek-cookbook/plex
-    version: 6.4.3
+    chart: bjw-s-labs/app-template
+    version: 4.4.0
     values:
+      - ../../../settings/common.yaml
       - values.yaml
-
-# - name: plex-extra
-#   chart: bedag/raw
-#   version: 2.0.0
-#   values:
-#   - resources:
-#     - apiVersion: autoscaling.k8s.io/v1
-#       kind: VerticalPodAutoscaler
-#       metadata:
-#         namespace: default
-#         name: plex-vpa
-#         labels:
-#           app.kubernetes.io/instance: plex
-#           app.kubernetes.io/name: plex
-#       spec:
-#         targetRef:
-#           apiVersion: "apps/v1"
-#           kind:       Deployment
-#           name:       plex
-#         updatePolicy:
-#           updateMode: "Auto"
