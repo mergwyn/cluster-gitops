@@ -73,6 +73,7 @@ controllers:
       app:
         image:
           repository: ghcr.io/home-assistant/home-assistant
+          # yamllint disable-line rule:line-length
           tag: "2025.10.4@sha256:449140e073d8d7814098cd62dfdbb326ad043f51a3c4d4721889369f46751d52"
         env:
           TZ: Europe/London
@@ -87,35 +88,31 @@ controllers:
           limits:
             memory: 2077M
 
-#      code-server:
-#        image:
-#          repository: ghcr.io/coder/code-server
-#          tag: 4.105.1
-#        args:
-#          - --auth
-#          - none
-#          - --disable-telemetry
-#          - --disable-update-check
-#          - --user-data-dir
-#          - /config/.code-server
-#          - --extensions-dir
-#          - /config/.code-server
-#          # - --install-extension
-#          # - trunk.io
-#          - --port
-#          - "12321"
-#          - /config
-#        env:
-#          TZ: Europe/London
-#          HASS_SERVER: http://localhost:8123
-#        envFrom:
-#          - secretRef:
-#              name: "{{.Release.Name}}-github"
-#        resources:
-#          requests:
-#            cpu: 10m
-#          limits:
-#            memory: 2Gi
+      code-server:
+        image:
+          repository: ghcr.io/coder/code-server
+          # yamllint disable-line rule:line-length
+          tag: 4.105.1
+        args:
+          - --auth=none
+          - --disable-telemetry
+          - --disable-update-check
+          - --user-data-dir=/config/.code-server
+          - --extensions-dir=/config/.code-server
+          # - --install-extension=trunk.io
+          - --port=12321
+          - /config
+        env:
+          TZ: Europe/London
+          HASS_SERVER: http://localhost:8123
+        envFrom:
+          - secretRef:
+              name: "{{.Release.Name}}-github"
+        resources:
+          requests:
+            cpu: 10m
+          limits:
+            memory: 2Gi
 
 service:
   app:
@@ -178,18 +175,18 @@ persistence:
           - path: /config/secrets.yaml
             subPath: secrets.yaml
             readOnly: true
-#  tmpfs:
-#    type: emptyDir
-#    advancedMounts:
-#      home-assistant:
-#        app:
-#          - path: /tmp
-#            subPath: hass-tmp
-#        code-server:
-#          - path: /tmp
-#            subPath: code-server-tmp
-#          - path: /nonexistent
-#            subPath: nonexistent
+  tmpfs:
+    type: emptyDir
+    advancedMounts:
+      home-assistant:
+        app:
+          - path: /tmp
+            subPath: hass-tmp
+        code-server:
+          - path: /tmp
+            subPath: code-server-tmp
+          - path: /nonexistent
+            subPath: nonexistent
 
 ingress:
   external:
@@ -237,15 +234,15 @@ rawResources:
             services:
               - name: "{{.Release.Name}}"
                 port: *http-port
-#          - kind: Rule
-#            # yamllint disable-line rule:line-length
-#            match: Host(`{{.Values.global.host}}.{{.Values.global.domain}}`) && PathRegexp(`^/code/.*`)
-#            priority: 11
-#            services:
-#              - name: "{{.Release.Name}}-code-server"
-#                port: *code-server-port
-#            middlewares:
-#              - name: "{{.Release.Name}}-middleware"
+          - kind: Rule
+            # yamllint disable-line rule:line-length
+            match: Host(`{{.Values.global.host}}.{{.Values.global.domain}}`) && PathRegexp(`^/code/.*`)
+            priority: 11
+            services:
+              - name: "{{.Release.Name}}-code-server"
+                port: *code-server-port
+            middlewares:
+              - name: "{{.Release.Name}}-middleware"
         tls: {}
 
   rule:
