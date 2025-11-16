@@ -1,4 +1,7 @@
 ---
+annotations:
+  configmap.reloader.stakater.com/reload: kube-vip-cloud-provider
+
 cm:
   data:
     cidr-global: "10.58.0.32/29"  # TODO make a parameter via overlay
