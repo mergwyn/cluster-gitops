@@ -14,6 +14,8 @@ recommender:
       memory: 124M
 
 updater:
+  extraArgs:
+    "feature-gates": "InPlaceOrRecreate=true"
   resources:
     requests:
       cpu: 15m
@@ -23,6 +25,8 @@ updater:
       memory: 105M
 
 admissionController:
+  extraArgs:
+    "feature-gates": "InPlaceOrRecreate=true"
   resources:
     requests:
       cpu: 15m
