@@ -1,10 +1,13 @@
 ---
+updatePolicy:
+  updateMode: "InPlaceOrRecreate"
+
 recommender:
   # enabled: false
   extraArgs:
     storage: prometheus
     # yamllint disable-line rule:line-length
-    prometheus-address: "http://kube-prometheus-stack-prometheus.monitoring:9090/"
+    prometheus-address: "http://kube-prometheus-stack-prometheus:9090/"
   resources:
     requests:
       cpu: 15m
