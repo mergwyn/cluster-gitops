@@ -157,7 +157,7 @@ controller:
       memory: 697M
     limits:
       # cpu: 242m
-      memory: 1175M
+      memory: 1684M
 
 server:
   resources:
