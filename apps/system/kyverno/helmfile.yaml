@@ -43,4 +43,11 @@ releases:
     needs:
       - kyverno
     values:
-      - set-pv-to-retain-on-keep.yaml
+
+  - name: remove-cpu-limits-requests
+    chart: bedag/raw
+    version: 2.0.2
+    needs:
+      - kyverno
+    values:
+      - remove-cpu-limits-requests.yaml

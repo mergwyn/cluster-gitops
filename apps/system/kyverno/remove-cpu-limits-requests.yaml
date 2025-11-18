@@ -1,0 +1,22 @@
+---
+resources:
+  - apiVersion: kyverno.io/v1
+    kind: ClusterPolicy
+    metadata:
+      name: remove-cpu-limits-requests
+    spec:
+      rules:
+        - name: remove-cpu-limits-per-container
+          match:
+            any:
+              - resources:
+                  kinds:
+                    - Pod
+                  operations:
+                    - CREATE
+          mutate:
+            foreach:
+              - list: "request.object.spec.containers"
+                patchesJson6902: |-
+                  - path: /spec/containers/{{elementIndex}}/resources/limits/cpu
+                    op: remove
