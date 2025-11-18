@@ -1,4 +1,8 @@
 ---
+image:
+  repository: us-docker.pkg.dev/fairwinds-ops/oss/goldilocks
+  tag: v4.14.7
+
 controller:
   flags:
     ignore-controller-kind: "Job,CronJob"
