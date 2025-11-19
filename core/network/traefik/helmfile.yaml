@@ -9,6 +9,6 @@ repositories:
 releases:
   - name: traefik
     chart: traefik/traefik
-    version: 37.2.0
+    version: 37.3.0
     values:
       - values.yaml
