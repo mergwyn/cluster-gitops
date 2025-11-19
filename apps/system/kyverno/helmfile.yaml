@@ -9,7 +9,7 @@ releases:
   - name: kyverno
     # chart: oci://ghcr.io/kyverno/charts/kyverno
     chart: kyverno/kyverno
-    version: 3.5.2
+    version: 3.6.0
     values:
       - values.yaml
 
