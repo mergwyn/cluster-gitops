@@ -8,7 +8,8 @@ configs:
     # -- Run server without TLS
     server.insecure: true
     # -- Enables use of the Progressive Syncs capability
-    applicationsetcontroller.enable.progressive.syncs: true
+    # -- no longer set to sync by default
+    # applicationsetcontroller.enable.progressive.syncs: true
 
   secret:
     createSecret: false  # managed by external-secrets/bitwarden
