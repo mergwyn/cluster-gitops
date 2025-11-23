@@ -9,7 +9,7 @@ releases:
     # can't use oci and minimumReleaseAge
     # see https://github.com/renovatebot/renovate/issues/37196
     chart: vmware-tanzu/velero
-    version: 11.1.1
+    version: 11.2.0
     values:
       - values.yaml
       - externalsecret.yaml
