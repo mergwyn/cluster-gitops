@@ -1,5 +1,4 @@
 ---
-# TODO add init cintainer or similar to load config
 
 global:
   nameOverride: predbat
@@ -26,27 +25,6 @@ controllers:
           tag: v8.27.7@sha256:d7359de96e663b4e896fcb78bc1e653a23da177a270aefb2ab8620dd5bd54e13
         env:
           TZ: "Europe/London"
-      code-server:
-        dependsOn: app
-        image:
-          repository: ghcr.io/coder/code-server
-          # yamllint disable-line rule:line-length
-          tag: 4.106.2@sha256:cca5c0bbff928df75ba9344a878e4ca7a321c0d42c34b39e02722b29855a56ac
-        env:
-          TZ: "Europe/London"
-        args:
-          - --auth=none
-          - --disable-telemetry
-          - --disable-update-check
-          - --user-data-dir
-          - /config/.code-server
-          - --extensions-dir
-          - /config/.code-server
-          - --port
-          - "12321"
-          - /config
-        securityContext:
-          runAsUser: 0
 
 service:
   app:
@@ -54,10 +32,6 @@ service:
     ports:
       http:
         port: &http_port 5052
-  code-server:
-    ports:
-      http:
-        port: &code-server_port 12321
 
 persistence:
   config:
@@ -69,41 +43,25 @@ persistence:
     globalMounts:
       - path: /config
 
-rawResources:
-  middleware:
-    apiVersion: traefik.io/v1alpha1
-    kind: Middleware
-    spec:
-      spec:
-        stripPrefixRegex:
-          regex:
-            - "^/code/"
-
-  ingress:
+ingress:
+  app:
     enabled: true
-    kind: IngressRoute
-    apiVersion: traefik.io/v1alpha1
+    className: traefik
     annotations:
-      kubernetes.io/ingress.class: traefik-external
-    spec:
-      spec:
-        entryPoints:
-          - websecure
-        routes:
-          - kind: Rule
-            # yamllint disable-line rule:line-length
-            match: Host(`{{.Release.Name}}.{{.Values.global.domain}}`) && PathPrefix(`/`)
-            priority: 10
-            services:
-              - name: "{{.Release.Name}}"
-                port: *http_port
-          - kind: Rule
-            # yamllint disable-line rule:line-length
-            match: Host(`{{.Release.Name}}.{{.Values.global.domain}}`) && PathRegexp(`^/code/.*`)
-            priority: 11
-            services:
-              - name: "{{.Release.Name}}-code-server"
-                port: *code-server_port
-            middlewares:
-              - name: "{{.Release.Name}}-middleware"
-        tls: {}
+      traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    hosts: &hosts
+      - host: "{{.Release.Name}}.{{.Values.global.domain}}"
+        paths:
+          - path: /
+            service:
+              identifier: app
+              port: http
+    tls:
+      - hosts:
+          - "*.{{.Values.global.domain}}"
+  external:
+    enabled: true
+    className: cloudflare-tunnel
+    annotations:
+      cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
+    hosts: *hosts
