@@ -51,6 +51,15 @@ service:
       http:
         port: *port
 
+# TODO Testinging
+route:
+  app:
+    hostnames:
+      - "{{.Release.Name}}-dev.{{.Values.global.domain}}"
+    parentRefs:
+      - name: traefik-gateway
+        namespace: network
+
 ingress:
   internal:
     enabled: true
