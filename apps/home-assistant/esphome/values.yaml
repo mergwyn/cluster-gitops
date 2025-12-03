@@ -79,13 +79,7 @@ controllers:
           # yamllint disable-line rule:line-length
           tag: 4.106.2@sha256:cca5c0bbff928df75ba9344a878e4ca7a321c0d42c34b39e02722b29855a56ac
         env:
-          EXTENSIONS_GALLERY: |-
-            '{
-            "serviceUrl":
-              "https://marketplace.visualstudio.com/_apis/public/gallery",
-            "itemUrl":
-              "https://marketplace.visualstudio.com/items"
-            }'
+          EXTENSIONS_GALLERY: '{ "serviceUrl": "https://marketplace.visualstudio.com/_apis/public/gallery", "itemUrl": "https://marketplace.visualstudio.com/items" }'
         args:
           - --auth=none
           - --disable-telemetry
@@ -93,8 +87,8 @@ controllers:
           - --user-data-dir=/config/.code-server
           - --extensions-dir=/config/.code-server
           - --port=12321
-          - --install-extension=trunk
-          - --install-extension=github.copilot
+          # - --install-extension=trunk.io
+          # - --install-extension=github.copilot
           - /config
         securityContext:
           runAsUser: 0
