@@ -3,13 +3,34 @@ globalArguments:
   - "--global.sendanonymoususage=false"
   - "--global.checknewversion=false"
 
-# global:
-#   sendanonymoususage: false
-#   checknewversion: false
-
 additionalArguments:
   - "--serversTransport.insecureSkipVerify=true"
-  - "--metrics.prometheus=true"
+
+providers:
+  kubernetesCRD:
+    enabled: true
+    ingressClass: traefik-external
+    allowExternalNameServices: true
+  kubernetesIngress:
+    enabled: true
+    allowExternalNameServices: true
+    publishedService:
+      enabled: true
+  kubernetesGateway:
+    enabled: true
+
+gateway:
+  enabled: true
+  namespacePolicy: All
+  # experimentalChannel: true
+
+gatewayClass:
+  enabled: true
+  # TODO: fix name
+  name: traefik-gateway
+
+rbac:
+  enabled: true
 
 logs:
   general:
@@ -49,40 +70,14 @@ ports:
     expose:
       default: true
     exposedPort: 8883
-  # matter-tcp:
-  #   port: 5540
-  #   expose:
-  #     default: true
-  #   exposedPort: 5540
-  #   protocol: TCP
-  # matter-udp:
-  #   port: 5540
-  #   expose:
-  #     default: true
-  #   exposedPort: 5540
-  #   protocol: UDP
-
-providers:
-  kubernetesCRD:
-    enabled: true
-    ingressClass: traefik-external
-    allowExternalNameServices: true
-  kubernetesIngress:
-    enabled: true
-    allowExternalNameServices: true
-    publishedService:
-      enabled: true
-
-rbac:
-  enabled: true
 
 service:
   enabled: true
   type: LoadBalancer
   annotations: {}
   labels: {}
-  # spec:
-  # loadBalancerIP: 10.58.0.32
+  spec:
+    loadBalancerIP: 10.58.0.34
   loadBalancerSourceRanges: []
   externalIPs: []
 
@@ -135,14 +130,13 @@ metrics:
 ingressRoute:
   dashboard:
     enabled: true
+    # yamllint disable-line rule:line-length
     matchRule: Host(`traefik.theclarkhome.com`) && (PathPrefix(`/dashboard`) || PathPrefix(`/api`))
     entryPoints:
       - websecure
     middlewares:
       - name: traefik-dashboard-basicauth
-        #namespace: "{{.Release.Namespace}}"
     tls: {}
-
 
 extraObjects:
   - apiVersion: traefik.io/v1alpha1
