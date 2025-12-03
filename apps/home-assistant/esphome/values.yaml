@@ -70,7 +70,7 @@ controllers:
             cpu: 5m
             memory: 512Mi
           limits:
-            memory: 3G
+            memory: 2G
 
       code-server:
         dependsOn: app
@@ -100,7 +100,7 @@ controllers:
             memory: 443M
           limits:
             # cpu: null
-            memory: 2G
+            memory: 3G
 
 service:
   app:
