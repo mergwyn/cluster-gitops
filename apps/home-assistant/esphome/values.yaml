@@ -92,7 +92,7 @@ controllers:
           - --disable-update-check
           - --user-data-dir=/config/.code-server
           - --extensions-dir=/config/.code-server
-          - --port="12321"
+          - --port=12321
           - --install-extension=trunk
           - --install-extension=github.copilot
           - /config
