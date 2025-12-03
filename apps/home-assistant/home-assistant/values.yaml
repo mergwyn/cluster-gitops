@@ -86,7 +86,7 @@ controllers:
             cpu: 47m
             memory: 1167M
           limits:
-            memory: 2077M
+            memory: 2G
 
       code-server:
         image:
@@ -112,7 +112,7 @@ controllers:
           requests:
             cpu: 10m
           limits:
-            memory: 2Gi
+            memory: 3G
 
 service:
   app:
