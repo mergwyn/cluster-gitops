@@ -20,8 +20,10 @@ providers:
     enabled: true
 
 gateway:
-  enabled: true
-  namespacePolicy: All
+  listeners:
+    web:
+      namespacePolicy:
+        from: All
   # experimentalChannel: true
 
 gatewayClass:
