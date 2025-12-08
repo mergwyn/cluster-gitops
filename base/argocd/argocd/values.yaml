@@ -15,9 +15,10 @@ configs:
     createSecret: false  # managed by external-secrets/bitwarden
 
   cm:
+    create: true
     kustomize.buildOptions: --enable-helm
     application.resourceTrackingMethod: "annotation"
-    create: true
+    controller.diff.server.side: "true"
     # Exclude velero backups and restores
     resource.exclusions: |
       - apiGroups:
