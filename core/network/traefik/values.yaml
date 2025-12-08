@@ -44,7 +44,7 @@ rbac:
 
 logs:
   general:
-    level: DEBUG
+    level: INFO
     enabled: true
   access:
     enabled: false
