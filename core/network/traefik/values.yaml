@@ -30,8 +30,9 @@ gateway:
       namespacePolicy:
         from: All
       certificateRefs:
-        - kind: Secret
-          name: theclarkhome-com-tls
+        - name: theclarkhome-com-tls
+          kind: Secret
+          group: ''
   # experimentalChannel: true
 
 gatewayClass:
