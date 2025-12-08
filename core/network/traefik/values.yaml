@@ -24,6 +24,14 @@ gateway:
     web:
       namespacePolicy:
         from: All
+    websecure:
+      protocol: HTTPS
+      port: 8443
+      namespacePolicy:
+        from: All
+      certificateRefs:
+        - kind: Secret
+          name: theclarkhome-com-tls
   # experimentalChannel: true
 
 gatewayClass:
@@ -36,7 +44,7 @@ rbac:
 
 logs:
   general:
-    level: INFO
+    level: DEBUG
     enabled: true
   access:
     enabled: false
@@ -156,7 +164,7 @@ extraObjects:
     kind: TLSStore
     metadata:
       name: default
-      namespace: kube-system
+      namespace: "{{.Release.Namespace}}"
       labels:
         app.kubernetes.io/name: "{{.Release.Name}}"
         app.kubernetes.io/instance: "{{.Release.Name}}-{{.Release.Namespace}}"

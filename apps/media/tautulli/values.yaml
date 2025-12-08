@@ -52,31 +52,34 @@ service:
         port: *port
 
 # TODO Testinging
-# route:
-#   app:
-#     hostnames:
-#       - "{{.Release.Name}}-dev.{{.Values.global.domain}}"
-#     parentRefs:
-#       - name: traefik-gateway
-#         namespace: network
+route:
+  app:
+    hostnames:
+      - "{{.Release.Name}}.{{.Values.global.domain}}"
+    parentRefs:
+      - name: traefik-gateway
+        namespace: network
+        # Workaround for argocd issue #22151
+        group: gateway.networking.k8s.io
+        kind: Gateway
 
-ingress:
-  internal:
-    enabled: true
-    className: traefik
-    annotations:
-      traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    hosts: &hosts
-      - host: "{{.Release.Name}}.{{.Values.global.domain}}"
-        paths:
-          - path: /
-            pathType: Prefix
-            service:
-              identifier: app
-              port: http
-    tls:
-      - hosts:
-          - "*.{{.Values.global.domain}}"
+# ingress:
+#   internal:
+#     enabled: true
+#     className: traefik
+#     annotations:
+#       traefik.ingress.kubernetes.io/router.entrypoints: websecure
+#     hosts: &hosts
+#       - host: "{{.Release.Name}}.{{.Values.global.domain}}"
+#         paths:
+#           - path: /
+#             pathType: Prefix
+#             service:
+#               identifier: app
+#               port: http
+#     tls:
+#       - hosts:
+#           - "*.{{.Values.global.domain}}"
 
 #  external:
 #    enabled: true

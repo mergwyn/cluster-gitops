@@ -6,9 +6,9 @@ resources:
     metadata:
       name: letsencrypt-production
       labels:
-        app.kubernetes.io/name: cert-manager-reources
+        app.kubernetes.io/name: cert-manager-resources
       annotations:
-        meta.helm.sh/release-name: cert-manager-reources
+        meta.helm.sh/release-name: cert-manager-resources
         meta.helm.sh/release-namespace: security
     spec:
       acme:
@@ -31,11 +31,11 @@ resources:
     kind: Certificate
     metadata:
       name: theclarkhome-com
-      namespace: kube-system
+      namespace: network
       labels:
-        app.kubernetes.io/name: cert-manager-reources
+        app.kubernetes.io/name: cert-manager-resources
       annotations:
-        meta.helm.sh/release-name: cert-manager-reources
+        meta.helm.sh/release-name: cert-manager-resources
         meta.helm.sh/release-namespace: security
     spec:
       secretName: theclarkhome-com-tls
@@ -54,9 +54,9 @@ resources:
     metadata:
       name: cluster-selfsigned-issuer
       labels:
-        app.kubernetes.io/name: cert-manager-reources
+        app.kubernetes.io/name: cert-manager-resources
       annotations:
-        meta.helm.sh/release-name: cert-manager-reources
+        meta.helm.sh/release-name: cert-manager-resources
         meta.helm.sh/release-namespace: security
     spec:
       selfSigned: {}
@@ -66,9 +66,9 @@ resources:
     metadata:
       name: cluster-signed-issuer
       labels:
-        app.kubernetes.io/name: cert-manager-reources
+        app.kubernetes.io/name: cert-manager-resources
       annotations:
-        meta.helm.sh/release-name: cert-manager-reources
+        meta.helm.sh/release-name: cert-manager-resources
         meta.helm.sh/release-namespace: security
     spec:
       ca:
@@ -79,9 +79,9 @@ resources:
     metadata:
       name: &name cluster-signed-issuer
       labels:
-        app.kubernetes.io/name: cert-manager-reources
+        app.kubernetes.io/name: cert-manager-resources
       annotations:
-        meta.helm.sh/release-name: cert-manager-reources
+        meta.helm.sh/release-name: cert-manager-resources
         meta.helm.sh/release-namespace: security
     spec:
       isCA: true
