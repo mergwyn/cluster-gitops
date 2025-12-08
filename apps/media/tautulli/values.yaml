@@ -51,19 +51,17 @@ service:
       http:
         port: *port
 
-# TODO Testinging
 route:
   app:
-    annotations:
-      argocd.argoproj.io/compare-options: IgnoreExtraneous
+    hostnames:
+      - "{{.Release.Name}}.{{.Values.global.domain}}"
     parentRefs:
       - name: traefik-gateway
         namespace: network
         # Workaround for argocd issue #22151
         group: gateway.networking.k8s.io
         kind: Gateway
-    hostnames:
-      - "{{.Release.Name}}.{{.Values.global.domain}}"
+
 
 # ingress:
 #   internal:
