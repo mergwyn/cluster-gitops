@@ -31,6 +31,7 @@ gateway:
         from: All
       certificateRefs:
         - name: theclarkhome-com-tls
+          # Workaround for argocd issue #22151
           kind: Secret
           group: ''
   # experimentalChannel: true
