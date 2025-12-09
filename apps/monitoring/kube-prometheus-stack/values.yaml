@@ -46,16 +46,14 @@ alertmanager:
         # cpu: 15m
         memory: 105M
 
-  ingress:
-    enabled: true
-    ingressClass: traefik
-    annotations:
-      traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    hosts:
-      - "alertmanager.theclarkhome.com"
-    tls:
-      - hosts:
-          - "*.theclarkhome.com"
+
+  route:
+    app:
+      hostnames:
+        - "alertmanager.{{.Values.global.domain}}"
+      parentRefs:
+        - name: traefik-internal
+          namespace: network
 
 #  storage:
 #    volumeClaimTemplate:
@@ -109,16 +107,13 @@ prometheus:
         # cpu: 15m
         memory: 5G
 
-  ingress:
-    enabled: true
-    ingressClass: traefik
-    annotations:
-      traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    hosts:
-      - "prometheus.theclarkhome.com"
-    tls:
-      - hosts:
-          - "*.theclarkhome.com"
+  route:
+    app:
+      hostnames:
+        - "prometheus.{{.Values.global.domain}}"
+      parentRefs:
+        - name: traefik-internal
+          namespace: network
 
 grafana:
   adminPassword: ""
@@ -173,16 +168,13 @@ grafana:
         # yamllint disable-line rule:line-length
         url: "https://raw.githubusercontent.com/openebs/zfs-localpv/develop/deploy/sample/grafana-dashboard.json"
         datasource: Prometheus
-  ingress:
-    enabled: true
-    ingressClass: traefik
-    annotations:
-      traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    hosts:
-      - "grafana.theclarkhome.com"
-    tls:
-      - hosts:
-          - "*.theclarkhome.com"
+  route:
+    app:
+      hostnames:
+        - "grafana.{{.Values.global.domain}}"
+      parentRefs:
+        - name: traefik-internal
+          namespace: network
   persistence:
     enabled: true
     type: pvc
