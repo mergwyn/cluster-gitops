@@ -188,24 +188,6 @@ persistence:
           - path: /nonexistent
             subPath: nonexistent
 
-ingress:
-  external:
-    enabled: true
-    className: cloudflare-tunnel
-    annotations:
-      cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
-    hosts:
-      - host: "{{.Values.global.host}}.{{.Values.global.domain}}"
-        paths:
-          - path: /
-            pathType: Prefix
-            service:
-              identifier: app
-              port: http
-    tls:
-      - hosts:
-          - "*.{{.Values.global.domain}}"
-
 rawResources:
   rule:
     kind: PrometheusRule
@@ -230,7 +212,7 @@ rawResources:
 route:
   app:
     hostnames:
-      - "{{.Release.Name}}.{{.Values.global.domain}}"
+      - "{{.Values.global.host}}.{{.Values.global.domain}}"
     parentRefs:
       - name: traefik-internal
         namespace: network
@@ -258,3 +240,18 @@ route:
               path:
                 replacePrefixMatch: /
                 type: ReplacePrefixMatch
+
+ingress:
+  external:
+    enabled: true
+    className: cloudflare-tunnel
+    annotations:
+      cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
+    hosts:
+      - host: "{{.Values.global.host}}.{{.Values.global.domain}}"
+        paths:
+          - path: /
+            pathType: Prefix
+            service:
+              identifier: app
+              port: http
