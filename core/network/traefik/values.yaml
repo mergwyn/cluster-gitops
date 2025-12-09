@@ -21,9 +21,10 @@ providers:
 
 gateway:
   listeners:
-    web:
-      namespacePolicy:
-        from: All
+    # TODO try only websecure - see redirect rules below
+    # web:
+    #   namespacePolicy:
+    #     from: All
     websecure:
       protocol: HTTPS
       port: 8443
@@ -38,7 +39,7 @@ gateway:
 
 gatewayClass:
   enabled: true
-  # TODO: fix name
+  # TODO: fix name try traefik-internal
   name: traefik-gateway
 
 rbac:
