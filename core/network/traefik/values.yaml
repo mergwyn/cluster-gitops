@@ -150,6 +150,12 @@ ingressRoute:
       - name: traefik-dashboard-basicauth
     tls: {}
 
+tlsStore:
+tlsStore:
+  default:
+    defaultCertificate:
+      secretName: theclarkhome-com-tls
+
 extraObjects:
   - apiVersion: traefik.io/v1alpha1
     kind: Middleware
@@ -161,18 +167,6 @@ extraObjects:
     spec:
       basicAuth:
         secret: traefik-dashboard-secret
-
-  - apiVersion: traefik.io/v1alpha1
-    kind: TLSStore
-    metadata:
-      name: default
-      namespace: "{{.Release.Namespace}}"
-      labels:
-        app.kubernetes.io/name: "{{.Release.Name}}"
-        app.kubernetes.io/instance: "{{.Release.Name}}-{{.Release.Namespace}}"
-    spec:
-      defaultCertificate:
-        secretName: theclarkhome-com-tls
 
   - apiVersion: external-secrets.io/v1
     kind: ExternalSecret
