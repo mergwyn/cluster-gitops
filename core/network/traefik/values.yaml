@@ -20,6 +20,7 @@ providers:
     enabled: true
 
 gateway:
+  name: traefik-internal
   listeners:
     # TODO work out how to disable web listener
     web:
@@ -39,7 +40,6 @@ gateway:
 
 gatewayClass:
   enabled: true
-  name: traefik-internal
 
 rbac:
   enabled: true
