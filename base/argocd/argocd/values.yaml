@@ -64,6 +64,36 @@ repoServer:
     limits:
       # cpu: 300m
       memory: 1400M
+server:
+  # TODO test again when https://github.com/argoproj/argo-helm/issues/3550 resolved
+  # httproute:
+  #   enabled: true
+  #   hostnames:
+  #     - "{{.Release.Name}}.{{.Values.global.domain}}"
+  #   parentRefs:
+  #     - name: traefik-internal
+  #       namespace: network
+  # grpcroute:
+  #   enabled: true
+  #   hostnames:
+  #     - "{{.Release.Name}}.{{.Values.global.domain}}"
+  #   parentRefs:
+  #     - name: traefik-internal
+  #       namespace: network
+  #   rules:
+  #     - matches:
+  #         - headers:
+  #             - name: Content-Type
+  #               type: RegularExpression
+  #               value: "^application/grpc.*$"
+
+  resources:
+    requests:
+      cpu: 15m
+      memory: 105M
+    limits:
+      # cpu: 50m
+      memory: 1416M
 
 extraObjects:
   - kind: IngressRoute
@@ -160,15 +190,6 @@ controller:
     limits:
       # cpu: 242m
       memory: 1684M
-
-server:
-  resources:
-    requests:
-      cpu: 15m
-      memory: 105M
-    limits:
-      # cpu: 50m
-      memory: 1416M
 
 applicationSet:
   resources:
