@@ -147,7 +147,7 @@ route:
     hostnames:
       - "{{.Release.Name}}.{{.Values.global.domain}}"
     parentRefs:
-      - name: traefik-gateway
+      - name: traefik-internal
         namespace: network
     rules:
       - backendRefs:
@@ -157,7 +157,7 @@ route:
     hostnames:
       - "{{.Release.Name}}.{{.Values.global.domain}}"
     parentRefs:
-      - name: traefik-gateway
+      - name: traefik-internal
         namespace: network
     rules:
       - backendRefs:

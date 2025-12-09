@@ -56,7 +56,7 @@ route:
     hostnames:
       - "{{.Release.Name}}.{{.Values.global.domain}}"
     parentRefs:
-      - name: traefik-gateway
+      - name: traefik-internal
         namespace: network
         # Workaround for argocd issue #22151
         group: gateway.networking.k8s.io
