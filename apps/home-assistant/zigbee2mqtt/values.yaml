@@ -128,41 +128,34 @@ persistence:
     globalMounts:
       - path: /data
 
-rawResources:
-  middleware:
-    apiVersion: traefik.io/v1alpha1
-    kind: Middleware
-    spec:
-      spec:
-        stripPrefixRegex:
-          regex:
-            - "^/code/"
-
-  ingress:
-    enabled: true
-    kind: IngressRoute
-    apiVersion: traefik.io/v1alpha1
-    annotations:
-      kubernetes.io/ingress.class: traefik-external
-    spec:
-      spec:
-        entryPoints:
-          - websecure
-        routes:
-          - kind: Rule
-            # yamllint disable-line rule:line-length
-            match: Host(`{{.Release.Name}}.{{.Values.global.domain}}`) && PathPrefix(`/`)
-            priority: 10
-            services:
-              - name: "{{.Release.Name}}"
-                port: *http-port
-          - kind: Rule
-            # yamllint disable-line rule:line-length
-            match: Host(`{{.Release.Name}}.{{.Values.global.domain}}`) && PathRegexp(`^/code/.*`)
-            priority: 11
-            services:
-              - name: "{{.Release.Name}}-code-server"
-                port: *code-server-port
-            middlewares:
-              - name: "{{.Release.Name}}-middleware"
-        tls: {}
+route:
+  app:
+    hostnames:
+      - "{{.Release.Name}}.{{.Values.global.domain}}"
+    parentRefs:
+      - name: traefik-internal
+        namespace: network
+    rules:
+      - backendRefs:
+          - identifier: app
+            port: *http-port
+  code-server:
+    hostnames:
+      - "{{.Release.Name}}.{{.Values.global.domain}}"
+    parentRefs:
+      - name: traefik-internal
+        namespace: network
+    rules:
+      - backendRefs:
+          - identifier: code-server
+            port: *code-server-port
+        matches:
+          - path:
+              type: PathPrefix
+              value: /code/
+        filters:
+          - type: URLRewrite
+            urlRewrite:
+              path:
+                replacePrefixMatch: /
+                type: ReplacePrefixMatch
