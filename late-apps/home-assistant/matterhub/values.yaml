@@ -72,23 +72,13 @@ service:
       http:
         port: *port
 
-ingress:
+route:
   app:
-    enabled: true
-    className: traefik
-    annotations:
-      traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    hosts:
-      - host: "{{.Release.Name}}.{{.Values.global.domain}}"
-        paths:
-          - path: /
-            pathType: Prefix
-            service:
-              identifier: app
-              port: http
-    tls:
-      - hosts:
-          - "*.{{.Values.global.domain}}"
+    hostnames:
+      - "{{.Release.Name}}.{{.Values.global.domain}}"
+    parentRefs:
+      - name: traefik-internal
+        namespace: network
 
 persistence:
   data:
