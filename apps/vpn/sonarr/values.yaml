@@ -60,28 +60,28 @@ service:
       http:
         port: *port
 
-ingress:
+route:
   app:
-    enabled: true
-    className: traefik
-    annotations:
-      traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    hosts: &hosts
-      - host: "{{.Release.Name}}.{{.Values.global.domain}}"
-        paths:
-          - path: /
-            service:
-              identifier: app
-              port: http
-    tls:
-      - hosts:
-          - "*.{{.Values.global.domain}}"
+    hostnames:
+      - "{{.Release.Name}}.{{.Values.global.domain}}"
+    parentRefs:
+      - name: traefik-internal
+        namespace: network
+
+ingress:
   external:
     enabled: true
     className: cloudflare-tunnel
     annotations:
       cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
-    hosts: *hosts
+    hosts:
+      - host: "{{.Release.Name}}.{{.Values.global.domain}}"
+        paths:
+          - path: /
+            pathType: Prefix
+            service:
+              identifier: app
+              port: http
 
 persistence:
   config:
