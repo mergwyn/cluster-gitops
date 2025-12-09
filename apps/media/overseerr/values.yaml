@@ -34,13 +34,21 @@ service:
       http:
         port: 5055
 
+route:
+  app:
+    hostnames:
+      - "{{.Release.Name}}.{{.Values.global.domain}}"
+    parentRefs:
+      - name: traefik-internal
+        namespace: network
+
 ingress:
-  internal:
+  external:
     enabled: true
-    className: traefik
+    className: cloudflare-tunnel
     annotations:
-      traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    hosts: &hosts
+      cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
+    hosts: 
       - host: "{{.Release.Name}}.{{.Values.global.domain}}"
         paths:
           - path: /
@@ -48,16 +56,6 @@ ingress:
             service:
               identifier: app
               port: http
-    tls:
-      - hosts:
-          - "*.{{.Values.global.domain}}"
-  external:
-    enabled: true
-    className: cloudflare-tunnel
-    annotations:
-      cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
-    hosts: *hosts
-
 
 persistence:
   config:

@@ -58,18 +58,14 @@ route:
     parentRefs:
       - name: traefik-internal
         namespace: network
-        # Workaround for argocd issue #22151
-        group: gateway.networking.k8s.io
-        kind: Gateway
-
 
 # ingress:
-#   internal:
-#     enabled: true
-#     className: traefik
-#     annotations:
-#       traefik.ingress.kubernetes.io/router.entrypoints: websecure
-#     hosts: &hosts
+#  external:
+#    enabled: true
+#    className: cloudflare-tunnel
+#    annotations:
+#      cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
+#    hosts: 
 #       - host: "{{.Release.Name}}.{{.Values.global.domain}}"
 #         paths:
 #           - path: /
@@ -77,16 +73,6 @@ route:
 #             service:
 #               identifier: app
 #               port: http
-#     tls:
-#       - hosts:
-#           - "*.{{.Values.global.domain}}"
-
-#  external:
-#    enabled: true
-#    className: cloudflare-tunnel
-#    annotations:
-#      cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
-#    hosts: *hosts
 
 
 persistence:
