@@ -222,7 +222,7 @@ route:
             port: *http-port
   code-server:
     hostnames:
-      - "{{.Release.Name}}.{{.Values.global.domain}}"
+      - "{{.Values.global.host}}.{{.Values.global.domain}}"
     parentRefs:
       - name: traefik-internal
         namespace: network
