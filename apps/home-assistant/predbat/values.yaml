@@ -22,7 +22,7 @@ controllers:
       app:
         image:
           repository: nipar44/predbat_addon
-          tag: v8.27.7@sha256:d7359de96e663b4e896fcb78bc1e653a23da177a270aefb2ab8620dd5bd54e13
+          tag: v8.29.1@sha256:e41b65e844e033fa3f2ac47336b7d5133178a0a8bfba7a7f775caa25f4e2a7c9
         env:
           TZ: "Europe/London"
 
