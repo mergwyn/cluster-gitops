@@ -84,7 +84,7 @@ controllers:
         resources:
           requests:
             cpu: 47m
-            memory: 1167M
+            memory: 1239M
           limits:
             memory: 2G
 
@@ -113,8 +113,9 @@ controllers:
         resources:
           requests:
             cpu: 10m
+            memory: 978M
           limits:
-            memory: 3G
+            memory: 5G
 
 service:
   app:
