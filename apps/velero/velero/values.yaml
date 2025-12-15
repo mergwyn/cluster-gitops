@@ -8,6 +8,12 @@ snapshotsEnabled: false
 defaultBackupStorageLocation: default
 # defaultVolumeSnapshotLocations: [default]
 
+
+kubectl:
+  image:
+    repository: public.ecr.aws/bitnami/kubectl
+    tag: latest
+
 configuration:
   uploaderType: kopia
   # defaultVolumesToFsBackup: true
