@@ -66,7 +66,7 @@ alertmanager:
 
 prometheus:
   prometheusSpec:
-    serviceMonitorSelectorNilUsesHelmValues: false
+    servceMonitorSelectorNilUsesHelmValues: false
     # podMonitorSelectorNilUsesHelmValues: false
     additionalScrapeConfigs:
       - job_name: minio-job-v2
@@ -76,6 +76,17 @@ prometheus:
         scheme: http
         static_configs:
           - targets: ['foxtrot.theclarkhome.com:9000']
+
+#       - job_name: rustfs-job-v1
+#         # yamllint disable-line rule:line-length
+#         bearer_token: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJwcm9tZXRoZXVzIiwic3ViIjoibXltaW5pb2FkbWluIiwiZXhwIjo0ODY1MjQ0NzEyfQ.21LxcoJnfop1f4eqy2NedKaeTaDw7RhiWr_ZnjoUxo11pcoIlSNDwpW93dU2Gi4XMi-yv8piDm4FU0MAObPJhg
+#         metrics_path: /rustfs/metrics
+#         basic_auth:
+#           username: rustadmin
+#           password: rustadmin
+#         scheme: http
+#         static_configs:
+#           - targets: ['foxtrot.theclarkhome.com:9090']
 
       - job_name: blikvm-v1
         metrics_path: '/api/export/prometheus/metrics'
