@@ -1,13 +1,16 @@
 ---
 
 annotations:
-  secret.reloader.stakater.com/reload: "minio-s3-conf,idrivee2-s3-conf"
-  configmap.reloader.stakater.com/reload: "velero-backup-repository-config"
+  secret.reloader.stakater.com/reload: <-
+    minio-s3-conf,
+    idrivee2-s3-conf,
+    rustfs-s3-config
+  configmap.reloader.stakater.com/reload: <-
+    velero-backup-repository-config
 
+defaultBackupStorageLocation: minio
 snapshotsEnabled: false
-defaultBackupStorageLocation: default
-# defaultVolumeSnapshotLocations: [default]
-
+# defaultVolumeSnapshotLocations: [minio, rustfs, idrive, default]
 
 kubectl:
   image:
@@ -21,6 +24,19 @@ configuration:
   features: EnableCSI
 
   backupStorageLocation:
+    - name: minio
+      provider: aws
+      bucket: velero
+      default: true
+      credential:
+        name: minio-s3-conf
+        key: cloud
+      config:
+        region: Northallerton
+        s3ForcePathStyle: true
+        s3Url: http://foxtrot.theclarkhome.com:9000
+        publicUrl: http://foxtrot.theclarkhome.com:9000
+
     - name: default
       provider: aws
       bucket: velero
@@ -34,18 +50,18 @@ configuration:
         s3Url: http://foxtrot.theclarkhome.com:9000
         publicUrl: http://foxtrot.theclarkhome.com:9000
 
-    - name: rustfs
-      provider: aws
-      bucket: velero
-      default: true
-      credential:
-        name: rustfs-s3-conf
-        key: cloud
-      config:
-        region: Northallerton
-        s3ForcePathStyle: true
-        s3Url: http://foxtrot.theclarkhome.com:9090
-        publicUrl: http://foxtrot.theclarkhome.com:9090
+#    - name: rustfs
+#      provider: aws
+#      bucket: velero
+#      # default: true
+#      credential:
+#        name: rustfs-s3-conf
+#        key: cloud
+#      config:
+#        region: rustfs-Northallerton
+#        s3ForcePathStyle: true
+#        s3Url: http://foxtrot.theclarkhome.com:9090
+#        publicUrl: http://foxtrot.theclarkhome.com:9090
 
     - name: idrive
       provider: aws
@@ -62,16 +78,24 @@ configuration:
         # https://github.com/vmware-tanzu/velero-plugin-for-aws/pull/197
         checksumAlgorithm: ""
 
-  volumeSnapshotLocation:
-    - name: default
-      provider: aws
-      default: true
-      config:
-        region: Northallerton
-    - name: idrive
-      provider: aws
-      config:
-        region: London
+  # volumeSnapshotLocation:
+  #   - name: minio
+  #     provider: aws
+  #     default: true
+  #     config:
+  #       region: Northallerton
+  #   - name: default
+  #     provider: aws
+  #     config:
+  #       region: Northallerton
+  #   - name: rustfs
+  #     provider: aws
+  #     config:
+  #       region: rustfs-Northallerton
+  #   - name: idrive
+  #     provider: aws
+  #     config:
+  #       region: London
 
   extraArgs:
     - "--backup-repository-configmap=velero-backup-repository-config"
@@ -119,50 +143,50 @@ schedules:
     template:
       ttl: "168h"
       storageLocation: idrive
-      volumeSnapshotLocations: &idrivesnap []  # [idrive]
+      # volumeSnapshotLocations: &idrivesnap []  # [idrive]
   weekly-idrive:
     disabled: false
     schedule: "@weekly"
     template:
       ttl: "672h"
       storageLocation: idrive
-      volumeSnapshotLocations: *idrivesnap
+      # volumeSnapshotLocations: *idrivesnap
   monthly-idrive:
     disabled: false
     schedule: "@monthly"
     template:
       ttl: "2190h"
       storageLocation: idrive
-      volumeSnapshotLocations: *idrivesnap
+      # volumeSnapshotLocations: *idrivesnap
   # default storage
   hourly-minio:
     disabled: false
     schedule: "@hourly"
     template:
       ttl: "24h"
-      storageLocation: default
-      volumeSnapshotLocations: &defaultsnap []  # [default]
+      storageLocation: minio
+      # volumeSnapshotLocations: [minio]
   daily-minio:
     disabled: false
     schedule: "@daily"
     template:
       ttl: "168h"
-      storageLocation: default
-      volumeSnapshotLocations: *defaultsnap
+      storageLocation: minio
+      # volumeSnapshotLocations: [minio]
   weekly-minio:
     disabled: false
     schedule: "@weekly"
     template:
       ttl: "672h"
-      storageLocation: default
-      volumeSnapshotLocations: *defaultsnap
+      storageLocation: minio
+      # volumeSnapshotLocations: [minio]
   monthly-minio:
     disabled: false
     schedule: "@monthly"
     template:
       ttl: "2190h"
-      storageLocation: default
-      volumeSnapshotLocations: *defaultsnap
+      storageLocation: minio
+      # volumeSnapshotLocations: [minio]
 
 metrics:
   enabled: true
