@@ -38,5 +38,7 @@ releases:
               name: openebs-zfspv-snapshot
               annotations:
                 snapshot.storage.kubernetes.io/is-default-class: "true"
+              labels:
+                velero.io/csi-volumesnapshot-class: "true"
             driver: zfs.csi.openebs.io
             deletionPolicy: Delete
