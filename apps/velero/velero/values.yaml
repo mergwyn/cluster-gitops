@@ -34,6 +34,19 @@ configuration:
         s3Url: http://foxtrot.theclarkhome.com:9000
         publicUrl: http://foxtrot.theclarkhome.com:9000
 
+    - name: rustfs
+      provider: aws
+      bucket: velero
+      default: true
+      credential:
+        name: rustfs-s3-conf
+        key: cloud
+      config:
+        region: Northallerton
+        s3ForcePathStyle: true
+        s3Url: http://foxtrot.theclarkhome.com:9090
+        publicUrl: http://foxtrot.theclarkhome.com:9090
+
     - name: idrive
       provider: aws
       bucket: velero
