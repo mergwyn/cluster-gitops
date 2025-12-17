@@ -12,7 +12,7 @@ defaultBackupStorageLocation: default
 kubectl:
   image:
     repository: public.ecr.aws/bitnami/kubectl
-    tag: latest
+    tag: latest@sha256:23e2dfc857a9e91db8019c46dc30d80548d7dc63edd0fe3f66ad998208b56ba5
 
 configuration:
   uploaderType: kopia
