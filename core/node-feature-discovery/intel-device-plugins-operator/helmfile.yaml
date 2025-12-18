@@ -6,7 +6,7 @@ repositories:
 releases:
   - name: intel-device-plugins-operator
     chart: intel/intel-device-plugins-operator
-    version: 0.34.0
+    version: 0.34.1
     values:
       - resources:
           limits:
