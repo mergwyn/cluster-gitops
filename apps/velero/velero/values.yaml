@@ -157,22 +157,22 @@ schedules:
       storageLocation: idrive
       # volumeSnapshotLocations: *idrivesnap
   # default storage
-  hourly-minio:
+  hourly-default:
     disabled: false
     schedule: "@hourly"
     template:
       ttl: "24h"
-  daily-minio:
+  daily-default:
     disabled: false
     schedule: "@daily"
     template:
       ttl: "168h"
-  weekly-minio:
+  weekly-default:
     disabled: false
     schedule: "@weekly"
     template:
       ttl: "672h"
-  monthly-minio:
+  monthly-default:
     disabled: false
     schedule: "@monthly"
     template:
