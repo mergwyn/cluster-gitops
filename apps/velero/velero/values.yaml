@@ -8,7 +8,7 @@ annotations:
   configmap.reloader.stakater.com/reload: <-
     velero-backup-repository-config
 
-defaultBackupStorageLocation: minio
+defaultBackupStorageLocation: rustfs
 snapshotsEnabled: false
 # defaultVolumeSnapshotLocations: [minio, rustfs, idrive, default]
 
@@ -27,7 +27,6 @@ configuration:
     - name: minio
       provider: aws
       bucket: velero
-      default: true
       credential:
         name: minio-s3-conf
         key: cloud
@@ -40,7 +39,6 @@ configuration:
     - name: default
       provider: aws
       bucket: velero
-      default: true
       credential:
         name: minio-s3-conf
         key: cloud
@@ -50,18 +48,18 @@ configuration:
         s3Url: http://foxtrot.theclarkhome.com:9000
         publicUrl: http://foxtrot.theclarkhome.com:9000
 
-#    - name: rustfs
-#      provider: aws
-#      bucket: velero
-#      # default: true
-#      credential:
-#        name: rustfs-s3-conf
-#        key: cloud
-#      config:
-#        region: rustfs-Northallerton
-#        s3ForcePathStyle: true
-#        s3Url: http://foxtrot.theclarkhome.com:9090
-#        publicUrl: http://foxtrot.theclarkhome.com:9090
+    - name: rustfs
+      provider: aws
+      bucket: velero
+      default: true
+      credential:
+        name: rustfs-s3-conf
+        key: cloud
+      config:
+        region: rustfs-Northallerton
+        s3ForcePathStyle: true
+        s3Url: http://foxtrot.theclarkhome.com:9090
+        publicUrl: http://foxtrot.theclarkhome.com:9090
 
     - name: idrive
       provider: aws
@@ -164,29 +162,21 @@ schedules:
     schedule: "@hourly"
     template:
       ttl: "24h"
-      storageLocation: minio
-      # volumeSnapshotLocations: [minio]
   daily-minio:
     disabled: false
     schedule: "@daily"
     template:
       ttl: "168h"
-      storageLocation: minio
-      # volumeSnapshotLocations: [minio]
   weekly-minio:
     disabled: false
     schedule: "@weekly"
     template:
       ttl: "672h"
-      storageLocation: minio
-      # volumeSnapshotLocations: [minio]
   monthly-minio:
     disabled: false
     schedule: "@monthly"
     template:
       ttl: "2190h"
-      storageLocation: minio
-      # volumeSnapshotLocations: [minio]
 
 metrics:
   enabled: true
