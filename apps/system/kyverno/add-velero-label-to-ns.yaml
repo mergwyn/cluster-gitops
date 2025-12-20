@@ -36,6 +36,7 @@ resources:
                         - home-assistant
                         - media
                         - monitoring
+                        - system
                         - vpn
 
             patchStrategicMerge:
