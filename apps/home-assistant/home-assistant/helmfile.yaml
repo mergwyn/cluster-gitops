@@ -10,4 +10,4 @@ releases:
     values:
       - ../../../settings/common.yaml
       - values.yaml
-      - externalsecrets.yaml
+      - externalsecret.yaml
