@@ -42,12 +42,6 @@ backgroundController:
             - get
             - list
 
-crds:
-  migration:
-    podResources:
-      limits:
-        cpu: null
-
 features:
   generateValidatingAdmissionPolicy:
     enabled: true

@@ -3,7 +3,7 @@ resources:
   - apiVersion: kyverno.io/v1
     kind: ClusterPolicy
     metadata:
-      name: add-velero-label-to-ns.yaml
+      name: add-velero-label-to-ns
       annotations:
         policies.kyverno.io/title: Label Velero backup PVC
         policies.kyverno.io/category: Other
