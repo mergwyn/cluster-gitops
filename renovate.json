@@ -6,7 +6,7 @@
     ":separateMultipleMajorReleases"
   ],
   "schedule": [
-    "* 2-6 * * 0,3,5"
+    "* 2-6 * * *"
   ],
   "timezone": "Europe/London",
   "internalChecksFilter": "strict",
