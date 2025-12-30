@@ -6,7 +6,7 @@ repositories:
 releases:
   - name: kube-prometheus-stack
     chart: prometheus-community/kube-prometheus-stack
-    version: 80.6.0
+    version: 80.7.0
     values:
       - ../../../settings/common.yaml
       - values.yaml
