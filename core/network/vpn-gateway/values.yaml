@@ -22,7 +22,7 @@ addons:
     gluetun:
       image:
         repository: docker.io/qmcgaw/gluetun
-        tag: v3.40.3
+        tag: v3.41.0
     # add for https://github.com/qdm12/gluetun/issues/2606
     securityContext:
       privileged: true
