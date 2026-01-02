@@ -5,14 +5,9 @@ image:
   tag: v4.2.3-thick@sha256:e93af9e533cc16ca7847aeec3b516c9b1e8891c2b95c727991e94c9b59c4970e
 
 cni:
-  image:
-    repository: rancher/hardened-cni-plugins
-    tag: v1.6.0-build20241022@sha256:900cfe5a70ca5749220c7a1363bf3e563ea48764b83b2fc9d078b9a0f8226ab0
 
   paths:
     bin: /var/lib/rancher/k3s/data/cni
     config: /var/lib/rancher/k3s/agent/etc/cni/net.d
-
-  version: "1.0.0"
 
   logLevel: debug
