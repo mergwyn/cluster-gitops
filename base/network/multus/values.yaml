@@ -10,12 +10,12 @@ controllers:
       main:
         image:
           repository: ghcr.io/k8snetworkplumbingwg/multus-cni
-          tag: v4.2.3-thick
+          tag: v4.2.3-thick@sha256:e93af9e533cc16ca7847aeec3b516c9b1e8891c2b95c727991e94c9b59c4970e
     initContainers:
       cni-installer:
         image:
           repository: rancher/hardened-cni-plugins
-          tag: v1.9.0-build20251215
+          tag: v1.9.0-build20251215@sha256:095324ab04261e82dce08dd3824563837bad246f424f3f57612e1881c63a5f80
 
 cni:
   paths:
