@@ -48,6 +48,7 @@ alertmanager:
 
   route:
     main:
+      enabled: true
       hostnames:
         - "alertmanager.{{.Values.global.domain}}"
       parentRefs:
@@ -119,6 +120,7 @@ prometheus:
 
   route:
     main:
+      enabled: true
       hostnames:
         - "prometheus.{{.Values.global.domain}}"
       parentRefs:
@@ -180,6 +182,7 @@ grafana:
         datasource: Prometheus
   route:
     main:
+      enabled: true
       hostnames:
         - "grafana.{{.Values.global.domain}}"
       parentRefs:
