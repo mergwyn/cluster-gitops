@@ -47,7 +47,7 @@ alertmanager:
 
 
   route:
-    app:
+    main:
       hostnames:
         - "alertmanager.{{.Values.global.domain}}"
       parentRefs:
@@ -118,7 +118,7 @@ prometheus:
         memory: 5G
 
   route:
-    app:
+    main:
       hostnames:
         - "prometheus.{{.Values.global.domain}}"
       parentRefs:
@@ -179,7 +179,7 @@ grafana:
         url: "https://raw.githubusercontent.com/openebs/zfs-localpv/develop/deploy/sample/grafana-dashboard.json"
         datasource: Prometheus
   route:
-    app:
+    main:
       hostnames:
         - "grafana.{{.Values.global.domain}}"
       parentRefs:
