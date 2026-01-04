@@ -89,7 +89,7 @@ service:
   annotations: {}
   labels: {}
   spec:
-    loadBalancerIP: 10.58.0.34
+    loadBalancerIP: 10.58.0.33
   loadBalancerSourceRanges: []
   externalIPs: []
 
@@ -187,4 +187,19 @@ extraObjects:
             users: "{{`{{ htpasswd .username .password }}`}}"
       dataFrom:
         - extract:
-            key: traefik_dashboard
+
+#   - apiVersion: gateway.networking.k8s.io/v1beta1
+#     kind: HTTPRoute
+#     metadata:
+#       name: redirect
+#       namespace: network
+#     spec:
+#       parentRefs:
+#         - namespace: network
+#           name: traefik-internal
+#           sectionName: http
+#       rules:
+#         - filters:
+#             - type: RequestRedirect
+#               requestRedirect:
+#                 scheme: https
