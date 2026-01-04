@@ -187,6 +187,7 @@ extraObjects:
             users: "{{`{{ htpasswd .username .password }}`}}"
       dataFrom:
         - extract:
+            key: traefik_dashboard
 
 #   - apiVersion: gateway.networking.k8s.io/v1beta1
 #     kind: HTTPRoute
