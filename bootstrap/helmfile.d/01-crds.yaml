@@ -20,4 +20,4 @@ repositories:
 releases:
   - name: kube-prometheus-stack
     chart: prometheus-community/kube-prometheus-stack
-    version: 80.10.0
+    version: 80.11.0
