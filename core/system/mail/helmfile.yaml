@@ -8,7 +8,7 @@ repositories:
 releases:
   - name: mail
     chart: bokysan/mail
-    version: 5.0.1
+    version: 5.1.0
     values:
       - values.yaml
 
