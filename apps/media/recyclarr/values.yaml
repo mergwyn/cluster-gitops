@@ -47,7 +47,13 @@ defaultPodOptions:
 
 persistence:
   config:
-    existingClaim: "{{ .Release.Name }}"
+    type: persistentVolumeClaim
+    storageClass: openebs-zfspv
+    accessMode: ReadWriteOnce
+    retain: true
+    size: 1G
+    globalMounts:
+      - path: /config
   config-file:
     type: configMap
     name: "{{ .Release.Name }}-configmap"
