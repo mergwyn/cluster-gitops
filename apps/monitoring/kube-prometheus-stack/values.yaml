@@ -91,7 +91,7 @@ prometheus:
         - k8s.replicaset.name
         - k8s.statefulset.name
       # Ingest OTLP data keeping all characters in metric/label names.
-      translation_strategy: NoUTF8EscapingWithSuffixes
+      # translation_strategy: NoUTF8EscapingWithSuffixes
     storage:
       # OTLP is a push-based protocol, Out of order samples is a common scenario.
       tsdb:
