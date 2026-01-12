@@ -38,6 +38,8 @@ zfs-localpv:
         memory: 53M
 
   zfsController:
+    backupGC:
+      enabled: true
     resources:
       requests:
         cpu: 10m
