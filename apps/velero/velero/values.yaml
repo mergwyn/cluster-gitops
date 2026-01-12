@@ -127,21 +127,21 @@ schedules:
   # idrive storage
   daily-idrive:
     disabled: false
-    schedule: "@daily"
+    schedule: "30 0 * * *"
     template:
       ttl: "168h"
       storageLocation: idrive
       # volumeSnapshotLocations: &idrivesnap []  # [idrive]
   weekly-idrive:
     disabled: false
-    schedule: "@weekly"
+    schedule: "30 1 * * 0"
     template:
       ttl: "672h"
       storageLocation: idrive
       # volumeSnapshotLocations: *idrivesnap
   monthly-idrive:
     disabled: false
-    schedule: "@monthly"
+    schedule: "30 2 1 * *"
     template:
       ttl: "2190h"
       storageLocation: idrive
