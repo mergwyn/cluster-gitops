@@ -1,0 +1,140 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: cluster-gitops
+  namespace: argocd
+
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+
+  generators:
+    - git:
+        repoURL: &repo https://github.com/mergwyn/cluster-gitops.git
+        revision: main
+        directories:
+          - path: base/*/*
+          - path: wave1/*/*
+        values:
+          env: "1"
+    - git:
+        repoURL: *repo
+        revision: main
+        directories:
+          - path: core/*/*
+          - path: wave2/*/*
+        values:
+          env: "2"
+    - git:
+        repoURL: *repo
+        revision: main
+        directories:
+          - path: apps/*/*
+          - path: wave3/*/*
+        values:
+          env: "3"
+    - git:
+        repoURL: *repo
+        revision: main
+        directories:
+          - path: late-apps/*/*
+          - path: wave4/*/*
+        values:
+          env: "4"
+
+  strategy:
+    type: RollingSync
+    # deletionOrder: Reverse
+    rollingSync:
+      steps:
+        - matchExpressions:
+            - key: wave
+              operator: In
+              values:
+                - "1"
+        - matchExpressions:
+            - key: wave
+              operator: In
+              values:
+                - "2"
+        - matchExpressions:
+            - key: wave
+              operator: In
+              values:
+                - "3"
+        - matchExpressions:
+            - key: wave
+              operator: In
+              values:
+                - "4"
+
+  template:
+    metadata:
+      name: '{{ .path.basename }}'
+      labels:
+        wave: '{{ .values.env }}'
+    spec:
+      project: default
+      source:
+        repoURL: *repo
+        targetRevision: main
+        path: '{{ .path.path }}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{ index .path.segments 1 }}'
+#          {{ if (eq (len .path.segments) 3) }}
+#          {{- index .path.segments 1 -}}
+#          {{ else }}
+#          {{- index .path.segments 2 -}}
+#          {{ end }}
+
+      syncPolicy:
+        automated:
+          enabled: true
+          allowEmpty: true
+          prune: true
+          selfHeal: false
+        syncOptions:
+          - ServerSideApply=true
+          - CreateNamespace=true
+          - RespectIgnoreDifferences=true
+
+      ignoreDifferences:
+        - kind: StatefulSet
+          group: '*'
+          name: mail
+          jsonPointers:
+            - /spec/volumeClaimTemplates
+            - /spec/template/metadata/annotations
+        - kind: GpuDevicePlugin
+          group: '*'
+          name: gpudeviceplugin
+          jsonPointers:
+            - /spec/resourceManager
+            - /spec/tolerations
+            - /metadata/annotations
+        - kind: ClusterPolicy
+          group: '*'
+          jsonPointers:
+            - /spec/rules/0/skipBackgroundRequests
+        - group: '*'
+          kind: Deployment
+          jqPathExpressions:
+            - .spec.template.spec.hostUsers
+        - group: '*'
+          kind: ExternalSecret
+          jqPathExpressions:
+            - .spec.dataFrom[].extract.conversionStrategy
+            - .spec.dataFrom[].extract.decodingStrategy
+            - .spec.dataFrom[].extract.metadataPolicy
+        - group: '*'
+          # https://github.com/argoproj/argo-cd/issues/22151
+          kind: HTTPRoute
+          jqPathExpressions:
+            - .spec.parentRefs[].group
+            - .spec.parentRefs[].kind
+            - .spec.rules[].matches
+            - .spec.rules[].backendRefs[].group
+            - .spec.rules[].backendRefs[].kind
+            - .spec.rules[].backendRefs[].weight
