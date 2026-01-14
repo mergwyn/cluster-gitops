@@ -25,7 +25,7 @@
       "description": ["Don't pin digests for packages that don't have/need a digest"],
       "matchDatasources": ["docker"],
       "matchDepNames": [
-        "ghcr.io/bjw-s/helm/app-template",
+        "ghcr.io/bjw-s-labs/helm/app-template",
         "ghcr.io/argoproj/argo-helm/argo-cd",
         "docker.io/qmcgaw/gluetun",
         "ghcr.io/kubereboot/charts/kured",
