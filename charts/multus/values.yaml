@@ -1,0 +1,47 @@
+---
+#
+# IMPORTANT NOTE
+#
+# This chart inherits from our common library chart. You can check the default values/options here:
+# https://github.com/bjw-s-labs/helm-charts/blob/main/charts/library/common/values.yaml
+#
+controllers:
+  multus:
+    containers:
+      cni:
+        image:
+          # -- multus installer repostory
+          repository: ghcr.io/k8snetworkplumbingwg/multus-cni
+          # -- multus installer tag
+          tag: "{{ .Chart.AppVersion }}-thick"
+          # -- multus installer pull policy
+          pullPolicy: IfNotPresent
+    initContainers:
+      cni-installer:
+        image:
+          # -- CNI installer repostory
+          repository: ghcr.io/angelnu/cni-plugins
+          # -- CNI installer tag
+          tag: 1.9.0
+          # -- CNI installer pull policy
+          pullPolicy: IfNotPresent
+      multus-installer: {}
+
+cni:
+  paths:
+    # -- CNI config folder for k3s.
+    # Change to `/etc/cni/net.d` for non k3s
+    config: /var/lib/rancher/k3s/agent/etc/cni/net.d
+
+    # -- CNI plugin binaries folder for k3s.
+    # Change to `/opt/cni/bin` for non k3s
+    bin: /var/lib/rancher/k3s/data/cni
+
+  # -- CNI log level
+  logLevel: verbose
+
+  # -- CNI interface version
+  version: "0.3.1"
+
+hostPaths:
+  netns: /run/netns/
