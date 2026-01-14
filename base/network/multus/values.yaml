@@ -5,9 +5,9 @@ image:
   tag: v4.2.3-thick@sha256:e93af9e533cc16ca7847aeec3b516c9b1e8891c2b95c727991e94c9b59c4970e
 
 controllers:
-  main:
+  multus:
     containers:
-      main:
+      cni:
         image:
           repository: ghcr.io/k8snetworkplumbingwg/multus-cni
           tag: v4.2.3-thick@sha256:e93af9e533cc16ca7847aeec3b516c9b1e8891c2b95c727991e94c9b59c4970e
