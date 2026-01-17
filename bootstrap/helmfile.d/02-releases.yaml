@@ -75,7 +75,7 @@ releases:
   - name: argocd
     namespace: argocd
     chart: argoproj/argo-cd
-    version: 9.2.4
+    version: 9.3.3
     values:
       - ../../base/argocd/argocd/values.yaml
     needs:
