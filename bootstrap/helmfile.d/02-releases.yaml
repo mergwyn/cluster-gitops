@@ -4,6 +4,10 @@ helmDefaults:
   wait: true
   waitForJobs: true
 
+apiVersions:
+  - traefik.io/v1alpha1o
+  - monitoring.coreos.com/v1
+
 repositories:
   - name: bedag
     url: https://bedag.github.io/helm-charts/
@@ -17,6 +21,7 @@ repositories:
 releases:
   - name: cert-manager-cloudflare-token
     chart: bedag/raw
+    namespace: security
     version: 2.0.2
     secrets:
       - ../../base/security/cert-manager/cloudflare-cert-manager-token-sops.yaml

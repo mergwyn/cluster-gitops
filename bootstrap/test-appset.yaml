@@ -10,9 +10,8 @@ spec:
         repoURL: https://github.com/mergwyn/cluster-gitops.git
         revision: dev-secrets
         directories:
-          - path: core/security/*
-          - path: bootstrap/security/external-secrets
-          - path: bootstrap/argocd/*
+          - path: base/security/*
+          - path: base/argocd/*
           # - path: core/*/*
           # - path: apps/*/*
           # - path: apps/downloaders/prowlarr

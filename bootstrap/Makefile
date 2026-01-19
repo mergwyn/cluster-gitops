@@ -5,19 +5,20 @@ appset := test-appset.yaml
 argons := argocd
 keys := /home/gary/.config/sops/age/keys.txt
 
-install: secrets crds apps appset
-
 all: cluster install
+
+install: secrets crds apps appset
 
 check: lint
 
 clean: clean-cluster
 
 crds:
-	helmfile -f $(crds) template -q |\
-	yq ea --exit-status 'select(.kind == "CustomResourceDefinition")' |\
-	kubectl apply --server-side -f -
-
+	helmfile -f $(crds) sync
+#	helmfile -f $(crds) template -q |\
+#	yq ea --exit-status 'select(.kind == "CustomResourceDefinition")' |\
+#	kubectl apply --server-side -f -
+#
 secrets: sops-age-key
 
 sops-age-key:
@@ -33,7 +34,7 @@ appset:
 	kubectl apply -f $(appset)
 
 cluster: clean-cluster
-	k3d cluster create $(cluster)  #--k3s-arg "--disable=traefik@server:0" --k3s-arg "--disable=servicelb@server:0"
+	k3d cluster create $(cluster) --servers 3 --k3s-arg "--disable=traefik@server:*" --k3s-arg "--disable=servicelb@server:*"
 
 clean-cluster:
 	k3d cluster delete $(cluster)

@@ -5,9 +5,9 @@ helmDefaults:
   cleanupOnFail: true
   wait: true
   waitForJobs: true
-  args:  # make sure sync and apply don't work
-    - --include-crds
-    - --no-hooks
+#  args:  # make sure sync and apply don't work
+    #- --include-crds
+    #- --no-hooks
 #  postRenderer: bash
 #  postRendererArgs:
 #    - -c
@@ -20,4 +20,43 @@ repositories:
 releases:
   - name: kube-prometheus-stack
     chart: prometheus-community/kube-prometheus-stack
+    namespace: monitoring
     version: 80.14.2
+    set:
+      - name: crds.enabled
+        value: true
+      - name: prometheusOperator.enabled
+        value: false
+      - name: prometheus.enabled
+        value: false
+      - name: alertmanager.enabled
+        value: false
+      - name: grafana.enabled
+        value: false
+      - name: kubeStateMetrics.enabled
+        value: false
+      - name: nodeExporter.enabled
+        value: false
+      - name: coreDns.enabled
+        value: false
+      - name: kubeControllerManager.enabled
+        value: false
+      - name: kubeEtcd.enabled
+        value: false
+      - name: kubeProxy.enabled
+        value: false
+      - name: kubeScheduler.enabled
+        value: false
+
+  - name: traefik
+    namespace: network
+    chart: oci://ghcr.io/traefik/helm/traefik
+    version: 38.0.2
+    set:
+      - name: providers.kubernetesCRD.enabled
+        value: true
+      - name: providers.kubernetesIngress.enabled
+        value: false
+      - name: service.enabled
+        value: false
+
