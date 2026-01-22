@@ -1,0 +1,7 @@
+# Application metadata for Argo CD / ApplicationSet
+# Phase 1: informational only – no behavioural change
+
+name: intel-device-plugins-gpu
+namespace: node-feature-discovery
+wave: 2
+env: prod

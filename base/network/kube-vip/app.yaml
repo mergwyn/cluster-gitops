@@ -1,0 +1,7 @@
+# Application metadata for Argo CD / ApplicationSet
+# Phase 1: informational only – no behavioural change
+
+name: kube-vip
+namespace: network
+wave: 1
+env: prod

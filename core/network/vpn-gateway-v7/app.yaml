@@ -1,0 +1,7 @@
+# Application metadata for Argo CD / ApplicationSet
+# Phase 1: informational only – no behavioural change
+
+name: vpn-gateway-v7
+namespace: network
+wave: 2
+env: prod

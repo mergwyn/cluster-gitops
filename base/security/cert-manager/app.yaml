@@ -1,0 +1,7 @@
+# Application metadata for Argo CD / ApplicationSet
+# Phase 1: informational only – no behavioural change
+
+name: cert-manager
+namespace: security
+wave: 1
+env: prod
