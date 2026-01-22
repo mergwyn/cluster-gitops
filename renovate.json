@@ -3,99 +3,12 @@
   "extends": [
     "config:best-practices",
     "mergeConfidence:all-badges",
-    ":separateMultipleMajorReleases"
-  ],
-  "schedule": [
-    "* 2-6 * * *"
-  ],
-  "timezone": "Europe/London",
-  "internalChecksFilter": "strict",
-  "internalChecksAsSuccess": true,
-  "ignorePaths": [
-    "disabled/**",
-    "archive/**"
-  ],
-  "helm-values": {
-    "managerFilePatterns": [
-      "/(^|/).*values.*.yaml(?:\\.gotmpl)?$/"
-    ]
-  },
-  "packageRules": [
-    {
-      "description": ["Don't pin digests for packages that don't have/need a digest"],
-      "matchDatasources": ["docker"],
-      "matchDepNames": [
-        "bjw-s-labs.github.io/helm-charts/app-template",
-        "ghcr.io/argoproj/argo-helm/argo-cd",
-        "docker.io/qmcgaw/gluetun",
-        "ghcr.io/kubereboot/charts/kured",
-        "ghcr.io/prometheus-community/charts/kube-prometheus-stack",
-        "quay.io/jetstack/charts/cert-manager",
-        "ghcr.io/external-secrets/charts/external-secrets",
-        "cr.strrl.dev/strrl/cloudflare-tunnel-ingress-controller"
-      ],
-      "pinDigests": false
-    },
-    {
-      "matchUpdateTypes": ["major", "minor", "patch", "digest"],
-      "minimumReleaseAge": "3 days"
-    },
-    {
-      "matchDatasources": ["docker"],
-      "matchUpdateTypes": ["digest"],
-      "minimumReleaseAge": "1 days"
-    },
-    {
-      "matchDatasources": ["docker"],
-      "matchUpdateTypes": ["minor"],
-      "minimumReleaseAge": "5 days"
-    },
-    {
-      "matchDatasources": ["docker"],
-      "matchDatasources": ["major"],
-      "minimumReleaseAge": "14 days"
-    },
-    {
-      "description": "Needed as there are old releases that breaks the tag discovery",
-      // "versioning": "regex:/^(?<major>]d+)].(?<minor>]d+)].(?<patch>]d+)-r(?<build>]]d)-ls(?<revision>.+)$",
-      "allowedVersions": "!(14.3.9|20.04.1)",
-      "matchPackageNames": [
-        "/^(gh|ls)cr.io\\/linuxserver\\/qbittorrent//"
-      ]
-    },
-//    {
-//      "versioning": "regex:^(?<compatibility>.*)\\.(?<major>.*)\\.(?<minor>.*)\\.(?<patch>.*)$",
-//      "matchPackageNames": [
-//        "/^(gh|ls)cr.io\\/linuxserver\\//",
-//        "/^ghcr.io\\/linuxserver\\/.*\\//"
-//      ]
-//    },
-//    {
-//      "versioning": "regex:^(?<compatibility>.*)\\.(?<major>.*)\\.(?<minor>.*)\\.(?<patch>.*)$",
-//      "matchPackageNames": [
-//        "/^plexinc\\//"
-//      ]
-//    },
-    {
-      "description": "auto merge patches",
-      "matchUpdateTypes": [
-        "patch"
-      ],
-      "matchCurrentVersion": "<2025.0.0",
-      "automerge": true,
-      "ignoreTests": true
-    },
-    {
-      "description": "Auto merge minors and patches",
-      "automerge": true,
-      "matchUpdateTypes": [
-        "minor",
-        "patch"
-      ],
-      "matchPackageNames": [
-        "/kube-prometheus-stack/"
-      ],
-      "ignoreTests": true
-    }
+    ":separateMultipleMajorReleases",
+    "./renovate/base.json",
+    "./renovate/helm.json",
+    "./renovate/release-ages.json",
+    "./renovate/docker.json",
+    "./renovate/automerge.json",
+    "./renovate/exceptions.json"
   ]
 }

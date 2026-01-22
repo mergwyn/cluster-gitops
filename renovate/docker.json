@@ -1,0 +1,23 @@
+{
+  "packageRules": [
+    {
+      "description": [
+        "Don't pin digests for packages that don't have/need a digest"
+      ],
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchDepNames": [
+        "bjw-s-labs.github.io/helm-charts/app-template",
+        "ghcr.io/argoproj/argo-helm/argo-cd",
+        "docker.io/qmcgaw/gluetun",
+        "ghcr.io/kubereboot/charts/kured",
+        "ghcr.io/prometheus-community/charts/kube-prometheus-stack",
+        "quay.io/jetstack/charts/cert-manager",
+        "ghcr.io/external-secrets/charts/external-secrets",
+        "cr.strrl.dev/strrl/cloudflare-tunnel-ingress-controller"
+      ],
+      "pinDigests": false
+    }
+  ]
+}

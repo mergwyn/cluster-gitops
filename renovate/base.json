@@ -1,0 +1,12 @@
+{
+  "schedule": [
+    "* 2-6 * * *"
+  ],
+  "timezone": "Europe/London",
+  "internalChecksFilter": "strict",
+  "internalChecksAsSuccess": true,
+  "ignorePaths": [
+    "disabled/**",
+    "archive/**"
+  ]
+}

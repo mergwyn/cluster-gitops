@@ -1,0 +1,11 @@
+{
+  "packageRules": [
+    {
+      "description": "Needed as there are old releases that breaks the tag discovery",
+      "allowedVersions": "!(14.3.9|20.04.1)",
+      "matchPackageNames": [
+        "/^(gh|ls)cr.io\\/linuxserver\\/qbittorrent//"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "packageRules": [
+    {
+      "description": "auto merge patches",
+      "matchUpdateTypes": [
+        "patch"
+      ],
+      "matchCurrentVersion": "<2025.0.0",
+      "automerge": true,
+      "ignoreTests": true
+    },
+    {
+      "description": "Auto merge minors and patches",
+      "automerge": true,
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "matchPackageNames": [
+        "/kube-prometheus-stack/"
+      ],
+      "ignoreTests": true
+    }
+  ]
+}
