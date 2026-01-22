@@ -4,11 +4,11 @@
     "config:best-practices",
     "mergeConfidence:all-badges",
     ":separateMultipleMajorReleases",
-    "./renovate/base.json",
-    "./renovate/helm.json",
-    "./renovate/release-ages.json",
-    "./renovate/docker.json",
-    "./renovate/automerge.json",
-    "./renovate/exceptions.json"
+    "github>mergwyn/cluster-gitops//renovate/base.json",
+    "github>mergwyn/cluster-gitops//renovate/helm.json",
+    "github>mergwyn/cluster-gitops//renovate/release-ages.json",
+    "github>mergwyn/cluster-gitops//renovate/docker.json",
+    "github>mergwyn/cluster-gitops//renovate/automerge.json",
+    "github>mergwyn/cluster-gitops//renovate/exceptions.json"
   ]
 }
