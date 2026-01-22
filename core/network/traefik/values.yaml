@@ -151,7 +151,6 @@ ingressRoute:
     tls: {}
 
 tlsStore:
-tlsStore:
   default:
     defaultCertificate:
       secretName: theclarkhome-com-tls
