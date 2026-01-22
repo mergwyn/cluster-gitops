@@ -1,0 +1,28 @@
+---
+name: ApplicationSet Safety
+
+on:
+  pull_request:
+    paths:
+      - argocd/appsets/**
+      - "**/app.yaml"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate app.yaml schema
+        run: |
+          find . -name app.yaml -exec yq e '.name and .namespace and .wave' {} \;
+
+      - name: Prevent wave regression
+        run: |
+          awk -F, '{print $2}' ops/expected-appset.csv \
+            | sort -n | uniq -c
+
+      - name: Detect duplicate app names
+        run: |
+          find . -name app.yaml -exec yq e '.name' {} \; \
+            | sort | uniq -d && exit 1 || exit 0
