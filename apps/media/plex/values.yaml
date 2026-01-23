@@ -75,7 +75,9 @@ controllers:
 service:
   app:
     type: LoadBalancer
-    loadBalancerIP: "10.58.0.34"
+    annotations:
+      kube-vip.io/loadbalancerIPs: 10.58.0.40
+    #loadBalancerIP: "10.58.0.34"
     ports:
       http:
         port: *port
