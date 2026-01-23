@@ -86,7 +86,8 @@ ports:
 service:
   enabled: true
   type: LoadBalancer
-  annotations: {}
+  annotations:
+    kube-vip.io/loadbalancerIPs: 10.58.0.41
   labels: {}
   spec:
     loadBalancerIP: 10.58.0.33
