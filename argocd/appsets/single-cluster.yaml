@@ -39,13 +39,13 @@ spec:
 
   template:
     metadata:
-      name: "{{name}}"
+      name: "{{.name}}"
       annotations:
-        argocd.argoproj.io/sync-wave: "{{wave}}"
+        argocd.argoproj.io/sync-wave: "{{.wave}}"
       labels:
         app.kubernetes.io/managed-by: applicationset
         applicationset: cluster-gitops
-        wave: "{{wave}}"
+        wave: "{{.wave}}"
 
     spec:
       project: default
@@ -53,13 +53,13 @@ spec:
       source:
         repoURL: https://github.com/mergwyn/cluster-gitops.git
         targetRevision: main
-        path: "{{path}}"
+        path: "{{.path}}"
         plugin:
           name: helmfile
 
       destination:
         server: https://kubernetes.default.svc
-        namespace: "{{namespace}}"
+        namespace: "{{.namespace}}"
 
       syncPolicy:
         automated:
