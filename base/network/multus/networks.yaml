@@ -3,7 +3,7 @@ rawResources:
   &net1 macvlan-static:
     apiVersion: k8s.cni.cncf.io/v1
     kind: NetworkAttachmentDefinition
-    forceRename: *net1 # needed to keep name same as historic NAD
+    forceRename: *net1  # needed to keep name same as historic NAD
     spec:
       spec:
         config: |-
@@ -18,6 +18,6 @@ rawResources:
               "subnet": "{{.Values.net.subnet}}.0/24",
               "gateway": "{{.Values.net.subnet}}.1",
               "rangeStart": "{{.Values.net.subnet}}.210",
-              "rangeEnd": "{{.Values.net.subnet}}.239"
+              "rangeEnd": "{{.Values.net.subnet}}.219"
             }
           }
