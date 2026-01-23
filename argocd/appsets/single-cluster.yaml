@@ -113,3 +113,11 @@ spec:
             - .spec.rules[].backendRefs[].group
             - .spec.rules[].backendRefs[].kind
             - .spec.rules[].backendRefs[].weight
+        # Cilium related
+        - group: apps
+          kind: DaemonSet
+          jqPathExpressions:
+            - .spec.template.metadata.annotations
+        - group: ""
+          kind: ConfigMap
+          name: cilium-config
