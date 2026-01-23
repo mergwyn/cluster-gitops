@@ -2,6 +2,7 @@
 # Phase 1: informational only – no behavioural change
 
 name: intel-device-plugins-operator
+path: core/node-feature-discovery/intel-device-plugins-operator
 namespace: node-feature-discovery
 wave: 2
 env: prod

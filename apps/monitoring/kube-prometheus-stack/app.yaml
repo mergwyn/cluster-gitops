@@ -2,6 +2,7 @@
 # Phase 1: informational only – not yet consumed
 
 name: kube-prometheus-stack
+path: apps/monitoring/kube-prometheus-stack
 namespace: monitoring
 wave: 3
 env: prod

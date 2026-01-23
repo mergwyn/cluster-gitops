@@ -2,6 +2,7 @@
 # Phase 1: informational only – no behavioural change
 
 name: multus
+path: base/network/multus
 namespace: network
 wave: 1
 env: prod

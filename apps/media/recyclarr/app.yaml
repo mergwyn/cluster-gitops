@@ -2,6 +2,7 @@
 # Phase 1: informational only – not yet consumed
 
 name: recyclarr
+path: apps/media/recyclarr
 namespace: media
 wave: 3
 env: prod

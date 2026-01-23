@@ -2,6 +2,7 @@
 # Phase 1: informational only – not yet consumed
 
 name: mosquitto
+path: apps/home-assistant/mosquitto
 namespace: home-assistant
 wave: 3
 env: prod

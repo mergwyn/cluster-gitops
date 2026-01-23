@@ -2,6 +2,7 @@
 # Phase 1: informational only – no behavioural change
 
 name: external-secrets
+path: base/security/external-secrets
 namespace: security
 wave: 1
 env: prod

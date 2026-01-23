@@ -2,6 +2,7 @@
 # Phase 1: informational only – no behavioural change
 
 name: openebs
+path: base/openebs/openebs
 namespace: openebs
 wave: 1
 env: prod

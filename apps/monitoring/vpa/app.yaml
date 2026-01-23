@@ -2,6 +2,7 @@
 # Phase 1: informational only – not yet consumed
 
 name: vpa
+path: apps/monitoring/vpa
 namespace: monitoring
 wave: 3
 env: prod

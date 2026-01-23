@@ -2,6 +2,7 @@
 # Phase 1: informational only – not yet consumed
 
 name: kyverno
+path: apps/system/kyverno
 namespace: system
 wave: 3
 env: prod

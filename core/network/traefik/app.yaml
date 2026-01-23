@@ -2,6 +2,7 @@
 # Phase 1: informational only – no behavioural change
 
 name: traefik
+path: core/network/traefik
 namespace: network
 wave: 2
 env: prod

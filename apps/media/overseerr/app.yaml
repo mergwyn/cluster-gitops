@@ -2,6 +2,7 @@
 # Phase 1: informational only – not yet consumed
 
 name: overseerr
+path: apps/media/overseerr
 namespace: media
 wave: 3
 env: prod

@@ -2,6 +2,7 @@
 # Phase 1: informational only – not yet consumed
 
 name: qbittorrent
+path: apps/vpn/qbittorrent
 namespace: vpn
 wave: 3
 env: prod

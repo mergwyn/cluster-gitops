@@ -2,6 +2,7 @@
 # Phase 1: informational only – no behavioural change
 
 name: vpn-gateway
+path: core/network/vpn-gateway
 namespace: network
 wave: 2
 env: prod

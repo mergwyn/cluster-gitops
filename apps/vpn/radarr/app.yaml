@@ -2,6 +2,7 @@
 # Phase 1: informational only – not yet consumed
 
 name: radarr
+path: apps/vpn/radarr
 namespace: vpn
 wave: 3
 env: prod
