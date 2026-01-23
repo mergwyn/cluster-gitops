@@ -39,7 +39,7 @@ spec:
 
   template:
     metadata:
-      name: "{{.name}}"
+      name: "{{.path.basename}}"
       annotations:
         argocd.argoproj.io/sync-wave: "{{.wave}}"
       labels:
@@ -53,7 +53,7 @@ spec:
       source:
         repoURL: https://github.com/mergwyn/cluster-gitops.git
         targetRevision: main
-        path: "{{.path}}"
+        path: "{{.path.path}}"
         plugin:
           name: helmfile
 
