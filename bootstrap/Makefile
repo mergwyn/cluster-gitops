@@ -1,40 +1,55 @@
-cluster := devcluster
-crds := helmfile.d/01-crds.yaml
-releases := helmfile.d/02-releases.yaml
-appset := test-appset.yaml
+cluster := dev
+crds := bootstrap/01-crds.yaml
+releases := bootstrap/02-releases.yaml
+appset := bootstrap-handover.yaml
 argons := argocd
 keys := /home/gary/.config/sops/age/keys.txt
+kubeconfig := ~/.kube/configs/k3s-lxc.yaml
 
 all: cluster install
 
-install: secrets crds apps appset
+install: preflight secrets crds apps appset
 
 check: lint
 
 clean: clean-cluster
 
 crds:
-	helmfile -f $(crds) sync
-#	helmfile -f $(crds) template -q |\
+	helmfile --kubeconfig ${kubeconfig} -f $(crds) sync
+#	helmfile --kubeconfig ${kubeconfig} -f $(crds) template -q |\
 #	yq ea --exit-status 'select(.kind == "CustomResourceDefinition")' |\
-#	kubectl apply --server-side -f -
+#	kubectl --kubeconfig ${kubeconfig} apply --server-side -f -
 #
 secrets: sops-age-key
 
 sops-age-key:
-	kubectl create ns $(argons)
-	kubectl create secret generic argocd-age-secret-keys --namespace=$(argons) --from-file=$(keys)
+	kubectl --kubeconfig ${kubeconfig} create ns $(argons)
+	kubectl --kubeconfig ${kubeconfig} create secret generic argocd-age-secret-keys --namespace=$(argons) --from-file=$(keys)
 
 apps: secrets crds sync
 
+preflight:
+	kubectl --kubeconfig ${kubeconfig} get nodes | grep Ready
+
 sync apply lint:
-	helmfile -f $(releases) $@
+	helmfile --kubeconfig ${kubeconfig} -f $(releases) $@
 
 appset:
-	kubectl apply -f $(appset)
+	kubectl --kubeconfig ${kubeconfig} apply -f $(appset)
 
 cluster: clean-cluster
-	k3d cluster create $(cluster) --servers 3 --k3s-arg "--disable=traefik@server:*" --k3s-arg "--disable=servicelb@server:*"
+cluster: clean-cluster
+	@echo ">>> Bootstrapping k3s LXC cluster"
+	HANDOVER_FILE=$(HANDOVER) bash ./bootstrap-k3s-lxc-cluster.sh
+
+	@echo ">>> Loading bootstrap handover"
+	@. ./$(HANDOVER) && \
+	mkdir -p $$(dirname $(KUBECONFIG)) && \
+	lxc exec $${FIRST_REMOTE}:$${FIRST_NODE} -- cat /etc/rancher/k3s/k3s.yaml \
+	  | sed "s/127.0.0.1/$${FIRST_IP}/" \
+	  > $(KUBECONFIG)
+
+	@echo ">>> kubeconfig written to $(KUBECONFIG)"
 
 clean-cluster:
-	k3d cluster delete $(cluster)
+	echo TDOO

@@ -23,6 +23,8 @@ releases:
     namespace: monitoring
     version: 80.14.4
     set:
+      # Bootstrap-only: install CRDs so ArgoCD can manage IngressRoute resources.
+      # Traefik runtime is installed later by ArgoCD using the same chart.
       - name: crds.enabled
         value: true
       - name: prometheusOperator.enabled
