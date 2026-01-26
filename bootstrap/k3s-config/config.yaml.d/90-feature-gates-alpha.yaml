@@ -1,0 +1,8 @@
+kube-apiserver-arg:
+  - feature-gates=InPlacePodVerticalScaling=true
+
+kube-controller-manager-arg:
+  - feature-gates=InPlacePodVerticalScaling=true
+
+kubelet-arg:
+  - feature-gates=InPlacePodVerticalScaling=true
