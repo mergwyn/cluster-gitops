@@ -5,13 +5,6 @@ helmDefaults:
   cleanupOnFail: true
   wait: true
   waitForJobs: true
-#  args:  # make sure sync and apply don't work
-    #- --include-crds
-    #- --no-hooks
-#  postRenderer: bash
-#  postRendererArgs:
-#    - -c
-#    - yq ea --exit-status 'select(.kind == "CustomResourceDefinition")' -
 
 repositories:
   - name: prometheus-community
@@ -23,8 +16,8 @@ releases:
     namespace: monitoring
     version: 80.14.4
     set:
-      # Bootstrap-only: install CRDs so ArgoCD can manage IngressRoute resources.
-      # Traefik runtime is installed later by ArgoCD using the same chart.
+      # Bootstrap-only: install CRDs so ArgoCD can manage prometheysRule resources.
+      # Runtime is installed later by ArgoCD using the same chart.
       - name: crds.enabled
         value: true
       - name: prometheusOperator.enabled
@@ -55,10 +48,11 @@ releases:
     chart: oci://ghcr.io/traefik/helm/traefik
     version: 38.0.2
     set:
+      # Bootstrap-only: install CRDs so ArgoCD can manage IngressRoute resources.
+      # Runtime is installed later by ArgoCD using the same chart.
       - name: providers.kubernetesCRD.enabled
         value: true
       - name: providers.kubernetesIngress.enabled
         value: false
       - name: service.enabled
         value: false
-
