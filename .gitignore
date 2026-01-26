@@ -3,4 +3,4 @@ Chart.lock
 default-values.yaml
 argocd-apps-backup.yaml
 bootstrap/cluster_token
-bootstrap/handover_env
+bootstrap/bootstrap.env
