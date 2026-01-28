@@ -148,22 +148,22 @@ schedules:
       # volumeSnapshotLocations: *idrivesnap
   # default storage
   hourly-default:
-    disabled: false
+    disabled: true
     schedule: "@hourly"
     template:
       ttl: "8"
   daily-default:
-    disabled: false
+    disabled: true
     schedule: "15 0 * * *"
     template:
       ttl: "168h"
   weekly-default:
-    disabled: false
+    disabled: true
     schedule: "15 1 * * 0"
     template:
       ttl: "672h"
   monthly-default:
-    disabled: false
+    disabled: true
     schedule: "15 2 1 * *"
     template:
       ttl: "2190h"
