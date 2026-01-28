@@ -68,6 +68,7 @@ controllers:
             /.code-server/logs
             /.git
             /.venv
+            /backups
             !
         securityContext:
           runAsUser: 0
