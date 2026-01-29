@@ -152,7 +152,7 @@ schedules:
     disabled: false
     schedule: "@hourly"
     template:
-      ttl: "8"
+      ttl: "24h"
   daily-default:
     disabled: false
     schedule: "15 0 * * *"
