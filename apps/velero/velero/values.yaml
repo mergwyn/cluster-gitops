@@ -24,9 +24,11 @@ configuration:
   # defaultVolumesToFsBackup: true
   defaultSnapshotMoveData: true
   features: EnableCSI
+  defaultRepoMaintainFrequency: 24h
 
   backupStorageLocation:
     - name: minio
+      default: true
       provider: aws
       bucket: velero
       credential:
@@ -38,18 +40,17 @@ configuration:
         s3Url: http://foxtrot.theclarkhome.com:9000
         publicUrl: http://foxtrot.theclarkhome.com:9000
 
-    - name: rustfs
-      provider: aws
-      bucket: velero
-      default: true
-      credential:
-        name: rustfs-s3-conf
-        key: cloud
-      config:
-        region: rustfs-Northallerton
-        s3ForcePathStyle: true
-        s3Url: http://foxtrot.theclarkhome.com:9090
-        publicUrl: http://foxtrot.theclarkhome.com:9090
+#    - name: rustfs
+#      provider: aws
+#      bucket: velero
+#      credential:
+#        name: rustfs-s3-conf
+#        key: cloud
+#      config:
+#        region: rustfs-Northallerton
+#        s3ForcePathStyle: true
+#        s3Url: http://foxtrot.theclarkhome.com:9090
+#        publicUrl: http://foxtrot.theclarkhome.com:9090
 
     - name: idrive
       provider: aws
@@ -148,22 +149,22 @@ schedules:
       # volumeSnapshotLocations: *idrivesnap
   # default storage
   hourly-default:
-    disabled: true
+    disabled: false
     schedule: "@hourly"
     template:
       ttl: "8"
   daily-default:
-    disabled: true
+    disabled: false
     schedule: "15 0 * * *"
     template:
       ttl: "168h"
   weekly-default:
-    disabled: true
+    disabled: false
     schedule: "15 1 * * 0"
     template:
       ttl: "672h"
   monthly-default:
-    disabled: true
+    disabled: false
     schedule: "15 2 1 * *"
     template:
       ttl: "2190h"
