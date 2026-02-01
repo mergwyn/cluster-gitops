@@ -27,34 +27,34 @@ controllers:
             "namespace": "network",
             "ips": ["10.58.0.210"]
           }]
-        pre.hook.backup.velero.io/container: sqlite-tools
-        pre.hook.backup.velero.io/command: |
-          /bin/sh -c '
-          set -e
-          echo "[velero] pre-backup sqlite WAL checkpoint"
-          command -v sqlite3 >/dev/null
-          sqlite3 /config/home-assistant_v2.db "PRAGMA wal_checkpoint(TRUNCATE);"
-          sync
-          '
-        post.hook.restore.velero.io/container: sqlite-tools
-        post.hook.restore.velero.io/command: |
-          /bin/sh -c '
-          set -e
-          echo "[velero] post-restore sqlite integrity check"
-          DB=/config/home-assistant_v2.db
-
-          if [ ! -f "$DB" ]; then
-            echo "HA DB missing after restore — refusing to start"
-            exit 1
-          fi
-
-          if ! sqlite3 "$DB" "PRAGMA integrity_check;" | grep -q "^ok$"; then
-            echo "HA DB integrity check FAILED — refusing to start"
-            exit 1
-          fi
-
-          echo "HA DB integrity check OK"
-          '
+#        pre.hook.backup.velero.io/container: sqlite-tools
+#        pre.hook.backup.velero.io/command: |
+#          /bin/sh -c '
+#          set -e
+#          echo "[velero] pre-backup sqlite WAL checkpoint"
+#          command -v sqlite3 >/dev/null
+#          sqlite3 /config/home-assistant_v2.db "PRAGMA wal_checkpoint(TRUNCATE);"
+#          sync
+#          '
+#        post.hook.restore.velero.io/container: sqlite-tools
+#        post.hook.restore.velero.io/command: |
+#          /bin/sh -c '
+#          set -e
+#          echo "[velero] post-restore sqlite integrity check"
+#          DB=/config/home-assistant_v2.db
+#
+#          if [ ! -f "$DB" ]; then
+#            echo "HA DB missing after restore — refusing to start"
+#            exit 1
+#          fi
+#
+#          if ! sqlite3 "$DB" "PRAGMA integrity_check;" | grep -q "^ok$"; then
+#            echo "HA DB integrity check FAILED — refusing to start"
+#            exit 1
+#          fi
+#
+#          echo "HA DB integrity check OK"
+#          '
 
     initContainers:
       kopiaignore:
@@ -258,7 +258,7 @@ persistence:
             subPath: nonexistent
 
 rawResources:
-  rules :
+  rules:
     kind: PrometheusRule
     apiVersion: monitoring.coreos.com/v1
     spec:
@@ -277,23 +277,23 @@ rawResources:
                 for: 5m
                 labels:
                   severity: critical
-          - alert: HomeAssistantGuardrailTriggered
-            expr: |
-              kube_pod_container_status_waiting_reason{
-                namespace="home-assistant",
-                pod=~"home-assistant-.*",
-                container="app",
-                reason="CrashLoopBackOff"
-              } > 0
-            for: 5m
-            labels:
-              severity: critical
-            annotations:
-              summary: Home Assistant refused to start (DB guardrail)
-              description: |
-                Home Assistant is CrashLooping.
-                This usually indicates a failed SQLite integrity check
-                after restore or storage corruption.
+              - alert: HomeAssistantGuardrailTriggered
+                expr: |
+                  kube_pod_container_status_waiting_reason{
+                    namespace="home-assistant",
+                    pod=~"home-assistant-.*",
+                    container="app",
+                    reason="CrashLoopBackOff"
+                  } > 0
+                for: 5m
+                labels:
+                  severity: critical
+                annotations:
+                  summary: Home Assistant refused to start (DB guardrail)
+                  description: |
+                    Home Assistant is CrashLooping.
+                    This usually indicates a failed SQLite integrity check
+                    after restore or storage corruption.
 
 route:
   app:
