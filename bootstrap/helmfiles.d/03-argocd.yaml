@@ -1,0 +1,21 @@
+---
+helmDefaults:
+  cleanupOnFail: true
+  wait: true
+  waitForJobs: true
+
+apiVersions:
+  - traefik.io/v1alpha1o
+  - monitoring.coreos.com/v1
+
+repositories:
+  - name: argoproj
+    url: https://argoproj.github.io/argo-helm/
+
+releases:
+  - name: argocd
+    namespace: argocd
+    chart: argoproj/argo-cd
+    version: 9.3.4
+    values:
+      - ../../base/argocd/argocd/values.yaml

@@ -49,6 +49,27 @@ cluster: clean-cluster
 	chmod og-rwx $(kubeconfig)
 	@echo ">>> kubeconfig written to $(kubeconfig)"
 
+cluster: clean-cluster
+	@echo ">>> Bootstrapping k3s LXC cluster"
+	HANDOVER_FILE=$(handover) bash ./bootstrap-k3s-lxc-cluster.sh $(cluster)
+
+	@echo ">>> Loading bootstrap handover"
+	mkdir -p $$(dirname $(kubeconfig))
+	. ./$(handover) && \
+	lxc exec $${FIRST_REMOTE}:$${FIRST_NODE} -- cat /etc/rancher/k3s/k3s.yaml \
+	  | sed "s/127.0.0.1/$${FIRST_IP}/" \
+	  > $(kubeconfig)
+
+	@echo ">>> Running kubeconfig hygiene"
+	./scripts/kubeconfig-hygiene.sh \
+	  $(kubeconfig) \
+	  $(cluster) \
+	  $(argons)
+
+	chmod 600 $(kubeconfig)
+	@echo ">>> kubeconfig written to $(kubeconfig)"
+
+
 clean-cluster:
 	@echo ">>> Cleaning $(cluster) LXC cluster"
 	@sh -ec '. ./$(handover); \

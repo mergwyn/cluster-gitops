@@ -4,10 +4,6 @@ helmDefaults:
   wait: true
   waitForJobs: true
 
-apiVersions:
-  - traefik.io/v1alpha1o
-  - monitoring.coreos.com/v1
-
 repositories:
   - name: bedag
     url: https://bedag.github.io/helm-charts/
@@ -15,8 +11,6 @@ repositories:
     url: https://charts.jetstack.io/
   - name: external-secrets
     url: https://charts.external-secrets.io/
-  - name: argoproj
-    url: https://argoproj.github.io/argo-helm/
 
 releases:
   - name: cert-manager-cloudflare-token
@@ -77,11 +71,3 @@ releases:
     needs:
       - security/bitwarden-store
 
-  - name: argocd
-    namespace: argocd
-    chart: argoproj/argo-cd
-    version: 9.3.4
-    values:
-      - ../../base/argocd/argocd/values.yaml
-    needs:
-      - argocd/argocd-externalsecret
