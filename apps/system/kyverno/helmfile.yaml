@@ -4,51 +4,7 @@ repositories:
     url: https://bedag.github.io/helm-charts/
   - name: kyverno
     url: https://kyverno.github.io/kyverno/
-
 releases:
-  - name: kyverno
-    # chart: oci://ghcr.io/kyverno/charts/kyverno
-    chart: kyverno/kyverno
-    version: 3.6.2
-    values:
-      - values.yaml
-
-  #  - name: kyverno-policies
-  #    chart: oci://ghcr.io/kyverno/charts/kyverno-policies
-  #    version: 3.5.2
-  #    values:
-  #      - policy-values.yaml
-  #    needs:
-  #      - kyverno
-
-#   - name: kyverno-add-velero-label-to-ns-policy
-#     chart: bedag/raw
-#     version: 2.0.2
-#     needs:
-# 
-#     values:
-#       - add-velero-label-to-ns.yaml
-# 
-#   - name: kyverno-backup-all-volumes-policy
-#     chart: bedag/raw
-#     version: 2.0.2
-#     needs:
-#       - kyverno
-#     values:
-#       - backup-all-volumes.yaml
-
-  - name: kyverno-set-pv-to-retain-on-keep-policy
-    chart: bedag/raw
-    version: 2.0.2
-    needs:
-      - kyverno
-    values:
-      - set-pv-to-retain-on-keep.yaml
-
-  - name: remove-cpu-limits-requests
-    chart: bedag/raw
-    version: 2.0.2
-    needs:
-      - kyverno
-    values:
-      - remove-cpu-limits-requests.yaml
+  - system
+  - system
+  - system

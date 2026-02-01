@@ -1,8 +1,2 @@
-# Application metadata for Argo CD / ApplicationSet
-# Phase 1: informational only – no behavioural change
-
-name: mail
-path: core/system/mail
-namespace: system
 wave: 2
-env: prod
+namespace: system

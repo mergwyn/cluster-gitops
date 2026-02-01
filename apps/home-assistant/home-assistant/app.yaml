@@ -1,8 +1,2 @@
-# Application metadata for Argo CD / ApplicationSet
-# Phase 1: informational only – not yet consumed
-
-name: home-assistant
-path: apps/home-assistant/home-assistant
-namespace: home-assistant
 wave: 3
-env: prod
+namespace: home-assistant

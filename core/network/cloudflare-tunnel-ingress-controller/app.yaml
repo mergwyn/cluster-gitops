@@ -1,8 +1,2 @@
-# Application metadata for Argo CD / ApplicationSet
-# Phase 1: informational only – no behavioural change
-
-name: cloudflare-tunnel-ingress-controller
-path: core/network/cloudflare-tunnel-ingress-controller
-namespace: network
 wave: 2
-env: prod
+namespace: network

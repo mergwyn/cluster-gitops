@@ -2,12 +2,5 @@
 repositories:
   - name: bjw-s-labs
     url: https://bjw-s-labs.github.io/helm-charts
-
 releases:
-  - name: radarr
-    chart: bjw-s-labs/app-template
-    version: 4.6.2
-    values:
-      - ../../../settings/common.yaml
-      - values.yaml
-      - externalsecret.yaml
+  - vpn

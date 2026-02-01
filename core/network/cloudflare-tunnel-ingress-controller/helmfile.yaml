@@ -4,16 +4,6 @@ repositories:
     url: https://helm.strrl.dev
   - name: bedag
     url: https://bedag.github.io/helm-charts/
-
 releases:
-  - name: cloudflare-tunnel-ingress-controller
-    chart: strrl.dev/cloudflare-tunnel-ingress-controller
-    version: 0.0.21
-    values:
-      - values.yaml
-
-  - name: cloudflare-tunnel-ingress-controller-external-secret
-    chart: bedag/raw
-    version: 2.0.2
-    values:
-      - externalsecret.yaml
+  - network
+  - network
