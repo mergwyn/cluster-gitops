@@ -3,47 +3,6 @@ set -euo pipefail
 
 BOOTSTRAP_DIR="00-bootstrap"
 
-check_bootstrap_relative_paths() {
-  echo "🔍 checking bootstrap relative paths"
-  echo "🔍 NOT CHECKING BOOTSTRAP RELATIVE PATHS"
-  return
-
-  repo_root="$(git rev-parse --show-toplevel)"
-
-  find ${BOOTSTRAP_DIR} -type f \( -name 'helmfile.yaml' -o -path '*/helmfile.d/*.yaml' \) |
-  while read -r hf; do
-    hf_dir="$(dirname "$hf")"
-
-    yq e '
-      [
-        .bases[]?,
-        .helmfiles[]?,
-        .values[]?,
-        .files[]?
-      ]
-      | .[]
-      | select(type == "string")
-      | select(startswith("./") or startswith("../"))
-    ' "$hf" | while read -r rel; do
-      abs="$(realpath -m "$hf_dir/$rel")"
-
-      # must exist
-      if [[ ! -e "$abs" ]]; then
-        echo "❌ $hf references missing path: $rel"
-        echo "   → resolved to: $abs"
-        exit 1
-      fi
-
-      # must stay inside repo
-      if [[ "$abs" != "$repo_root"* ]]; then
-        echo "❌ $hf path escapes repo root: $rel"
-        echo "   → resolved to: $abs"
-        exit 1
-      fi
-    done
-  done
-}
-
 FAILED=0
 
 command -v yq >/dev/null || {
@@ -103,7 +62,31 @@ done
 
 if [[ -d "$BOOTSTRAP_DIR" ]]; then
   echo "→ validating $BOOTSTRAP_DIR for relative path escapes"
-  check_bootstrap_relative_paths
+  REPO_ROOT="$(git rev-parse --show-toplevel)"
+
+  while read -r rel; do
+    file="$(grep -Rnl -- "$rel" "$BOOTSTRAP_DIR" | head -n1)"
+    dir="$(dirname "$file")"
+    abs="$(realpath -m "$dir/$rel")"
+
+    if [[ ! -e "$abs" ]]; then
+      echo "❌ Broken bootstrap reference"
+      echo "   File: $file"
+      echo "   Ref:  $rel"
+      echo "   → $abs does not exist"
+      FAILED=1
+    elif [[ "$abs" != "$REPO_ROOT"* ]]; then
+      echo "❌ Bootstrap path escapes repo"
+      echo "   File: $file"
+      echo "   Ref:  $rel"
+      echo "   → $abs"
+      FAILED=1
+    fi
+  done < <(
+    grep -RhoE '^[[:space:]]*-[[:space:]]*(\./|\.\./)[^[:space:]]+' "$BOOTSTRAP_DIR" \
+      | sed -E 's/^[[:space:]]*-[[:space:]]*//'
+  )
+
 fi
 
 if [[ "$FAILED" -ne 0 ]]; then
