@@ -1,0 +1,6 @@
+---
+repositories:
+  - name: gabe565
+    url: https://charts.gabe565.com
+releases:
+  - node-feature-discovery

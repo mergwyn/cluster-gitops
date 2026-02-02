@@ -1,0 +1,45 @@
+---
+# --- Core ---
+kubeProxyReplacement: true
+k8sServiceHost: 127.0.0.1
+k8sServicePort: 6443
+#enableHostServices: true
+
+# --- Routing ---
+routingMode: tunnel
+tunnelProtocol: vxlan
+
+enableHostRouting: true
+#enableHostLegacyRouting: false
+#
+devices: br0
+#autoDirectNodeRoutes: false
+
+
+#routingMode: native
+#directRoutingDevice: br0
+#autoDirectNodeRoutes: true
+#ipv4NativeRoutingCIDR: 10.42.0.0/16   # KEEP your existing Pod CIDR
+#extraArgs:
+#  - --direct-routing-device=br0
+
+# --- Masquerading ---
+# set both to false after the migration
+enableIPv4Masquerade: true
+bpf:
+  masquerade: true
+
+# --- CNI ---
+ipam:
+  mode: kubernetes
+
+# --- k3s specifics ---
+k8s:
+  requireIPv4PodCIDR: true
+
+#hostPort:
+#  enabled: true
+
+# --- Safety ---
+operator:
+  replicas: 2

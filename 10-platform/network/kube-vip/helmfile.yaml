@@ -1,0 +1,6 @@
+---
+repositories:
+  - name: kube-vip
+    url: https://kube-vip.github.io/helm-charts
+releases:
+  - network

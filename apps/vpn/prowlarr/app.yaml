@@ -1,8 +1,0 @@
-# Application metadata for Argo CD / ApplicationSet
-# Phase 1: informational only – not yet consumed
-
-name: prowlarr
-path: apps/vpn/prowlarr
-namespace: vpn
-wave: 3
-env: prod

@@ -1,0 +1,6 @@
+---
+repositories:
+  - name: intel
+    url: https://intel.github.io/helm-charts
+releases:
+  - node-feature-discovery

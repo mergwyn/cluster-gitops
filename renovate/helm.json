@@ -1,4 +1,11 @@
 {
+  "extends": ["config:recommended"],
+  "helmfile": {
+    "fileMatch": [
+      "(^|/)helmfile\\.yaml$",
+      "(^|/)helmfile\\.ya?ml\\.gotmpl$"
+    ]
+  },
   "helm-values": {
     "managerFilePatterns": [
       "/(^|/).*values.*.yaml(?:\\.gotmpl)?$/"

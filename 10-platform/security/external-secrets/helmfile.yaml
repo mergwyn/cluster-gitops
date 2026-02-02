@@ -1,0 +1,14 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/helmfile
+
+apiVersions:
+  - "monitoring.coreos.com/v1/ServiceMonitor"
+repositories:
+  - name: bedag
+    url: https://bedag.github.io/helm-charts/
+  - name: external-secrets
+    url: https://charts.external-secrets.io/
+releases:
+  - security
+  - security
+  - security

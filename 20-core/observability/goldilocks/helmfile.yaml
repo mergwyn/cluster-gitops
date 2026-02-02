@@ -1,0 +1,6 @@
+---
+repositories:
+  - name: fairwinds-stable
+    url: https://charts.fairwinds.com/stable
+releases:
+  - monitoring

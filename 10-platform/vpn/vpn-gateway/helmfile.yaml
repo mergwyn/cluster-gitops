@@ -1,0 +1,9 @@
+---
+repositories:
+  - name: angelnu
+    url: http://angelnu.github.io/helm-charts
+  - name: bedag
+    url: https://bedag.github.io/helm-charts/
+releases:
+  - network
+  - network

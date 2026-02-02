@@ -1,0 +1,29 @@
+---
+# MetalLB – platform load balancer
+# Namespace and cluster defaults are handled here
+# Environment controls behaviour (replicas, logging, etc)
+
+environments:
+  default:
+    values:
+      # - values.yaml
+      - ../../../clusters/k3s-prod.yaml
+
+  dev:
+    values:
+      # - values.yaml
+      # - values-dev.yaml
+      - ../../../clusters/k3s-dev.yaml
+---
+repositories:
+  - name: metallb
+    url: https://metallb.github.io/metallb
+
+releases:
+  - name: metallb
+    namespace: metallb-system
+    chart: metallb/metallb
+    version: 0.14.5
+    values:
+      - values.yaml
+      #- ../../../clusters/{{ .Environment.Name }}.yaml

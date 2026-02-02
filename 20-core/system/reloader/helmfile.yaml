@@ -1,0 +1,6 @@
+---
+repositories:
+  - name: stakater
+    url: https://stakater.github.io/stakater-charts
+releases:
+  - system
