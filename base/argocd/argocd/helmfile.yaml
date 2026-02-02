@@ -1,22 +1,21 @@
 ---
 apiVersions:
   - monitoring.coreos.com/v1
-
 repositories:
   - name: bedag
     url: https://bedag.github.io/helm-charts/
   - name: argoproj
     url: https://argoproj.github.io/argo-helm/
-
 releases:
   - name: argocd
     chart: argoproj/argo-cd
     version: 9.3.7
     values:
       - values.yaml
-
+    namespace: argocd
   - name: argocd-externalsecret
     chart: bedag/raw
     version: 2.0.2
     values:
       - externalsecret.yaml
+    namespace: argocd

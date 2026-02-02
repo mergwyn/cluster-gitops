@@ -2,10 +2,10 @@
 repositories:
   - name: fairwinds-stable
     url: https://charts.fairwinds.com/stable
-
 releases:
   - name: vpa
     chart: fairwinds-stable/vpa
     version: 4.10.1
     values:
       - values.yaml
+    namespace: monitoring

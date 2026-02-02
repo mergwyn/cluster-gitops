@@ -2,7 +2,6 @@
 repositories:
   - name: gabe565
     url: https://charts.gabe565.com
-
 releases:
   - name: generic-device-plugin
     chart: gabe565/generic-device-plugin
@@ -10,3 +9,4 @@ releases:
     version: 0.1.3
     values:
       - values.yaml
+    namespace: node-feature-discovery

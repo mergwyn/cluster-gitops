@@ -3,26 +3,24 @@
 
 apiVersions:
   - "monitoring.coreos.com/v1/ServiceMonitor"
-
 repositories:
   - name: bedag
     url: https://bedag.github.io/helm-charts/
   - name: external-secrets
     url: https://charts.external-secrets.io/
-
 releases:
   - name: external-secrets
     chart: external-secrets/external-secrets
     version: 1.3.1
     values:
       - values.yaml
-
+    namespace: security
   - name: bitwarden-access-token
     chart: bedag/raw
     version: 2.0.2
     secrets:
-     - bitwarden-access-token-sops.yaml
-
+      - bitwarden-access-token-sops.yaml
+    namespace: security
   - name: bitwarden-store
     chart: bedag/raw
     version: 2.0.2
@@ -30,3 +28,4 @@ releases:
       - bitwarden-store.yaml
     needs:
       - bitwarden-access-token
+    namespace: security

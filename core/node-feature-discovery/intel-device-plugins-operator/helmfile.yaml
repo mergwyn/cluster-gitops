@@ -2,7 +2,6 @@
 repositories:
   - name: intel
     url: https://intel.github.io/helm-charts
-
 releases:
   - name: intel-device-plugins-operator
     chart: intel/intel-device-plugins-operator
@@ -11,3 +10,4 @@ releases:
       - resources:
           limits:
             cpu: null
+    namespace: node-feature-discovery

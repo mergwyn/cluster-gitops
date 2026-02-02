@@ -1,8 +1,1 @@
-# Application metadata for Argo CD / ApplicationSet
-# Phase 1: informational only – no behavioural change
-
-name: node-feature-discovery
-path: core/node-feature-discovery/node-feature-discovery
-namespace: node-feature-discovery
 wave: 2
-env: prod

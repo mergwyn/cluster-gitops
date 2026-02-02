@@ -2,7 +2,6 @@
 repositories:
   - name: bjw-s-labs
     url: https://bjw-s-labs.github.io/helm-charts
-
 releases:
   - name: prowlarr
     chart: bjw-s-labs/app-template
@@ -11,3 +10,4 @@ releases:
       - ../../../settings/common.yaml
       - values.yaml
       - externalsecret.yaml
+    namespace: vpn

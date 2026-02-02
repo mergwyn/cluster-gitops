@@ -2,7 +2,6 @@
 repositories:
   - name: vmware-tanzu
     url: https://vmware-tanzu.github.io/helm-charts
-
 releases:
   - name: velero
     # chart: oci://ghcr.io/vmware-tanzu/charts/velero
@@ -13,3 +12,4 @@ releases:
     values:
       - values.yaml
       - externalsecret.yaml
+    namespace: velero

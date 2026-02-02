@@ -4,20 +4,19 @@ repositories:
     url: https://bedag.github.io/helm-charts/
   - name: jetstack
     url: https://charts.jetstack.io/
-
 releases:
   - name: cert-manager-cloudflare-token
     chart: bedag/raw
     version: 2.0.2
     secrets:
       - cloudflare-cert-manager-token-sops.yaml
-
+    namespace: security
   - name: cert-manager
     chart: jetstack/cert-manager
     version: v1.19.2
     values:
       - values.yaml
-
+    namespace: security
   - name: cert-manager-resources
     chart: bedag/raw
     version: 2.0.2
@@ -25,3 +24,4 @@ releases:
       - resources.yaml
     needs:
       - cert-manager
+    namespace: security
