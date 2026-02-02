@@ -18,4 +18,4 @@ releases:
     chart: argoproj/argo-cd
     version: 9.3.4
     values:
-      - ../../base/argocd/argocd/values.yaml
+      - ../../10-platform/argocd/argocd/values.yaml
