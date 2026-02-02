@@ -1,6 +1,6 @@
 cluster := k3s-dev
-crds := initial-apps/01-crds.yaml
-releases := initial-apps/02-releases.yaml
+crds := helmfile.d/01-crds.yaml
+releases := helmfile.d/02-releases.yaml
 appset := bootstrap-handover.yaml
 handover := bootstrap.env
 argons := argocd
