@@ -106,6 +106,7 @@ controllers:
         env:
           TZ: Europe/London
           VENV_FOLDER: /venv
+          VSCODE_AGENT_FOLDER: "/config/.vscode-server"
         envFrom:
           - secretRef:
               name: "{{.Release.Name}}-github"
