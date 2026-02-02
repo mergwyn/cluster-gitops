@@ -86,13 +86,18 @@ controllers:
             if [ ! -d .git ] ; then
               # This container will never have git installed
               apt update && apt install -y git
-              # Prepare to clone
-              mkdir temp-dir
-              git clone https://github.com/mergwyn/home-assistant-config temp-dir
-              mv temp-dir/.git .
-              rm -rf temp-dir
+
+              # Clone into a temp location
+              git clone https://github.com/mergwyn/home-assistant-config /tmp/repo
+
+              # Move the git metadata and any missing files to /config
+              cp -rn /tmp/repo/. /config/
+              rm -rf /tmp/repo
+
               # Finally get files
               git checkout .
+              # Set identity so Git doesn't complain later
+              git config --global --add safe.directory /config
             fi
         securityContext:
           runAsUser: 0
