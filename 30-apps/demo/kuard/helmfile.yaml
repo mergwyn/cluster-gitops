@@ -7,6 +7,6 @@ releases:
   - name: kuard
     chart: bjw-s-labs/app-template
     version: 4.6.2
-    namespace: default
+    namespace: demo-test
     values:
       - values.yaml
