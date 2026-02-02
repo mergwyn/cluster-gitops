@@ -28,4 +28,4 @@ service:
     type: ClusterIP
     ports:
       http:
-        port: http
+        port: 80
