@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+shopt -s globstar
 
 BOOTSTRAP_DIR="00-bootstrap"
 
@@ -14,6 +15,9 @@ echo "🔍 Running GitOps pre-commit checks..."
 
 # Only check files staged for commit
 FILES=$(git diff --cached --name-only)
+if [[ -z ${FILES} ]] ; then
+  FILES=$(ls **/helmfile.yaml **/helfile.d/*.yaml)
+  fi
 
 # --- app.yaml validation ---
 for app in $(echo "$FILES" | grep -E '(^|/)app\.yaml$' || true); do

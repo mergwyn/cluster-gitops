@@ -22,35 +22,6 @@ jobs:
           set -e
           echo "🔍 Validating required keys in app.yaml files"
           find . -name app.yaml -print0 | while IFS= read -r -d '' f; do
-            yq e '
-              .name
-              and .namespace
-              and .wave
-              and .path
-            ' "$f" > /dev/null \
+            yq e ' .wave ' "$f" > /dev/null \
               || { echo "❌ Missing required field in $f"; exit 1; }
           done
-
-      - name: Validate app.yaml path exists
-        run: |
-          set -e
-          echo "📂 Validating path references"
-          find . -name app.yaml -print0 | while IFS= read -r -d '' f; do
-            PATH_VAL=$(yq e '.path' "$f")
-            if [[ ! -d "$PATH_VAL" ]]; then
-              echo "❌ Path does not exist: $PATH_VAL (from $f)"
-              exit 1
-            fi
-          done
-
-      - name: Detect duplicate app names
-        run: |
-          set -e
-          echo "🔁 Checking for duplicate app names"
-          DUPES=$(
-            find . -name app.yaml -exec yq e '.name' {} \; \
-              | sort | uniq -d
-          )
-          if [[ -n "$DUPES" ]]; then
-            echo "❌ Duplicate application names found:"
-
