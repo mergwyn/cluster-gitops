@@ -6,12 +6,12 @@
         "patch"
       ],
       "matchCurrentVersion": "<2025.0.0",
-      "automerge": true,
+      "automerge": false,
       "ignoreTests": true
     },
     {
       "description": "Auto merge minors and patches",
-      "automerge": true,
+      "automerge": false,
       "matchUpdateTypes": [
         "minor",
         "patch"
