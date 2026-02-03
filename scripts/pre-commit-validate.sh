@@ -16,8 +16,8 @@ echo "🔍 Running GitOps pre-commit checks..."
 # Only check files staged for commit
 FILES=$(git diff --cached --name-only)
 if [[ -z ${FILES} ]] ; then
-  FILES=$(ls **/helmfile.yaml **/helfile.d/*.yaml)
-  fi
+  FILES=$(ls [0-9]*/**/helmfile.yaml [0-9]*/**/helmfile.d/*.yaml)
+fi
 
 # --- app.yaml validation ---
 for app in $(echo "$FILES" | grep -E '(^|/)app\.yaml$' || true); do
