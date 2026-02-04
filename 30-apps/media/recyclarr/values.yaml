@@ -48,11 +48,7 @@ defaultPodOptions:
 
 persistence:
   config:
-    type: persistentVolumeClaim
-    storageClass: openebs-zfspv
-    accessMode: ReadWriteOnce
-    retain: true
-    size: 1G
+    type: emptyDir
     globalMounts:
       - path: /config
   config-file:
