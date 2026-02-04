@@ -12,10 +12,10 @@ releases:
       - values.yaml
     secrets:
       - privatevpn-ovn-conf-sops.yaml
-    namespace: network
+    namespace: '{{ (readFile "app.yaml" | fromYaml).appNamespace }}'
   - name: pod-gateway-externalsecret
     chart: bedag/raw
     version: 2.0.2
     values:
       - externalsecret.yaml
-    namespace: network
+    namespace: '{{ (readFile "app.yaml" | fromYaml).appNamespace }}'

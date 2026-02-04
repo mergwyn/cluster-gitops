@@ -8,4 +8,4 @@ releases:
     version: 0.9.5
     values:
       - values.yaml
-    namespace: network
+    namespace: '{{ (readFile "app.yaml" | fromYaml).appNamespace }}'

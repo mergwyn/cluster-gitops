@@ -12,10 +12,10 @@ releases:
     version: 9.3.7
     values:
       - values.yaml
-    namespace: argocd
+    namespace: '{{ (readFile "app.yaml" | fromYaml).appNamespace }}'
   - name: argocd-externalsecret
     chart: bedag/raw
     version: 2.0.2
     values:
       - externalsecret.yaml
-    namespace: argocd
+    namespace: '{{ (readFile "app.yaml" | fromYaml).appNamespace }}'

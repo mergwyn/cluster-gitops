@@ -12,4 +12,4 @@ releases:
     values:
       - values.yaml
       - externalsecret.yaml
-    namespace: velero
+    namespace: '{{ (readFile "app.yaml" | fromYaml).appNamespace }}'

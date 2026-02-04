@@ -8,4 +8,4 @@ releases:
     version: 0.18.3
     values:
       - values.yaml
-    namespace: node-feature-discovery
+    namespace: '{{ (readFile "app.yaml" | fromYaml).appNamespace }}'

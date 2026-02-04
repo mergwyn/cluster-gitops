@@ -10,10 +10,10 @@ releases:
     version: 5.1.0
     values:
       - values.yaml
-    namespace: system
+    namespace: '{{ (readFile "app.yaml" | fromYaml).appNamespace }}'
   - name: mail-external-secret
     chart: bedag/raw
     version: 2.0.2
     values:
       - externalsecret.yaml
-    namespace: system
+    namespace: '{{ (readFile "app.yaml" | fromYaml).appNamespace }}'

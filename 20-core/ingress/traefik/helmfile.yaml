@@ -10,4 +10,4 @@ releases:
     version: 38.0.2
     values:
       - values.yaml
-    namespace: network
+    namespace: '{{ (readFile "app.yaml" | fromYaml).appNamespace }}'

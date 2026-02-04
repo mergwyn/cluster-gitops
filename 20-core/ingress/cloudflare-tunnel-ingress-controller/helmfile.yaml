@@ -10,10 +10,10 @@ releases:
     version: 0.0.21
     values:
       - values.yaml
-    namespace: network
+    namespace: '{{ (readFile "app.yaml" | fromYaml).appNamespace }}'
   - name: cloudflare-tunnel-ingress-controller-external-secret
     chart: bedag/raw
     version: 2.0.2
     values:
       - externalsecret.yaml
-    namespace: network
+    namespace: '{{ (readFile "app.yaml" | fromYaml).appNamespace }}'

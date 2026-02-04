@@ -2,11 +2,10 @@
 repositories:
   - name: bjw-s-labs
     url: https://bjw-s-labs.github.io/helm-charts
-
 releases:
   - name: kuard
     chart: bjw-s-labs/app-template
     version: 4.6.2
-    namespace: demo-test
+    namespace: '{{ (readFile "app.yaml" | fromYaml).appNamespace }}'
     values:
       - values.yaml

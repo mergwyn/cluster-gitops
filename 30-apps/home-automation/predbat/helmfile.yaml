@@ -9,4 +9,4 @@ releases:
     values:
       - ../../../settings/common.yaml
       - values.yaml
-    namespace: home-assistant
+    namespace: '{{ (readFile "app.yaml" | fromYaml).appNamespace }}'

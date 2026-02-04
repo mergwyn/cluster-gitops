@@ -10,7 +10,7 @@ releases:
     version: 4.4.0
     values:
       - values.yaml
-    namespace: openebs
+    namespace: '{{ (readFile "app.yaml" | fromYaml).appNamespace }}'
   - name: openebs-extra
     chart: bedag/raw
     version: 2.0.2
@@ -40,4 +40,4 @@ releases:
                 velero.io/csi-volumesnapshot-class: "true"
             driver: zfs.csi.openebs.io
             deletionPolicy: Delete
-    namespace: openebs
+    namespace: '{{ (readFile "app.yaml" | fromYaml).appNamespace }}'

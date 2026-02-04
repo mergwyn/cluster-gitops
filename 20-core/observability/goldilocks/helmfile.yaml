@@ -8,4 +8,4 @@ releases:
     version: 10.2.0
     values:
       - values.yaml
-    namespace: monitoring
+    namespace: '{{ (readFile "app.yaml" | fromYaml).appNamespace }}'

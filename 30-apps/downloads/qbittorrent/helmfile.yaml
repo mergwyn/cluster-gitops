@@ -9,4 +9,4 @@ releases:
     values:
       - ../../../settings/common.yaml
       - values.yaml
-    namespace: vpn
+    namespace: '{{ (readFile "app.yaml" | fromYaml).appNamespace }}'

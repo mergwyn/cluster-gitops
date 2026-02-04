@@ -10,4 +10,4 @@ releases:
       - ../../../settings/common.yaml
       - values.yaml
       - externalsecret.yaml
-    namespace: media
+    namespace: '{{ (readFile "app.yaml" | fromYaml).appNamespace }}'
