@@ -89,7 +89,7 @@ persistence:
     retain: true
     storageClass: openebs-zfspv
     accessMode: ReadWriteOnce
-    size: 1Gi
+    size: 10Gi
   data:
     enabled: true
     type: nfs

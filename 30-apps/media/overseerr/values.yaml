@@ -63,6 +63,6 @@ persistence:
     storageClass: openebs-zfspv
     accessMode: ReadWriteOnce
     retain: true
-    size: 1G
+    size: 2G
     globalMounts:
       - path: /config
