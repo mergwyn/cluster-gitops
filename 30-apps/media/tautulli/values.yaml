@@ -88,7 +88,7 @@ persistence:
     type: persistentVolumeClaim
     storageClass: openebs-zfspv
     accessMode: ReadWriteOnce
-    size: 1Gi
+    size: 2Gi
     globalMounts:
       - path: /config/cache
   tmpfs:
