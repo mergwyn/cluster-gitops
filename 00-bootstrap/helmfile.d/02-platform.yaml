@@ -1,0 +1,72 @@
+---
+helmDefaults:
+  cleanupOnFail: true
+  wait: true
+  waitForJobs: true
+
+repositories:
+  - name: bedag
+    url: https://bedag.github.io/helm-charts/
+  - name: jetstack
+    url: https://charts.jetstack.io/
+  - name: external-secrets
+    url: https://charts.external-secrets.io/
+
+releases:
+  - name: cert-manager-cloudflare-token
+    chart: bedag/raw
+    namespace: security
+    version: 2.0.2
+    secrets:
+      - ../../10-platform/security/cert-manager/cloudflare-cert-manager-token-sops.yaml
+
+  - name: cert-manager
+    namespace: security
+    chart: jetstack/cert-manager
+    version: v1.19.2
+    values:
+      - ../../10-platform/security/cert-manager/values.yaml
+
+  - name: cert-manager-resources
+    namespace: security
+    chart: bedag/raw
+    version: 2.0.2
+    values:
+      - ../../10-platform/security/cert-manager/resources.yaml
+    needs:
+      - security/cert-manager
+
+  - name: external-secrets
+    namespace: security
+    chart: external-secrets/external-secrets
+    version: 1.2.1
+    values:
+      - ../../10-platform/security/external-secrets/values.yaml
+    needs:
+      - security/cert-manager-resources
+
+  - name: bitwarden-access-token
+    namespace: security
+    chart: bedag/raw
+    version: 2.0.2
+    secrets:
+      - ../../10-platform/security/external-secrets/bitwarden-access-token-sops.yaml
+
+  - name: bitwarden-store
+    namespace: security
+    chart: bedag/raw
+    version: 2.0.2
+    values:
+      - ../../10-platform/security/external-secrets/bitwarden-store.yaml
+    needs:
+      - security/external-secrets
+      - security/bitwarden-access-token
+
+  - name: argocd-externalsecret
+    namespace: argocd
+    chart: bedag/raw
+    version: 2.0.2
+    values:
+      - ../../10-platform/gitops/argocd/externalsecret.yaml
+    needs:
+      - security/bitwarden-store

@@ -1,8 +1,0 @@
-# Application metadata for Argo CD / ApplicationSet
-# Phase 1: informational only – no behavioural change
-
-name: argocd
-path: base/argocd/argocd
-namespace: argocd
-wave: 1
-env: prod

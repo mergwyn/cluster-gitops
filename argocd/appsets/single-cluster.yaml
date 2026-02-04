@@ -61,6 +61,9 @@ spec:
         path: "{{.path.path}}"
         plugin:
           name: helmfile
+          env:
+            - name: HELMFILE_ENVIRONMENT
+              value: prod
 
       destination:
         server: https://kubernetes.default.svc

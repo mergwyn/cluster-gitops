@@ -1,0 +1,11 @@
+---
+repositories:
+  - name: intel
+    url: https://intel.github.io/helm-charts
+releases:
+  - name: intel-device-plugins-gpu
+    chart: intel/intel-device-plugins-gpu
+    version: 0.34.1
+    values:
+      - values.yaml
+    namespace: '{{ env "HELMFILE_NAMESPACE" }}'

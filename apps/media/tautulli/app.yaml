@@ -1,8 +1,0 @@
-# Application metadata for Argo CD / ApplicationSet
-# Phase 1: informational only – not yet consumed
-
-name: tautulli
-path: apps/media/tautulli
-namespace: media
-wave: 3
-env: prod
