@@ -81,14 +81,14 @@ persistence:
     storageClass: openebs-zfspv
     accessMode: ReadWriteOnce
     retain: true
-    size: 1G
+    size: 2Gi
     globalMounts:
       - path: /config
   config-cache:
     type: persistentVolumeClaim
     storageClass: openebs-zfspv
     accessMode: ReadWriteOnce
-    size: 2Gi
+    size: 1Gi
     globalMounts:
       - path: /config/cache
   tmpfs:
