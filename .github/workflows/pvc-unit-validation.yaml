@@ -1,0 +1,29 @@
+---
+name: PVC Unit Validation
+
+on:
+  pull_request:
+    paths:
+      - '**.yaml'
+      - '**.yml'
+
+jobs:
+  validate-units:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Ensure PVCs use binary units (Gi/Mi)
+        run: |
+          # Look for storage: lines that end in a number + G (but not Gi)
+          # Examples of failures: "10G", "5G"
+          # Examples of passes: "10Gi", "500Mi"
+          ERRORS=$(grep -rE "storage:.*[0-9]+G($|\s)" . --exclude-dir=.git || true)
+
+          if [ ! -z "$ERRORS" ]; then
+            echo "::error::Found PVC storage requests using decimal units (G). Use binary units (Gi) to prevent 'field can not be less than status.capacity' errors."
+            echo "$ERRORS"
+            exit 1
+          fi
+          echo "All storage units look good!"
