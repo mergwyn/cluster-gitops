@@ -6,6 +6,6 @@ releases:
   - name: kuard
     chart: bjw-s-labs/app-template
     version: 4.6.2
-    namespace: '{{ (readFile "app.yaml" | fromYaml).appNamespace }}'
+    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
     values:
       - values.yaml

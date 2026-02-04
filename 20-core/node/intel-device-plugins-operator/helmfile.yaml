@@ -10,4 +10,4 @@ releases:
       - resources:
           limits:
             cpu: null
-    namespace: '{{ (readFile "app.yaml" | fromYaml).appNamespace }}'
+    namespace: '{{ env "HELMFILE_NAMESPACE" }}'

@@ -18,7 +18,7 @@ releases:
       #      - policy-values.yaml
       #    needs:
       #      - kyverno
-    namespace: '{{ (readFile "app.yaml" | fromYaml).appNamespace }}'
+    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
   - name: kyverno-set-pv-to-retain-on-keep-policy
     #   - name: kyverno-add-velero-label-to-ns-policy
     #     chart: bedag/raw
@@ -42,7 +42,7 @@ releases:
       - kyverno
     values:
       - set-pv-to-retain-on-keep.yaml
-    namespace: '{{ (readFile "app.yaml" | fromYaml).appNamespace }}'
+    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
   - name: remove-cpu-limits-requests
     chart: bedag/raw
     version: 2.0.2
@@ -50,4 +50,4 @@ releases:
       - kyverno
     values:
       - remove-cpu-limits-requests.yaml
-    namespace: '{{ (readFile "app.yaml" | fromYaml).appNamespace }}'
+    namespace: '{{ env "HELMFILE_NAMESPACE" }}'

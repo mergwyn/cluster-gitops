@@ -9,4 +9,4 @@ releases:
     version: 0.16.0
     values:
       - values.yaml
-    namespace: '{{ (readFile "app.yaml" | fromYaml).appNamespace }}'
+    namespace: '{{ env "HELMFILE_NAMESPACE" }}'

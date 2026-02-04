@@ -12,4 +12,4 @@ releases:
     values:
       - values.yaml
       - externalsecret.yaml
-    namespace: '{{ (readFile "app.yaml" | fromYaml).appNamespace }}'
+    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
