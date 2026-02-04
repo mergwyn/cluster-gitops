@@ -22,6 +22,7 @@ jobs:
           set -e
           echo "🔍 Validating required keys in app.yaml files"
           find . -name app.yaml -print0 | while IFS= read -r -d '' f; do
-            yq e ' .wave ' "$f" > /dev/null \
+            yq e ' .wave and
+                   .namespace' "$f" > /dev/null \
               || { echo "❌ Missing required field in $f"; exit 1; }
           done
