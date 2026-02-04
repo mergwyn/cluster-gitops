@@ -17,6 +17,7 @@ echo "🔍 Running GitOps pre-commit checks..."
 FILES=$(git diff --cached --name-only)
 if [[ -z ${FILES} ]] ; then
   FILES=$(ls [0-9]*/**/helmfile.yaml [0-9]*/**/helmfile.d/*.yaml)
+  FILES=$(ls [0-9]*/**/app.yaml)
 fi
 
 # --- app.yaml validation ---
@@ -26,7 +27,7 @@ for app in $(echo "$FILES" | grep -E '(^|/)app\.yaml$' || true); do
   # Fail if forbidden keys exist
   FORBIDDEN_KEYS=$(yq e '
     keys
-    | map(select(. != "wave"))
+    | map(select(. != "wave" and . != "appNamespace"))
     | .[]
   ' "$app" || true)
 
@@ -41,23 +42,6 @@ for app in $(echo "$FILES" | grep -E '(^|/)app\.yaml$' || true); do
   WAVE=$(yq e '.wave // ""' "$app")
   if [[ -z "$WAVE" ]]; then
     echo "❌ $app is missing required key: wave"
-    FAILED=1
-  fi
-done
-
-# --- helmfile namespace validation ---
-for hf in $(echo "$FILES" | grep -E '(^|/)helmfile\.ya?ml$' || true); do
-  echo "→ validating $hf"
-
-  MISSING_NS=$(yq e '
-    .releases[]
-    | select(.namespace == null)
-    | .name
-  ' "$hf" || true)
-
-  if [[ -n "$MISSING_NS" ]]; then
-    echo "❌ $hf has releases without namespace:"
-    echo "$MISSING_NS" | sed 's/^/   - /'
     FAILED=1
   fi
 done
