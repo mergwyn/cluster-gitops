@@ -1,6 +1,6 @@
 ---
 config:
-  address: 10.58.0.32   # TODO make a parameter
+  address: 10.58.0.30   # TODO make a parameter
 
 env:
   cp_enable: "true"
