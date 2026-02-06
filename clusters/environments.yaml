@@ -16,12 +16,12 @@
 #   helmfile -e prod apply
 # -----------------------------------------------------------------------------
 environments:
+  prod: &prod
+    values:
+      - ../../../clusters/_common.yaml
+      - ../../../clusters/prod.yaml
   dev:
     values:
-      - _common.yaml
-      - dev.yaml
-
-  prod:
-    values:
-      - _common.yaml
-      - prod.yaml
+      - ../../../clusters/_common.yaml
+      - ../../../clusters/dev.yaml
+  default: *prod

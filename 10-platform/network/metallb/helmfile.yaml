@@ -1,0 +1,24 @@
+---
+bases:
+  - ../../../clusters/environments.yaml
+
+---
+repositories:
+  - name: mettalb
+    url: https://metallb.github.io/metallb
+  - name: bedag
+    url: https://bedag.github.io/helm-charts/
+
+releases:
+  - name: metallb
+    chart: metallb/metallb
+    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+
+  # Use a raw chart to deploy the Config CRDs after the operator is ready
+  - name: metallb-config
+    chart: bedag/raw
+    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+    needs:
+      - "{{.Release.Namespace}}/metallb"
+    values:
+      - values.yaml.gotmpl
