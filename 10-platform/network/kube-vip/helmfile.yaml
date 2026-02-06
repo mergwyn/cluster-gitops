@@ -1,4 +1,8 @@
 ---
+bases:
+  - ../../../clusters/environments.yaml
+
+---
 repositories:
   - name: kube-vip
     url: https://kube-vip.github.io/helm-charts
