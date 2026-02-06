@@ -77,7 +77,9 @@ service:
     type: LoadBalancer
     annotations:
       kube-vip.io/loadbalancerIPs: 10.58.0.40
-    #loadBalancerIP: "10.58.0.34"
+      metallb.io/loadBalancerIPs: 10.58.0.38
+    #loadBalancerClass: metallb.io/internal
+    loadBalancerClass: kube-vip.io/kube-vip-class
     ports:
       http:
         port: *port
