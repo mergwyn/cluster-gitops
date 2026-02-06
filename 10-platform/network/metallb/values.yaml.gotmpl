@@ -1,0 +1,15 @@
+resources:
+  - apiVersion: metallb.io/v1beta1
+    kind: IPAddressPool
+    metadata:
+      name: default-pool
+    spec:
+      addresses:
+        - {{.Values.network.metallb.poolCIDR}}
+  - apiVersion: metallb.io/v1beta1
+    kind: L2Advertisement
+    metadata:
+      name: l2-adv
+    spec:
+      ipAddressPools:
+        - default-pool

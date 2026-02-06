@@ -1,5 +1,4 @@
 ---
 network:
   metallb:
-    # TODO kube-vip is currently on .32 - migrate
-    poolCIDR: 10.58.0.33-10.58.0.39
+    poolCIDR: 10.58.0.31-10.58.0.39
