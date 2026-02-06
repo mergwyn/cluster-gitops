@@ -1,0 +1,27 @@
+---
+# -----------------------------------------------------------------------------
+# Helmfile standard header
+#
+# Environments:
+#   - dev   → clusters/dev.yaml
+#   - prod  → clusters/prod.yaml
+#
+# Rules:
+#   - All cluster-wide defaults live in clusters/_common.yaml
+#   - Per-cluster values live in clusters/<env>.yaml
+#   - Helmfiles MUST NOT hardcode cluster-specific values
+#
+# Usage:
+#   helmfile -e dev  template
+#   helmfile -e prod apply
+# -----------------------------------------------------------------------------
+environments:
+  dev:
+    values:
+      - _common.yaml
+      - dev.yaml
+
+  prod:
+    values:
+      - _common.yaml
+      - prod.yaml

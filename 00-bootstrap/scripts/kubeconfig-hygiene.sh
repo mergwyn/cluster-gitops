@@ -12,7 +12,7 @@ fi
 
 echo ">>> Normalising kubeconfig for cluster: ${CLUSTER_NAME}"
 
-kubectl config rename-cluster default "${CLUSTER_NAME}" \
+kubectl config set-cluster default "${CLUSTER_NAME}" \
   --kubeconfig="${RAW_KUBECONFIG}"
 
 kubectl config rename-user default "${CLUSTER_NAME}-admin" \
