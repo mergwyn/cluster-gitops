@@ -19,6 +19,7 @@ configs:
     kustomize.buildOptions: --enable-helm
     application.resourceTrackingMethod: "annotation"
     controller.diff.server.side: "true"
+    applicationsetcontroller.enable.progressive.syncs: "true"
     # Exclude velero backups and restores
     resource.exclusions: |
       - apiGroups:
