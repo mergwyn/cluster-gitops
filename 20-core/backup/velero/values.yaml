@@ -13,6 +13,7 @@ annotations:
 defaultBackupStorageLocation: rustfs
 snapshotsEnabled: false
 # defaultVolumeSnapshotLocations: [minio, rustfs, idrive, default]
+defaultRepoMaintainFrequency: 24h
 
 kubectl:
   image:
