@@ -4,7 +4,7 @@ bases:
 
 ---
 repositories:
-  - name: mettalb
+  - name: mettallb
     url: https://metallb.github.io/metallb
   - name: bedag
     url: https://bedag.github.io/helm-charts/
