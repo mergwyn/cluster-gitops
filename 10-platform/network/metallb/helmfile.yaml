@@ -21,6 +21,6 @@ releases:
     chart: bedag/raw
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
     needs:
-      - "{{.Release.Namespace}}/metallb"
+      - metallb-system/metallb"
     values:
       - values.yaml.gotmpl
