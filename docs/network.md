@@ -47,9 +47,10 @@ This file should be treated as the **source of truth** for network layout decisi
 
 ### Kubernetes – Production
 
-| Range           | Purpose                                                            |
-| --------------- | ------------------------------------------------------------------ |
-| `10.58.0.30–39` | **Production Kubernetes** virtual IPs and MetalLB LoadBalancer IPs |
+| Range           | Purpose                                            |
+| --------------- | -------------------------------------------------- |
+| `10.58.0.30'  ` | **Production Kubernetes** virtual IP               |
+| `10.58.0.31–39` | **Production Kubernetes** MetalLB LoadBalancer IPs |
 
 Notes:
 
@@ -63,7 +64,8 @@ Notes:
 
 | Range           | Purpose                                                       |
 | --------------- | ------------------------------------------------------------- |
-| `10.58.0.60–79` | LXC-based test Kubernetes clusters and experimental workloads |
+| `10.58.0.60'  ` | LXC-based test Kubernetes virtual IP                          |
+| `10.58.0.61–69` | LXC-based test Kubernetes  MetalLB LoadBalancer IPs           |
 
 Intent:
 
@@ -77,8 +79,9 @@ Intent:
 
 | Range             | Purpose                         |
 | ----------------- | ------------------------------- |
-| `10.58.0.40–59`   | Free / future allocation buffer |
-| `10.58.0.80–99`   | Free                            |
+| `10.58.0.40–49`   | Free / future allocation buffer |
+| `10.58.0.70–79`   | Free                            |
+| `10.58.0.90–99`   | Free                            |
 | `10.58.0.222–239` | Free / reserved for future use  |
 
 ---
@@ -95,9 +98,10 @@ Intent:
 
 ### Multus / Macvlan Networking
 
-| Range             | Purpose                             |
-| ----------------- | ----------------------------------- |
-| `10.58.0.210–219` | Multus macvlan static IP allocation |
+| Range           | Purpose                                        |
+| --------------- | ---------------------------------------------- |
+| `10.58.0.50–59` | Production Multus macvlan static IP allocation |
+| `10.58.0.80–89` | DevelopmentMultus macvlan static IP allocation |
 
 Notes:
 
