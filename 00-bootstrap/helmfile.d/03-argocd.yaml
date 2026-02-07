@@ -8,30 +8,14 @@ apiVersions:
   - traefik.io/v1alpha1o
   - monitoring.coreos.com/v1
 
-repositories:
-  - name: argoproj
-    url: https://argoproj.github.io/argo-helm/
-
 releases:
   - name: argocd
     namespace: argocd
-    chart: argoproj/argo-cd
+    chart: oci://ghcr.io/argoproj/argo-helm/argo-cd
     version: 9.3.4
     values:
       - ../../10-platform/gitops/argocd/values.yaml
+      - ../../10-platform/gitops/argocd/externalsecret.yaml
     needs:
       - network/traefik
-
-  - name: traefik
-    namespace: network
-    chart: oci://ghcr.io/traefik/helm/traefik
-    version: 38.0.2
-    set:
-      # Bootstrap-only: install CRDs so ArgoCD can manage IngressRoute resources.
-      # Runtime is installed later by ArgoCD using the same chart.
-      - name: providers.kubernetesCRD.enabled
-        value: true
-      - name: providers.kubernetesIngress.enabled
-        value: false
-      - name: service.enabled
         value: false

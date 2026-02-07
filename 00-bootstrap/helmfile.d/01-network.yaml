@@ -8,6 +8,17 @@ helmDefaults:
 
 # TODO add cilium and kube-vip
 
-repositories: {}
 
-releases: {}
+releases:
+  - name: traefik
+    namespace: network
+    chart: oci://ghcr.io/traefik/helm/traefik
+    version: 38.0.2
+    set:
+      # Bootstrap-only: install CRDs so ArgoCD can manage IngressRoute resources.
+      # Runtime is installed later by ArgoCD using the same chart.
+      - name: providers.kubernetesCRD.enabled
+        value: true
+      - name: providers.kubernetesIngress.enabled
+        value: false
+      - name: service.enabled
