@@ -89,8 +89,8 @@ service:
   annotations:
     kube-vip.io/loadbalancerIPs: 10.58.0.41
     metallb.io/loadBalancerIPs: 10.58.0.39
-  #loadBalancerClass: metallb.io/internal
-  loadBalancerClass: kube-vip.io/kube-vip-class
+  loadBalancerClass: metallb.io/internal
+  #loadBalancerClass: kube-vip.io/kube-vip-class
   labels: {}
   loadBalancerSourceRanges: []
   externalIPs: []
