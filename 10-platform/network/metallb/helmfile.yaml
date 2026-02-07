@@ -16,7 +16,7 @@ releases:
     wait: true
     timeout: 300
     values:
-      loadBalancerClass: "metallb.io/internal"
+      - loadBalancerClass: "metallb.io/internal"
 
   # Use a raw chart to deploy the Config CRDs after the operator is ready
   - name: metallb-config
