@@ -13,6 +13,8 @@ releases:
   - name: metallb
     chart: metallb/metallb
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+    wait: true
+    timeout: 300
 
   # Use a raw chart to deploy the Config CRDs after the operator is ready
   - name: metallb-config
