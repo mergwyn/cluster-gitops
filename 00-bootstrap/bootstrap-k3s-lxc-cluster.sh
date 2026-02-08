@@ -1,28 +1,29 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-CLUSTER_NAME=${1:-k3s-lxc}
+CLUSTER_NAME=${1:-k3s-dev}
 IMAGE=ubuntu:24.04
 PROFILE="default"
 MEMORY="4GB"
 CPUS="2"
 K3S_ETC=/etc/rancher/k3s
 K3S_CFGD=${K3S_ETC}/config.yaml.d
-VIRTUAL_IP=10.58.0.60
 API_DNS=api-${CLUSTER_NAME}.$(hostname -d)
+VIRTUAL_IP=$(dig +short ${API_DNS})
+TOKEN_FILE=${TOKEN_FILE:-.cluster-token}
 
-HANDOVER_FILE=${HANDOVER_FILE:-bootstrap.env}
+HANDOVER_FILE=${HANDOVER_FILE:-.bootstrap.env}
 
 K3S_VERSION="v1.34.2+k3s1"
 CLUSTER_TOKEN="super-secret-token"
-[[ ! -f cluster_token ]] && openssl rand -hex 32 > cluster_token
-CLUSTER_TOKEN=$(cat cluster_token)
+[[ ! -f ${TOKEN_FILE} ]] && openssl rand -hex 32 > ${TOKEN_FILE}
+CLUSTER_TOKEN=$(cat ${TOKEN_FILE})
 
 # remote:container
 CLUSTER=(
   "k3s-1"
-  "k3s-2"
-  "k3s-3"
+#  "k3s-2"
+#  "k3s-3"
 )
 
 parse_entry() {
@@ -39,14 +40,31 @@ parse_entry() {
 ensure_k3s_profile() {
   local remote="$1"
 
+  profile="$remote:k3s"
   if ! lxc profile list "$remote:" | awk '{print $2}' | grep -qx k3s; then
     echo ">>> Creating k3s profile on $remote"
-    lxc profile create "$remote:k3s"
+    lxc profile create ${profile}
   fi
 
-  lxc profile set "$remote:k3s" security.privileged true
-  lxc profile set "$remote:k3s" security.nesting true
-  lxc profile set "$remote:k3s" raw.lxc "lxc.apparmor.profile=unconfined"
+  lxc profile edit ${profile} <<EOT
+name: ${profile}
+config:
+  limits.memory.swap: "false"
+  linux.kernel_modules: overlay,nf_nat,ip_tables,ip6_tables,netlink_diag,br_netfilter,xt_conntrack,nf_conntrack,ip_vs,vxlan
+  raw.lxc: |
+    lxc.apparmor.profile = unconfined
+    lxc.cgroup.devices.allow = a
+    lxc.mount.auto = "proc:rw sys:rw"
+    lxc.cap.drop =
+  security.nesting: "true"
+  security.privileged: "true"
+devices:
+  kmsg:
+    path: /dev/kmsg
+    source: /dev/kmsg
+    type: unix-char
+EOT
+
 }
 
 push_k3s_config() {
@@ -156,6 +174,10 @@ curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=${K3S_VERSION} sh -s - server
   --cluster-init \
   --token ${CLUSTER_TOKEN}
 "
+echo ">>> Waiting for K3s API server to respond..."
+until lxc exec "${FIRST_REMOTE}:${FIRST_NODE}" -- /usr/local/bin/k3s kubectl get nodes >/dev/null 2>&1; do
+  sleep 2
+done
 
 # TODO add back in when cilium migration testing complete
   #--disable flannel \

@@ -16,6 +16,5 @@ releases:
     values:
       - ../../10-platform/gitops/argocd/values.yaml
       - ../../10-platform/gitops/argocd/externalsecret.yaml
-    needs:
-      - network/traefik
-        value: false
+    #needs:
+    #  - network/traefik

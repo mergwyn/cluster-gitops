@@ -4,8 +4,8 @@ platform := lxc
 cluster := $(type)-$(env)
 crds := helmfile.d/01-crds.yaml
 releases := helmfile.d/02-releases.yaml
-appset := bootstrap-handover.yaml
-handover := bootstrap.env
+appset := cluster-gitops-handover.yaml
+handover := .bootstrap.env
 argons := argocd
 keys := /home/gary/.config/sops/age/keys.txt
 config := ~/.kube/clusters/$(cluster).yaml
@@ -19,18 +19,18 @@ install: preflight secrets apps appset
 
 check: lint
 
-clean: clean-cluster
+clean: clean-cluster clean-env
 
 secrets: sops-age-key
 
 sops-age-key:
 	-$(kubectl) create ns $(argons)
-	$(kubectl) create secret generic argocd-age-secret-keys --namespace=$(argons) --from-file=$(keys)
+	-$(kubectl) create secret generic argocd-age-secret-keys --namespace=$(argons) --from-file=$(keys)
 
 apps: secrets sync
 
 preflight:
-	$(kubectl) get nodes | grep Ready
+	$(kubectl) wait --for=condition=Ready nodes --all --timeout=600s
 
 sync apply lint:
 	$(helmfile) $@
@@ -58,6 +58,9 @@ cluster: #clean-cluster
 	chmod 600 $(config)
 	@echo ">>> kubeconfig written to $(config)"
 
+
+clean-env:
+	-rm $(handover) .cluster-token
 
 clean-cluster:
 	@echo ">>> Cleaning $(cluster) LXC cluster"
