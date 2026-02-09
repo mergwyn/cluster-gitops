@@ -1,0 +1,18 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/helmfile
+
+bases:
+  - ../environments.yaml
+
+repositories:
+  - name: kube-vip
+    url: https://kube-vip.github.io/helm-charts
+
+releases:
+  - name: kube-vip
+    chart: kube-vip/kube-vip
+    version: 0.9.5
+    namespace: kube-system
+    values:
+      - ../../10-platform//network/kube-vip/values.yaml.gotmpl
+        

@@ -5,10 +5,14 @@ metadata:
   name: bootstrap-handover
   namespace: argocd
 spec:
+  goTemplate: true
+  goTemplateOptions:
+    - missingkey=error
+
   generators:
     - git:
         repoURL: https://github.com/mergwyn/cluster-gitops.git
-        revision: dev-secrets
+        revision: &revision devcluster
         directories:
           - path: 10-platform/gitops/*/app.yaml
           - path: 10-platform/security/*/app.yaml
@@ -20,44 +24,23 @@ spec:
 
   template:
     metadata:
-      name: '{{ path.basename }}'
+      name: '{{.path.basename}}'
+
     spec:
       project: default
       source:
         repoURL: https://github.com/mergwyn/cluster-gitops.git
-        targetRevision: dev-secrets
-        path: '{{ path }}'
+        targetRevision: *revision
+        path: '{{.path.path}}'
+        plugin:
+          name: helmfile
+          env:
+            - name: HELMFILE_ENVIRONMENT
+              value: dev
+
       destination:
         server: https://kubernetes.default.svc
-        namespace: '{{ path[1] }}'
-      ignoreDifferences:
-        - kind: StatefulSet
-          group: '*'
-          name: mail
-          jsonPointers:
-            - /spec/volumeClaimTemplates
-            - /spec/template/metadata/annotations
-        - kind: GpuDevicePlugin
-          group: '*'
-          name: gpudeviceplugin
-          jsonPointers:
-            - /spec/resourceManager
-            - /spec/tolerations
-            - /metadata/annotations
-        - kind: ClusterPolicy
-          group: '*'
-          jsonPointers:
-            - /spec/rules/0/skipBackgroundRequests
-        - group: '*'
-          kind: Deployment
-          jqPathExpressions:
-            - .spec.template.spec.hostUsers
-        - group: '*'
-          kind: ExternalSecret
-          jqPathExpressions:
-            - .spec.dataFrom[].extract.conversionStrategy
-            - .spec.dataFrom[].extract.decodingStrategy
-            - .spec.dataFrom[].extract.metadataPolicy
+        namespace: '{{.namespace}}'
 
       syncPolicy:
         automated:

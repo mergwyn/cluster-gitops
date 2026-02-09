@@ -11,5 +11,5 @@ releases:
     chart: kube-vip/kube-vip
     version: 0.9.5
     values:
-      - values.yaml
+      - values.yaml.gotmpl
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'

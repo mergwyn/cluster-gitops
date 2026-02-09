@@ -1,12 +1,6 @@
 ---
-helmDefaults:
-  cleanupOnFail: true
-  wait: true
-  waitForJobs: true
-
-apiVersions:
-  - traefik.io/v1alpha1o
-  - monitoring.coreos.com/v1
+bases:
+  - ../environments.yaml
 
 releases:
   - name: argocd
@@ -16,5 +10,3 @@ releases:
     values:
       - ../../10-platform/gitops/argocd/values.yaml
       - ../../10-platform/gitops/argocd/externalsecret.yaml
-    #needs:
-    #  - network/traefik
