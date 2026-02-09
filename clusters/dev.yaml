@@ -1,4 +1,5 @@
 ---
 network:
+  vip: 10.58.0.60
   metallb:
     poolCIDR: 10.58.0.61-10.58.0.69

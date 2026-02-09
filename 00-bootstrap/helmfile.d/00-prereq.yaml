@@ -1,16 +1,35 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/helmfile
 
-helmDefaults:
-  cleanupOnFail: true
-  wait: true
-  waitForJobs: true
+bases:
+  - ../environments.yaml
 
 repositories:
   - name: prometheus-community
     url: https://prometheus-community.github.io/helm-charts/
+  - name: bedag
+    url: https://bedag.github.io/helm-charts
 
 releases:
+#  - name: bootstrap-namespaces
+#    chart: bedag/raw
+#    version: 2.0.2
+#    values:
+#      - resources:
+#          - apiVersion: v1
+#            kind: Namespace
+#            metadata:
+#              name: security
+#          - apiVersion: v1
+#            kind: Namespace
+#            metadata:
+#              name: argocd
+#          - apiVersion: v1
+#            kind: Namespace
+#            metadata:
+#              name: monitoring
+
+
   - name: kube-prometheus-stack
     chart: prometheus-community/kube-prometheus-stack
     namespace: monitoring
@@ -56,3 +75,12 @@ releases:
         value: false
       - name: service.enabled
         value: false
+      - name: deployment.enabled
+        value: false
+      - name: ingressClass.enabled
+        value: false
+      - name: rbac.enabled
+        value: false
+      - name: serviceAccount.name
+        value: undef
+
