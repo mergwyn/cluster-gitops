@@ -1,4 +1,7 @@
 ---
+cluster:
+  name: k3s-dev
+
 network:
   vip: 10.58.0.60
   metallb:
