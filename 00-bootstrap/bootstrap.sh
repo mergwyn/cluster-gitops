@@ -212,9 +212,19 @@ install_apps() {
   generate_bases
   ${HELMFILE} sync
 
-  echo ">>> Applying ArgoCD appset"
-  ${KUBECTL} apply -f cluster-gitops-handover.yaml
+  echo ">>> Applying AppSet for environment: $ENV"
+
+  CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+  kubectl apply -f <(
+    yq eval '
+      .spec.generators[0].git.revision = strenv(CURRENT_BRANCH) |
+      .spec.template.spec.source.targetRevision = strenv(CURRENT_BRANCH) |
+      .spec.template.spec.source.plugin.env[0].value = strenv(ENV)
+    ' cluster-gitops-handover.yaml
+  )
 }
+
 
 clean_cluster() {
   set_context
