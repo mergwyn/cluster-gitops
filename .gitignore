@@ -1,8 +1,8 @@
 00-bootstrap-save/*
 argocd-apps-backup.yaml
 *bootstrap/.cluster-token
-*bootstrap/environments.yaml
-Chart.lock
+*bootstrap/**/environments.yaml
+**/Chart.lock
 **/charts/
 **/default-values.yaml
 ops/*
