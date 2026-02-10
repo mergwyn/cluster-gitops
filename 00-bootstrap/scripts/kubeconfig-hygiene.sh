@@ -34,21 +34,21 @@ kubectl config set-cluster "$CLUSTER_NAME" \
   --kubeconfig="$RAW_KUBECONFIG"
 
 # Create new user entry
-kubectl config set-credentials "${CLUSTER_NAME}-admin" \
+kubectl config set-credentials "${CLUSTER_NAME}" \
   --client-certificate="$USER_CERT" \
   --client-key="$USER_KEY" \
   --embed-certs=true \
   --kubeconfig="$RAW_KUBECONFIG"
 
 # Create new context
-kubectl config set-context "${CLUSTER_NAME}-admin" \
+kubectl config set-context "${CLUSTER_NAME}" \
   --cluster="$CLUSTER_NAME" \
-  --user="${CLUSTER_NAME}-admin" \
+  --user="${CLUSTER_NAME}" \
   --namespace="$DEFAULT_NAMESPACE" \
   --kubeconfig="$RAW_KUBECONFIG"
 
 # Switch to the new context
-kubectl config use-context "${CLUSTER_NAME}-admin" --kubeconfig="$RAW_KUBECONFIG"
+kubectl config use-context "${CLUSTER_NAME}" --kubeconfig="$RAW_KUBECONFIG"
 
 # Clean up temp files
 rm -f "$CA_FILE" "$USER_CERT" "$USER_KEY"
