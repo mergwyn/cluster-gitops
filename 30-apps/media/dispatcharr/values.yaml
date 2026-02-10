@@ -67,4 +67,4 @@ persistence:
     storageClass: openebs-zfspv
     accessMode: ReadWriteOnce
     retain: true
-    size: 1G
+    size: 1Gi
