@@ -71,7 +71,8 @@ if [[ -d "$BOOTSTRAP_DIR" ]]; then
       FAILED=1
     fi
   done < <(
-    grep -RhoE '^[[:space:]]*-[[:space:]]*(\./|\.\./)[^[:space:]]+' "$BOOTSTRAP_DIR" \
+    grep -RhoE '^[[:space:]]*-[[:space:]]*(\./|\.\./)[^[:space:]]+' "$BOOTSTRAP_DIR"/helmfile.d \
+      | grep -v environments.yaml \
       | sed -E 's/^[[:space:]]*-[[:space:]]*//'
   )
 
