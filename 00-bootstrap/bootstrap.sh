@@ -49,7 +49,8 @@ ensure_k3s_profile() {
 name: $profile
 config:
   limits.memory.swap: "false"
-  linux.kernel_modules: overlay,nf_nat,ip_tables,ip6_tables,netlink_diag,br_netfilter,xt_conntrack,nf_conntrack,ip_vs,vxlan
+  linux.kernel_modules: overlay,nf_nat,ip_tables,ip6_tables,netlink_diag,br_netfilter,xt_conntrack,nf_conntrack,ip_vs,vxlan,ip_vxlan,tunnel4
+  lxc.mount.entry: /sys/fs/bpf sys/fs/bpf none bind,create=dir 0 0
   raw.lxc: |
     lxc.apparmor.profile = unconfined
     lxc.cgroup.devices.allow = a
