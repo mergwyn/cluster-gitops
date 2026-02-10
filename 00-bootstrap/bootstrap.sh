@@ -18,8 +18,9 @@ fi
 source "$BOOTSTRAP_ENV"
 
 CONFIG="$HOME/.kube/clusters/$CLUSTER_NAME.yaml"
-KUBECTL="kubectl --kubeconfig $CONFIG"
-HELMFILE="helmfile --kubeconfig $CONFIG --environment ${ENV}"
+export KUBECONFIG=${CONFIG}
+KUBECTL="kubectl"
+HELMFILE="helmfile  --environment ${ENV}"
 VIRTUAL_IP=$(dig +short ${API_DNS})
 K3S_CFGD=/etc/rancher/k3s/config.yaml.d
 ARGOCD_NS=argocd
@@ -67,7 +68,7 @@ EOT
 }
 
 get_ip() {
-  lxc list "$1:$2" --format csv -c 4 | head -1 | tr -d \" | cut -d' ' -f1
+  lxc list "$1:$2" --format csv -c 4 | grep -v ${VIRTUAL_IP} | head -1 | tr -d \" | cut -d' ' -f1
 }
 
 push_k3s_config() {
@@ -145,7 +146,7 @@ bootstrap_cluster() {
   for ENTRY in "${CLUSTER_NODES[@]}"; do
     parse_entry "$ENTRY"
     while true; do
-      IP=$(get_ip "$REMOTE" "$NAME")
+      IP=$(get_ip "$REMOTE" "$NAME") 
       [[ -n "$IP" ]] && break
       sleep 2
     done
@@ -213,16 +214,24 @@ install_apps() {
   generate_bases
   ${HELMFILE} sync
 
+  echo ">>> Adjusting kubeconfig to use ${API_DNS}"
+  ${KUBECTL} config set-cluster $CLUSTER_NAME --server=https://${API_DNS}:6443
+}
+
+install_appset() {
+  set_context
+
   echo ">>> Applying AppSet for environment: $ENV"
 
-  CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+  export CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+  export ENV
 
   kubectl apply -f <(
     yq eval '
       .spec.generators[0].git.revision = strenv(CURRENT_BRANCH) |
       .spec.template.spec.source.targetRevision = strenv(CURRENT_BRANCH) |
       .spec.template.spec.source.plugin.env[0].value = strenv(ENV)
-    ' cluster-gitops-handover.yaml
+    ' cluster-gitops-handover.yaml | tee /tmp/appset.yaml
   )
 }
 
@@ -250,11 +259,12 @@ clean_cluster() {
 case "${1:-}" in
   cluster) bootstrap_cluster ;;
   install) install_apps ;;
+  appset) install_appset ;;
   clean)   clean_cluster ;;
   bases)   generate_bases ;;
-  all)     bootstrap_cluster; install_apps ;;
+  all)     bootstrap_cluster; install_apps ; install_appset;;
   *)
-    echo "Usage: $0 {cluster|install|clean|bases|all}"
+    echo "Usage: $0 {cluster|install|clean|bases|appset|all}"
     exit 1
     ;;
 esac

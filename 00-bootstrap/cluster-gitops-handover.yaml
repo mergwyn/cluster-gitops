@@ -13,7 +13,7 @@ spec:
     - git:
         repoURL: https://github.com/mergwyn/cluster-gitops.git
         revision: &revision devcluster
-        directories:
+        files:
           - path: 10-platform/gitops/*/app.yaml
           - path: 10-platform/security/*/app.yaml
           - path: 10-platform/network/kube-vip/app.yaml
@@ -37,10 +37,11 @@ spec:
           env:
             - name: HELMFILE_ENVIRONMENT
               value: dev
-
+            - name: HELMFILE_NAMESPACE
+              value: '{{.appNamespace}}'
       destination:
         server: https://kubernetes.default.svc
-        namespace: '{{.namespace}}'
+        namespace: '{{.appNamespace}}'
 
       syncPolicy:
         automated:
