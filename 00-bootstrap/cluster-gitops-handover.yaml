@@ -17,6 +17,8 @@ spec:
           - path: 10-platform/gitops/*/app.yaml
           - path: 10-platform/security/*/app.yaml
           - path: 10-platform/network/kube-vip/app.yaml
+          # - path: 10-platform/network/cilium/app.yaml
+          # - path: 10-platform/network/multus/app.yaml
           # - path: 10-platform/network/metallb/app.yaml
           # - path: 10-platform/network/multus/app.yaml
           # - path: 10-platform/storage/openebs/app.yaml
@@ -39,6 +41,8 @@ spec:
               value: dev
             - name: HELMFILE_NAMESPACE
               value: '{{.appNamespace}}'
+            - name: HELMFILE_TEMPLATE_OPTIONS
+              value: "--include-crds"
       destination:
         server: https://kubernetes.default.svc
         namespace: '{{.appNamespace}}'
@@ -52,3 +56,5 @@ spec:
           - ServerSideApply=true
           - CreateNamespace=true
           - RespectIgnoreDifferences=true
+          - SkipDryRunOnMissingResource=true
+          - ApplyOutOfSyncOnly=true
