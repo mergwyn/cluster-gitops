@@ -3,6 +3,10 @@ cluster:
   name: k3s-dev
 
 network:
+  device: eth0
   vip: 10.58.0.60
   metallb:
     poolCIDR: 10.58.0.61-10.58.0.69
+  multus:
+    rangeStart: 10.58.0.80
+    rangeEnd: 10.58.0.89
