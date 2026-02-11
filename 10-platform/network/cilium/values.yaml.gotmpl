@@ -1,0 +1,30 @@
+---
+k8sServiceHost: "api-{{.Values.cluster.name}}.{{.Values.cluster.domain}}"
+k8sServicePort: 6443
+
+routingMode: tunnel
+tunnelProtocol: vxlan
+
+cni:
+  chainingMode: flannel
+  exclusive: false        # Don't overwrite Flannel's config yet
+  install: true
+  confPath: /etc/cni/net.d/05-cilium.conflist
+
+ipam:
+  mode: cluster-pool
+  operator:
+    clusterPoolIPv4PodCIDRList: ["{{.Values.network.podCIDR}}"]
+
+bpf:
+  masquerade: false
+
+# Ensures eBPF attaches to the correct bridge/veth
+devices: "{eth0,br0}"
+
+operator:
+  replicas: 1              # Good for a 3-node cluster for HA
+  
+# Leave kube-proxy alone for phase 1 of migration
+kubeProxyReplacement: false
+#kubeProxyReplacement: partial
