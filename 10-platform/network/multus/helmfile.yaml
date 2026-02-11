@@ -6,6 +6,7 @@ bases:
 repositories:
   - name: angelnu
     url: https://angelnu.github.io/helm-charts
+
 releases:
   - name: multus
     chart: angelnu/multus
