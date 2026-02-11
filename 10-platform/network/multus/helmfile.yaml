@@ -1,4 +1,8 @@
 ---
+bases:
+  - ../../../clusters/environments.yaml
+
+---
 repositories:
   - name: angelnu
     url: https://angelnu.github.io/helm-charts
@@ -7,7 +11,6 @@ releases:
     chart: angelnu/multus
     version: 7.0.0
     values:
-      - ../../../settings/common.yaml
       - values.yaml
-      - networks.yaml
+      - networks.yaml.gotmpl
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
