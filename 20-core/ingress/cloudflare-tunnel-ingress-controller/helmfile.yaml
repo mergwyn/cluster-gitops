@@ -7,7 +7,7 @@ repositories:
 releases:
   - name: cloudflare-tunnel-ingress-controller
     chart: strrl.dev/cloudflare-tunnel-ingress-controller
-    version: 0.0.21
+    version: 0.0.22
     values:
       - values.yaml
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
