@@ -34,6 +34,7 @@ parse_entry() {
   if [[ "$entry" == *:* ]]; then
     REMOTE="${entry%%:*}"
     NAME="${entry##*:}"
+    [[ ${REMOTE} == $(hostname -s) ]] && REMOTE=local
   else
     REMOTE="local"
     NAME="$entry"
@@ -240,13 +241,14 @@ clean_cluster() {
   set_context
   echo ">>> Cleaning $CLUSTER_NAME LXC cluster"
 
-  for node in "${CLUSTER_NODES[@]}"; do
-    if lxc info "$node" &>/dev/null; then
-      echo "$node is active, stopping and deleting"
-      lxc stop "$node"
-      lxc delete "$node"
+  for ENTRY in "${CLUSTER_NODES[@]}"; do
+    parse_entry "$ENTRY"
+    if lxc info "${REMOTE}:${NAME}" &>/dev/null; then
+      echo "${REMOTE}:${NAME} is active, stopping and deleting"
+      lxc stop "${REMOTE}:${NAME}"
+      lxc delete "${REMOTE}:${NAME}"
     else
-      echo "$node is not running"
+      echo "${REMOTE}:${NAME} not running"
     fi
   done
   rm -f .cluster-token
