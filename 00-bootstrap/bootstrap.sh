@@ -34,7 +34,7 @@ parse_entry() {
   if [[ "$entry" == *:* ]]; then
     REMOTE="${entry%%:*}"
     NAME="${entry##*:}"
-    [[ ${REMOTE} == $(hostname -s) ]] && REMOTE=local
+    [[ ${REMOTE} == $(hostname -s) ]] && REMOTE=local || true
   else
     REMOTE="local"
     NAME="$entry"
