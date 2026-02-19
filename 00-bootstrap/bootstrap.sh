@@ -22,7 +22,7 @@ export KUBECONFIG=${CONFIG}
 KUBECTL="kubectl"
 HELMFILE="helmfile  --environment ${ENV}"
 VIRTUAL_IP=$(dig +short ${API_DNS})
-K3S_CFGD=/etc/rancher/k3s/config.yaml.d
+K3S_CFGD=/etc/rancher/k3s/config.yaml.d/
 ARGOCD_NS=argocd
 
 # -----------------------------------------------------------------------------
@@ -208,7 +208,7 @@ install_apps() {
   ${KUBECTL} create ns "$ARGOCD_NS" --dry-run=client -o yaml | ${KUBECTL} apply -f -
   ${KUBECTL} create secret generic argocd-age-secret-keys \
     --namespace="$ARGOCD_NS" \
-    --from-file=/home/gary/.config/sops/age/keys.txt \
+    --from-file=${HOME}/.config/sops/age/keys.txt \
     --dry-run=client -o yaml | ${KUBECTL} apply -f -
 
   echo ">>> Syncing Helm releases"
