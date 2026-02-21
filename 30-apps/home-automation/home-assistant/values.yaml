@@ -172,7 +172,7 @@ controllers:
           TZ: Europe/London
           HASS_SERVER: http://localhost:8123
           # yamllint disable-line rule:line-length
-          EXTENSIONS_GALLERY: '{ "serviceUrl": "https://marketplace.visualstudio.com/_apis/public/gallery", "itemUrl": "https://marketplace.vis  ualstudio.com/items" }'
+          EXTENSIONS_GALLERY: '{ "serviceUrl": "https://marketplace.visualstudio.com/_apis/public/gallery", "itemUrl": "https://marketplace.visualstudio.com/items" }'
         envFrom:
           - secretRef:
               name: "{{.Release.Name}}-github"
