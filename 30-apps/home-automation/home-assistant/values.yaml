@@ -76,7 +76,7 @@ controllers:
         # Connect to config repo
         image:
           repository: docker.io/library/ubuntu
-          tag: 26.04@sha256:4095ef613201918336b5d7d00be15d8b09c72ddb77c80bca249c255887a64d87
+          tag: 26.04@sha256:fed6ddb82c61194e1814e93b59cfcb6759e5aa33c4e41bb3782313c2386ed6df
         command: ["/bin/sh", "-c"]
         args:
           - |-
@@ -158,7 +158,7 @@ controllers:
         image:
           repository: ghcr.io/coder/code-server
           # yamllint disable-line rule:line-length
-          tag: 4.108.1@sha256:867b9a9dedd68f1b46e308cad9525e419db7b0ce0c83831f6a350f37ee7ff6fd
+          tag: 4.109.2@sha256:1b84cd817fe8eb1159323ae9d2f29b3c70c6ccd44958d651a94900cf7f0ff9c4
         args:
           - --auth=none
           - --disable-telemetry
@@ -172,7 +172,7 @@ controllers:
           TZ: Europe/London
           HASS_SERVER: http://localhost:8123
           # yamllint disable-line rule:line-length
-          EXTENSIONS_GALLERY: '{ "serviceUrl": "https://marketplace.visualstudio.com/_apis/public/gallery", "itemUrl": "https://marketplace.vis  ualstudio.com/items" }'
+          EXTENSIONS_GALLERY: '{ "serviceUrl": "https://marketplace.visualstudio.com/_apis/public/gallery", "itemUrl": "https://marketplace.visualstudio.com/items" }'
         envFrom:
           - secretRef:
               name: "{{.Release.Name}}-github"
