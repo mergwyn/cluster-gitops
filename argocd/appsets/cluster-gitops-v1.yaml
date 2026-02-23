@@ -15,8 +15,6 @@ spec:
         revision: &revision main
         files:
           - path: "[0-9]*/**/app.yaml"
-          - path: "**/kyverno/app.yaml"
-            exclude: true
 
   strategy:
     type: RollingSync
