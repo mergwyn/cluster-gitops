@@ -36,7 +36,7 @@ controllers:
         env:
           TZ: Europe/London
           ALLOWED_NETWORKS: "10.0.0.0/8"
-          PLEX_CLAIM: "claim-LufEVYTg9R29o2qzZsLA"
+          # PLEX_CLAIM: "claim-16YinLw_z6A2xEsM7pwD"
           PLEX_MEDIA_SERVER_APPLICATION_SUPPORT_DIR: "/config"
           PLEX_PASS: "yes"
           PLEX_UID: "3001"
@@ -92,6 +92,8 @@ persistence:
     storageClass: openebs-zfspv
     accessMode: ReadWriteOnce
     size: 10Gi
+    globalMounts:
+      - path: /config
   data:
     enabled: true
     type: nfs
