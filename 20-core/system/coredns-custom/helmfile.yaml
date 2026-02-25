@@ -1,0 +1,28 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/helmfile
+
+bases:
+  - ../../../clusters/environments.yaml
+
+repositories:
+  - name: bedag
+    url: https://bedag.github.io/helm-charts/
+
+releases:
+  - name: coredns-custom
+    chart: bveag/raw
+    namespace: kube-system
+    version: 2.0.2
+    values:
+      - resources:
+          - apiVersion: v1
+            kind: ConfigMap
+            metadata:
+              name: coredns-custom
+              namespace: kube-system
+            data:
+              forward.override: |
+                forward . 1.1.1.1 8.8.8.8 {
+                  max_concurrent 1000
+                  health_check 5s
+                }
