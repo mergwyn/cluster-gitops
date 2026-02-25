@@ -10,3 +10,5 @@ network:
   multus:
     rangeStart: 10.58.0.50
     rangeEnd: 10.58.0.59
+  traefik-internal: 10.58.0.39
+  plex: 10.58.0.38
