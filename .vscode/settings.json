@@ -1,0 +1,5 @@
+{
+  "yaml.schemas": {
+    "none": "20-core/ingress/cloudflare-tunnel-ingress-controller/values.yaml"
+  }
+}
