@@ -108,11 +108,11 @@ service:
     forceRename: "{{.Release.Name}}"
     ports:
       http:
-        port: &http-port 6052
+        port: 6052
   code-server:
     ports:
       http:
-        port: &code-server-port 12321
+        port: 12321
 
 dnsConfig:
   nameservers:
@@ -141,47 +141,3 @@ persistence:
       - path: /config/secrets.yaml
         subPath: secrets.yaml
         readOnly: true
-
-route:
-  app:
-    hostnames:
-      - "{{.Release.Name}}.{{.Values.clusters.domain}}"
-    parentRefs:
-      - name: traefik-internal
-        namespace: network
-    rules:
-      - backendRefs:
-          - identifier: app
-            port: *http-port
-
-  code-server-new:
-    hostnames:
-      - "{{.Release.Name}}-code.{{.Values.clusters.domain}}"
-    parentRefs:
-      - name: traefik-internal
-        namespace: network
-    rules:
-      - backendRefs:
-          - identifier: code-server
-            port: *code-server-port
-
-  code-server:
-    hostnames:
-      - "{{.Release.Name}}.{{.Values.clusters.domain}}"
-    parentRefs:
-      - name: traefik-internal
-        namespace: network
-    rules:
-      - backendRefs:
-          - identifier: code-server
-            port: *code-server-port
-        matches:
-          - path:
-              type: PathPrefix
-              value: /code/
-        filters:
-          - type: URLRewrite
-            urlRewrite:
-              path:
-                replacePrefixMatch: /
-                type: ReplacePrefixMatch

@@ -1,0 +1,45 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+
+route:
+  app:
+    hostnames:
+      - "{{.Release.Name}}.{{.Values.cluster.domain}}"
+    parentRefs:
+      - name: traefik-internal
+        namespace: network
+    rules:
+      - backendRefs:
+          - identifier: app
+            port: 6052
+
+  code-server-new:
+    hostnames:
+      - "{{.Release.Name}}-code.{{.Values.cluster.domain}}"
+    parentRefs:
+      - name: traefik-internal
+        namespace: network
+    rules:
+      - backendRefs:
+          - identifier: code-server
+            port: 12321
+
+  code-server:
+    hostnames:
+      - "{{.Release.Name}}.{{.Values.cluster.domain}}"
+    parentRefs:
+      - name: traefik-internal
+        namespace: network
+    rules:
+      - backendRefs:
+          - identifier: code-server
+            port: 12321
+        matches:
+          - path:
+              type: PathPrefix
+              value: /code/
+        filters:
+          - type: URLRewrite
+            urlRewrite:
+              path:
+                replacePrefixMatch: /
+                type: ReplacePrefixMatch

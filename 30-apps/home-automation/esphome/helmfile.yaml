@@ -16,4 +16,5 @@ releases:
       - ../../../settings/common.yaml
       - values.yaml
       - externalsecret.yaml
+      - route.yaml.gotmpl
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
