@@ -1,6 +1,7 @@
 ---
 cluster:
   name: k3s-dev
+  domain: dev.theclarkhome.com
 
 network:
   device: eth0
