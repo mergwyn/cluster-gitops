@@ -8,7 +8,7 @@ rawResources:
       spec:
         config: |-
             {
-              "cniVersion": "1.0.0",
+              "cniVersion": "0.3.1",
               "type": "macvlan",
               "master": "br0",
               "name": "macvlan-static",
@@ -16,7 +16,6 @@ rawResources:
               "ipam": {
                 "type": "host-local",
                 "subnet": "{{.Values.net.subnet}}.0/24",
-                "gateway": "{{.Values.net.subnet}}.1",
                 "rangeStart": "{{.Values.net.subnet}}.210",
                 "rangeEnd": "{{.Values.net.subnet}}.219"
               }
@@ -32,14 +31,16 @@ rawResources:
             {
               "name": "home-lan",
               "master": "{{.Values.network.device}}",
-              "type": "macvlan",
-              "cniVersion": "1.0.0",
+	      "mode": "l2",
+              "type": "ipvlan",
+              "cniVersion": "0.3.1",
               "ipam": {
                 "type": "host-local",
                 "subnet": "{{.Values.network.subnet}}",
-                "gateway": "{{.Values.network.gateway}}",
                 "rangeStart": "{{.Values.network.multus.rangeStart}}",
                 "rangeEnd": "{{.Values.network.multus.rangeStart}}"
+		"routes": [
+                  { "dst": "10.58.0.0/24" }
               }
             }
 
