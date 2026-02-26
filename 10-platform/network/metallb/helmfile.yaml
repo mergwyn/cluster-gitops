@@ -1,8 +1,6 @@
 ---
 bases:
   - ../../../clusters/environments.yaml
-
----
 repositories:
   - name: metallb
     url: https://metallb.github.io/metallb

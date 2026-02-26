@@ -1,3 +1,6 @@
+bases:
+  - ../../../clusters/environments.yaml
+
 # yaml-language-server: $schema=https://json.schemastore.org/helmfile.json
 ---
 repositories:
