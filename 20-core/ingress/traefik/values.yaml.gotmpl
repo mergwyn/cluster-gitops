@@ -1,89 +1,14 @@
 ---
-globalArguments:
-  - "--global.sendanonymoususage=false"
-  - "--global.checknewversion=false"
 
-additionalArguments:
-  - "--serversTransport.insecureSkipVerify=true"
-
-providers:
-  kubernetesCRD:
-    enabled: true
-    ingressClass: traefik-external
-    allowExternalNameServices: true
-  kubernetesIngress:
-    enabled: true
-    allowExternalNameServices: true
-    publishedService:
-      enabled: true
-  kubernetesGateway:
-    enabled: true
-
-gateway:
-  name: traefik-internal
-  listeners:
-    # TODO work out how to disable web listener
-    web:
-      namespacePolicy:
-        from: All
-    websecure:
-      protocol: HTTPS
-      port: 8443
-      namespacePolicy:
-        from: All
-      certificateRefs:
-        - name: theclarkhome-com-tls
-          # Workaround for argocd issue #22151
-          kind: Secret
-          group: ''
-  # experimentalChannel: true
-
-gatewayClass:
+service:
   enabled: true
-
-rbac:
-  enabled: true
-
-logs:
-  general:
-    level: INFO
-    enabled: true
-  access:
-    enabled: false
-
-deployment:
-  enabled: true
-  replicas: 2
+  type: LoadBalancer
   annotations:
-    secret.reloader.stakater.com/reload: "auto"
-  podAnnotations: {}
-  additionalContainers: []
-  initContainers: []
-
-ports:
-  web:
-    port: 8000        # Traefik v3 internal port default
-    exposedPort: 80   # The port on the Service
-    redirections:
-      entryPoint:
-        to: websecure
-        scheme: https
-        permanent: true
-  websecure:
-    port: 8443
-    exposedPort: 443
-    tls:
-      enabled: true
-  mqtt:
-    port: 1883
-    exposedPort: 1883
-    protocol: TCP
-  mqtts:
-    port: 8883
-    exposedPort: 8883
-    protocol: TCP
-
-# service definition is in values.yaml.gotmpl
+    metallb.io/loadBalancerIPs: {{.Values.network.traefik-internal}}
+  loadBalancerClass: metallb.io/internal
+  labels: {}
+  loadBalancerSourceRanges: []
+  externalIPs: []
 
 resources:
   requests:
