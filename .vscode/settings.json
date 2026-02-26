@@ -1,5 +1,21 @@
 {
+  // -------------------------
+  // YAML SETTINGS
+  // -------------------------
+  "yaml.validate": true,
+
+  // Disable automatic SchemaStore matching
+  "yaml.schemaStore.enable": false,
+
+  // Explicit schema mappings: empty string disables schemas for listed patterns
   "yaml.schemas": {
-    "none": "20-core/ingress/cloudflare-tunnel-ingress-controller/values.yaml"
-  }
+    "kubernetes": "", 
+    "**/values.yaml": "",
+    "**/values-*.yaml": "",
+    "**/helmfile.yaml": "",
+    "**/helmfile*.yaml": "",
+    "**/charts/**/values.yaml": ""
+  },
+
+
 }
