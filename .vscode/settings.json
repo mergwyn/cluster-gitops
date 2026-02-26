@@ -12,8 +12,7 @@
     "kubernetes": "", 
     "**/values.yaml": "",
     "**/values-*.yaml": "",
-    "**/helmfile.yaml": "",
-    "**/helmfile*.yaml": "",
-    "**/charts/**/values.yaml": ""
+    "**/helmfile.yaml": "https://json.schemastore.org/helmfile",
+    "**/helmfile*.yaml": "https://json.schemastore.org/helmfile"
   },
 }
