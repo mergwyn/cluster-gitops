@@ -16,6 +16,4 @@
     "**/helmfile*.yaml": "",
     "**/charts/**/values.yaml": ""
   },
-
-
 }
