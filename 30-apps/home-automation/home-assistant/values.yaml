@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 
 # hostname to use for ingress
 global:
@@ -20,13 +21,10 @@ controllers:
         {{.Release.Name}}-prometheus
 
     pod:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+
       annotations:
-        k8s.v1.cni.cncf.io/networks: |
-          [{
-            "name":"macvlan-static",
-            "namespace": "network",
-            "ips": ["10.58.0.210"]
-          }]
 #        pre.hook.backup.velero.io/container: sqlite-tools
 #        pre.hook.backup.velero.io/command: |
 #          /bin/sh -c '
@@ -166,7 +164,7 @@ controllers:
           - --user-data-dir=/config/.code-server
           - --extensions-dir=/config/.code-server
           # - --install-extension=trunk.io
-          - --port=12321
+          - --port=12322
           - /config
         env:
           TZ: Europe/London
@@ -192,7 +190,7 @@ service:
   code-server:
     ports:
       http:
-        port: &code-server-port 12321
+        port: &code-server-port 12322
 
 serviceMonitor:
   app:
