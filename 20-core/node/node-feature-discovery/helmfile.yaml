@@ -1,3 +1,6 @@
+bases:
+  - ../../../clusters/environments.yaml
+
 ---
 repositories:
   - name: node-feature-discovery

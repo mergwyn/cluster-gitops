@@ -3,7 +3,6 @@
 
 bases:
   - ../../../clusters/environments.yaml
-
 repositories:
   - name: bjw-s-labs
     url: https://bjw-s-labs.github.io/helm-charts
