@@ -1,4 +1,6 @@
 ---
+# yaml-language-server: $schema=https://json.schemastore.org/helmfile.json
+
 repositories:
   - name: strrl.dev
     url: https://helm.strrl.dev
