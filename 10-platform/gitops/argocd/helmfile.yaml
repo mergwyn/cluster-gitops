@@ -12,7 +12,7 @@ repositories:
 releases:
   - name: argocd
     chart: argoproj/argo-cd
-    version: 9.4.3
+    version: 9.4.4
     values:
       - values.yaml
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
