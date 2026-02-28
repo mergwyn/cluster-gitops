@@ -1,0 +1,55 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+---
+route:
+  app:
+    hostnames:
+      - &host "hass.{{.Values.cluster.domain}}"
+    parentRefs: &parentrefs
+      - name: traefik-internal
+        namespace: network
+        sectionName: websecure
+    rules:
+      - backendRefs:
+          - identifier: app
+            port: 8123
+  code-server-new:
+    hostnames:
+      - "hass-code.{{.Values.cluster.domain}}"
+    parentRefs: *parentrefs
+    rules:
+      - backendRefs:
+          - identifier: app
+            port: 12322
+  code-server:
+    hostnames:
+      - *host
+    parentRefs: *parentrefs
+    rules:
+      - backendRefs:
+          - identifier: code-server
+            port: 12322
+        matches:
+          - path:
+              type: PathPrefix
+              value: /code/
+        filters:
+          - type: URLRewrite
+            urlRewrite:
+              path:
+                replacePrefixMatch: /
+                type: ReplacePrefixMatch
+
+ingress:
+  external:
+    enabled: true
+    className: cloudflare-tunnel
+    annotations:
+      cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
+    hosts:
+      - host: *host
+        paths:
+          - path: /
+            pathType: Prefix
+            service:
+              identifier: app
+              port: http
