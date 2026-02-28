@@ -3,7 +3,7 @@
 route:
   app:
     hostnames:
-      - &host "{{.Release.Name}}.{{.Values.global.domain}}"
+      - &host "{{.Release.Name}}.{{.Values.cluster.domain}}"
     parentRefs: &parentrefs
       - name: traefik-internal
         namespace: network
