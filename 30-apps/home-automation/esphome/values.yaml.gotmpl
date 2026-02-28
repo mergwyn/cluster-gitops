@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+
+route:
+  app:
+    hostnames:
+      - "{{.Release.Name}}.{{.Values.cluster.domain}}"
+    parentRefs: &parentrefs
+      - name: traefik-internal
+        namespace: network
+        sectionName: websecure
+    rules:
+      - backendRefs:
+          - identifier: app
+            port: 6052
+
+  code-server:
+    hostnames:
+      - "{{.Release.Name}}-code.{{.Values.cluster.domain}}"
+    parentRefs: *parentrefs
+    rules:
+      - backendRefs:
+          - identifier: code-server
+            port: 12321
