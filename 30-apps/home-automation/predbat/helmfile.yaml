@@ -9,7 +9,7 @@ releases:
   - name: predbat
     chart: bjw-s-labs/app-template
     version: 4.6.2
-    values:
-      - ../../../settings/common.yaml
-      - values.yaml
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+    values:
+      - values.yaml
+      - values.yaml.gotmpl
