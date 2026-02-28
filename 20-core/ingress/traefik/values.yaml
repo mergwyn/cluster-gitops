@@ -1,7 +1,7 @@
 ---
-globalArguments:
-  - "--global.sendanonymoususage=false"
-  - "--global.checknewversion=false"
+global:
+  sendAnonymousUsage: false
+  checkNewVersion: false
 
 additionalArguments:
   - "--serversTransport.insecureSkipVerify=true"
@@ -9,11 +9,12 @@ additionalArguments:
 providers:
   kubernetesCRD:
     enabled: true
-    ingressClass: traefik-external
+    ingressClass: &class traefik-external
     allowExternalNameServices: true
   kubernetesIngress:
     enabled: true
     allowExternalNameServices: true
+    ingressClass: *class
     publishedService:
       enabled: true
   kubernetesGateway:
@@ -64,24 +65,28 @@ ports:
   web:
     port: 8000        # Traefik v3 internal port default
     exposedPort: 80   # The port on the Service
-    redirections:
-      entryPoint:
-        to: websecure
-        scheme: https
-        permanent: true
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+          permanent: true
   websecure:
     port: 8443
     exposedPort: 443
-    tls:
-      enabled: true
+    asDefault: true
   mqtt:
     port: 1883
     exposedPort: 1883
     protocol: TCP
+    expose:
+      default: true
   mqtts:
     port: 8883
     exposedPort: 8883
     protocol: TCP
+    expose:
+      default: true
 
 # service definition is in values.yaml.gotmpl
 
