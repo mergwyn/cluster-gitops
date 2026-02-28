@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 ---
 
 global:
@@ -31,7 +32,7 @@ service:
     forceRename: "{{.Release.Name}}"
     ports:
       http:
-        port: &http_port 5052
+        port: 5052
 
 persistence:
   config:
@@ -42,25 +43,3 @@ persistence:
     size: 1Gi
     globalMounts:
       - path: /config
-
-
-route:
-  app:
-    hostnames:
-      - "{{.Release.Name}}.{{.Values.global.domain}}"
-    parentRefs:
-      - name: traefik-internal
-        namespace: network
-ingress:
-  external:
-    enabled: true
-    className: cloudflare-tunnel
-    annotations:
-      cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
-    hosts:
-      - host: "{{.Release.Name}}.{{.Values.global.domain}}"
-        paths:
-          - path: /
-            service:
-              identifier: app
-              port: http
