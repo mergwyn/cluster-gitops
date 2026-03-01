@@ -1,9 +1,5 @@
----
 # yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
-
-image:
-
-env:
+---
 
 controllers:
   plex:
@@ -74,12 +70,11 @@ controllers:
 
 service:
   app:
+    externalTrafficPolicy: Local
     type: LoadBalancer
     annotations:
-      kube-vip.io/loadbalancerIPs: 10.58.0.40
-      metallb.io/loadBalancerIPs: 10.58.0.38
+      metallb.io/loadBalancerIPs: {{.Values.network.plex | quote}}
     loadBalancerClass: metallb.io/internal
-    #loadBalancerClass: kube-vip.io/kube-vip-class
     ports:
       http:
         port: *port
