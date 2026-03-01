@@ -60,29 +60,6 @@ service:
       http:
         port: *port
 
-route:
-  app:
-    hostnames:
-      - "{{.Release.Name}}.{{.Values.global.domain}}"
-    parentRefs:
-      - name: traefik-internal
-        namespace: network
-
-ingress:
-  external:
-    enabled: true
-    className: cloudflare-tunnel
-    annotations:
-      cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
-    hosts:
-      - host: "{{.Release.Name}}.{{.Values.global.domain}}"
-        paths:
-          - path: /
-            pathType: Prefix
-            service:
-              identifier: app
-              port: http
-
 persistence:
   config:
     enabled: true
@@ -90,7 +67,7 @@ persistence:
     retain: true
     storageClass: openebs-zfspv
     accessMode: ReadWriteOnce
-    size: 2G
+    size: 2Gi
   config-cache:
     storageClass: openebs-zfspv
     accessMode: ReadWriteOnce

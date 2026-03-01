@@ -1,0 +1,13 @@
+---
+route:
+  app:
+    hostnames:
+      - "{{ .Release.Name }}.{{ .Values.cluster.domain }}"
+    parentRefs:
+      - name: traefik-internal
+        namespace: network
+        sectionName: websecure
+    rules:
+      - backendRefs:
+          - identifier: app
+            port: 8080
