@@ -1,7 +1,7 @@
 ---
 
 controllers:
-  app:
+  dispatcharr:
     enabled: true
     type: deployment
     containers:
@@ -28,7 +28,6 @@ controllers:
 service:
   # Configure a service for the main application
   app:
-    controller: app
     type: ClusterIP
     ports:
       http:
