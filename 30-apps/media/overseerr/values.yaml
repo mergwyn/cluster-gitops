@@ -14,7 +14,6 @@ controllers:
         env:
           TZ: "Europe/London"
           LOG_LEVEL: debug
-
         resources:
           requests:
             cpu: 600m
@@ -34,35 +33,12 @@ service:
       http:
         port: 5055
 
-route:
-  app:
-    hostnames:
-      - "{{.Release.Name}}.{{.Values.global.domain}}"
-    parentRefs:
-      - name: traefik-internal
-        namespace: network
-
-ingress:
-  external:
-    enabled: true
-    className: cloudflare-tunnel
-    annotations:
-      cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
-    hosts:
-      - host: "{{.Release.Name}}.{{.Values.global.domain}}"
-        paths:
-          - path: /
-            pathType: Prefix
-            service:
-              identifier: app
-              port: http
-
 persistence:
   config:
     type: persistentVolumeClaim
     storageClass: openebs-zfspv
     accessMode: ReadWriteOnce
     retain: true
-    size: 2G
+    size: 2Gi
     globalMounts:
       - path: /config

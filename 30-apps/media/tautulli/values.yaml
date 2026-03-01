@@ -13,7 +13,6 @@ controllers:
           tag: 2.16.0@sha256:772e1af814159bd7e774273d4f9170b1a0f7129f2ad39be5619a458b7b0fd4b0
         env:
           TZ: "Europe/London"
-
         probes:
           liveness: &probes
             enabled: true
@@ -27,13 +26,13 @@ controllers:
               timeoutSeconds: 1
               failureThreshold: 3
           readiness: *probes
-
         resources:
           requests:
             cpu: 10m
-           #  memory: 670M
+            #  memory: 670M
           limits:
             memory: 1G
+
 defaultPodOptions:
   securityContext:
     runAsNonRoot: true
@@ -50,30 +49,6 @@ service:
     ports:
       http:
         port: *port
-
-route:
-  app:
-    hostnames:
-      - "{{.Release.Name}}.{{.Values.global.domain}}"
-    parentRefs:
-      - name: traefik-internal
-        namespace: network
-
-# ingress:
-#  external:
-#    enabled: true
-#    className: cloudflare-tunnel
-#    annotations:
-#      cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
-#    hosts: 
-#       - host: "{{.Release.Name}}.{{.Values.global.domain}}"
-#         paths:
-#           - path: /
-#             pathType: Prefix
-#             service:
-#               identifier: app
-#               port: http
-
 
 persistence:
   config:
