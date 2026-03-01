@@ -12,6 +12,5 @@ releases:
     version: 4.6.2
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
     values:
-      - values.yaml
       - values.yaml.gotmpl
       - externalsecret.yaml
