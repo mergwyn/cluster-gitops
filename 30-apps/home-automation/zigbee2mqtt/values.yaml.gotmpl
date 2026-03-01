@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 ---
 global:
   # -- Set an override for the prefix of the fullname
@@ -122,8 +123,6 @@ persistence:
     size: 2Gi
     globalMounts:
       - path: /data
-# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
----
 route:
   app:
     hostnames:
