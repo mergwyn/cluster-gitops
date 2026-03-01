@@ -1,8 +1,8 @@
----
 # yaml-language-server: $schema=https://json.schemastore.org/helmfile
-
+---
 bases:
   - ../../../clusters/environments.yaml
+
 repositories:
   - name: bjw-s-labs
     url: https://bjw-s-labs.github.io/helm-charts
@@ -11,9 +11,8 @@ releases:
   - name: esphome
     chart: bjw-s-labs/app-template
     version: 4.6.2
+    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
     values:
-      - ../../../settings/common.yaml
       - values.yaml
       - externalsecret.yaml
       - route.yaml.gotmpl
-    namespace: '{{ env "HELMFILE_NAMESPACE" }}'

@@ -30,7 +30,6 @@ controllers:
             spec:
               failureThreshold: 30
               periodSeconds: 10
-
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
@@ -56,14 +55,6 @@ service:
     ports:
       http:
         port: *port
-
-route:
-  app:
-    hostnames:
-      - "{{.Release.Name}}.{{.Values.global.domain}}"
-    parentRefs:
-      - name: traefik-internal
-        namespace: network
 
 persistence:
   config:

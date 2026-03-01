@@ -15,21 +15,18 @@ controllers:
     type: deployment
     annotations:
       reloader.stakater.com/auto: "true"
-
     pod:
       securityContext:
         runAsUser: 2000
         runAsGroup: 2000
         fsGroup: 2000
         fsGroupChangePolicy: OnRootMismatch
-
     containers:
       app:
         image:
           repository: ghcr.io/koenkk/zigbee2mqtt
           # yamllint disable-line rule:line-length
           tag: 2.7.1@sha256:163e7351430a95d550d5b1bb958527edc1eff115eb013ca627f3545a192e853f
-
         env:
           TZ: "Europe/London"
           ZIGBEE2MQTT_DATA: "/data"
@@ -71,14 +68,12 @@ controllers:
               secretKeyRef:
                 name: "{{.Release.Name}}-mqtt-credentials"
                 key: MQTT_USER
-
         resources:
           requests:
             cpu: 50m
             memory: 384Mi
           limits:
             memory: 384Mi
-
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
@@ -127,35 +122,3 @@ persistence:
     size: 2Gi
     globalMounts:
       - path: /data
-
-route:
-  app:
-    hostnames:
-      - "{{.Release.Name}}.{{.Values.global.domain}}"
-    parentRefs:
-      - name: traefik-internal
-        namespace: network
-    rules:
-      - backendRefs:
-          - identifier: app
-            port: *http-port
-  code-server:
-    hostnames:
-      - "{{.Release.Name}}.{{.Values.global.domain}}"
-    parentRefs:
-      - name: traefik-internal
-        namespace: network
-    rules:
-      - backendRefs:
-          - identifier: code-server
-            port: *code-server-port
-        matches:
-          - path:
-              type: PathPrefix
-              value: /code/
-        filters:
-          - type: URLRewrite
-            urlRewrite:
-              path:
-                replacePrefixMatch: /
-                type: ReplacePrefixMatch

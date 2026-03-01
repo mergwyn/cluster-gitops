@@ -1,0 +1,28 @@
+---
+route:
+  app:
+    hostnames:
+      - "{{ .Release.Name }}.{{ .Values.cluster.domain }}"
+    parentRefs:
+      - name: traefik-internal
+        namespace: network
+        sectionName: websecure
+    rules:
+      - backendRefs:
+          - identifier: app
+            port: 9191
+
+ingress:
+  external:
+    enabled: true
+    className: cloudflare-tunnel
+    annotations:
+      cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
+    hosts:
+      - host: "{{ .Release.Name }}.{{ .Values.cluster.domain }}"
+        paths:
+          - path: /
+            pathType: Prefix
+            service:
+              identifier: app
+              port: 9191
