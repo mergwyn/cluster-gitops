@@ -51,12 +51,12 @@ ensure_k3s_profile() {
 name: $profile
 config:
   limits.memory.swap: "false"
-  linux.kernel_modules: overlay,nf_nat,ip_tables,ip6_tables,netlink_diag,br_netfilter,xt_conntrack,nf_conntrack,ip_vs,vxlan,ip_vxlan,tunnel4
-  lxc.mount.entry: /sys/fs/bpf sys/fs/bpf none bind,create=dir 0 0
+  linux.kernel_modules: overlay,nf_nat,ip_tables,ip6_tables,netlink_diag,br_netfilter,xt_conntrack,nf_conntrack,ip_vs,vxlan,tunnel4
   raw.lxc: |
     lxc.apparmor.profile = unconfined
     lxc.cgroup.devices.allow = a
     lxc.mount.auto = "proc:rw sys:rw"
+    lxc.mount.entry = bpffs sys/fs/bpf bpf defaults,create=dir 0 0
     lxc.cap.drop =
   security.nesting: "true"
   security.privileged: "true"
@@ -157,7 +157,6 @@ bootstrap_cluster() {
 
   set_context
   FIRST_IP="${IPS[$FIRST_NODE]}"
-  VIRTUAL_IP="$FIRST_IP"
 
   echo ">>> Pushing k3s config to first node"
   push_k3s_config "$FIRST_REMOTE" "$FIRST_NODE"
