@@ -18,3 +18,9 @@ platform:
   ingressClass: traefik
   storageClass:
     default: openebs-hostpath
+
+# CertManager defaults (staging for safety)
+certManager:
+  issuerName: letsencrypt-staging
+  acmeServer: https://acme-staging-v02.api.letsencrypt.org/directory
+  email: gary@theclarkhome.com
