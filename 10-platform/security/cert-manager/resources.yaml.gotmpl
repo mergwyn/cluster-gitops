@@ -1,0 +1,104 @@
+{{- $cm := .Values.certManager}}
+resources:
+  - apiVersion: cert-manager.io/v1
+    kind: ClusterIssuer
+    metadata:
+      name: {{.Values.certManager.issuerName}}
+      labels:
+        app.kubernetes.io/name: cert-manager-resources
+        app.kubernetes.io/environment: {{.Environment.Name}}
+        app.kubernetes.io/cluster: {{.Values.cluster.name}}
+      annotations:
+        meta.helm.sh/release-name: {{.Release.Name}}
+        meta.helm.sh/release-namespace: {{.Release.Namespace}}
+    spec:
+      acme:
+        server: {{.Values.certManager.acmeServer}}
+        email: {{.Values.certManager.email}}
+        privateKeySecretRef:
+          name: {{.Values.certManager.issuerName}}
+        solvers:
+          - dns01:
+              cloudflare:
+                email: {{.Values.certManager.email}}
+                apiTokenSecretRef:
+                  name: cloudflare-cert-manager-token
+                  key: tunnelToken
+            selector:
+              dnsZones:
+                - {{.Values.cluster.domain}}
+
+  - apiVersion: cert-manager.io/v1
+    kind: Certificate
+    metadata:
+      name: cluster-tls-cert
+      namespace: network
+      labels:
+        app.kubernetes.io/name: cert-manager-resources
+        app.kubernetes.io/environment: {{.Environment.Name}}
+        app.kubernetes.io/cluster: {{.Values.cluster.name}}
+      annotations:
+        meta.helm.sh/release-name: {{.Release.Name}}
+        meta.helm.sh/release-namespace: {{.Release.Namespace}}
+    spec:
+      secretName: cluster-tls-secret
+      issuerRef:
+        name: {{.Values.certManager.issuerName}}
+        kind: ClusterIssuer
+      commonName: "*.{{.Values.cluster.domain}}"
+      dnsNames:
+        - {{.Values.cluster.domain}}
+        - "*.{{.Values.cluster.domain}}"
+
+  # Self signed certificates (common across environments)
+  - apiVersion: cert-manager.io/v1
+    kind: ClusterIssuer
+    metadata:
+      name: cluster-selfsigned-issuer
+      labels:
+        app.kubernetes.io/name: cert-manager-resources
+        app.kubernetes.io/cluster: {{.Values.cluster.name}}
+      annotations:
+        meta.helm.sh/release-name: {{.Release.Name}}
+        meta.helm.sh/release-namespace: {{.Release.Namespace}}
+    spec:
+      selfSigned: {}
+
+  - apiVersion: cert-manager.io/v1
+    kind: ClusterIssuer
+    metadata:
+      name: cluster-signed-issuer
+      labels:
+        app.kubernetes.io/name: cert-manager-resources
+        app.kubernetes.io/cluster: {{.Values.cluster.name}}
+      annotations:
+        meta.helm.sh/release-name: {{.Release.Name}}
+        meta.helm.sh/release-namespace: {{.Release.Namespace}}
+    spec:
+      ca:
+        secretName: cluster-signed-issuer-secret
+
+  - apiVersion: cert-manager.io/v1
+    kind: Certificate
+    metadata:
+      name: &name cluster-signed-issuer
+      labels:
+        app.kubernetes.io/name: cert-manager-resources
+        app.kubernetes.io/cluster: {{.Values.cluster.name}}
+      annotations:
+        meta.helm.sh/release-name: {{.Release.Name}}
+        meta.helm.sh/release-namespace: {{.Release.Namespace}}
+    spec:
+      isCA: true
+      commonName: *name
+      subject:
+        organizations:
+          - {{.Values.cluster.domain}}
+      secretName: cluster-signed-issuer-secret
+      privateKey:
+        algorithm: ECDSA
+        size: 256
+      issuerRef:
+        name: cluster-selfsigned-issuer
+        kind: ClusterIssuer
+        group: cert-manager.io
