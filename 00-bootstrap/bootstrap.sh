@@ -212,7 +212,7 @@ install_apps() {
 
   echo ">>> Syncing Helm releases"
   generate_bases
-  ${HELMFILE} sync
+  ${HELMFILE} --sequential-helmfiles sync
 
   echo ">>> Adjusting kubeconfig to use ${API_DNS}"
   ${KUBECTL} config set-cluster $CLUSTER_NAME --server=https://${API_DNS}:6443
