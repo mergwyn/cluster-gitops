@@ -22,7 +22,7 @@ spec:
     type: RollingSync
     rollingSync:
       steps:
-        - matchExpressions:
+        - matchExpressions: 
             - key: wave
               operator: In
               values: ["1"]
@@ -61,6 +61,10 @@ spec:
           env:
             - name: HELMFILE_NAMESPACE  # This passes the var to the plugin
               value: "{{.appNamespace}}"
+            - name: HELMFILE_ENVIRONMENT
+              value: dev
+            - name: HELMFILE_TEMPLATE_OPTIONS
+              value: "--include-crds"
 
       destination:
         server: https://kubernetes.default.svc
