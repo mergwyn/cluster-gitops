@@ -1,3 +1,6 @@
+bases:
+  - ../../../clusters/environments.yaml
+
 ---
 bases:
   - ../../../clusters/environments.yaml
