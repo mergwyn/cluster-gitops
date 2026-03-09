@@ -18,8 +18,8 @@ spec:
           - path: 10-platform/security/*/app.yaml
           - path: 10-platform/network/kube-vip/app.yaml
           - path: 10-platform/network/metallb/app.yaml
-          - path: 10-platform/network/multus/app.yaml
-          - path: 20-core/ingress/traefik/app.yaml
+          # - path: 10-platform/network/multus/app.yaml
+          # - path: 20-core/ingress/traefik/app.yaml
           # - path: 10-platform/network/cilium/app.yaml
           # - path: 10-platform/network/multus/app.yaml
           # - path: 10-platform/storage/openebs/app.yaml
