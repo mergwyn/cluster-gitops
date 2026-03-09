@@ -1,58 +1,58 @@
 ---
-k8sServiceHost: "api-{{.Values.cluster.name}}.{{.Values.cluster.domain}}"
-k8sServicePort: 6443
+---
+cluster:
+  name: {{.Values.cluster.name | quote}}
+  id: {{.Values.cluster.id}}
 
+# 1. NETWORK TOPOLOGY
 routingMode: tunnel
 tunnelProtocol: vxlan
-
-cni:
-  chainingMode: none
-  exclusive: true
-  confPath: /etc/cni/net.d/05-cilium.conflist # check whether this should be a dir or file?
-  install: true
-  devices: "{{.Values.network.device}}"
+tunnelPort: 8473
 
 ipam:
-  mode: cluster-pool
+  mode: "kubernetes"
   operator:
-    clusterPoolIPv4PodCIDRList: ["{{.Values.network.podCIDR}}"]
+    clusterPoolIPv4PodCIDRList: [{{ .Values.network.podCIDR | quote }}]
+    clusterPoolIPv4MaskSize: 24
 
-bpf:
-  masquerade: true          # typical for LXC NAT scenarios
-
+# 2. K3S / KUBE-VIP INTEGRATION
+k8sServiceHost: {{ .Values.network.vip | quote }}
+k8sServicePort: 6443
 kubeProxyReplacement: true
-policyEnforcementMode: never
 
+# 3. LXC & K3S BINARY PATHS - CORRECTED
+cni:
+  binPath: /var/lib/rancher/k3s/data/cni
+  confPath: /var/lib/rancher/k3s/agent/etc/cni/net.d
+  customConf: false
+  exclusive: true 
+
+# 4. PERFORMANCE & JUMBO FRAMES
+mtu: 8950
+bpf:
+  masquerade: true
+  tproxy: true
+
+# 5. WORKLOAD MANAGEMENT
 operator:
-  replicas: 1              # Good for a 3-node cluster for HA
-  # enableHostPort: true  # Enable if any apps use it
-  
+  replicas: 1
+  unmanagedPodWatcher:
+    restart: true
+
+# 6. HUBBLE (Optional but recommended for observability)
 hubble:
   enabled: true
   relay:
     enabled: true
   ui:
     enabled: true
-    service:
-      type: NodePort
-      nodePort: 31000
 
-# Optional: VIP support for kube-vip or HA proxy
-# vip:
-#   address: {{.Values.network.vip}}
-#   enableARP: true
-#   enableLeaderElection: true
+# 7. CGROUP (Keep as is)
+cgroup:
+  autoMount:
+    enabled: false
+  hostRoot: /sys/fs/cgroup
 
-# Logging / debugging
-debug:
-  enabled: true
-  verbosity: 6
-
-# Resources (tuned for small LXC nodes)
-resources:
-  requests:
-    cpu: 25m
-    memory: 128Mi
-  limits:
-    cpu: 100m
-    memory: 256Mi
+# 8. ADD THESE SAFETY SETTINGS
+rollOutCiliumPods: true  # Ensure all pods use new config
+policyEnforcementMode: "default"  # Re-enable policy enforcement if desired
