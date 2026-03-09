@@ -196,6 +196,7 @@ curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=${K3S_VERSION} sh -s - server
   ./scripts/kubeconfig-hygiene.sh "$CONFIG" "$CLUSTER_NAME" "$ARGOCD_NS"
   chmod 600 "$CONFIG"
   echo ">>> kubeconfig written to $CONFIG"
+  ( cd ~/.kube; make gen )
 }
 
 install_apps() {
