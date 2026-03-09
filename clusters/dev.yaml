@@ -1,7 +1,8 @@
 ---
 cluster:
   name: k3s-dev
-  domain: dev.theclarkhome.com
+  domain: theclarkhome.com
+  id: 2
 
 network:
   device: eth0
@@ -13,3 +14,8 @@ network:
     rangeEnd: 10.58.0.89
   traefik_internal: 10.58.0.69
   plex: 10.58.0.68
+
+# CertManager dev settings (explicitly staging)
+certManager:
+  issuerName: letsencrypt-staging
+  acmeServer: https://acme-staging-v02.api.letsencrypt.org/directory

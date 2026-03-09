@@ -7,20 +7,20 @@ cluster:
   timezone: Europe/London
 
 network:
-  metallb:
-    poolCIDR: 10.58.0.31-10.58.0.39
-  podCIDR: 10.42.0.0/16
+  podCIDR: 10.44.0.0/16
   serviceCIDR: 10.43.0.0/16
   subnet: 10.58.0.0/24
   gateway: 10.58.0.1
+  metallb:
+    poolCIDR: 10.58.0.31-10.58.0.39
 
 platform:
   ingressClass: traefik
   storageClass:
     default: openebs-hostpath
 
-# TODO migrate from these values to the structure above
-global:
-  domain: "theclarkhome.com"
-net:
-  subnet: "10.58.0"
+# CertManager defaults (staging for safety)
+certManager:
+  issuerName: letsencrypt-staging
+  acmeServer: https://acme-staging-v02.api.letsencrypt.org/directory
+  email: gary@theclarkhome.com

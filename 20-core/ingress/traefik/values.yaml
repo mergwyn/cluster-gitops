@@ -33,7 +33,7 @@ gateway:
       namespacePolicy:
         from: All
       certificateRefs:
-        - name: theclarkhome-com-tls
+        - name: cluster-tls-secret
           # Workaround for argocd issue #22151
           kind: Secret
           group: ''
@@ -150,7 +150,7 @@ ingressRoute:
 tlsStore:
   default:
     defaultCertificate:
-      secretName: theclarkhome-com-tls
+      secretName: cluster-tls-secret
 
 extraObjects:
   - apiVersion: traefik.io/v1alpha1

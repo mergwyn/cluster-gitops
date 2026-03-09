@@ -1,0 +1,11 @@
+---
+bases:
+  - ../../../clusters/environments.yaml
+
+releases:
+  - name: cilium
+    chart: oci://quay.io/cilium/charts/cilium
+    version: 1.19.0
+    values:
+      - values.yaml.gotmpl
+    namespace: '{{ env "HELMFILE_NAMESPACE" }}'

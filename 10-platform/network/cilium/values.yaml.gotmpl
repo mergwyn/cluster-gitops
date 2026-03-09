@@ -1,0 +1,58 @@
+---
+---
+cluster:
+  name: {{.Values.cluster.name | quote}}
+  id: {{.Values.cluster.id}}
+
+# 1. NETWORK TOPOLOGY
+routingMode: tunnel
+tunnelProtocol: vxlan
+tunnelPort: 8473
+
+ipam:
+  mode: "kubernetes"
+  operator:
+    clusterPoolIPv4PodCIDRList: [{{ .Values.network.podCIDR | quote }}]
+    clusterPoolIPv4MaskSize: 24
+
+# 2. K3S / KUBE-VIP INTEGRATION
+k8sServiceHost: {{ .Values.network.vip | quote }}
+k8sServicePort: 6443
+kubeProxyReplacement: true
+
+# 3. LXC & K3S BINARY PATHS - CORRECTED
+cni:
+  binPath: /var/lib/rancher/k3s/data/cni
+  confPath: /var/lib/rancher/k3s/agent/etc/cni/net.d
+  customConf: false
+  exclusive: true 
+
+# 4. PERFORMANCE & JUMBO FRAMES
+mtu: 8950
+bpf:
+  masquerade: true
+  tproxy: true
+
+# 5. WORKLOAD MANAGEMENT
+operator:
+  replicas: 1
+  unmanagedPodWatcher:
+    restart: true
+
+# 6. HUBBLE (Optional but recommended for observability)
+hubble:
+  enabled: true
+  relay:
+    enabled: true
+  ui:
+    enabled: true
+
+# 7. CGROUP (Keep as is)
+cgroup:
+  autoMount:
+    enabled: false
+  hostRoot: /sys/fs/cgroup
+
+# 8. ADD THESE SAFETY SETTINGS
+rollOutCiliumPods: true  # Ensure all pods use new config
+policyEnforcementMode: "default"  # Re-enable policy enforcement if desired
