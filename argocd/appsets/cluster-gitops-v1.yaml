@@ -62,7 +62,7 @@ spec:
             - name: HELMFILE_NAMESPACE  # This passes the var to the plugin
               value: "{{.appNamespace}}"
             - name: HELMFILE_ENVIRONMENT
-              value: dev
+              value: prod
             - name: HELMFILE_TEMPLATE_OPTIONS
               value: "--include-crds"
 
