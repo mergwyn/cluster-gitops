@@ -24,7 +24,7 @@ spec:
     type: RollingSync
     rollingSync:
       steps:
-        - matchExpressions: 
+        - matchExpressions:
             - key: wave
               operator: In
               values: ["1"]
