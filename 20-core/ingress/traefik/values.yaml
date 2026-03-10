@@ -180,7 +180,7 @@ extraObjects:
         creationPolicy: Owner
         template:
           data:
-            users: "{{`{{ htpasswd .username .password }}`}}"
+            users: "{{`{{ htpasswd .username .password \"\" }}`}}"
       dataFrom:
         - extract:
             key: traefik_dashboard
