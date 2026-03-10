@@ -17,8 +17,6 @@ spec:
           - path: "[0-9]*/**/app.yaml"
           - path: "10-platform/network/cilium/app.yaml"
             exclude: true
-          - path: "20-core/policy/kyverno/app.yaml"
-            exclude: true
 
   strategy:
     type: RollingSync
