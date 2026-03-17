@@ -8,3 +8,6 @@ creation_rules:
     encrypted_regex: ^(clusterID|cluster_id)$
     age: >-
       age1kxa0h4zt4txae7wdjy5pck2jvzalmg4mrryuw3qqpzp2jl44n3tqmd0vyp
+  - path_regex: inventory/group_vars/secrets\.yaml$
+    age: >-
+      age1kxa0h4zt4txae7wdjy5pck2jvzalmg4mrryuw3qqpzp2jl44n3tqmd0vyp
