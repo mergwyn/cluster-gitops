@@ -1,0 +1,25 @@
+---
+bases:
+  - ../../../clusters/environments.yaml
+
+
+releases:
+  - name: coredns
+    namespace: '{{ env "HELMFILE_NAMESPACE" | default kube-system }}'
+    chart: "oci://registry-1.docker.io/bitnamicharts/coredns"
+    # app version in chart must match installed bundled k3s version
+    # kubectl -n kube-system get deployment coredns -o jsonpath='{.spec.template.spec.containers[0].image}'
+    version: "1.45.2" # app version in chart must match installed bundled k3s version
+    values:
+      - replicas: 3
+      - tolerations:
+          - key: "node-role.kubernetes.io/control-plane"
+            operator: "Exists"
+            effect: "NoSchedule"
+      - topologySpreadConstraints:
+          - maxSkew: 1
+            topologyKey: kubernetes.io/hostname
+            whenUnsatisfiable: ScheduleAnyway
+            labelSelector:
+              matchLabels:
+                k8s-app: kube-dns
