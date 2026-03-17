@@ -1,0 +1,24 @@
+---
+- name: Initialize First K3s Server
+  delegate_to: localhost
+  shell: |
+    lxc exec {{ groups['k3s_cluster'][0] }} -- bash -c "curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION={{ k3s_version }} sh -s - server \
+    --cluster-init --token {{ cluster_token }}"
+  run_once: true
+
+- name: Wait for API to be ready
+  delegate_to: localhost
+  shell: "lxc exec {{ groups['k3s_cluster'][0] }} -- /usr/local/bin/k3s kubectl get nodes"
+  register: k3s_check
+  until: k3s_check.rc == 0
+  retries: 20
+  delay: 5
+  run_once: true
+
+- name: Join Secondary K3s Servers
+  delegate_to: localhost
+  shell: |
+    lxc exec {{ item }} -- bash -c "curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION={{ k3s_version }} sh -s - server \
+    --server https://{{ node_ips[groups['k3s_cluster'][0]] }}:6443 --token {{ cluster_token }}"
+  loop: "{{ groups['k3s_cluster'][1:] }}"
+  when: groups['k3s_cluster'] | length > 1

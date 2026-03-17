@@ -1,0 +1,37 @@
+# ansible/verify-mappings.yaml
+---
+- name: Get UIDs and GIDs to check
+  ansible.builtin.set_fact:
+    check_uids: "{{ lxd_raw_idmap.splitlines() | select('match', '^uid') | map('regex_replace', '^uid (\\d+) .*', '\\1') | list }}"
+    check_gids: "{{ lxd_raw_idmap.splitlines() | select('match', '^gid') | map('regex_replace', '^gid (\\d+) .*', '\\1') | list }}"
+
+- name: Check UIDs in {{ container }}
+  ansible.builtin.shell: |
+    for uid in {{ check_uids | join(' ') }}; do
+      if lxc exec {{ container }} -- id -u $uid >/dev/null 2>&1; then
+        echo "✓ UID $uid exists"
+      else
+        echo "✗ UID $uid missing"
+      fi
+    done
+  register: uid_check
+  changed_when: false
+
+- name: Check GIDs in {{ container }}
+  ansible.builtin.shell: |
+    for gid in {{ check_gids | join(' ') }}; do
+      if lxc exec {{ container }} -- getent group $gid >/dev/null 2>&1; then
+        echo "✓ GID $gid exists"
+      else
+        echo "✗ GID $gid missing"
+      fi
+    done
+  register: gid_check
+  changed_when: false
+
+- name: Display verification results for {{ container }}
+  ansible.builtin.debug:
+    msg: 
+      - "Container: {{ container }}"
+      - "{{ uid_check.stdout_lines }}"
+      - "{{ gid_check.stdout_lines }}"

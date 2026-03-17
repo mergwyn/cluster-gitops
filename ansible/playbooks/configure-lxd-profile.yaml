@@ -1,0 +1,68 @@
+# ansible/configure-lxd-profile.yaml
+---
+- name: Configure LXD Default Profile
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  
+  vars:
+    lxd_raw_idmap: |
+      uid 1001 1001
+      uid 1002 1002
+      uid 1003 1003
+      uid 1004 1004
+      uid 1007 1007
+      uid 3001 3001
+      gid 513 513
+
+  tasks:
+    - name: Check if LXD profile exists
+      ansible.builtin.command: lxc profile show default
+      register: profile_check
+      changed_when: false
+      failed_when: false
+
+    - name: Create default profile if it doesn't exist
+      ansible.builtin.command: lxc profile create default
+      when: profile_check.rc != 0
+
+    - name: Set default profile raw.idmap
+      ansible.builtin.command:
+        cmd: lxc profile set default raw.idmap "{{ lxd_raw_idmap }}"
+      register: profile_update
+      changed_when: profile_update.rc == 0
+
+    - name: Get running containers
+      ansible.builtin.command: lxc list -c ns --format csv
+      register: container_list
+      changed_when: false
+
+    - name: Restart running containers to apply new mappings
+      ansible.builtin.shell: |
+        set -e
+        for c in {{ running_containers | join(' ') }}; do
+          echo "Restarting $c..."
+          lxc restart "$c" --force
+        done
+      vars:
+        running_containers: >-
+          {{ container_list.stdout_lines
+             | map('split', ',')
+             | selectattr('1', 'equalto', 'RUNNING')
+             | map('first')
+             | list
+          }}
+      when: running_containers | length > 0
+      register: restart_result
+
+    - name: Wait for containers to be ready
+      ansible.builtin.pause:
+        seconds: 5
+      when: restart_result.changed
+
+    - name: Verify UID/GID mappings
+      include_tasks: verify-mappings.yaml
+      loop: "{{ running_containers }}"
+      loop_control:
+        loop_var: container
+      when: running_containers | length > 0

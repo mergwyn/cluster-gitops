@@ -1,0 +1,29 @@
+---
+- name: Generate bootstrap/environments.yaml
+  template:
+    src: environments.yaml.j2
+    dest: "{{ bootstrap_dir }}/environments.yaml"
+  vars:
+    relative_path: "../.."
+
+- name: Sync Helm releases via Helmfile
+  shell: "helmfile --environment {{ ansible_env_name }} --sequential-helmfiles sync"
+  args:
+    chdir: "{{ bootstrap_dir }}"
+  environment:
+    KUBECONFIG: "{{ kubeconfig }}"
+
+- name: Apply ArgoCD ApplicationSet
+  shell: |
+    yq eval '
+      .spec.generators[0].git.revision = strenv(CURRENT_BRANCH) |
+      .spec.template.spec.source.targetRevision = strenv(CURRENT_BRANCH) |
+      .spec.template.spec.source.plugin.env[0].value = strenv(ENV)
+    ' cluster-gitops-handover.yaml |
+    kubectl apply -f -
+  args:
+    chdir: "{{ bootstrap_dir }}"
+  environment:
+    KUBECONFIG: "{{ kubeconfig }}"
+    ENV: "{{ ansible_env_name }}"
+    CURRENT_BRANCH: "{{ lookup('pipe', 'git rev-parse --abbrev-ref HEAD') }}"

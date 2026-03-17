@@ -1,0 +1,8 @@
+---
+# Cluster-specific settings
+cluster_name: "k3s-dev"
+api_dns: "api-k3s-dev.theclarkhome.com"
+api_vip: "10.58.0.60"
+
+cluster_token: "{{ lookup('password', '.cluster-token chars=ascii_letters,digits length=32') }}"
+

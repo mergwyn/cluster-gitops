@@ -1,0 +1,10 @@
+---
+- name: Wait for nodes to be ready
+  delegate_to: localhost
+  shell: |
+    lxc exec {{ groups['k3s_cluster'][0] }} -- kubectl wait --for=condition=Ready nodes --all --timeout=600s
+  register: wait_result
+  retries: 30
+  delay: 10
+  until: wait_result.rc == 0
+  changed_when: false

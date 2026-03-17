@@ -1,0 +1,29 @@
+---
+- name: Ensure required Python modules are installed
+  import_tasks: 00-ensure-dependencies.yaml
+
+- name: Platform Apps Deployment
+  block:
+    - name: Wait for cluster to be ready
+      import_tasks: 01-wait-for-cluster.yaml
+
+    - name: Get and configure kubeconfig
+      import_tasks: 02-get-kubeconfig.yaml
+
+    - name: Run kubeconfig hygiene
+      import_tasks: 03-kubeconfig-hygiene.yaml
+
+    - name: Setup Kubernetes resources
+      import_tasks: 04-k8s-setup.yaml
+
+    - name: Sync applications via Helmfile
+      import_tasks: 05-helmfile-sync.yaml
+
+    - name: Update kubeconfig to use API DNS  # Add this
+      import_tasks: 06-update-kubeconfig-dns.yaml
+
+  rescue:
+    - name: Failed to deploy platform apps
+      debug:
+        msg: "Platform apps deployment failed: {{ ansible_failed_result.msg }}"
+      failed_when: true

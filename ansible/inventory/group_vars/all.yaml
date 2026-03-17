@@ -1,0 +1,20 @@
+---
+# Global Defaults
+k3s_version: "v1.34.2+k3s1"
+image: "ubuntu:24.04"
+profile: "default"
+memory: "4GB"
+cpus: "2"
+argocd_ns: "argocd"
+argocd_namespace: "argocd"
+ansible_env_name: "dev"
+
+# Logic for finding your local home directory safely
+sops_key_path: "{{ lookup('env', 'HOME') }}/.config/sops/age/keys.txt"
+kubeconfig_dir: "{{ lookup('env', 'HOME') }}/.kube/clusters"
+
+# This assumes your ansible playbook is at ./ansible/site.yaml
+# and the helmfile logic is in ./bootstrap/
+repo_root: "{{ (playbook_dir + '/..') | realpath }}"
+bootstrap_dir: "{{ (playbook_dir + '/../../kubernetes/00-bootstrap') | realpath }}"
+kubeconfig: "{{ lookup('env', 'HOME') }}/.kube/clusters/{{ cluster_name }}.yaml"

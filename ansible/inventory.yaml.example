@@ -1,0 +1,19 @@
+---
+k3s_cluster:
+  hosts:
+    k3s-1:
+      lxd_target: golf
+    k3s-2:
+      lxd_target: golf
+    k3s-3:
+      lxd_target: golf
+  vars:
+    ansible_connection: local
+    cluster_name: "k3s-dev"
+    k3s_version: "v1.34.2+k3s1"
+    image: "ubuntu:24.04"
+    cpu_limit: "2"
+    mem_limit: "4GB"
+    api_dns: "api-k3s-dev.example.com" # Adjust to your hostname -d
+    # Generate once or hardcode
+    cluster_token: "yoursecrettoken12345"

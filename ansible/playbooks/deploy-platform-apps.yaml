@@ -1,0 +1,23 @@
+---
+- name: Deploy Platform Apps
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    ansible_python_interpreter: "{{ ansible_playbook_python }}"
+  
+  vars_files:
+    - "{{ playbook_dir }}/../inventory/group_vars/all.yaml"
+    - "{{ playbook_dir }}/../inventory/group_vars/secrets.yaml"
+    - "{{ playbook_dir }}/../inventory/group_vars/k3s_cluster.yaml"
+  
+  pre_tasks:
+    - name: Verify cluster is accessible
+      shell: "kubectl --kubeconfig {{ kubeconfig }} get nodes"
+      register: nodes
+      changed_when: false
+    - name: Show cluster nodes
+      debug: msg="{{ nodes.stdout_lines }}"
+  
+  roles:
+    - role: platform_apps

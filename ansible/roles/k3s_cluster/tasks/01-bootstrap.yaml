@@ -1,0 +1,40 @@
+---
+- name: Ensure K3s profile is configured
+  delegate_to: localhost
+  block:
+    - name: Create profile if missing
+      shell: "lxc profile create k3s || true"
+      changed_when: false
+      run_once: true
+
+    - name: Push profile configuration
+      template:
+        src: k3s_profile.yaml.j2
+        dest: /tmp/k3s_profile.yaml
+      run_once: true
+      delegate_to: localhost
+
+    - name: Apply profile configuration
+      shell: "lxc profile edit k3s < /tmp/k3s_profile.yaml"
+      run_once: true
+      delegate_to: localhost
+
+    - name: Cleanup temp file
+      file:
+        path: /tmp/k3s_profile.yaml
+        state: absent
+      run_once: true
+      delegate_to: localhost
+
+- name: Launch LXC containers for each node
+  delegate_to: localhost
+  command: >
+    lxc launch {{ image }} {{ item }}
+    {% if hostvars[item].lxd_target is defined %}--target {{ hostvars[item].lxd_target }}{% endif %}
+    --profile {{ profile }}
+    --profile k3s
+    -c limits.cpu={{ cpus }}
+    -c limits.memory={{ memory }}
+  loop: "{{ groups['k3s_cluster'] }}"
+  register: launch_result
+  failed_when: launch_result.rc != 0 and 'already exists' not in launch_result.stderr
