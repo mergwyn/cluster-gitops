@@ -1,0 +1,63 @@
+---
+controllers:
+  phonebook:
+    annotations:
+      reloader.stakater.com/auto: "true"
+    containers:
+      app:
+        image:
+          repository: nginxinc/nginx-unprivileged
+          tag: alpine
+        ports:
+          - name: http
+            containerPort: &port 8080
+            protocol: TCP
+
+        probes:
+          liveness: { enabled: false }
+          readiness: { enabled: false }
+
+service:
+  app:
+    forceRename: "{{.Release.Name}}"
+    type: ClusterIP
+    ports:
+      http:
+        port: *port
+
+persistence:
+  # The phonebook data
+  phonebook:
+    enabled: true
+    type: configMap
+    name: phonebook-yealink
+    globalMounts:
+      - path: /usr/share/nginx/html/phonebook.xml
+        subPath: phonebook.xml
+  # The Nginx configuration
+  xml-mime-fix:
+    enabled: true
+    type: configMap
+    name: phonebook-xml-config
+    globalMounts:
+      - path: /etc/nginx/conf.d/xml.con
+        subPath: xml.conf
+
+#  DUmmy version
+configMaps:
+  yealink:
+    enabled: true
+    data:
+      phonebook.xml: |
+        <?xml version='1.0' encoding='utf-8' ?>
+        <YealinkIPPhoneDirectory clearlight='true'></YealinkIPPhoneDirectory>
+  xml-config:
+    enabled: true
+    data:
+      xml.conf: |
+        server {
+            listen 8080;
+            location / {
+                default_type text/xml;
+            }
+        }data:

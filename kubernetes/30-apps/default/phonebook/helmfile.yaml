@@ -1,0 +1,16 @@
+---
+bases:
+  - ../../../clusters/environments.yaml
+
+repositories:
+  - name: bjw-s-labs
+    url: https://bjw-s-labs.github.io/helm-charts
+
+releases:
+  - name: phonebook
+    chart: bjw-s-labs/app-template
+    version: 4.6.2
+    namespace: '{{ env "HELMFILE_NAMESPACE" | default "default" }}'
+    values:
+      - values.yaml
+      - values-ingress.yaml.gotmpl
