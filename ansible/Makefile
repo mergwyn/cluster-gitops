@@ -36,14 +36,7 @@ deploy-apps:
 # Teardown with safety confirmation
 teardown:
 	@echo "⚠️  WARNING: This will destroy your K3s cluster!"
-	@read -p "Are you sure? Type 'yes' to continue: " confirmation; \
-	if [ "$$confirmation" = "yes" ]; then \
-		echo "💥 Destroying cluster..."; \
-		ansible-playbook playbooks/teardown-cluster.yaml; \
-	else \
-		echo "❌ Teardown cancelled"; \
-		exit 1; \
-	fi
+	ansible-playbook playbooks/teardown-cluster.yaml
 
 # Check/dry run mode
 check:
