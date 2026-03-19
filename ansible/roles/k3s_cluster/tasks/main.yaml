@@ -1,0 +1,5 @@
+---
+- import_tasks: 01-bootstrap.yaml
+- import_tasks: 02-configure.yaml
+- import_tasks: 03-install.yaml
+- import_tasks: 04-save-kubeconfig.yaml

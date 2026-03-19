@@ -1,0 +1,49 @@
+---
+- name: Check if pip is available for Ansible controller Python
+  command: "{{ ansible_playbook_python }} -m pip --version"
+  register: pip_check
+  changed_when: false
+  failed_when: false
+  ignore_errors: yes
+
+- name: Install pip using ensurepip if missing
+  command: "{{ ansible_playbook_python }} -m ensurepip --upgrade"
+  when: pip_check.rc != 0
+  register: ensurepip_result
+  changed_when: false
+  failed_when: false
+  ignore_errors: yes
+
+- name: Install required Python packages (packaging, kubernetes)
+  command: "{{ ansible_playbook_python }} -m pip install --user packaging kubernetes"
+  register: pip_install
+  changed_when: "'Successfully installed' in pip_install.stdout"
+  failed_when: false
+
+- name: Verify packaging import
+  command: "{{ ansible_playbook_python }} -c 'import packaging'"
+  register: packaging_check
+  changed_when: false
+  failed_when: false
+  ignore_errors: yes
+
+- name: Verify kubernetes import
+  command: "{{ ansible_playbook_python }} -c 'import kubernetes'"
+  register: kubernetes_check
+  changed_when: false
+  failed_when: false
+  ignore_errors: yes
+
+- name: Show pip install output if verification fails
+  debug:
+    msg:
+      - "pip install stdout: {{ pip_install.stdout }}"
+      - "pip install stderr: {{ pip_install.stderr }}"
+      - "packaging import error: {{ packaging_check.stderr }}"
+      - "kubernetes import error: {{ kubernetes_check.stderr }}"
+  when: packaging_check.failed or kubernetes_check.failed
+
+- name: Fail if packaging or kubernetes cannot be imported
+  fail:
+    msg: "Required Python packages not importable. Please install manually: {{ ansible_playbook_python }} -m pip install --user packaging kubernetes"
+  when: packaging_check.failed or kubernetes_check.failed

@@ -1,0 +1,20 @@
+---
+- name: Provision K3s Cluster
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    ansible_python_interpreter: "{{ ansible_playbook_python }}"
+  vars_files:
+    - "{{ playbook_dir }}/../inventory/group_vars/all.yaml"
+    - "{{ playbook_dir }}/../inventory/group_vars/secrets.yaml"
+    - "{{ playbook_dir }}/../inventory/group_vars/k3s_cluster.yaml"
+  roles:
+    - role: k3s_cluster
+#      vars:
+#        cluster_token: "{{ k3s_token }}"
+#        api_dns: "{{ api_dns }}"
+  post_tasks:
+    - name: Ensure kubeconfig is saved (role already does this)
+      debug:
+        msg: "Cluster provisioned. Kubeconfig at {{ lookup('env', 'HOME') }}/.kube/clusters/{{ cluster_name }}.yaml"

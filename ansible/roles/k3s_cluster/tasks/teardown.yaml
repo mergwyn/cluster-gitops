@@ -1,0 +1,61 @@
+# roles/k3s_cluster/tasks/teardown.yaml
+---
+- name: Get list of k3s cluster containers
+  ansible.builtin.shell: |
+    set -e
+    for container in {{ groups['k3s_cluster'] | join(' ') }}; do
+      if lxc info "$container" &>/dev/null; then
+        echo "$container"
+      fi
+    done
+  register: existing_containers
+  changed_when: false
+  failed_when: false
+
+- name: Display containers to be removed
+  ansible.builtin.debug:
+    msg: "Found containers to remove: {{ existing_containers.stdout_lines }}"
+  when: existing_containers.stdout_lines | length > 0
+
+- name: Stop running containers
+  ansible.builtin.shell: |
+    set -e
+    for container in {{ existing_containers.stdout_lines | join(' ') }}; do
+      echo "Stopping $container..."
+      lxc stop "$container" --force || true
+    done
+  when: existing_containers.stdout_lines | length > 0
+  register: stop_result
+
+- name: Delete containers
+  ansible.builtin.shell: |
+    set -e
+    for container in {{ existing_containers.stdout_lines | join(' ') }}; do
+      echo "Deleting $container..."
+      lxc delete "$container"
+    done
+  when: existing_containers.stdout_lines | length > 0
+  register: delete_result
+
+- name: Verify containers are removed
+  ansible.builtin.shell: |
+    set -e
+    missing=0
+    for container in {{ groups['k3s_cluster'] | join(' ') }}; do
+      if lxc info "$container" &>/dev/null; then
+        echo "❌ $container still exists"
+        missing=1
+      else
+        echo "✅ $container removed"
+      fi
+    done
+    exit $missing
+  register: verify_result
+  changed_when: false
+  failed_when: verify_result.rc != 0
+  when: existing_containers.stdout_lines | length > 0
+
+- name: No containers found
+  ansible.builtin.debug:
+    msg: "No k3s cluster containers found to remove"
+  when: existing_containers.stdout_lines | length == 0

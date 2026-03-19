@@ -1,0 +1,28 @@
+---
+- name: Wait for containers to have IPv4 addresses
+  delegate_to: localhost
+  vars:
+    network_interface: "{{ container_net_iface | default('eth0') }}"
+  shell: |
+    lxc list {{ item }} --format json | \
+    jq -r '.[0].state.network.{{ network_interface }}.addresses[] | select(.family=="inet") | .address' | \
+    head -1
+  register: ip_results
+  until: ip_results.stdout | length > 0
+  retries: 30
+  delay: 3
+  loop: "{{ groups['k3s_cluster'] }}"
+  loop_control:
+    label: "{{ item }}"
+
+- name: Store IPs for all nodes
+  set_fact:
+    node_ips: "{{ node_ips | default({}) | combine({item.item: item.stdout}) }}"
+  loop: "{{ ip_results.results }}"
+  when: item.stdout | length > 0
+
+- name: Configure each node
+  include_tasks: "{{ role_path }}/tasks/configure_node.yaml"
+  loop: "{{ groups['k3s_cluster'] }}"
+  loop_control:
+    loop_var: node_name

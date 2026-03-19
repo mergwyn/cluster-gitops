@@ -1,0 +1,34 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/helmfile
+
+bases:
+  - ../../../clusters/environments.yaml
+
+apiVersions:
+  - "monitoring.coreos.com/v1/ServiceMonitor"
+repositories:
+  - name: bedag
+    url: https://bedag.github.io/helm-charts/
+  - name: external-secrets
+    url: https://charts.external-secrets.io/
+releases:
+  - name: external-secrets
+    chart: external-secrets/external-secrets
+    version: 2.1.0
+    values:
+      - values.yaml
+    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+  - name: bitwarden-access-token
+    chart: bedag/raw
+    version: 2.0.2
+    secrets:
+      - bitwarden-access-token-sops.yaml
+    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+  - name: bitwarden-store
+    chart: bedag/raw
+    version: 2.0.2
+    values:
+      - bitwarden-store.yaml
+    needs:
+      - bitwarden-access-token
+    namespace: '{{ env "HELMFILE_NAMESPACE" }}'

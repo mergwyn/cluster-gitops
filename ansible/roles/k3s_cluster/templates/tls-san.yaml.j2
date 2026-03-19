@@ -1,0 +1,8 @@
+# roles/k3s_cluster/templates/20-tls-san.yaml.j2
+write-kubeconfig-mode: "0644"
+tls-san:
+  - {{ api_dns }}
+  - {{ api_vip }}
+{% for ip in node_ip_list %}
+  - {{ ip }}
+{% endfor %}

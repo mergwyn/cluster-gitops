@@ -1,0 +1,15 @@
+---
+all:
+  hosts:
+    localhost:
+      ansible_connection: local
+
+  children:
+    k3s_cluster:
+      hosts:
+        k3s-1: &defaults
+          container_net_iface: eth0
+          ansible_host: cluster
+          ansible_user: ubuntu
+        k3s-2: *defaults
+        k3s-3: *defaults
