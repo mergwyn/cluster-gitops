@@ -8,7 +8,7 @@ apiVersions:
 releases:
   - name: traefik
     chart: oci://ghcr.io/traefik/helm/traefik
-    version: 39.0.1
+    version: 39.0.5
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
     values:
       - values.yaml
