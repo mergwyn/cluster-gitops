@@ -13,30 +13,26 @@ releases:
     namespace: kube-system
     chart: bedag/raw
     values:
-      # Deployment patch
-      - deploymentName: coredns
-        replicas: 3
-        tolerations:
-          - key: "node-role.kubernetes.io/control-plane"
-            operator: "Exists"
-            effect: "NoSchedule"
-        topologySpreadConstraints:
-          - maxSkew: 1
-            topologyKey: kubernetes.io/hostname
-            whenUnsatisfiable: DoNotSchedule
-            labelSelector:
-              matchLabels:
-                k8s-app: kube-dns
-
-      # PodDisruptionBudget - TODO remove after cilium migration?
-      - podDisruptionBudget:
-          apiVersion: policy/v1
-          kind: PodDisruptionBudget
-          metadata:
-            name: coredns
-            namespace: kube-system
-          spec:
-            minAvailable: 2
-            selector:
-              matchLabels:
-                k8s-app: kube-dns
+      - resources:
+          - apiVersion: helm.cattle.io/v1
+            kind: HelmChartConfig
+            metadata:
+              name: coredns
+              namespace: kube-system
+            spec:
+              valuesContent: |-
+                replicaCount: 3
+                tolerations:
+                  - key: "node-role.kubernetes.io/control-plane"
+                    operator: "Exists"
+                    effect: "NoSchedule"
+                topologySpreadConstraints:
+                  - maxSkew: 1
+                    topologyKey: kubernetes.io/hostname
+                    whenUnsatisfiable: DoNotSchedule
+                    labelSelector:
+                      matchLabels:
+                        k8s-app: kube-dns
+                podDisruptionBudget:
+                  enabled: true
+                  minAvailable: 2
