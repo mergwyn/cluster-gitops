@@ -14,25 +14,40 @@ releases:
     chart: bedag/raw
     values:
       - resources:
-          - apiVersion: helm.cattle.io/v1
-            kind: HelmChartConfig
+          - apiVersion: apps/v1
+            kind: Deployment
+            metadata:
+              name: coredns
+              namespace: kube-system
+              labels:
+                app.kubernetes.io/managed-by: "Helm"
+                k8s-app: kube-dns
+              annotations:
+                meta.helm.sh/release-name: "coredns"
+                meta.helm.sh/release-namespace: "kube-system"
+            spec:
+              replicas: 3
+              template:
+                spec:
+                  tolerations:
+                    - key: "node-role.kubernetes.io/control-plane"
+                      operator: "Exists"
+                      effect: "NoSchedule"
+                  topologySpreadConstraints:
+                    - maxSkew: 1
+                      topologyKey: kubernetes.io/hostname
+                      whenUnsatisfiable: DoNotSchedule
+                      labelSelector:
+                        matchLabels:
+                          k8s-app: kube-dns
+          
+          - apiVersion: policy/v1
+            kind: PodDisruptionBudget
             metadata:
               name: coredns
               namespace: kube-system
             spec:
-              valuesContent: |-
-                replicaCount: 3
-                tolerations:
-                  - key: "node-role.kubernetes.io/control-plane"
-                    operator: "Exists"
-                    effect: "NoSchedule"
-                topologySpreadConstraints:
-                  - maxSkew: 1
-                    topologyKey: kubernetes.io/hostname
-                    whenUnsatisfiable: DoNotSchedule
-                    labelSelector:
-                      matchLabels:
-                        k8s-app: kube-dns
-                podDisruptionBudget:
-                  enabled: true
-                  minAvailable: 2
+              minAvailable: 2
+              selector:
+                matchLabels:
+                  k8s-app: kube-dns
