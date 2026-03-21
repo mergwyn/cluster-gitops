@@ -11,7 +11,7 @@
     },
     {
       "description": "Auto merge minors and patches",
-      "automerge": false,
+      "automerge": true,
       "matchUpdateTypes": [
         "minor",
         "patch"
