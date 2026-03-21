@@ -18,7 +18,7 @@ defaultRepoMaintainFrequency: 24h
 kubectl:
   image:
     repository: public.ecr.aws/bitnami/kubectl
-    tag: 1.35.1@sha256:05a9ddd1ae40cb6ac4a7957547b09a2e880fa08ba548d6826882bda27e89c006
+    tag: 1.35.3@sha256:6950366d53bf66a3b97197bdf11adb8abae78d4e3f1b3db907d43fd45c4a5854
 
 configuration:
   uploaderType: kopia
