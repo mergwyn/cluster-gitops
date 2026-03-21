@@ -7,7 +7,7 @@ repositories:
 releases:
   - name: kube-vip
     chart: kube-vip/kube-vip
-    version: 0.9.6
+    version: 0.9.7
     values:
       - values.yaml.gotmpl
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
