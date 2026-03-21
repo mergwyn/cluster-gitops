@@ -5,7 +5,7 @@ bases:
 releases:
   - name: cilium
     chart: oci://quay.io/cilium/charts/cilium
-    version: 1.19.0
+    version: 1.19.1
     values:
       - values.yaml.gotmpl
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
