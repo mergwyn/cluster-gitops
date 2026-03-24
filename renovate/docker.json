@@ -14,6 +14,7 @@
         "ghcr.io/kubereboot/charts/kured",
         "ghcr.io/prometheus-community/charts/kube-prometheus-stack",
         "quay.io/jetstack/charts/cert-manager",
+        "ghcr.io/gabe565/charts/generic-device-plugin",
         "ghcr.io/external-secrets/charts/external-secrets",
         "cr.strrl.dev/strrl/cloudflare-tunnel-ingress-controller"
       ],
