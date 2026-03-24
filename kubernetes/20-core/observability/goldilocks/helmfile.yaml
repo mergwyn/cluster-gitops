@@ -8,7 +8,7 @@ repositories:
 releases:
   - name: goldilocks
     chart: fairwinds-stable/goldilocks
-    version: 10.2.0
+    version: 10.3.0
     values:
       - values.yaml
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
