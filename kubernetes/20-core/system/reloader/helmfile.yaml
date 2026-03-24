@@ -5,7 +5,7 @@ bases:
 releases:
   - name: reloader
     chart: oci://ghcr.io/stakater/charts/reloader
-    version: 2.2.8
+    version: 2.2.9
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
     values:
       - values.yaml
