@@ -47,6 +47,10 @@ persistence:
 configMaps:
   yealink:
     enabled: true
+    annotations:
+      # Make sure argocd doesn't worry about this
+      argocd.argoproj.io/compare-options: IgnoreExtraneous
+      argocd.argoproj.io/sync-options: PreserveResourcesOnDeletion=true
     data:
       phonebook.xml: |
         <?xml version='1.0' encoding='utf-8' ?>
