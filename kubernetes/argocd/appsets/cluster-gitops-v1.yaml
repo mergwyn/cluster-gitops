@@ -142,9 +142,9 @@ spec:
             - .spec.storageClassName
 
         # Phonebook is loaded into configmap so always out of sync
-#        - group: ''
-#          kind: ConfigMap
-#          name: phonebook-yealink
-#          namespace: default
-#          jsonPointers:
-#            - /data/phonebook.xml
+        - group: ''
+          kind: ConfigMap
+          name: phonebook-yealink
+          namespace: default
+          jsonPointers:
+            - /data/phonebook.xml
