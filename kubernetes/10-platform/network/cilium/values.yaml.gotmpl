@@ -1,58 +1,39 @@
 ---
----
-cluster:
-  name: {{.Values.cluster.name | quote}}
-  id: {{.Values.cluster.id}}
-
-# 1. NETWORK TOPOLOGY
-routingMode: tunnel
-tunnelProtocol: vxlan
-tunnelPort: 8473
+#k8sServiceHost: {{ .Values.network.vip | quote }}
 
 ipam:
-  mode: "kubernetes"
-  operator:
-    clusterPoolIPv4PodCIDRList: [{{ .Values.network.podCIDR | quote }}]
-    clusterPoolIPv4MaskSize: 24
+  mode: kubernetes   # do not interfere with flannel IPAM
 
-# 2. K3S / KUBE-VIP INTEGRATION
-k8sServiceHost: {{ .Values.network.vip | quote }}
-k8sServicePort: 6443
-kubeProxyReplacement: true
-
-# 3. LXC & K3S BINARY PATHS - CORRECTED
 cni:
-  binPath: /var/lib/rancher/k3s/data/cni
+  install: true
   confPath: /var/lib/rancher/k3s/agent/etc/cni/net.d
-  customConf: false
-  exclusive: true 
+  binPath: /var/lib/rancher/k3s/data/cni
+  confFileName: 05-cilium.conflist
 
-# 4. PERFORMANCE & JUMBO FRAMES
-mtu: 8950
+kubeProxyReplacement: true
+autoDirectNodeRoutes: true
+routingMode: native
+ipv4NativeRoutingCIDR: 10.42.0.0/16
+
 bpf:
   masquerade: true
-  tproxy: true
 
-# 5. WORKLOAD MANAGEMENT
-operator:
-  replicas: 1
-  unmanagedPodWatcher:
-    restart: true
+# Interface detection (important for LXC + br0)
+devices: [{{ .Values.network.device | quote }}]
+mtu: 8950
 
-# 6. HUBBLE (Optional but recommended for observability)
+# Observability (optional but useful pre-migration)
 hubble:
   enabled: true
   relay:
     enabled: true
   ui:
-    enabled: true
-
-# 7. CGROUP (Keep as is)
-cgroup:
-  autoMount:
     enabled: false
-  hostRoot: /sys/fs/cgroup
 
-# 8. ADD THESE SAFETY SETTINGS
-rollOutCiliumPods: true  # Ensure all pods use new config
-policyEnforcementMode: "default"  # Re-enable policy enforcement if desired
+# Safety: do not enforce policies yet
+policyEnforcementMode: never
+
+# Prevent surprises
+operator:
+  unmanagedPodWatcher:
+    restart: false
