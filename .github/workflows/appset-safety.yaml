@@ -4,8 +4,8 @@ name: ApplicationSet Safety
 on:
   pull_request:
     paths:
-      - argocd/appsets/**
-      - "**/app.yaml"
+      - "kubernetes/argocd/appsets/**"
+      - "kubernetes/**/app.yaml"
 
 jobs:
   validate:

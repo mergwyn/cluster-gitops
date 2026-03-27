@@ -71,7 +71,7 @@ persistence:
   config-cache:
     storageClass: openebs-zfspv
     accessMode: ReadWriteOnce
-    size: 2G
+    size: 2Gi
     globalMounts:
       - path: /config/MediaCover
   data:
