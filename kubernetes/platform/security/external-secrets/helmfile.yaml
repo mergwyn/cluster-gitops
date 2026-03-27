@@ -6,29 +6,34 @@ bases:
 
 apiVersions:
   - "monitoring.coreos.com/v1/ServiceMonitor"
+
 repositories:
   - name: bedag
     url: https://bedag.github.io/helm-charts/
   - name: external-secrets
     url: https://charts.external-secrets.io/
+
 releases:
   - name: external-secrets
     chart: external-secrets/external-secrets
     version: 2.2.0
     values:
-      - values.yaml
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+      - values.yaml
+
   - name: bitwarden-access-token
     chart: bedag/raw
     version: 2.0.2
     secrets:
       - bitwarden-access-token-sops.yaml
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+
   - name: bitwarden-store
     chart: bedag/raw
     version: 2.0.2
+    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
     values:
       - bitwarden-store.yaml
     needs:
       - bitwarden-access-token
-    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+      - external-secrets
