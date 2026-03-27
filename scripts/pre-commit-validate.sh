@@ -2,7 +2,7 @@
 set -euo pipefail
 shopt -s globstar
 
-BOOTSTRAP_DIR="kubernetes/00-bootstrap"
+BOOTSTRAP_DIR="kubernetes/*bootstrap"
 
 FAILED=0
 
@@ -16,8 +16,7 @@ echo "🔍 Running GitOps pre-commit checks..."
 # Only check files staged for commit
 FILES=$(git diff --cached --name-only)
 if [[ -z ${FILES} ]] ; then
-  FILES=$(ls kubernetes/[0-9]*/**/helmfile.yaml kubernetes/[0-9]*/**/helmfile.d/*.yaml)
-  FILES=$(ls kubernetes/[0-9]*/**/app.yaml)
+  FILES=$(ls kubernetes/**/app.yaml)
 fi
 
 # --- app.yaml validation ---
