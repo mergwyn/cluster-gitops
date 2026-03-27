@@ -16,5 +16,5 @@ kubeconfig_dir: "{{ lookup('env', 'HOME') }}/.kube/clusters"
 # This assumes your ansible playbook is at ./ansible/site.yaml
 # and the helmfile logic is in ./bootstrap/
 repo_root: "{{ (playbook_dir + '/..') | realpath }}"
-bootstrap_dir: "{{ (playbook_dir + '/../../kubernetes/00-bootstrap') | realpath }}"
+bootstrap_dir: "{{ (playbook_dir + '/../../kubernetes/bootstrap') | realpath }}"
 kubeconfig: "{{ lookup('env', 'HOME') }}/.kube/clusters/{{ cluster_name }}.yaml"
