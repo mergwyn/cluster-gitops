@@ -14,5 +14,4 @@ releases:
     version: 0.9.8
     namespace: kube-system
     values:
-      - ../../10-platform//network/kube-vip/values.yaml.gotmpl
-        
+      - ../../platform//network/kube-vip/values.yaml.gotmpl

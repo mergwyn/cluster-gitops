@@ -1,4 +1,6 @@
 ---
+# yaml-language-server: $schema=https://json.schemastore.org/helmfile
+#
 bases:
   - ../environments.yaml
 
@@ -8,5 +10,5 @@ releases:
     chart: oci://ghcr.io/argoproj/argo-helm/argo-cd
     version: 9.4.15
     values:
-      - ../../10-platform/gitops/argocd/values.yaml
-      - ../../10-platform/gitops/argocd/externalsecret.yaml
+      - ../../platform/gitops/argocd/values.yaml
+      - ../../platform/gitops/argocd/externalsecret.yaml
