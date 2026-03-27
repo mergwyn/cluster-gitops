@@ -19,10 +19,10 @@ jobs:
           # Look for storage: lines that end in a number + G (but not Gi)
           # Examples of failures: "10G", "5G"
           # Examples of passes: "10Gi", "500Mi"
-          ERRORS=$(grep -rE "storage:.*[0-9]+G($|\s)" . --exclude-dir=.git || true)
+          ERRORS=$(grep -rE "(storage|size):.*[0-9]+(G|M)($|\s)" . --exclude-dir=.git || true)
 
           if [ ! -z "$ERRORS" ]; then
-            echo "::error::Found PVC storage requests using decimal units (G). Use binary units (Gi) to prevent 'field can not be less than status.capacity' errors."
+            echo "::error::Found PVC storage requests using decimal units (G/M). Use binary units (Gi/Mi) to prevent 'field can not be less than status.capacity' errors."
             echo "$ERRORS"
             exit 1
           fi
