@@ -1,6 +1,10 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/helmfile
 
+helmDefaults:
+  wait: true
+  waitForJobs: true
+
 bases:
   - ../../../clusters/environments.yaml
 
@@ -17,16 +21,16 @@ releases:
   - name: external-secrets
     chart: external-secrets/external-secrets
     version: 2.2.0
-    values:
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+    values:
       - values.yaml
 
   - name: bitwarden-access-token
     chart: bedag/raw
     version: 2.0.2
+    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
     secrets:
       - bitwarden-access-token-sops.yaml
-    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
 
   - name: bitwarden-store
     chart: bedag/raw
