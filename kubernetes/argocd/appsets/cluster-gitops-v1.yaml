@@ -14,33 +14,18 @@ spec:
         repoURL: https://github.com/mergwyn/cluster-gitops.git
         revision: &revision main
         files:
-          - path: "[0-9]*/**/app.yaml"
-          - path: "kubernetes/[0-9]*/**/app.yaml"
-          - path: "10-platform/network/cilium/app.yaml"
-            exclude: true
-          - path: "kubernetes/10-platform/network/cilium/app.yaml"
+          - path: "kubernetes/**/app.yaml"
+          - path: "kubernetes/*platform/network/cilium/app.yaml"
             exclude: true
 
   strategy:
     type: RollingSync
     rollingSync:
       steps:
-        - matchExpressions:
-            - key: wave
-              operator: In
-              values: ["1"]
-        - matchExpressions:
-            - key: wave
-              operator: In
-              values: ["2"]
-        - matchExpressions:
-            - key: wave
-              operator: In
-              values: ["3"]
-        - matchExpressions:
-            - key: wave
-              operator: In
-              values: ["4"]
+        - matchExpressions: [{key: wave, operator: In, values: ["1"]}]
+        - matchExpressions: [{key: wave, operator: In, values: ["2"]}]
+        - matchExpressions: [{key: wave, operator: In, values: ["3"]}]
+        - matchExpressions: [{key: wave, operator: In, values: ["4"]}]
 
   template:
     metadata:

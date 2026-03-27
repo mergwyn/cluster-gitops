@@ -16,16 +16,16 @@ spec:
         repoURL: https://github.com/mergwyn/cluster-gitops.git
         revision: &revision main
         files:
-          - path: kubernetes/10-platform/gitops/*/app.yaml
-          - path: kubernetes/10-platform/security/*/app.yaml
-          - path: kubernetes/10-platform/network/*/app.yaml
-          - path: kubernetes/10-platform/network/cilium/app.yaml
+          - path: kubernetes/*platform/gitops/*/app.yaml
+          - path: kubernetes/*platform/security/*/app.yaml
+          - path: kubernetes/*platform/network/*/app.yaml
+          - path: kubernetes/*platform/network/cilium/app.yaml
             exclude: true
-          - path: kubernetes/10-platform/storage/*/app.yaml
+          - path: kubernetes/*platform/storage/*/app.yaml
             exclude: true
-          - path: kubernetes/10-platform/vpn/*/app.yaml
+          - path: kubernetes/*platform/vpn/*/app.yaml
             exclude: true
-          - path: kubernetes/20-core/ingress/traefik/app.yaml
+          - path: kubernetes/*core/ingress/traefik/app.yaml
 
   template:
     metadata:
