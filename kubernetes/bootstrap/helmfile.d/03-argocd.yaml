@@ -11,4 +11,4 @@ releases:
     version: 9.4.15
     values:
       - ../../platform/gitops/argocd/values.yaml
-      - ../../platform/gitops/argocd/externalsecret.yaml
+      # - ../../platform/gitops/argocd/externalsecret.yaml
