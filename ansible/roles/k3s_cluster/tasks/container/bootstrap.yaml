@@ -1,0 +1,27 @@
+---
+- name: Ensure K3s container profile is configured
+  delegate_to: localhost
+  block:
+    - name: Create profile if missing
+      shell: "lxc profile create k3s-container || true"
+      changed_when: false
+      run_once: true
+
+    - name: Push profile configuration
+      template:
+        src: container_profile.yaml.j2
+        dest: /tmp/k3s-container.yaml
+      run_once: true
+      delegate_to: localhost
+
+    - name: Apply profile configuration
+      shell: "lxc profile edit k3s-container < /tmp/k3s-container.yaml"
+      run_once: true
+      delegate_to: localhost
+
+    - name: Cleanup temp file
+      file:
+        path: /tmp/k3s-container.yaml
+        state: absent
+      run_once: true
+      delegate_to: localhost

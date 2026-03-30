@@ -1,0 +1,372 @@
+Generating Ansible Structure Report...
+=====================================
+Date: Mon 30 Mar 2026 18:14:25 BST
+
+1. DIRECTORY TREE
+----------------
+.
+├── ansible-structure-report.txt
+├── ansible.cfg
+├── inventory
+│   ├── group_vars
+│   │   ├── all.yaml
+│   │   ├── k3s_cluster.yaml
+│   │   ├── secrets.enc
+│   │   └── secrets.yaml
+│   └── hosts.yaml
+├── inventory.yaml.example
+├── Makefile
+├── playbooks
+│   ├── configure-lxd-profile.yaml
+│   ├── deploy-platform-apps.yaml
+│   ├── provision-cluster.yaml
+│   ├── teardown-cluster.yaml
+│   └── verify-mappings.yaml
+├── README.md
+├── requirements.yaml
+└── roles
+    ├── helpers
+    │   ├── defaults
+    │   ├── tasks
+    │   │   ├── detect_runtime.yaml
+    │   │   ├── get_kubeconfig.yaml
+    │   │   ├── get_node_ip.yaml
+    │   │   ├── main.yaml
+    │   │   └── wait_for_node.yaml
+    │   └── vars
+    │       └── main.yaml
+    ├── k3s_cluster
+    │   ├── files
+    │   │   └── k3s-config
+    │   ├── tasks
+    │   │   ├── 01-bootstrap.yaml
+    │   │   ├── 02-configure.yaml
+    │   │   ├── 03-install.yaml
+    │   │   ├── 04-save-kubeconfig.yaml
+    │   │   ├── configure_node.yaml
+    │   │   ├── container
+    │   │   ├── main.yaml
+    │   │   ├── teardown.yaml
+    │   │   └── vm
+    │   ├── templates
+    │   │   ├── container_profile.yaml.j2
+    │   │   ├── k3s_profile.yaml.j2
+    │   │   ├── tls-san.yaml.j2
+    │   │   └── vm_profile.yaml.j2
+    │   └── vars
+    │       ├── container.yaml
+    │       └── vm.yaml
+    └── platform_apps
+        ├── files
+        │   └── kubeconfig-hygiene.sh
+        ├── tasks
+        │   ├── 00-ensure-dependencies.yaml
+        │   ├── 01-wait-for-cluster.yaml
+        │   ├── 02-get-kubeconfig.yaml
+        │   ├── 03-kubeconfig-hygiene.yaml
+        │   ├── 04-k8s-setup.yaml
+        │   ├── 05-helmfile-sync.yaml
+        │   ├── 06-update-kubeconfig-dns.yaml
+        │   └── main.yaml
+        └── templates
+            └── environments.yaml.j2
+
+21 directories, 45 files
+
+2. TASK FILES OVERVIEW
+---------------------
+K3s Cluster Tasks:
+-rw-r--r--  1 gary  THECLARKHOME\Domain Users  1167 19 Mar 15:47 roles/k3s_cluster/tasks/01-bootstrap.yaml
+-rw-r--r--@ 1 gary  THECLARKHOME\Domain Users  1627 30 Mar 15:12 roles/k3s_cluster/tasks/02-configure.yaml
+-rw-r--r--  1 gary  THECLARKHOME\Domain Users   898 19 Mar 15:47 roles/k3s_cluster/tasks/03-install.yaml
+-rw-r--r--@ 1 gary  THECLARKHOME\Domain Users   569 30 Mar 14:46 roles/k3s_cluster/tasks/04-save-kubeconfig.yaml
+-rw-r--r--@ 1 gary  THECLARKHOME\Domain Users  3391 30 Mar 18:03 roles/k3s_cluster/tasks/configure_node.yaml
+-rw-r--r--@ 1 gary  THECLARKHOME\Domain Users  1298 30 Mar 17:22 roles/k3s_cluster/tasks/main.yaml
+-rw-r--r--@ 1 gary  THECLARKHOME\Domain Users  5004 30 Mar 15:06 roles/k3s_cluster/tasks/teardown.yaml
+
+VM Tasks:
+-rw-r--r--@ 1 gary  THECLARKHOME\Domain Users  680 29 Mar 14:02 roles/k3s_cluster/tasks/vm/bootstrap.yaml
+-rw-r--r--@ 1 gary  THECLARKHOME\Domain Users  534 29 Mar 14:02 roles/k3s_cluster/tasks/vm/create.yaml
+
+Helpers Tasks:
+-rw-r--r--@ 1 gary  THECLARKHOME\Domain Users  1262 30 Mar 15:15 roles/helpers/tasks/detect_runtime.yaml
+-rw-r--r--@ 1 gary  THECLARKHOME\Domain Users   689 30 Mar 16:31 roles/helpers/tasks/get_kubeconfig.yaml
+-rw-r--r--@ 1 gary  THECLARKHOME\Domain Users   990 30 Mar 16:31 roles/helpers/tasks/get_node_ip.yaml
+-rw-r--r--@ 1 gary  THECLARKHOME\Domain Users   209 30 Mar 14:46 roles/helpers/tasks/main.yaml
+-rw-r--r--@ 1 gary  THECLARKHOME\Domain Users   752 30 Mar 14:57 roles/helpers/tasks/wait_for_node.yaml
+
+3. CRITICAL FILE CONTENTS
+-----------------------
+=== configure_node.yaml ===
+---
+
+- name: Configure iptables for K3s
+  block:
+    - name: Check current iptables alternative on {{ node_name }}
+      delegate_to: localhost
+      command: "lxc exec {{ node_name }} -- update-alternatives --display iptables"
+      register: iptables_display
+      changed_when: false
+      failed_when: false
+
+    - name: Switch iptables to legacy on {{ node_name }}
+      delegate_to: localhost
+      command: "lxc exec {{ node_name }} -- update-alternatives --force --set iptables /usr/sbin/iptables-legacy"
+      when: "'/usr/sbin/iptables-legacy' not in iptables_display.stdout or 'manual mode' not in iptables_display.stdout"
+      register: iptables_set
+
+    - name: Switch ip6tables to legacy on {{ node_name }}
+      delegate_to: localhost
+      command: "lxc exec {{ node_name }} -- update-alternatives --force --set ip6tables /usr/sbin/ip6tables-legacy"
+      when: iptables_set is changed
+
+    - name: Stop and disable nftables on {{ node_name }}
+      delegate_to: localhost
+      command: "lxc exec {{ node_name }} -- sh -c 'systemctl stop nftables 2>/dev/null || true; systemctl disable nftables 2>/dev/null || true'"
+      ignore_errors: yes
+
+    - name: Verify iptables backend on {{ node_name }}
+      delegate_to: localhost
+      command: "lxc exec {{ node_name }} -- iptables --version"
+      register: iptables_version
+      failed_when: "'legacy' not in iptables_version.stdout"
+      changed_when: false
+
+  tags:
+    - iptables
+
+- name: Ensure config directory exists on {{ node_name }}
+  delegate_to: localhost
+  command: "lxc exec {{ node_name }} -- mkdir -p /etc/rancher/k3s/config.yaml.d/"
+
+- name: Create temporary directory for {{ node_name }}
+  delegate_to: localhost
+  tempfile:
+    state: directory
+    suffix: "k3s-config-{{ node_name }}"
+  register: tempdir
+
+- name: Create list of node IPs (run once)
+  set_fact:
+    node_ip_list: "{{ node_ips.values() | list }}"
+  run_once: true
+
+- name: Copy config files to temp directory
+  delegate_to: localhost
+  copy:
+    src: "{{ role_path }}/files/k3s-config/"
+    dest: "{{ tempdir.path }}/"
+    mode: preserve
+
+- name: Create tls-san config with all node IPs
+  delegate_to: localhost
+  template:
+    src: tls-san.yaml.j2
+    dest: "{{ tempdir.path }}/config.yaml.d/20-tls-san.yaml"
+
+- name: Create node-ip config for this node
+  delegate_to: localhost
+  copy:
+    content: |
+      node-ip: "{{ node_ips[node_name] }}"
+      node-external-ip: "{{ node_ips[node_name] }}"
+    dest: "{{ tempdir.path }}/config.yaml.d/10-node-ip.yaml"
+
+- name: Wait for filesystem to be ready (VMs only)
+  when: runtime_type == 'vm'
+  delegate_to: localhost
+  command: "lxc exec {{ node_name }} -- test -d /etc/rancher/k3s"
+  register: dir_check
+  until: dir_check.rc == 0
+  retries: 10
+  delay: 2
+
+- name: Push config.yaml to {{ node_name }}
+  delegate_to: localhost
+  command: "lxc file push {{ tempdir.path }}/config.yaml {{ node_name }}/etc/rancher/k3s/config.yaml"
+
+- name: Push config.yaml.d directory to {{ node_name }}
+  delegate_to: localhost
+  command: "lxc file push -r {{ tempdir.path }}/config.yaml.d/. {{ node_name }}/etc/rancher/k3s/"
+
+- name: Fix ownership on {{ node_name }}
+  delegate_to: localhost
+  command: "lxc exec {{ node_name }} -- chown -R root:root /etc/rancher/k3s/"
+
+- name: Clean up temp directory for {{ node_name }}
+  delegate_to: localhost
+  file:
+    path: "{{ tempdir.path }}"
+    state: absent
+
+
+
+=== main.yaml ===
+---
+- name: Determine operation mode
+  set_fact:
+    operation: "{{ operation | default('deploy') }}"
+  run_once: true
+  delegate_to: localhost
+
+- name: Display operation mode
+  debug:
+    msg: "Running {{ operation }} for k3s cluster"
+  run_once: true
+  delegate_to: localhost
+
+- name: Deploy cluster
+  block:
+    - name: Detect runtime using helpers role
+      include_role:
+        name: helpers
+        tasks_from: detect_runtime
+
+    - name: Set network interface based on runtime type
+      set_fact:
+        net_iface: "{{ 'enp5s0' if runtime_type == 'vm' else 'eth0' }}"
+      run_once: true
+      delegate_to: localhost
+
+    - name: Include runtime-specific variables (if file exists)
+      include_vars: "{{ runtime_type }}.yaml"
+      ignore_errors: yes
+      when: runtime_type is defined
+
+    - name: Bootstrap environment
+      import_tasks: "{{ runtime_type }}/bootstrap.yaml"
+
+    - name: Create instances
+      import_tasks: "{{ runtime_type }}/create.yaml"
+
+    - name: Configure instances
+      import_tasks: 02-configure.yaml
+
+    - name: Install k3s
+      import_tasks: 03-install.yaml
+
+    - name: Save kubeconfig
+      import_tasks: 04-save-kubeconfig.yaml
+  when: operation == 'deploy'
+
+- name: Teardown cluster
+  import_tasks: teardown.yaml
+  when: operation == 'teardown'
+
+
+
+=== vm/bootstrap.yaml ===
+---
+- name: Ensure K3s VM profile is configured
+  delegate_to: localhost
+  block:
+    - name: Create profile if missing
+      shell: "lxc profile create k3s-vm || true"
+      changed_when: false
+      run_once: true
+
+    - name: Push profile configuration
+      template:
+        src: vm_profile.yaml.j2
+        dest: /tmp/k3s-vm.yaml
+      run_once: true
+      delegate_to: localhost
+
+    - name: Apply profile configuration
+      shell: "lxc profile edit k3s-vm < /tmp/k3s-vm.yaml"
+      run_once: true
+      delegate_to: localhost
+
+    - name: Cleanup temp file
+      file:
+        path: /tmp/k3s-vm.yaml
+        state: absent
+      run_once: true
+      delegate_to: localhost
+
+
+
+=== helpers/tasks/detect_runtime.yaml ===
+---
+- name: Detect runtime (provisioning or existing cluster)
+  delegate_to: localhost
+  run_once: true
+  block:
+    - name: Check if first node exists
+      shell: "lxc info {{ groups['k3s_cluster'][0] }} &>/dev/null && echo 'exists' || echo 'missing'"
+      register: node_exists
+      changed_when: false
+
+    - name: Get runtime from existing node if it exists
+      when: node_exists.stdout == 'exists'
+      block:
+        - name: Detect runtime type from existing node
+          shell: |
+            lxc config show {{ groups['k3s_cluster'][0] }} 2>/dev/null | grep -q "type: vm" && echo "vm" || echo "container"
+          register: existing_runtime
+          changed_when: false
+
+        - name: Set runtime_type from existing cluster
+          set_fact:
+            runtime_type: "{{ existing_runtime.stdout }}"
+
+        - name: Display detected runtime from existing cluster
+          debug:
+            msg: "Detected existing cluster runtime: {{ runtime_type }}"
+
+    - name: Set defaults for new cluster (no nodes exist)
+      when: node_exists.stdout != 'exists'
+      set_fact:
+        runtime_type: "{{ runtime_type | default('container') }}"
+
+    - name: Final runtime configuration
+      debug:
+        msg: "Using runtime: {{ runtime_type }}"
+
+
+
+4. LXC REFERENCES CHECK
+---------------------
+LXC references in VM tasks:
+roles/k3s_cluster/tasks/vm/create.yaml:- name: Launch LXC VMs for each node
+roles/k3s_cluster/tasks/vm/create.yaml:    lxc launch {{ vm_image }} {{ item }}
+roles/k3s_cluster/tasks/vm/bootstrap.yaml:      shell: "lxc profile create k3s-vm || true"
+roles/k3s_cluster/tasks/vm/bootstrap.yaml:      shell: "lxc profile edit k3s-vm < /tmp/k3s-vm.yaml"
+
+LXC references in configure_node.yaml:
+roles/k3s_cluster/tasks/configure_node.yaml:      command: "lxc exec {{ node_name }} -- update-alternatives --display iptables"
+roles/k3s_cluster/tasks/configure_node.yaml:      command: "lxc exec {{ node_name }} -- update-alternatives --force --set iptables /usr/sbin/iptables-legacy"
+roles/k3s_cluster/tasks/configure_node.yaml:      command: "lxc exec {{ node_name }} -- update-alternatives --force --set ip6tables /usr/sbin/ip6tables-legacy"
+roles/k3s_cluster/tasks/configure_node.yaml:      command: "lxc exec {{ node_name }} -- sh -c 'systemctl stop nftables 2>/dev/null || true; systemctl disable nftables 2>/dev/null || true'"
+roles/k3s_cluster/tasks/configure_node.yaml:      command: "lxc exec {{ node_name }} -- iptables --version"
+roles/k3s_cluster/tasks/configure_node.yaml:  command: "lxc exec {{ node_name }} -- mkdir -p /etc/rancher/k3s/config.yaml.d/"
+roles/k3s_cluster/tasks/configure_node.yaml:  command: "lxc exec {{ node_name }} -- test -d /etc/rancher/k3s"
+roles/k3s_cluster/tasks/configure_node.yaml:  command: "lxc file push {{ tempdir.path }}/config.yaml {{ node_name }}/etc/rancher/k3s/config.yaml"
+roles/k3s_cluster/tasks/configure_node.yaml:  command: "lxc file push -r {{ tempdir.path }}/config.yaml.d/. {{ node_name }}/etc/rancher/k3s/"
+roles/k3s_cluster/tasks/configure_node.yaml:  command: "lxc exec {{ node_name }} -- chown -R root:root /etc/rancher/k3s/"
+
+5. RUNTIME CONFIGURATION
+----------------------
+VM variables:
+---
+vm_image: "ubuntu:24.04"
+runtime_type: "vm"
+lxc_flags: "--vm"
+wait_retries: 30
+wait_delay: 5
+systemd_wait: true
+vm_net_iface: "enp5s0"
+vm_disk_size: "20GB"
+requires_privileged: false
+
+Container variables (if exists):
+---
+image: "ubuntu:24.04"
+runtime_type: "container"
+lxc_flags: ""
+wait_retries: 15
+wait_delay: 2
+systemd_wait: false
+container_net_iface: "eth0"
+requires_privileged: true
+

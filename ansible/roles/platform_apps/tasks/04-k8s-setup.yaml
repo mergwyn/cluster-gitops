@@ -4,24 +4,29 @@
     kubectl config view --kubeconfig={{ kubeconfig }} -o jsonpath='{.clusters[0].cluster.server}' | sed 's|https://\(.*\):.*|\1|'
   register: kubeconfig_server_ip
   changed_when: false
+  run_once: true
+  delegate_to: localhost
 
 - name: Get current IP of first node
-  shell: |
-    lxc list {{ groups['k3s_cluster'][0] }} --format json | \
-    jq -r '.[0].state.network.eth0.addresses[] | select(.family=="inet") | .address' | \
-    head -1
-  register: current_node_ip
-  changed_when: false
+  include_role:
+    name: helpers
+    tasks_from: get_node_ip
+  vars:
+    node_name: "{{ groups['k3s_cluster'][0] }}"
 
 - name: Update kubeconfig server if IP mismatch
   shell: |
-    kubectl config set-cluster {{ cluster_name }} --server=https://{{ current_node_ip.stdout }}:6443 --kubeconfig={{ kubeconfig }}
-  when: current_node_ip.stdout != kubeconfig_server_ip.stdout
+    kubectl config set-cluster {{ cluster_name }} --server=https://{{ node_ip }}:6443 --kubeconfig={{ kubeconfig }}
+  when: node_ip != kubeconfig_server_ip.stdout
+  run_once: true
+  delegate_to: localhost
 
 - name: Verify cluster access after potential IP update
   shell: "kubectl --kubeconfig {{ kubeconfig }} get nodes"
   register: nodes_verify
   changed_when: false
+  run_once: true
+  delegate_to: localhost
 
 - name: Create ArgoCD namespace using kubectl
   shell: |
@@ -29,6 +34,8 @@
     kubectl --kubeconfig {{ kubeconfig }} apply -f -
   register: ns_create
   changed_when: "'created' in ns_create.stdout or 'configured' in ns_create.stdout"
+  run_once: true
+  delegate_to: localhost
 
 - name: Create ArgoCD Age Secret using kubectl
   shell: |
@@ -39,3 +46,5 @@
     kubectl --kubeconfig {{ kubeconfig }} apply -f -
   register: secret_create
   changed_when: "'created' in secret_create.stdout or 'configured' in secret_create.stdout"
+  run_once: true
+  delegate_to: localhost

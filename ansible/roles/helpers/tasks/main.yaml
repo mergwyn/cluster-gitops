@@ -1,0 +1,7 @@
+---
+# This file allows the helpers role to be included directly
+# It can call specific task files based on a parameter
+
+- name: Include requested task
+  include_tasks: "{{ task }}.yaml"
+  when: task is defined

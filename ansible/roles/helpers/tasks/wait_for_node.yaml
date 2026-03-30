@@ -1,0 +1,25 @@
+---
+- name: Wait for node {{ node_name }} to be ready
+  delegate_to: localhost
+  block:
+    - name: Wait for IP address
+      include_tasks: get_node_ip.yaml
+      vars:
+        node_name: "{{ node_name }}"
+        ip_fact_name: "wait_ip"
+
+    - name: Wait for systemd to be ready (VMs)
+      when: runtime_type == 'vm'
+      shell: "lxc exec {{ node_name }} -- systemctl is-system-running --wait"
+      register: system_status
+      until: system_status.rc == 0
+      retries: 30
+      delay: 5
+
+    - name: Wait for container to be pingable (containers)
+      when: runtime_type == 'container'
+      shell: "lxc exec {{ node_name }} -- echo 'ready'"
+      register: ping_test
+      until: ping_test.stdout == "ready"
+      retries: 15
+      delay: 2

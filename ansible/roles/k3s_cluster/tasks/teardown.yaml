@@ -1,61 +1,166 @@
-# roles/k3s_cluster/tasks/teardown.yaml
 ---
-- name: Get list of k3s cluster containers
+- name: Detect runtime using helpers role (for teardown)
+  include_role:
+    name: helpers
+    tasks_from: detect_runtime
+
+- name: Include runtime-specific variables
+  include_vars: "{{ runtime_type }}.yaml"
+  ignore_errors: yes
+  run_once: true
+  delegate_to: localhost
+
+- name: Convert boolean flags from strings if needed
+  set_fact:
+    remove_profiles_bool: "{{ remove_profiles | bool }}"
+    remove_kubeconfig_bool: "{{ remove_kubeconfig | bool }}"
+  run_once: true
+  delegate_to: localhost
+
+- name: Display teardown configuration
+  debug:
+    msg: "Tearing down {{ runtime_type }} cluster: {{ groups['k3s_cluster'] | join(', ') }}"
+  run_once: true
+  delegate_to: localhost
+
+- name: Get list of k3s cluster instances
+  delegate_to: localhost
   ansible.builtin.shell: |
     set -e
-    for container in {{ groups['k3s_cluster'] | join(' ') }}; do
-      if lxc info "$container" &>/dev/null; then
-        echo "$container"
+    for instance in {{ groups['k3s_cluster'] | join(' ') }}; do
+      if lxc info "$instance" &>/dev/null; then
+        echo "$instance"
       fi
     done
-  register: existing_containers
+  register: existing_instances
   changed_when: false
   failed_when: false
+  run_once: true
 
-- name: Display containers to be removed
+- name: Display instances to be removed
   ansible.builtin.debug:
-    msg: "Found containers to remove: {{ existing_containers.stdout_lines }}"
-  when: existing_containers.stdout_lines | length > 0
+    msg: "Found instances to remove: {{ existing_instances.stdout_lines }}"
+  when: existing_instances.stdout_lines | length > 0
+  run_once: true
+  delegate_to: localhost
 
-- name: Stop running containers
+- name: Stop running instances
+  delegate_to: localhost
   ansible.builtin.shell: |
     set -e
-    for container in {{ existing_containers.stdout_lines | join(' ') }}; do
-      echo "Stopping $container..."
-      lxc stop "$container" --force || true
+    for instance in {{ existing_instances.stdout_lines | join(' ') }}; do
+      echo "Stopping $instance..."
+      lxc stop "$instance" --force || true
     done
-  when: existing_containers.stdout_lines | length > 0
+  when: existing_instances.stdout_lines | length > 0
   register: stop_result
+  run_once: true
 
-- name: Delete containers
+- name: Wait for instances to fully stop (VMs need extra time)
+  when: runtime_type == 'vm' and existing_instances.stdout_lines | length > 0
+  delegate_to: localhost
+  ansible.builtin.pause:
+    seconds: 5
+  run_once: true
+
+- name: Delete instances
+  delegate_to: localhost
   ansible.builtin.shell: |
     set -e
-    for container in {{ existing_containers.stdout_lines | join(' ') }}; do
-      echo "Deleting $container..."
-      lxc delete "$container"
+    for instance in {{ existing_instances.stdout_lines | join(' ') }}; do
+      echo "Deleting $instance..."
+      lxc delete "$instance"
     done
-  when: existing_containers.stdout_lines | length > 0
+  when: existing_instances.stdout_lines | length > 0
   register: delete_result
+  run_once: true
 
-- name: Verify containers are removed
+- name: Remove profiles (optional)
+  block:
+    - name: Check if container profile exists
+      delegate_to: localhost
+      shell: "lxc profile show k3s-container &>/dev/null"
+      register: container_profile_exists
+      failed_when: false
+      run_once: true
+
+    - name: Check if VM profile exists
+      delegate_to: localhost
+      shell: "lxc profile show k3s-vm &>/dev/null"
+      register: vm_profile_exists
+      failed_when: false
+      run_once: true
+
+    - name: Delete container profile
+      delegate_to: localhost
+      shell: "lxc profile delete k3s-container"
+      when: container_profile_exists.rc == 0 and remove_profiles_bool
+      run_once: true
+      register: container_profile_deleted
+
+    - name: Delete VM profile
+      delegate_to: localhost
+      shell: "lxc profile delete k3s-vm"
+      when: vm_profile_exists.rc == 0 and remove_profiles_bool
+      run_once: true
+      register: vm_profile_deleted
+
+    - name: Show profile deletion status
+      debug:
+        msg: 
+          - "{% if container_profile_deleted.changed is defined %}✅ Deleted container profile{% endif %}"
+          - "{% if vm_profile_deleted.changed is defined %}✅ Deleted VM profile{% endif %}"
+      when: (container_profile_deleted.changed is defined or vm_profile_deleted.changed is defined) and remove_profiles_bool
+      run_once: true
+      delegate_to: localhost
+
+  when: remove_profiles_bool
+
+- name: Clean up kubeconfig
+  block:
+    - name: Remove cluster kubeconfig
+      file:
+        path: "{{ lookup('env', 'HOME') }}/.kube/clusters/{{ cluster_name }}.yaml"
+        state: absent
+      delegate_to: localhost
+      run_once: true
+
+    - name: Try to remove clusters directory if empty
+      shell: |
+        rmdir "{{ lookup('env', 'HOME') }}/.kube/clusters" 2>/dev/null || true
+      delegate_to: localhost
+      run_once: true
+
+  when: remove_kubeconfig_bool
+
+- name: Verify instances are removed
+  delegate_to: localhost
   ansible.builtin.shell: |
     set -e
     missing=0
-    for container in {{ groups['k3s_cluster'] | join(' ') }}; do
-      if lxc info "$container" &>/dev/null; then
-        echo "❌ $container still exists"
+    for instance in {{ groups['k3s_cluster'] | join(' ') }}; do
+      if lxc info "$instance" &>/dev/null; then
+        echo "❌ $instance still exists"
         missing=1
       else
-        echo "✅ $container removed"
+        echo "✅ $instance removed"
       fi
     done
     exit $missing
   register: verify_result
   changed_when: false
   failed_when: verify_result.rc != 0
-  when: existing_containers.stdout_lines | length > 0
+  when: existing_instances.stdout_lines | length > 0
+  run_once: true
 
-- name: No containers found
-  ansible.builtin.debug:
-    msg: "No k3s cluster containers found to remove"
-  when: existing_containers.stdout_lines | length == 0
+- name: Teardown summary
+  debug:
+    msg: |
+      ========================================
+      Teardown Complete for {{ runtime_type }} cluster
+      Instances removed: {{ existing_instances.stdout_lines | length }}
+      Profiles removed: {{ remove_profiles_bool }}
+      Kubeconfig removed: {{ remove_kubeconfig_bool }}
+      ========================================
+  run_once: true
+  delegate_to: localhost

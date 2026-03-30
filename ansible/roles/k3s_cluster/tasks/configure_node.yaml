@@ -1,4 +1,40 @@
 ---
+
+- name: Configure iptables for K3s
+  block:
+    - name: Check current iptables alternative on {{ node_name }}
+      delegate_to: localhost
+      command: "lxc exec {{ node_name }} -- update-alternatives --display iptables"
+      register: iptables_display
+      changed_when: false
+      failed_when: false
+
+    - name: Switch iptables to legacy on {{ node_name }}
+      delegate_to: localhost
+      command: "lxc exec {{ node_name }} -- update-alternatives --force --set iptables /usr/sbin/iptables-legacy"
+      when: "'/usr/sbin/iptables-legacy' not in iptables_display.stdout or 'manual mode' not in iptables_display.stdout"
+      register: iptables_set
+
+    - name: Switch ip6tables to legacy on {{ node_name }}
+      delegate_to: localhost
+      command: "lxc exec {{ node_name }} -- update-alternatives --force --set ip6tables /usr/sbin/ip6tables-legacy"
+      when: iptables_set is changed
+
+    - name: Stop and disable nftables on {{ node_name }}
+      delegate_to: localhost
+      command: "lxc exec {{ node_name }} -- sh -c 'systemctl stop nftables 2>/dev/null || true; systemctl disable nftables 2>/dev/null || true'"
+      ignore_errors: yes
+
+    - name: Verify iptables backend on {{ node_name }}
+      delegate_to: localhost
+      command: "lxc exec {{ node_name }} -- iptables --version"
+      register: iptables_version
+      failed_when: "'legacy' not in iptables_version.stdout"
+      changed_when: false
+
+  tags:
+    - iptables
+
 - name: Ensure config directory exists on {{ node_name }}
   delegate_to: localhost
   command: "lxc exec {{ node_name }} -- mkdir -p /etc/rancher/k3s/config.yaml.d/"
@@ -15,26 +51,42 @@
     node_ip_list: "{{ node_ips.values() | list }}"
   run_once: true
 
-- name: Copy config files to temp directory for {{ node_name }}
+- name: Copy config files to temp directory
   delegate_to: localhost
   copy:
     src: "{{ role_path }}/files/k3s-config/"
     dest: "{{ tempdir.path }}/"
     mode: preserve
 
-- name: Create 20-tls-san.yaml using template
+- name: Create tls-san config with all node IPs
   delegate_to: localhost
   template:
     src: tls-san.yaml.j2
     dest: "{{ tempdir.path }}/config.yaml.d/20-tls-san.yaml"
 
+- name: Create node-ip config for this node
+  delegate_to: localhost
+  copy:
+    content: |
+      node-ip: "{{ node_ips[node_name] }}"
+      node-external-ip: "{{ node_ips[node_name] }}"
+    dest: "{{ tempdir.path }}/config.yaml.d/10-node-ip.yaml"
+
+- name: Wait for filesystem to be ready (VMs only)
+  when: runtime_type == 'vm'
+  delegate_to: localhost
+  command: "lxc exec {{ node_name }} -- test -d /etc/rancher/k3s"
+  register: dir_check
+  until: dir_check.rc == 0
+  retries: 10
+  delay: 2
 
 - name: Push config.yaml to {{ node_name }}
   delegate_to: localhost
   command: "lxc file push {{ tempdir.path }}/config.yaml {{ node_name }}/etc/rancher/k3s/config.yaml"
 
 - name: Push config.yaml.d directory to {{ node_name }}
-  delegate_to: localhost.
+  delegate_to: localhost
   command: "lxc file push -r {{ tempdir.path }}/config.yaml.d/. {{ node_name }}/etc/rancher/k3s/"
 
 - name: Fix ownership on {{ node_name }}
