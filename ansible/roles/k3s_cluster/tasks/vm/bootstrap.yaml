@@ -1,0 +1,27 @@
+---
+- name: Ensure K3s VM profile is configured
+  delegate_to: localhost
+  block:
+    - name: Create profile if missing
+      shell: "lxc profile create k3s-vm || true"
+      changed_when: false
+      run_once: true
+
+    - name: Push profile configuration
+      template:
+        src: vm_profile.yaml.j2
+        dest: /tmp/k3s-vm.yaml
+      run_once: true
+      delegate_to: localhost
+
+    - name: Apply profile configuration
+      shell: "lxc profile edit k3s-vm < /tmp/k3s-vm.yaml"
+      run_once: true
+      delegate_to: localhost
+
+    - name: Cleanup temp file
+      file:
+        path: /tmp/k3s-vm.yaml
+        state: absent
+      run_once: true
+      delegate_to: localhost

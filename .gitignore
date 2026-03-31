@@ -5,3 +5,4 @@ argocd-apps-backup.yaml
 **/charts/
 **/default-values.yaml
 ops/*
+ansible/ansible-structure-report.txt

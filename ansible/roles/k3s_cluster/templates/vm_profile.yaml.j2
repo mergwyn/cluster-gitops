@@ -1,0 +1,20 @@
+name: k3s-vm
+description: Profile for k3s VMs
+config:
+  boot.autostart: "true"
+  limits.cpu: "{{ cpus }}"
+  limits.memory: "{{ memory }}"
+  security.syscalls.intercept.mknod: "true"
+  security.syscalls.intercept.setxattr: "true"
+  # vm.cpu_mode: "host"
+devices:
+  root:
+    path: /
+    pool: {{ storage_pool | default('local') }}
+    size: {{ vm_disk_size | default('20GB') }}
+    type: disk
+  eth0:
+    name: eth0
+    nictype: bridged
+    parent: {{ network_bridge | default('br0') }}
+    type: nic

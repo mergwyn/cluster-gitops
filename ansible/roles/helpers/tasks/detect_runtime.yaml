@@ -1,0 +1,35 @@
+---
+- name: Detect runtime (provisioning or existing cluster)
+  delegate_to: localhost
+  run_once: true
+  block:
+    - name: Check if first node exists
+      shell: "lxc info {{ groups['k3s_cluster'][0] }} &>/dev/null && echo 'exists' || echo 'missing'"
+      register: node_exists
+      changed_when: false
+
+    - name: Get runtime from existing node if it exists
+      when: node_exists.stdout == 'exists'
+      block:
+        - name: Detect runtime type from existing node
+          shell: |
+            lxc config show {{ groups['k3s_cluster'][0] }} 2>/dev/null | grep -q "type: vm" && echo "vm" || echo "container"
+          register: existing_runtime
+          changed_when: false
+
+        - name: Set runtime_type from existing cluster
+          set_fact:
+            runtime_type: "{{ existing_runtime.stdout }}"
+
+        - name: Display detected runtime from existing cluster
+          debug:
+            msg: "Detected existing cluster runtime: {{ runtime_type }}"
+
+    - name: Set defaults for new cluster (no nodes exist)
+      when: node_exists.stdout != 'exists'
+      set_fact:
+        runtime_type: "{{ runtime_type | default('container') }}"
+
+    - name: Final runtime configuration
+      debug:
+        msg: "Using runtime: {{ runtime_type }}"

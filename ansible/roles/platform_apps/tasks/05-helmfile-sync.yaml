@@ -5,6 +5,7 @@
     dest: "{{ bootstrap_dir }}/environments.yaml"
   vars:
     relative_path: "../.."
+  delegate_to: localhost
 
 - name: Sync Helm releases via Helmfile
   shell: "helmfile --environment {{ ansible_env_name }} --sequential-helmfiles sync"
@@ -12,6 +13,7 @@
     chdir: "{{ bootstrap_dir }}"
   environment:
     KUBECONFIG: "{{ kubeconfig }}"
+  delegate_to: localhost
 
 - name: Apply ArgoCD ApplicationSet
   shell: |
@@ -27,3 +29,4 @@
     KUBECONFIG: "{{ kubeconfig }}"
     ENV: "{{ ansible_env_name }}"
     CURRENT_BRANCH: "{{ lookup('pipe', 'git rev-parse --abbrev-ref HEAD') }}"
+  delegate_to: localhost

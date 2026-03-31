@@ -1,0 +1,15 @@
+---
+- name: Launch LXC VMs for each node
+  delegate_to: localhost
+  command: >
+    lxc launch {{ vm_image }} {{ item }}
+    --vm
+    {% if hostvars[item].lxd_target is defined %}--target {{ hostvars[item].lxd_target }}{% endif %}
+    --profile {{ profile }}
+    --profile k3s-vm
+    --device root,size={{ vm_disk_size }}
+    -c limits.cpu={{ cpus }}
+    -c limits.memory={{ memory }}
+  loop: "{{ groups['k3s_cluster'] }}"
+  register: launch_result
+  failed_when: launch_result.rc != 0 and 'already exists' not in launch_result.stderr

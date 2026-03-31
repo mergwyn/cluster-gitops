@@ -1,0 +1,10 @@
+---
+vm_image: "ubuntu:24.04"
+runtime_type: "vm"
+lxc_flags: "--vm"
+wait_retries: 30
+wait_delay: 5
+systemd_wait: true
+vm_net_iface: "enp5s0"
+vm_disk_size: "20GB"
+requires_privileged: false

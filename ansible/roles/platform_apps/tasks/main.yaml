@@ -4,6 +4,11 @@
 
 - name: Platform Apps Deployment
   block:
+    - name: Detect runtime for k3s cluster
+      include_role:
+        name: helpers
+        tasks_from: detect_runtime
+
     - name: Wait for cluster to be ready
       import_tasks: 01-wait-for-cluster.yaml
 
@@ -19,7 +24,7 @@
     - name: Sync applications via Helmfile
       import_tasks: 05-helmfile-sync.yaml
 
-    - name: Update kubeconfig to use API DNS  # Add this
+    - name: Update kubeconfig to use API DNS
       import_tasks: 06-update-kubeconfig-dns.yaml
 
   rescue:
