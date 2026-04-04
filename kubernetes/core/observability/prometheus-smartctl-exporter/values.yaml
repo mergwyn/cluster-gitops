@@ -9,15 +9,12 @@ serviceMonitor:
   enabled: true
   labels:
     release: kube-prometheus-stack
-  metricRelabelings:
-    # 1. Take the node name (e.g., 'delta') and make it the 'instance' label
+  attachMetadata:
+    node: true
+  relabelings:
     - sourceLabels: [__meta_kubernetes_pod_node_name]
       targetLabel: instance
       action: replace
-    # 2. Or, if you prefer the 10.58.x.x IP addresses:
-    # - sourceLabels: [__meta_kubernetes_pod_host_ip]
-    #   targetLabel: instance
-    #   action: replace
 
 resources:
   requests:
