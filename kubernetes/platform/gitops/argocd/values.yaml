@@ -12,7 +12,7 @@ configs:
     applicationsetcontroller.enable.progressive.syncs: true
 
   secret:
-    createSecret: true  # managed by external-secrets/bitwarden
+    createSecret: false # Created using sops
 
   cm:
     create: true
