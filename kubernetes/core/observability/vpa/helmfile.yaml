@@ -8,7 +8,7 @@ repositories:
 releases:
   - name: vpa
     chart: fairwinds-stable/vpa
-    version: 4.10.2
+    version: 4.11.0
     values:
       - values.yaml
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
