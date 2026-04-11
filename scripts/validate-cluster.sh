@@ -11,6 +11,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Configuration
+KUBECTL="kubectl"
 KUBECTL="lxc exec k3s-1 -- kubectl"
 NAMESPACE="validation-test-$(date +%s)"
 TIMEOUT=120
@@ -67,8 +68,8 @@ print_header "1. Basic Cluster Health"
 
 # Check nodes
 echo -n "Checking node status... "
-NODES=$($KUBECTL get nodes -o jsonpath='{.items[*].status.conditions[?(@.type=="Ready")].status}')
-if [[ "$NODES" == *"True"* ]]; then
+NODESTATUS=$($KUBECTL get nodes -o jsonpath='{.items[*].status.conditions[?(@.type=="Ready")].status}')
+if [[ "$NODESTATUS" == *"True"* ]]; then
     print_success "All nodes are Ready"
     $KUBECTL get nodes -o wide
 else
@@ -76,6 +77,7 @@ else
     $KUBECTL get nodes
     exit 1
 fi
+NODES=$($KUBECTL get nodes -o name | sed 's:node/::')
 
 # Check control plane components
 echo -e "\nChecking control plane components..."
@@ -93,7 +95,7 @@ print_header "2. Network Validation"
 
 # Check iptables backend
 echo -n "Checking iptables backend... "
-for node in k3s-1 k3s-2 k3s-3; do
+for node in $NODES; do
     if lxc exec $node -- iptables --version | grep -q "legacy"; then
         print_success "$node: iptables-legacy"
     else
@@ -103,7 +105,7 @@ done
 
 # Check Flannel interfaces
 echo -e "\nChecking Flannel interfaces..."
-for node in k3s-1 k3s-2 k3s-3; do
+for node in $NODES; do
     if lxc exec $node -- ip link show flannel.1 &>/dev/null; then
         print_success "$node: flannel.1 exists"
     else
@@ -120,7 +122,7 @@ print_info "Created test namespace: $NAMESPACE"
 
 # Deploy test pods
 echo -e "\nDeploying test pods across nodes..."
-for node in k3s-1 k3s-2 k3s-3; do
+for node in $NODES; do
     $KUBECTL run test-pod-$node -n $NAMESPACE \
         --image=busybox \
         --restart=Never \
@@ -135,7 +137,7 @@ wait_for_condition "pods to be ready" \
 
 # Get pod IPs
 POD_IPS=()
-for node in k3s-1 k3s-2 k3s-3; do
+for node in $NODES; do
     IP=$($KUBECTL get pod test-pod-$node -n $NAMESPACE -o jsonpath='{.status.podIP}')
     POD_IPS+=($IP)
     print_info "test-pod-$node IP: $IP"
