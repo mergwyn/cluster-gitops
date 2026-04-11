@@ -32,11 +32,11 @@ releases:
     values:
       - remove-cpu-limits-requests.yaml
 
-  - name: propagate-topology-spread
-    chart: bedag/raw
-    version: 2.0.2
-    needs:
-      - kyverno
-    values:
-      - propagate-topology-spread.yaml
-    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+#  - name: propagate-topology-spread
+#    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+#    chart: bedag/raw
+#    version: 2.0.2
+#    needs:
+#      - kyverno
+#    values:
+#      - propagate-topology-spread.yaml
