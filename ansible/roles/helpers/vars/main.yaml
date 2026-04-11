@@ -1,0 +1,8 @@
+---
+# Default settings for helpers
+wait_retries: 30
+wait_delay: 5
+debug_enabled: false
+
+# Default kubeconfig path
+kubeconfig_dir: "{{ lookup('env', 'HOME') }}/.kube/clusters"

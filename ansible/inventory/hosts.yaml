@@ -1,5 +1,13 @@
 ---
 all:
+  vars:
+    # Choose the backend: 'lxc' or 'vm'
+    cluster_backend: lxc
+
+    # Common network for nodes (matches your homelab)
+    node_subnet: 10.58.0
+    node_start_ip: 90
+
   hosts:
     localhost:
       ansible_connection: local
@@ -7,10 +15,39 @@ all:
   children:
     k3s_cluster:
       hosts:
-        k3s-1: &defaults
-          container_net_iface: eth0
-          ansible_host: cluster
-          ansible_user: ubuntu
+        k3s-1:
+          lxd_target: charlie
+        k3s-2:
           lxd_target: golf
-        k3s-2: *defaults
-        k3s-3: *defaults
+        k3s-3:
+          lxd_target: hotel
+
+#  children:
+#    # LXC nodes (containers for rehearsal)
+#    lxc_nodes:
+#      hosts:
+#        k3s-c1:
+#          lxd_target: charlie
+#        k3s-c2:
+#          lxd_target: golf
+#        k3s-c3:
+#          lxd_target: hotel
+#
+#    # VM nodes (realistic IPs in your homelab network)
+#    vm_nodes:
+#      hosts:
+#        k3s-vm1:
+#          ansible_host: "{{ node_subnet }}.90"
+#        k3s-vm2:
+#          ansible_host: "{{ node_subnet }}.91"
+#        k3s-vm3:
+#          ansible_host: "{{ node_subnet }}.92"
+#
+#    # k3s cluster group — dynamically points to LXC or VM nodes
+#    k3s_cluster:
+#      hosts: >-
+#        {% if runtime_type == 'container' %}
+#        {{ groups['lxc_nodes'] | join(' ') }}
+#        {% else %}
+#        {{ groups['vm_nodes'] | join(' ') }}
+#        {% endif %}

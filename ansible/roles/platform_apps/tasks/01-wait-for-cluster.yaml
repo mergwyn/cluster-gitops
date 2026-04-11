@@ -4,7 +4,7 @@
   shell: |
     lxc exec {{ groups['k3s_cluster'][0] }} -- kubectl wait --for=condition=Ready nodes --all --timeout=600s
   register: wait_result
-  retries: 30
-  delay: 10
+  retries: "{{ 45 if runtime_type == 'vm' else 30 }}"
+  delay: "{{ 10 if runtime_type == 'vm' else 5 }}"
   until: wait_result.rc == 0
   changed_when: false

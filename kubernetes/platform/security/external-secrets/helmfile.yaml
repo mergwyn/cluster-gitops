@@ -18,13 +18,7 @@ repositories:
     url: https://charts.external-secrets.io/
 
 releases:
-  - name: external-secrets
-    chart: external-secrets/external-secrets
-    version: 2.2.0
-    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
-    values:
-      - values.yaml
-
+  # 1. Access Token Secret
   - name: bitwarden-access-token
     chart: bedag/raw
     version: 2.0.2
@@ -32,6 +26,37 @@ releases:
     secrets:
       - bitwarden-access-token-sops.yaml
 
+  # 2. Certificates with the "Wait" Hook
+  - name: bitwarden-certs
+    chart: bedag/raw
+    version: 2.0.2
+    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+    values:
+      - bitwarden-certs.yaml
+    hooks:
+      - events: ["postsync"]
+        showlogs: true
+        command: "kubectl"
+        args:
+          - "wait"
+          - "--for=condition=Ready"
+          - "certificate/bitwarden-tls-certs"
+          - "certificate/bitwarden-css-certs"
+          - "-n"
+          - '{{ env "HELMFILE_NAMESPACE" }}'
+          - "--timeout=300s"
+
+  # 3. Main External Secrets Chart
+  - name: external-secrets
+    chart: external-secrets/external-secrets
+    version: 2.2.0
+    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+    needs:
+      - bitwarden-certs
+    values:
+      - values.yaml
+
+  # 4. The ClusterSecretStore
   - name: bitwarden-store
     chart: bedag/raw
     version: 2.0.2

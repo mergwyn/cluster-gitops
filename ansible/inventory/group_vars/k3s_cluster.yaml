@@ -6,3 +6,10 @@ api_vip: "10.58.0.60"
 
 cluster_token: "{{ lookup('password', '.cluster-token chars=ascii_letters,digits length=32') }}"
 
+# Storage configuration
+storage_pool: "local"
+
+#defaults for lxc
+container_net_iface: eth0
+ansible_host: cluster
+ansible_user: ubuntu

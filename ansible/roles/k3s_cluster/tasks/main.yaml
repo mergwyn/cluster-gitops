@@ -1,5 +1,50 @@
 ---
-- import_tasks: 01-bootstrap.yaml
-- import_tasks: 02-configure.yaml
-- import_tasks: 03-install.yaml
-- import_tasks: 04-save-kubeconfig.yaml
+- name: Determine operation mode
+  set_fact:
+    operation: "{{ operation | default('deploy') }}"
+  run_once: true
+  delegate_to: localhost
+
+- name: Display operation mode
+  debug:
+    msg: "Running {{ operation }} for k3s cluster"
+  run_once: true
+  delegate_to: localhost
+
+- name: Deploy cluster
+  block:
+    - name: Detect runtime using helpers role
+      include_role:
+        name: helpers
+        tasks_from: detect_runtime
+
+    - name: Set network interface based on runtime type
+      set_fact:
+        net_iface: "{{ 'enp5s0' if runtime_type == 'vm' else 'eth0' }}"
+      run_once: true
+      delegate_to: localhost
+
+    - name: Include runtime-specific variables (if file exists)
+      include_vars: "{{ runtime_type }}.yaml"
+      ignore_errors: yes
+      when: runtime_type is defined
+
+    - name: Bootstrap environment
+      import_tasks: "{{ runtime_type }}/bootstrap.yaml"
+
+    - name: Create instances
+      import_tasks: "{{ runtime_type }}/create.yaml"
+
+    - name: Configure instances
+      import_tasks: 02-configure.yaml
+
+    - name: Install k3s
+      import_tasks: 03-install.yaml
+
+    - name: Save kubeconfig
+      import_tasks: 04-save-kubeconfig.yaml
+  when: operation == 'deploy'
+
+- name: Teardown cluster
+  import_tasks: teardown.yaml
+  when: operation == 'teardown'

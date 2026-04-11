@@ -1,24 +1,36 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/helmfile
+
 bases:
   - ../../../clusters/environments.yaml
 
----
 apiVersions:
   - monitoring.coreos.com/v1
+
 repositories:
   - name: bedag
     url: https://bedag.github.io/helm-charts/
   - name: argoproj
     url: https://argoproj.github.io/argo-helm/
+
 releases:
+  - name: argocd-secret
+    chart: bedag/raw
+    version: 2.0.2
+    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+    secrets:
+      - argocd-secret-sops.yaml
+
   - name: argocd
     chart: argoproj/argo-cd
     version: 9.4.17
+    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
     values:
       - values.yaml
-    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+
   - name: argocd-externalsecret
     chart: bedag/raw
     version: 2.0.2
+    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
     values:
       - externalsecret.yaml
-    namespace: '{{ env "HELMFILE_NAMESPACE" }}'

@@ -1,14 +1,26 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/helmfile
-#
+
 bases:
   - ../environments.yaml
 
+repositories:
+  - name: bedag
+    url: https://bedag.github.io/helm-charts/
+
 releases:
+  - name: argocd-secret
+    namespace: argocd
+    chart: bedag/raw
+    version: 2.0.2
+    secrets:
+      - ../../platform/gitops/argocd/argocd-secret-sops.yaml
+
   - name: argocd
     namespace: argocd
     chart: oci://ghcr.io/argoproj/argo-helm/argo-cd
     version: 9.4.17
     values:
       - ../../platform/gitops/argocd/values.yaml
-      # - ../../platform/gitops/argocd/externalsecret.yaml
+    needs:
+      - argocd-secret

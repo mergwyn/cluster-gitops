@@ -1,28 +1,11 @@
-# ansible/teardown-cluster.yaml
+# playbooks/teardown-cluster.yaml
 ---
-- name: Teardown K3s Cluster
-  hosts: localhost
-  connection: local
-  gather_facts: false
-
-  vars_files:
-    - "{{ playbook_dir }}/../inventory/group_vars/secrets.yaml"  # If needed for any cleanup operations
-
-  tasks:
-    - name: Confirm teardown
-      ansible.builtin.pause:
-        prompt: "Are you sure you want to destroy the K3s cluster? Type 'yes' to continue"
-      register: confirm
-      when: not ansible_check_mode
-
-    - name: Fail if not confirmed
-      ansible.builtin.fail:
-        msg: "Teardown cancelled by user"
-      when:
-        - not ansible_check_mode
-        - confirm.user_input != 'yes'
-
-    - name: Teardown K3s cluster
-      include_role:
-        name: k3s_cluster
-        tasks_from: teardown
+- name: Teardown k3s cluster
+  hosts: k3s_cluster
+  gather_facts: no
+  vars:
+    operation: "teardown"
+    remove_profiles: true
+    remove_kubeconfig: true
+  roles:
+    - role: k3s_cluster
