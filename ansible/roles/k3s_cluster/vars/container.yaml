@@ -1,0 +1,9 @@
+---
+image: "ubuntu:24.04"
+runtime_type: "container"
+lxc_flags: ""
+wait_retries: 15
+wait_delay: 2
+systemd_wait: false
+container_net_iface: "eth0"
+requires_privileged: true

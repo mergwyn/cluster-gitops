@@ -1,0 +1,33 @@
+---
+- name: Get IP of {{ node_name }}
+  delegate_to: localhost
+  vars:
+    interfaces_to_try:
+      - "{{ net_iface | default('') }}"
+      - "eth0"
+      - "enp5s0"
+      - "ens3"
+      - "enp0s3"
+      - "eth1"
+  shell: |
+    # Filter out empty interface names
+    interfaces=""
+    for iface in {{ interfaces_to_try | reject('equalto', '') | join(' ') }}; do
+      ip=$(lxc list {{ node_name }} --format json | \
+        jq -r --arg iface "$iface" '.[0].state.network[$iface].addresses[]? | select(.family=="inet") | .address' | \
+        head -1)
+      if [ -n "$ip" ]; then
+        echo "$ip"
+        exit 0
+      fi
+    done
+    exit 1
+  register: ip_result
+  until: ip_result.stdout | length > 0
+  retries: "{{ wait_retries | default(30 if runtime_type == 'vm' else 15) }}"
+  delay: "{{ wait_delay | default(5 if runtime_type == 'vm' else 2) }}"
+  changed_when: false
+
+- name: Store node IP as fact
+  set_fact:
+    "{{ ip_fact_name | default('node_ip') }}": "{{ ip_result.stdout }}"

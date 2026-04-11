@@ -1,6 +1,4 @@
 ---
-#k8sServiceHost: {{ .Values.network.vip | quote }}
-
 ipam:
   mode: kubernetes   # do not interfere with flannel IPAM
 
@@ -10,6 +8,7 @@ cni:
   binPath: /var/lib/rancher/k3s/data/cni
   confFileName: 05-cilium.conflist
 
+# Native routing mode
 kubeProxyReplacement: true
 autoDirectNodeRoutes: true
 routingMode: native
@@ -27,8 +26,6 @@ hubble:
   enabled: true
   relay:
     enabled: true
-  ui:
-    enabled: false
 
 # Safety: do not enforce policies yet
 policyEnforcementMode: never

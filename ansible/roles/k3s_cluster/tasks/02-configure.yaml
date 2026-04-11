@@ -1,16 +1,28 @@
 ---
-- name: Wait for containers to have IPv4 addresses
+# Note: runtime_type and net_iface should already be set by main.yaml
+# We don't need to re-detect here
+
+- name: Verify runtime_type is set
+  fail:
+    msg: "runtime_type is not defined. This should have been set by main.yaml"
+  when: runtime_type is not defined
+
+- name: Display runtime configuration
+  debug:
+    msg: "Configuring cluster with runtime: {{ runtime_type }} (interface: {{ net_iface }})"
+  run_once: true
   delegate_to: localhost
-  vars:
-    network_interface: "{{ container_net_iface | default('eth0') }}"
+
+- name: Wait for instances to have IPv4 addresses
+  delegate_to: localhost
   shell: |
     lxc list {{ item }} --format json | \
-    jq -r '.[0].state.network.{{ network_interface }}.addresses[] | select(.family=="inet") | .address' | \
+    jq -r --arg iface "{{ net_iface }}" '.[0].state.network[$iface].addresses[] | select(.family=="inet") | .address' | \
     head -1
   register: ip_results
   until: ip_results.stdout | length > 0
-  retries: 30
-  delay: 3
+  retries: "{{ 30 if runtime_type == 'vm' else 15 }}"
+  delay: "{{ 5 if runtime_type == 'vm' else 2 }}"
   loop: "{{ groups['k3s_cluster'] }}"
   loop_control:
     label: "{{ item }}"
@@ -21,8 +33,20 @@
   loop: "{{ ip_results.results }}"
   when: item.stdout | length > 0
 
+- name: Wait for system to be ready (VMs only)
+  when: runtime_type == 'vm'
+  delegate_to: localhost
+  shell: "lxc exec {{ item }} -- systemctl is-system-running --wait"
+  register: system_status
+  until: system_status.rc == 0
+  retries: 30
+  delay: 5
+  loop: "{{ groups['k3s_cluster'] }}"
+  loop_control:
+    label: "{{ item }}"
+
 - name: Configure each node
-  include_tasks: "{{ role_path }}/tasks/configure_node.yaml"
+  include_tasks: configure_node.yaml
   loop: "{{ groups['k3s_cluster'] }}"
   loop_control:
     loop_var: node_name

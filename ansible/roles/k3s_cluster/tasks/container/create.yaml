@@ -1,0 +1,14 @@
+---
+- name: Launch LXC containers for each node
+  delegate_to: localhost
+  command: >
+    lxc launch {{ image }} {{ item }}
+    {% if hostvars[item].lxd_target is defined %}--target {{ hostvars[item].lxd_target }}{% endif %}
+    --profile {{ profile }}
+    --profile k3s-container
+    --storage {{ storage_pool | default('local') }}
+    -c limits.cpu={{ cpus }}
+    -c limits.memory={{ memory }}
+  loop: "{{ groups['k3s_cluster'] }}"
+  register: launch_result
+  failed_when: launch_result.rc != 0 and 'already exists' not in launch_result.stderr
