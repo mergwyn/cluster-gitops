@@ -1,0 +1,81 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/helmfile
+
+bases:
+  - ../../../clusters/environments.yaml
+
+repositories:
+  - name: bedag
+    url: https://bedag.github.io/helm-charts/
+
+releases:
+  - name: nfs-media
+    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+    chart: bedag/raw
+    version: 2.0.2
+    values:
+      - resources:
+          # media
+          - apiVersion: v1
+            kind: PersistentVolume
+            metadata:
+              name: nfs-media-pv
+              annotations: &common_annotations
+                argocd.argoproj.io/sync-options: Replace=true
+            spec: &nfs_spec
+              storageClassName: ""
+              capacity: { storage: 10Ti }
+              accessModes: ["ReadWriteMany"]
+              persistentVolumeReclaimPolicy: Retain
+              nfs: { path: /srv/media, server: 10.58.0.12 }
+          - apiVersion: v1
+            kind: PersistentVolumeClaim
+            metadata:
+              name: media-nfs-pvc
+              namespace: media
+              annotations: *common_annotations
+            spec: &pvc_spec
+              accessModes: ["ReadWriteMany"]
+              storageClassName: ""
+              resources: { requests: { storage: 10Ti } }
+              volumeName: nfs-media-pv
+          
+          # vpn
+          - apiVersion: v1
+            kind: PersistentVolume
+            metadata:
+              name: nfs-vpn-pv
+              annotations: *common_annotations
+            spec:
+              <<: *nfs_spec
+              nfs: { path: /srv/media, server: 10.58.0.12 }
+          - apiVersion: v1
+            kind: PersistentVolumeClaim
+            metadata:
+              name: vpn-nfs-pvc
+              namespace: vpn
+              annotations: *common_annotations
+            spec:
+              <<: *pvc_spec
+              volumeName: nfs-vpn-pv
+
+          # home-assistant
+          - apiVersion: v1
+            kind: PersistentVolume
+            metadata:
+              name: nfs-backup-pv
+              annotations: *common_annotations
+            spec:
+              <<: *nfs_spec
+              storageClassName: ""
+              nfs: { path: /srv/backup, server: 10.58.0.12 }
+          - apiVersion: v1
+            kind: PersistentVolumeClaim
+            metadata:
+              name: home-assistant-nfs-pvc
+              namespace: home-assistant
+              annotations: *common_annotations
+            spec:
+              <<: *pvc_spec
+              volumeName: nfs-backup-pv
+
