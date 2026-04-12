@@ -22,10 +22,10 @@ spec:
     type: RollingSync
     rollingSync:
       steps:
-        - matchExpressions: [{key: wave, operator: In, values: ["1"]}]
-        - matchExpressions: [{key: wave, operator: In, values: ["2"]}]
-        - matchExpressions: [{key: wave, operator: In, values: ["3"]}]
-        - matchExpressions: [{key: wave, operator: In, values: ["4"]}]
+        - matchExpressions: [{ key: wave, operator: In, values: ["1"] }]
+        - matchExpressions: [{ key: wave, operator: In, values: ["2"] }]
+        - matchExpressions: [{ key: wave, operator: In, values: ["3"] }]
+        - matchExpressions: [{ key: wave, operator: In, values: ["4"] }]
 
   template:
     metadata:
@@ -47,7 +47,7 @@ spec:
         plugin:
           name: helmfile
           env:
-            - name: HELMFILE_NAMESPACE  # This passes the var to the plugin
+            - name: HELMFILE_NAMESPACE # This passes the var to the plugin
               value: "{{.appNamespace}}"
             - name: HELMFILE_ENVIRONMENT
               value: prod
@@ -70,14 +70,14 @@ spec:
 
       ignoreDifferences:
         - kind: StatefulSet
-          group: '*'
+          group: "*"
           name: mail
           jsonPointers:
             - /spec/volumeClaimTemplates
             - /spec/template/metadata/annotations
 
         - kind: GpuDevicePlugin
-          group: '*'
+          group: "*"
           name: gpudeviceplugin
           jsonPointers:
             - /spec/resourceManager
@@ -85,23 +85,23 @@ spec:
             - /metadata/annotations
 
         - kind: ClusterPolicy
-          group: '*'
+          group: "*"
           jsonPointers:
             - /spec/rules/0/skipBackgroundRequests
 
-        - group: '*'
+        - group: "*"
           kind: Deployment
           jqPathExpressions:
             - .spec.template.spec.hostUsers
 
-        - group: '*'
+        - group: "*"
           kind: ExternalSecret
           jqPathExpressions:
             - .spec.dataFrom[].extract.conversionStrategy
             - .spec.dataFrom[].extract.decodingStrategy
             - .spec.dataFrom[].extract.metadataPolicy
 
-        - group: '*'
+        - group: "*"
           kind: HTTPRoute
           jqPathExpressions:
             - .spec.parentRefs[].group
@@ -127,7 +127,7 @@ spec:
             - .spec.storageClassName
 
         # Phonebook is loaded into configmap so always out of sync
-        - group: ''
+        - group: ""
           kind: ConfigMap
           name: phonebook-yealink
           namespace: default
@@ -137,3 +137,10 @@ spec:
         - group: ""
           kind: Secret
           name: argocd-secret
+
+        - group: apiextensions.k8s.io
+          kind: CustomResourceDefinition
+          jsonPointers:
+            - /metadata/annotations
+            - /metadata/labels
+            - /status # CRD status updates constantly cause diffs
