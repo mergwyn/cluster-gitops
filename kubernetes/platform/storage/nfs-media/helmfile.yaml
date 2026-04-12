@@ -22,7 +22,7 @@ releases:
               name: nfs-media-pv
               annotations: &common_annotations
                 argocd.argoproj.io/sync-options: Replace=true
-            spec: &nfs_spec
+            spec: 
               storageClassName: ""
               capacity: { storage: 10Ti }
               accessModes: ["ReadWriteMany"]
@@ -34,7 +34,7 @@ releases:
               name: media-nfs-pvc
               namespace: media
               annotations: *common_annotations
-            spec: &pvc_spec
+            spec:
               accessModes: ["ReadWriteMany"]
               storageClassName: ""
               resources: { requests: { storage: 10Ti } }
@@ -47,7 +47,10 @@ releases:
               name: nfs-vpn-pv
               annotations: *common_annotations
             spec:
-              <<: *nfs_spec
+              storageClassName: ""
+              capacity: { storage: 10Ti }
+              accessModes: ["ReadWriteMany"]
+              persistentVolumeReclaimPolicy: Retain
               nfs: { path: /srv/media, server: 10.58.0.12 }
           - apiVersion: v1
             kind: PersistentVolumeClaim
@@ -56,7 +59,9 @@ releases:
               namespace: vpn
               annotations: *common_annotations
             spec:
-              <<: *pvc_spec
+              accessModes: ["ReadWriteMany"]
+              storageClassName: ""
+              resources: { requests: { storage: 10Ti } }
               volumeName: nfs-vpn-pv
 
           # home-assistant
@@ -66,8 +71,9 @@ releases:
               name: nfs-backup-pv
               annotations: *common_annotations
             spec:
-              <<: *nfs_spec
+              accessModes: ["ReadWriteMany"]
               storageClassName: ""
+              resources: { requests: { storage: 10Ti } }
               nfs: { path: /srv/backup, server: 10.58.0.12 }
           - apiVersion: v1
             kind: PersistentVolumeClaim
@@ -76,6 +82,8 @@ releases:
               namespace: home-assistant
               annotations: *common_annotations
             spec:
-              <<: *pvc_spec
+              accessModes: ["ReadWriteMany"]
+              storageClassName: ""
+              resources: { requests: { storage: 10Ti } }
               volumeName: nfs-backup-pv
 
