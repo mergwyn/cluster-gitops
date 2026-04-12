@@ -71,6 +71,7 @@ releases:
               name: nfs-backup-pv
               annotations: *common_annotations
             spec:
+              capacity: { storage: 10Ti }
               accessModes: ["ReadWriteMany"]
               storageClassName: ""
               resources: { requests: { storage: 10Ti } }
