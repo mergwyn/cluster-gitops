@@ -3,6 +3,11 @@ controllers:
   qbittorrent:
     annotations:
       reloader.stakater.com/auto: "true"
+      # Set a minimum memory floor for the VPA
+      goldilocks.fairwinds.com/vpa-min-memory: "4500Mi"
+      # Optional: Set a max if you want to prevent it from runaway leaks
+      goldilocks.fairwinds.com/vpa-max-memory: "6Gi"
+
     containers:
       app:
         image:
@@ -33,13 +38,13 @@ controllers:
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
-          capabilities: {drop: ["ALL"]}
+          capabilities: { drop: ["ALL"] }
         resources:
           requests:
             cpu: 22m
-            memory: 4.5G
+            memory: 4500Mi
           limits:
-            memory: 6.5G
+            memory: 6Gi"
 
 defaultPodOptions:
   securityContext:
