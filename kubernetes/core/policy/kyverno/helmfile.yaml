@@ -1,10 +1,7 @@
+# yaml-language-server: $schema=https://json.schemastore.org/helmfile
 ---
 bases:
   - ../../../clusters/environments.yaml
-
-repositories:
-  - name: bedag
-    url: https://bedag.github.io/helm-charts/
 
 releases:
   - name: kyverno
@@ -14,29 +11,10 @@ releases:
     values:
       - values.yaml
 
-  - name: kyverno-set-pv-to-retain-on-keep-policy
+  - name: kyverno-policies-custom
+    chart: ./policies
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
-    chart: bedag/raw
-    version: 2.0.2
     needs:
       - kyverno
     values:
-      - set-pv-to-retain-on-keep.yaml
-
-  - name: remove-cpu-limits-requests
-    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
-    chart: bedag/raw
-    version: 2.0.2
-    needs:
-      - kyverno
-    values:
-      - remove-cpu-limits-requests.yaml
-
-#  - name: propagate-topology-spread
-#    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
-#    chart: bedag/raw
-#    version: 2.0.2
-#    needs:
-#      - kyverno
-#    values:
-#      - propagate-topology-spread.yaml
+      - validationFailureAction: Enforce

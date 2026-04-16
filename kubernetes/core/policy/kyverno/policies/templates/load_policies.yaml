@@ -1,0 +1,8 @@
+{{- range $path, $_ :=  .Files.Glob "custom/*.yaml" }}
+---
+{{- $policy := $.Files.Get $path | fromYaml -}}
+{{- /* Merge our standard metadata labels into the dropped-in file */ -}}
+{{- $metadata := merge (dict "labels" (include "kyverno-policies.labels" $ | fromYaml)) ($policy.metadata | default (dict)) -}}
+{{- $_ := set $policy "metadata" $metadata -}}
+{{- $policy | toYaml }}
+{{- end }}

@@ -1,0 +1,56 @@
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: goldilocks-tiered-management
+spec:
+  background: true
+  rules:
+    # --- STEP 1: AUTO-PILOT FOR APPS ---
+    - name: enable-auto-vpa-for-apps
+      match:
+        any:
+          - resources:
+              kinds:
+                - Namespace
+              namespaces:
+                - media
+                - vpn
+                - home-assistant
+                - default
+      mutate:
+        patchStrategicMerge:
+          metadata:
+            labels:
+              goldilocks.fairwinds.com/enabled: "true"
+              goldilocks.fairwinds.com/vpa-update-mode: "InPlaceOrRecreate"
+
+    # --- STEP 2: OBSERVABILITY ONLY FOR OTHERS ---
+    - name: enable-vpa-guidance-only
+      match:
+        any:
+          - resources:
+              kinds:
+                - Namespace
+      exclude:
+        any:
+          - resources:
+              namespaces:
+                - kube-system
+                - kube-public
+                - kube-node-lease
+                - kyverno
+                - argocd
+                - monitoring
+                # Also exclude the apps we handled in Rule 1
+                # so they don't get overwritten to "Off"
+                - media
+                - vpn
+                - home-assistant
+                - default
+      mutate:
+        patchStrategicMerge:
+          metadata:
+            labels:
+              goldilocks.fairwinds.com/enabled: "true"
+              goldilocks.fairwinds.com/vpa-update-mode: "Off"

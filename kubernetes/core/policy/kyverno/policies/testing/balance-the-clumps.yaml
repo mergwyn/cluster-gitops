@@ -1,0 +1,24 @@
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: balance-the-clumps
+spec:
+  rules:
+  - name: add-spread
+    match:
+      any:
+      - resources:
+          kinds: ["Pod"] # Target Pods directly to bypass Deployment schema issues
+          namespaces: ["media", "downloads", "home-automation"]
+    mutate:
+      patchStrategicMerge:
+        spec:
+          topologySpreadConstraints:
+            - maxSkew: 1
+              topologyKey: "kubernetes.io/hostname"
+              whenUnsatisfiable: ScheduleAnyway
+              labelSelector:
+                matchLabels:
+                  # This grabs whatever the app name label is automatically
+                  app.kubernetes.io/name: "{{ request.object.metadata.labels['app.kubernetes.io/name'] }}"
