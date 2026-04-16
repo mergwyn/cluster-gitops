@@ -1,6 +1,6 @@
 ---
 updatePolicy:
-  updateMode: "InPlaceOrRecreate"
+  updateMode: "Off"
 
 recommender:
   # enabled: false
