@@ -1,6 +1,5 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 ---
-
 global:
   nameOverride: predbat
 
@@ -14,7 +13,7 @@ controllers:
     defaultContainerOptions:
       resources:
         requests:
-          cpu: 10m
+          cpu: 203m
           memory: 94M
         limits:
           memory: 512M

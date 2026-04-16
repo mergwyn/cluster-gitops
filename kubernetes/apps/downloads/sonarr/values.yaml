@@ -37,13 +37,13 @@ controllers:
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
-          capabilities: {drop: ["ALL"]}
+          capabilities: { drop: ["ALL"] }
         resources:
           requests:
             cpu: 100m
-            memory: 324M
+            memory: 1Gi
           limits:
-            memory: 2300M
+            memory: 2300Mi
 
 defaultPodOptions:
   securityContext:

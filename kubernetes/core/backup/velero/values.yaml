@@ -1,5 +1,4 @@
 ---
-
 upgradeCRDs: false
 
 annotations:
@@ -41,17 +40,17 @@ configuration:
         s3Url: http://foxtrot.theclarkhome.com:9000
         publicUrl: http://foxtrot.theclarkhome.com:9000
 
-#    - name: rustfs
-#      provider: aws
-#      bucket: velero
-#      credential:
-#        name: rustfs-s3-conf
-#        key: cloud
-#      config:
-#        region: rustfs-Northallerton
-#        s3ForcePathStyle: true
-#        s3Url: http://foxtrot.theclarkhome.com:9090
-#        publicUrl: http://foxtrot.theclarkhome.com:9090
+    #    - name: rustfs
+    #      provider: aws
+    #      bucket: velero
+    #      credential:
+    #        name: rustfs-s3-conf
+    #        key: cloud
+    #      config:
+    #        region: rustfs-Northallerton
+    #        s3ForcePathStyle: true
+    #        s3Url: http://foxtrot.theclarkhome.com:9090
+    #        publicUrl: http://foxtrot.theclarkhome.com:9090
 
     - name: idrive
       provider: aws
@@ -109,7 +108,7 @@ initContainers:
 resources:
   requests:
     cpu: 22m
-    memory: 549M
+    memory: 128Mi
   limits:
     # cpu: 997m
     memory: 1066M

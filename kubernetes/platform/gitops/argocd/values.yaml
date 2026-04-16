@@ -1,5 +1,4 @@
 ---
-
 env:
   TZ: Europe/London
 
@@ -126,10 +125,10 @@ extraObjects:
 controller:
   resources:
     requests:
-      cpu: 47m
-      memory: 697M
+      cpu: 300m
+      memory: 1.8Gi
     limits:
-      memory: 1684M
+      memory: 2Gi
 
 applicationSet:
   resources:
