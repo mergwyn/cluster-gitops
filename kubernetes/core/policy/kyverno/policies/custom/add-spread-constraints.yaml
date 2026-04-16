@@ -2,8 +2,10 @@
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
-  name: propagate-topology-spread
+  name: add-spread-constraints
 spec:
+  background: false
+  mutateExistingOnPolicyUpdate: false
   rules:
     - name: add-spread-constraints
       match:
@@ -11,7 +13,6 @@ spec:
           - resources:
               kinds:
                 - Deployment
-                - StatefulSet
       mutate:
         patchStrategicMerge:
           spec:
@@ -23,5 +24,5 @@ spec:
                     whenUnsatisfiable: ScheduleAnyway
                     labelSelector:
                       matchLabels:
-                        # This targets the app name to spread replicas of the same app
-                        app.kubernetes.io/name: "{{ request.object.metadata.labels['app.kubernetes.io/name'] || request.object.metadata.name }}"
+                        # Corrected JMESPath syntax for keys with dots
+                        app.kubernetes.io/name: '{{ request.object.metadata.labels."app.kubernetes.io/name" || request.object.metadata.name }}'
