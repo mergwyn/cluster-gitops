@@ -59,7 +59,7 @@ repoServer:
   resources:
     requests:
       cpu: 20m
-      memory: 192M
+      memory: 308Mi
     limits:
       # cpu: 300m
       memory: 1400M
@@ -89,7 +89,7 @@ server:
   resources:
     requests:
       cpu: 15m
-      memory: 105M
+      memory: 236Mi
     limits:
       # cpu: 50m
       memory: 1416M
@@ -125,10 +125,10 @@ extraObjects:
 controller:
   resources:
     requests:
-      cpu: 300m
-      memory: 1.8Gi
+      cpu: 350m
+      memory: 1844Mi
     limits:
-      memory: 2Gi
+      memory: 2048Mi
 
 applicationSet:
   resources:
