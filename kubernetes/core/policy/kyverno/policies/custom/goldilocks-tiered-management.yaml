@@ -13,7 +13,7 @@ spec:
           - resources:
               kinds:
                 - Namespace
-              namespaces:
+              namespaces: &namespaces
                 - media
                 - vpn
                 - home-assistant
@@ -35,19 +35,7 @@ spec:
       exclude:
         any:
           - resources:
-              namespaces:
-                - kube-system
-                - kube-public
-                - kube-node-lease
-                - kyverno
-                - argocd
-                - monitoring
-                # Also exclude the apps we handled in Rule 1
-                # so they don't get overwritten to "Off"
-                - media
-                - vpn
-                - home-assistant
-                - default
+              namespaces: *namespaces
       mutate:
         patchStrategicMerge:
           metadata:
