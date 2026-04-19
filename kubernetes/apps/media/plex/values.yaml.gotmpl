@@ -60,12 +60,11 @@ controllers:
 
         resources:
           requests:
-            cpu: 15m
-            memory: 921M
+            cpu: 675m
+            memory: 800Mi
             gpu.intel.com/i915: "1"
           limits:
-            # cpu: 2928m
-            memory: 1.5G
+            memory: 1.5Gi
             gpu.intel.com/i915: "1"
 
 service:
