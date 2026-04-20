@@ -56,12 +56,12 @@ addons:
       - secretRef:
           name: privatevpn-ovn  # USER and PASSWORD
 
-    livenessProbe:
-      exec:
-        command:
-          - sh
-          - -c
-          - "wget -q -O- https://ipinfo.io/ip | grep -qE '^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$'"
+#    livenessProbe:
+#      exec:
+#        command:
+#          - sh
+#          - -c
+#          - "wget -q -O- https://ipinfo.io/ip | grep -qE '^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$'"
 
       initialDelaySeconds: 30
       periodSeconds: 60
