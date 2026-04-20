@@ -61,7 +61,8 @@ addons:
         command:
           - sh
           - -c
-          - if [ $(wget -q -O- https://ipinfo.io/country) == 'GB' ]; then exit 0; else exit $?; fi
+          - "wget -q -O- https://ipinfo.io/ip | grep -qE '^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$'"
+
       initialDelaySeconds: 30
       periodSeconds: 60
       failureThreshold: 3
