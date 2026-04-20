@@ -36,8 +36,8 @@ addons:
       VPN_SERVICE_PROVIDER: custom
       OPENVPN_CUSTOM_CONFIG: /gluetun/config.conf
       OPENVPN_ENDPOINT_PORT: &vpn_port 1195
-      OPENVPN_VERBOSITY: 3  # debugging
-      DNS_KEEP_NAMESERVER: "off"  # Try with this disabled
+      OPENVPN_VERBOSITY: 3 # debugging
+      DNS_KEEP_NAMESERVER: "off" # Try with this disabled
       DOT: "off"
       # TODO different variables for different versions. Long name is for 3.40
       # and later
@@ -46,26 +46,25 @@ addons:
       # FIREWALL_OUTBOUND_SUBNETS: "10.0.0.0/8"
       # FIREWALL_VPN_INPUT_PORTS: 64709
       LOG_LEVEL: debug
-      SERVER_COUNTRIES: ""  # Don't know why it is necessary to clear this var
+      SERVER_COUNTRIES: "" # Don't know why it is necessary to clear this var
       UPDATER_PERIOD: 24h
       # route already exists error
       # OPENVPN_EXTRA_FLAGS: "--pull-filter ignore route"
 
-
     envFrom:
       - secretRef:
-          name: privatevpn-ovn  # USER and PASSWORD
+          name: privatevpn-ovn # USER and PASSWORD
 
-#    livenessProbe:
-#      exec:
-#        command:
-#          - sh
-#          - -c
-#          - "wget -q -O- https://ipinfo.io/ip | grep -qE '^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$'"
-
-      initialDelaySeconds: 30
-      periodSeconds: 60
-      failureThreshold: 3
+    #    livenessProbe:
+    #      exec:
+    #        command:
+    #          - sh
+    #          - -c
+    #          - "wget -q -O- https://ipinfo.io/ip | grep -qE '^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$'"
+    #
+    #      initialDelaySeconds: 30
+    #      periodSeconds: 60
+    #      failureThreshold: 3
 
     networkPolicy:
       enabled: true
@@ -86,14 +85,13 @@ addons:
         readOnly: true
         subPath: config.toml
 
-
 # TODO check which settings are used by pod gateway and not just passed through
 # to gluetun
 settings:
   NOT_ROUTED_TO_GATEWAY_CIDRS: "10.0.0.0/8"
   VPN_LOCAL_CIDRS: "10.0.0.0/8"
-  VPN_TRAFFIC_PORT: *vpn_port  # TODO which port settings are needed
-  VPN_ENDPOINT_PORT: *vpn_port  # TODO which port settings are needed
+  VPN_TRAFFIC_PORT: *vpn_port # TODO which port settings are needed
+  VPN_ENDPOINT_PORT: *vpn_port # TODO which port settings are needed
   VPN_BLOCK_OTHER_TRAFFIC: false
   GATEWAY_ENABLE_DNSSEC: false
 
@@ -101,8 +99,7 @@ configMaps:
   auth-config:
     # -- Enables or disables the configMap
     enabled: true
-    data:
-      {}
+    data: {}
       # foo: bar
 
 persistence:
