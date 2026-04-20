@@ -49,7 +49,7 @@ addons:
       SERVER_COUNTRIES: ""  # Don't know why it is necessary to clear this var
       UPDATER_PERIOD: 24h
       # route already exists error
-      OPENVPN_EXTRA_FLAGS: "--pull-filter ignore route"
+      # OPENVPN_EXTRA_FLAGS: "--pull-filter ignore route"
 
 
     envFrom:
