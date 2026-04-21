@@ -86,9 +86,9 @@ spec:
 
         - kind: ClusterPolicy
           group: kyverno.io
-          jsonPointers:
-            - /spec/rules/0/skipBackgroundRequests
-            - /spec/rules/1/skipBackgroundRequests
+          jqPathExpressions:
+            - .spec.rules[].skipBackgroundRequests
+            - .status
         - kind: ClusterPolicy
           group: kyverno.io
           # This tells Argo to ignore anything the 'kyverno' controller itself changes

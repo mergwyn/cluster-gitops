@@ -3,6 +3,9 @@ apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
   name: goldilocks-tiered-management
+  metadata:
+    annotations:
+      argocd.argoproj.io/sync-options: Replace=true
 spec:
   background: true
   rules:
