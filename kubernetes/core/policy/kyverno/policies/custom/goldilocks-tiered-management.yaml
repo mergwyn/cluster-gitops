@@ -13,7 +13,7 @@ spec:
           - resources:
               kinds:
                 - Namespace
-              namespaces: &namespaces
+              namespaces:
                 - media
                 - vpn
                 - home-assistant
@@ -35,7 +35,11 @@ spec:
       exclude:
         any:
           - resources:
-              namespaces: *namespaces
+              namespaces:
+                - media
+                - vpn
+                - home-assistant
+                - default
       mutate:
         patchStrategicMerge:
           metadata:
