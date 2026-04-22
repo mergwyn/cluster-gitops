@@ -4,5 +4,7 @@ argocd-apps-backup.yaml
 **/Chart.lock
 **/charts/
 **/default-values.yaml
-ops/*
+ops/cilium
 ansible/ansible-structure-report.txt
+ops/migrate-workload.sh.1
+ops/tautulli.yaml

@@ -1,0 +1,106 @@
+#!/usr/bin/env bash
+# migrate-workload.sh
+
+# Usage: ./migrate-workload.sh <target-node> <namespace> <app-name> [-d]
+TARGET_NODE=$1
+TARGET_NS=$2
+APP_NAME=$3
+DRY_RUN=false
+
+# Check for dry-run flag anywhere in args
+for arg in "$@"; do
+    if [[ "$arg" == "-d" || "$arg" == "--dry-run" ]]; then
+        DRY_RUN=true
+    fi
+done
+
+# Prompt if arguments are missing
+if [[ -z "$TARGET_NODE" ]]; then echo "Enter Target Node (e.g., 'charlie'):"; read -r TARGET_NODE; fi
+if [[ -z "$TARGET_NS" ]]; then echo "Enter Namespace (e.g., 'media'):"; read -r TARGET_NS; fi
+if [[ -z "$APP_NAME" ]]; then echo "Enter App Name (e.g., 'tautulli'):"; read -r APP_NAME; fi
+
+if [ "$DRY_RUN" = true ]; then
+    echo "!!! DRY RUN MODE ENABLED - No changes will be made !!!"
+fi
+
+# The selector used by most Helm/Argo apps
+SELECTOR="app.kubernetes.io/instance=$APP_NAME"
+
+echo "--- 1. Verification: Identifying Resources & Source Node ---"
+
+# Dynamically find the SOURCE_NODE by looking at where the current pods are running
+SOURCE_NODE=$(kubectl get pods -n "$TARGET_NS" -l "$SELECTOR" -o jsonpath='{.items[0].spec.nodeName}')
+
+if [[ -z "$SOURCE_NODE" ]]; then
+    echo "Error: Could not find any running pods for '$APP_NAME' to determine source node."
+    exit 1
+fi
+
+if [[ "$SOURCE_NODE" == "$TARGET_NODE" ]]; then
+    echo "Error: App is already running on $TARGET_NODE. Nothing to migrate."
+    exit 1
+fi
+
+DEPLOYS=$(kubectl get deployment -l "$SELECTOR" -n "$TARGET_NS" -o name)
+STATEFULSETS=$(kubectl get statefulset -l "$SELECTOR" -n "$TARGET_NS" -o name)
+PVCS=$(kubectl get pvc -l "$SELECTOR" -n "$TARGET_NS" -o name)
+
+echo "Migration Plan:"
+echo "  From: $SOURCE_NODE  -->  To: $TARGET_NODE"
+echo "  Resources: $DEPLOYS $STATEFULSETS"
+echo "  PVCs: $PVCS"
+
+if [ "$DRY_RUN" = true ]; then
+    echo "--- DRY RUN COMPLETE ---"
+    exit 0
+fi
+
+BACKUP_NAME="migration-$APP_NAME-$(date +%Y%m%d-%H%M%S)"
+
+# --- REAL WORK STARTS HERE ---
+
+echo "--- 2. Configuring Velero Node Mapping ($SOURCE_NODE -> $TARGET_NODE) ---"
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: change-pvc-node-selector-config
+  namespace: velero
+  labels:
+    velero.io/plugin-config: ""
+    velero.io/change-pvc-node-selector: RestoreItemAction
+data:
+  ${SOURCE_NODE}: ${TARGET_NODE}
+EOF
+
+echo "--- 3. Scaling Down $APP_NAME ---"
+kubectl scale deployment -l "$SELECTOR" --replicas=0 -n "$TARGET_NS"
+kubectl scale statefulset -l "$SELECTOR" --replicas=0 -n "$TARGET_NS"
+kubectl wait --for=delete pod -l "$SELECTOR" -n "$TARGET_NS" --timeout=60s
+
+echo "--- 4. Velero Backup ---"
+velero backup create "$BACKUP_NAME" \
+  --include-namespaces "$TARGET_NS" \
+  --selector "$SELECTOR" \
+  --wait
+
+echo "--- 5. Deleting PVCs on $SOURCE_NODE ---"
+# Note: We don't cordon here because we want the restore to be able to use any node,
+# but the ConfigMap in Step 2 handles the PVC placement.
+kubectl delete pvc -l "$SELECTOR" -n "$TARGET_NS"
+
+echo "--- 6. Restoring to $TARGET_NODE ---"
+velero restore create "restore-$BACKUP_NAME" \
+  --from-backup "$BACKUP_NAME" \
+  --existing-resource-policy update \
+  --wait
+
+echo "--- 7. Verification & Scaling Up ---"
+kubectl scale deployment -l "$SELECTOR" --replicas=1 -n "$TARGET_NS"
+kubectl scale statefulset -l "$SELECTOR" --replicas=1 -n "$TARGET_NS"
+
+echo "Waiting for pod to bind to $TARGET_NODE..."
+sleep 10
+kubectl get pods -n "$TARGET_NS" -l "$SELECTOR" -o wide
+
+echo "--- FINISHED ---"
