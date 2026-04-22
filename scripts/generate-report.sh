@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # generate-report.sh - Create a complete structure report
 
 REPORT="ansible-structure-report.txt"
