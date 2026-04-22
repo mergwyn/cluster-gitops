@@ -1,0 +1,17 @@
+---
+
+dashboard:
+  httpRoute:
+    enabled: true
+    annotations: {}
+    labels: {}
+    parentRefs:
+      - name: traefik-internal
+        namespace: network
+        sectionName: websecure
+    hostnames:
+      - "{{ .Release.Name }}.{{ .Values.cluster.domain }}"
+    matches:
+      - path:
+          type: PathPrefix
+          value: /

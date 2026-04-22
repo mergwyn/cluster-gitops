@@ -15,21 +15,7 @@ controller:
     limits:
       memory: 105M
 
-
 dashboard:
-  ingress:
-    enabled: true
-    ingressClass: traefik
-    annotations:
-      traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    hosts:
-      - host: "goldilocks.theclarkhome.com"
-        paths:
-          - path: /
-            type: ImplementationSpecific
-    tls:
-      - hosts:
-          - "*.theclarkhome.com"
   resources:
     requests:
       cpu: 15m
