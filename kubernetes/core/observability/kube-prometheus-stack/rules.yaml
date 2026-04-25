@@ -3,6 +3,17 @@
 additionalPrometheusRulesMap:
   additional-rules:
     groups:
+      - name: node_alerts
+        rules:
+          - alert: NodeDown
+            expr: up{job="node-exporter"} == 0
+            for: 2m
+            labels:
+              severity: critical
+            annotations:
+              summary: "Node {{ $labels.instance }} is down"
+              description: "Prometheus cannot scrape the node-exporter on {{ $labels.instance }}."
+
       - name: oomkills
         rules:
           - alert: HostOomKillDetected

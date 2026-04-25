@@ -5,12 +5,19 @@ env:
 prometheus-node-exporter:
   commonLabels:
     jobLabel: node-exporter
-  resources:
-    requests:
-      cpu: 15m
-      memory: 105M
-    limits:
-      memory: 256M
+
+    prometheus:
+      monitor:
+        relabelings:
+          - sourceLabels: [__meta_kubernetes_node_name]
+            targetLabel: instance
+
+    resources:
+      requests:
+        cpu: 15m
+        memory: 105Mi
+      limits:
+        memory: 256Mi
 
 crds:
   enabled: true
@@ -22,13 +29,22 @@ alertmanager:
   config:
     global:
       smtp_require_tls: false
-    route:
-      receiver: 'email-k8s-admin'
-      routes:
-        - receiver: 'null'
-          matchers:
-            - alertname =~ "InfoInhibitor|Watchdog"
-        - receiver: 'email-k8s-admin'
+
+      inhibit_rules:
+        - source_matchers:
+            - alertname = "NodeDown"
+          target_matchers:
+            - alertname != "NodeDown"  # Mute everything EXCEPT the Down alert
+          # This is the "glue" that links them to the same machine:
+          equal: ['instance', 'node', 'kubernetes_node', 'host']
+
+      route:
+        receiver: 'email-k8s-admin'
+        routes:
+          - receiver: 'null'
+            matchers:
+              - alertname =~ "InfoInhibitor|Watchdog"
+          - receiver: 'email-k8s-admin'
     receivers:
       - name: 'null'
       - name: 'email-k8s-admin'
@@ -40,10 +56,10 @@ alertmanager:
     resources:
       requests:
         cpu: 15m
-        memory: 105M
+        memory: 105Mi
       limits:
         # cpu: 15m
-        memory: 105M
+        memory: 105Mi
 
 
   route:
@@ -95,7 +111,7 @@ prometheus:
 #     storage:
 #       # OTLP is a push-based protocol, Out of order samples is a common scenario.
 #       tsdb:
-#         out_of_order_time_window: 30m  
+#         out_of_order_time_window: 30m
 
     serviceMonitorSelectorNilUsesHelmValues: false
     # podMonitorSelectorNilUsesHelmValues: false
@@ -144,10 +160,10 @@ prometheus:
     resources:
       requests:
         cpu: 180m
-        memory: 512M
+        memory: 512Mi
       limits:
         # cpu: 15m
-        memory: 5G
+        memory: 5Gi
 
   route:
     main:
@@ -229,10 +245,10 @@ grafana:
   resources:
     requests:
       cpu: 15m
-      memory: 418M
+      memory: 418Mi
     limits:
       # cpu: 15m
-      memory: 3G
+      memory: 3Gi
 
 resources:
   limits:
@@ -253,19 +269,19 @@ prometheusOperator:
   resources:
     requests:
       cpu: 15m
-      memory: 105M
+      memory: 105Mi
     limits:
       # cpu: 15m
-      memory: 105M
+      memory: 105Mi
 
 kube-state-metrics:
   resources:
     requests:
       cpu: 15m
-      memory: 279M
+      memory: 279Mi
     limits:
       # cpu: 15m
-      memory: 279M
+      memory: 279Mi
 
 defaultRules:
   rules:
