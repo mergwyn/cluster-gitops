@@ -12,7 +12,7 @@ route:
       - backendRefs:
           - identifier: app
             port: 8123
-  code-server-new:
+  code-server:
     hostnames:
       - "hass-code.{{.Values.cluster.domain}}"
     parentRefs: *parentrefs
@@ -20,24 +20,6 @@ route:
       - backendRefs:
           - identifier: code-server
             port: 12322
-  code-server:
-    hostnames:
-      - *host
-    parentRefs: *parentrefs
-    rules:
-      - backendRefs:
-          - identifier: code-server
-            port: 12322
-        matches:
-          - path:
-              type: PathPrefix
-              value: /code/
-        filters:
-          - type: URLRewrite
-            urlRewrite:
-              path:
-                replacePrefixMatch: /
-                type: ReplacePrefixMatch
 
 ingress:
   external:

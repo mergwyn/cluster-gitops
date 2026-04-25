@@ -12,5 +12,5 @@ releases:
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
     values:
       - values.yaml
-      - values.yaml.gotmpl
+      - ingress.yaml.gotmpl
       - externalsecret.yaml

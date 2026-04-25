@@ -212,9 +212,7 @@ persistence:
       - path: /config
   backups:
     enabled: true
-    type: nfs
-    server: 10.58.0.12
-    path: /srv/backup/home-assistant
+    existingClaim: home-assistant-backup-nfs-pvc
     globalMounts:
       - path: /config/backups
   cache:
