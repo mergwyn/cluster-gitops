@@ -90,9 +90,7 @@ persistence:
       - path: /config
   data:
     enabled: true
-    type: nfs
-    server: 10.58.0.12
-    path: /srv/media
+    existingClaim: media-nfs-pvc
     globalMounts:
       - path: /data
   tmp:
