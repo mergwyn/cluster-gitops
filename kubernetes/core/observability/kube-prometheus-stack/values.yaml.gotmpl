@@ -9,7 +9,8 @@ prometheus-node-exporter:
   prometheus:
     monitor:
       relabelings:
-        - sourceLabels: [__meta_kubernetes_node_name]
+        - action: replace
+          sourceLabels: [__meta_kubernetes_node_name]
           targetLabel: instance
 
   resources:
