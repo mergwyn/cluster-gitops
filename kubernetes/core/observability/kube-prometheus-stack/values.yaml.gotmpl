@@ -6,18 +6,18 @@ prometheus-node-exporter:
   commonLabels:
     jobLabel: node-exporter
 
-    prometheus:
-      monitor:
-        relabelings:
-          - sourceLabels: [__meta_kubernetes_node_name]
-            targetLabel: instance
+  prometheus:
+    monitor:
+      relabelings:
+        - sourceLabels: [__meta_kubernetes_node_name]
+          targetLabel: instance
 
-    resources:
-      requests:
-        cpu: 15m
-        memory: 105Mi
-      limits:
-        memory: 256Mi
+  resources:
+    requests:
+      cpu: 15m
+      memory: 105Mi
+    limits:
+      memory: 256Mi
 
 crds:
   enabled: true
