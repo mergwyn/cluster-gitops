@@ -41,10 +41,10 @@ controllers:
           capabilities: { drop: ["ALL"] }
         resources:
           requests:
-            cpu: 22m
+            cpu: 450m
             memory: 4500Mi
           limits:
-            memory: 6Gi"
+            memory: 6Gi
 
 defaultPodOptions:
   securityContext:
