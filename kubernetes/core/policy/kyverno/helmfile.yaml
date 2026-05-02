@@ -7,7 +7,7 @@ releases:
   - name: kyverno
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
     chart: oci://ghcr.io/kyverno/charts/kyverno
-    version: 3.7.1
+    version: 3.7.2
     values:
       - values.yaml
 
