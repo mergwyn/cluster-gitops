@@ -49,7 +49,7 @@ releases:
   # 3. Main External Secrets Chart
   - name: external-secrets
     chart: external-secrets/external-secrets
-    version: 2.3.0
+    version: 2.4.1
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
     needs:
       - bitwarden-certs
