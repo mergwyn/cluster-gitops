@@ -4,14 +4,13 @@ upgradeCRDs: false
 annotations:
   secret.reloader.stakater.com/reload: <-
     minio-s3-conf,
-    idrivee2-s3-conf,
-    rustfs-s3-config
+    idrivee2-s3-conf
   configmap.reloader.stakater.com/reload: <-
     velero-backup-repository-config
 
 defaultBackupStorageLocation: rustfs
 snapshotsEnabled: false
-# defaultVolumeSnapshotLocations: [minio, rustfs, idrive, default]
+# defaultVolumeSnapshotLocations: [minio, idrive, default]
 defaultRepoMaintainFrequency: 24h
 
 kubectl:
@@ -37,20 +36,8 @@ configuration:
       config:
         region: Northallerton
         s3ForcePathStyle: true
-        s3Url: http://foxtrot.theclarkhome.com:9000
-        publicUrl: http://foxtrot.theclarkhome.com:9000
-
-    #    - name: rustfs
-    #      provider: aws
-    #      bucket: velero
-    #      credential:
-    #        name: rustfs-s3-conf
-    #        key: cloud
-    #      config:
-    #        region: rustfs-Northallerton
-    #        s3ForcePathStyle: true
-    #        s3Url: http://foxtrot.theclarkhome.com:9090
-    #        publicUrl: http://foxtrot.theclarkhome.com:9090
+        s3Url: http://delta.theclarkhome.com:9000
+        publicUrl: http://delta.theclarkhome.com:9000
 
     - name: idrive
       provider: aws
@@ -66,25 +53,6 @@ configuration:
         # Disable checksumAlgorithm to avoid issues with Minio
         # https://github.com/vmware-tanzu/velero-plugin-for-aws/pull/197
         checksumAlgorithm: ""
-
-  # volumeSnapshotLocation:
-  #   - name: minio
-  #     provider: aws
-  #     default: true
-  #     config:
-  #       region: Northallerton
-  #   - name: default
-  #     provider: aws
-  #     config:
-  #       region: Northallerton
-  #   - name: rustfs
-  #     provider: aws
-  #     config:
-  #       region: rustfs-Northallerton
-  #   - name: idrive
-  #     provider: aws
-  #     config:
-  #       region: London
 
   extraArgs:
     - "--backup-repository-configmap=velero-backup-repository-config"
