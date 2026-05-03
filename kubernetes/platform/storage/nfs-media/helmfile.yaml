@@ -20,6 +20,8 @@ releases:
             kind: PersistentVolume
             metadata:
               name: nfs-media-pv
+              labels: &common_labels
+                velero.io/exclude-from-backup: true
               annotations: &common_annotations
                 argocd.argoproj.io/sync-options: Replace=true
             spec:
@@ -34,7 +36,7 @@ releases:
                 - noatime
                 - rsize=1048576
                 - wsize=1048576
-              nfs: 
+              nfs:
                 path: /srv/media
                 server: &nfs_server 10.58.0.12
           - apiVersion: v1
@@ -54,6 +56,7 @@ releases:
             kind: PersistentVolume
             metadata:
               name: nfs-vpn-pv
+              labels: *common_labels
               annotations: *common_annotations
             spec:
               storageClassName: ""
@@ -79,6 +82,7 @@ releases:
             kind: PersistentVolume
             metadata:
               name: nfs-home-assistant-backup-pv
+              labels: *common_labels
               annotations: *common_annotations
             spec:
               storageClassName: ""
@@ -86,7 +90,7 @@ releases:
               accessModes: ["ReadWriteMany"]
               persistentVolumeReclaimPolicy: Retain
               mountOptions: *mount_options
-              nfs: 
+              nfs:
                 path: /srv/backup/home-assistant
                 server: *nfs_server
           - apiVersion: v1
