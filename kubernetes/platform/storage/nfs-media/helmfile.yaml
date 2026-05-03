@@ -10,7 +10,7 @@ repositories:
 
 releases:
   - name: nfs-media
-    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+    namespace: &ns kube-system
     chart: bedag/raw
     version: 2.0.2
     values:
@@ -21,9 +21,11 @@ releases:
             metadata:
               name: nfs-media-pv
               labels: &common_labels
-                velero.io/exclude-from-backup: true
+                velero.io/exclude-from-backup: "true"
               annotations: &common_annotations
-                argocd.argoproj.io/sync-options: Replace=true
+                argocd.argoproj.io/sync-options: "Replace=true"
+                meta.helm.sh/release-name:  nfs-media
+                meta.helm.sh/release-namespace: *ns
             spec:
               storageClassName: ""
               capacity: { storage: 10Ti }
@@ -44,7 +46,9 @@ releases:
             metadata:
               name: media-nfs-pvc
               namespace: media
-              annotations: *common_annotations
+              annotations:
+                argocd.argoproj.io/sync-options: "Replace=true"
+                meta.helm.sh/release-name: nfs-media
             spec:
               accessModes: ["ReadWriteMany"]
               storageClassName: ""
