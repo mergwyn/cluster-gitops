@@ -73,9 +73,30 @@ data:
   ${SOURCE_NODE}: ${TARGET_NODE}
 EOF
 
+echo "--- Identifying Workload Type ---"
+# Check for Deployment
+if kubectl get deployment -l "$SELECTOR" -n "$TARGET_NS" 2>&1 | grep -q "No resources found"; then
+    WORKLOAD_KIND=""
+else
+    WORKLOAD_KIND="deployment"
+fi
+
+# If no deployment, check for StatefulSet
+if [[ -z "$WORKLOAD_KIND" ]]; then
+    if ! kubectl get statefulset -l "$SELECTOR" -n "$TARGET_NS" 2>&1 | grep -q "No resources found"; then
+        WORKLOAD_KIND="statefulset"
+    fi
+fi
+
+if [[ -z "$WORKLOAD_KIND" ]]; then
+    echo "Error: No Deployment or StatefulSet found for $APP_NAME"
+    exit 1
+fi
+
+echo "Detected Workload: $WORKLOAD_KIND"
+
 echo "--- 3. Scaling Down $APP_NAME ---"
-kubectl scale deployment -l "$SELECTOR" --replicas=0 -n "$TARGET_NS"
-kubectl scale statefulset -l "$SELECTOR" --replicas=0 -n "$TARGET_NS"
+kubectl scale "$WORKLOAD_KIND" -l "$SELECTOR" --replicas=0 -n "$TARGET_NS"
 kubectl wait --for=delete pod -l "$SELECTOR" -n "$TARGET_NS" --timeout=60s
 
 echo "--- 4. Velero Backup ---"
@@ -92,15 +113,32 @@ kubectl delete pvc -l "$SELECTOR" -n "$TARGET_NS"
 echo "--- 6. Restoring to $TARGET_NODE ---"
 velero restore create "restore-$BACKUP_NAME" \
   --from-backup "$BACKUP_NAME" \
-  --existing-resource-policy update \
-  --wait
+  --existing-resource-policy update
 
-echo "--- 7. Verification & Scaling Up ---"
-kubectl scale deployment -l "$SELECTOR" --replicas=1 -n "$TARGET_NS"
-kubectl scale statefulset -l "$SELECTOR" --replicas=1 -n "$TARGET_NS"
+echo "Waiting for PVCs to be created by Velero..."
+# Loop until the PVC appears or we timeout (60s)
+TIMEOUT=60
+COUNTER=0
+until kubectl get pvc -n "$TARGET_NS" -l "$SELECTOR" | grep -q "$APP_NAME" || [ $COUNTER -eq $TIMEOUT ]; do
+  sleep 2
+  ((COUNTER+=2))
+done
 
-echo "Waiting for pod to bind to $TARGET_NODE..."
-sleep 10
-kubectl get pods -n "$TARGET_NS" -l "$SELECTOR" -o wide
+if [ $COUNTER -eq $TIMEOUT ]; then
+  echo "Error: PVC did not appear in time. Check Velero logs."
+  exit 1
+fi
+
+echo "--- 6.5 Cleaning PVC selectors for OpenEBS compatibility ---"
+for pvc in $(kubectl get pvc -n "$TARGET_NS" -l "$SELECTOR" -o name); do
+    echo "Patching $pvc..."
+    kubectl patch "$pvc" -n "$TARGET_NS" --type json -p='[{"op": "remove", "path": "/spec/selector"}]' || true
+done
+
+echo "--- 7. Scaling Up & Waiting ---"
+kubectl scale "$WORKLOAD_KIND" -l "$SELECTOR" --replicas=1 -n "$TARGET_NS"
+
+echo "Waiting for rollout..."
+kubectl rollout status "$WORKLOAD_KIND" -l "$SELECTOR" -n "$TARGET_NS" --timeout=5m
 
 echo "--- FINISHED ---"
