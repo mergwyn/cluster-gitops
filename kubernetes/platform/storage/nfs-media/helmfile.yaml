@@ -68,7 +68,9 @@ releases:
               accessModes: ["ReadWriteMany"]
               persistentVolumeReclaimPolicy: Retain
               mountOptions: *mount_options
-              nfs: { path: /srv/media, server: 10.58.0.12 }
+              nfs:
+                path: /srv/media
+                server: *nfs_server
           - apiVersion: v1
             kind: PersistentVolumeClaim
             metadata:
