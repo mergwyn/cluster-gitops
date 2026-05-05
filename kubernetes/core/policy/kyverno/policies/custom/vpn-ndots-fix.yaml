@@ -18,6 +18,7 @@ spec:
           spec:
             containers:
               - name: gateway-sidecar
+                (image): "ghcr.io/angelnu/pod-gateway:*"
                 lifecycle:
                   postStart:
                     exec:
