@@ -1,0 +1,33 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/kyverno.io/clusterpolicy_v1.json
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: vpn-ndots-fix
+spec:
+  background: false
+  rules:
+    - name: fix-ndots-in-gateway-sidecar
+      match:
+        any:
+          - resources:
+              kinds: [Pod]
+              namespaces: [vpn]
+      mutate:
+        patchStrategicMerge:
+          spec:
+            containers:
+              - name: gateway-sidecar
+                lifecycle:
+                  postStart:
+                    exec:
+                      command:
+                        - /bin/sh
+                        - -c
+                        - |
+                          until grep -q '172.16.0.1' /etc/resolv.conf; do
+                            sleep 1
+                          done
+                          cp /etc/resolv.conf /tmp/resolv.new
+                          sed -i 's/ndots:5/ndots:1/' /tmp/resolv.new
+                          cat /tmp/resolv.new > /etc/resolv.conf
