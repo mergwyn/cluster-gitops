@@ -21,13 +21,13 @@ controllers:
         envFrom:
           - secretRef:
               name: "{{ .Release.Name }}-api-key"
-        lifecycle:
-          postStart:
-            exec:
-              command:
-              - /bin/sh
-              - -c
-              - "until grep -q '172.16.0.1' /etc/resolv.conf; do sleep 1; done; echo 'RESOLV_CONF=no' >> /etc/udhcpc/udhcpc.conf; sed -i 's/ndots:5/ndots:1/' /etc/resolv.conf"
+#        lifecycle:
+#          postStart:
+#            exec:
+#              command:
+#              - /bin/sh
+#              - -c
+#              - "until grep -q '172.16.0.1' /etc/resolv.conf; do sleep 1; done; echo 'RESOLV_CONF=no' >> /etc/udhcpc/udhcpc.conf; sed -i 's/ndots:5/ndots:1/' /etc/resolv.conf"
         probes:
           liveness: &probes
             enabled: true
