@@ -84,6 +84,7 @@ settings:
   VPN_ENDPOINT_PORT: *vpn_port # TODO which port settings are needed
   VPN_BLOCK_OTHER_TRAFFIC: false
   GATEWAY_ENABLE_DNSSEC: false
+  DNS_LOCAL_CIDRS: "local cluster.local svc.cluster.local theclarkhome.com"
 
 configMaps:
   auth-config:
