@@ -26,7 +26,8 @@ spec:
           metadata:
             labels:
               goldilocks.fairwinds.com/enabled: "true"
-              goldilocks.fairwinds.com/vpa-update-mode: "InPlaceOrRecreate"
+              # TODO: Disable for the time being, causing oom kill issues
+              goldilocks.fairwinds.com/vpa-update-mode: "Off"
 
     # --- STEP 2: OBSERVABILITY ONLY FOR OTHERS ---
     - name: enable-vpa-guidance-only
