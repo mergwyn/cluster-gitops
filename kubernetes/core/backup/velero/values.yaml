@@ -24,6 +24,9 @@ configuration:
   defaultSnapshotMoveData: true
   features: EnableCSI
   defaultRepoMaintainFrequency: 24h
+  defaultExcludedNamespaces:
+    - velero
+    - kube-system
 
   backupStorageLocation:
     - name: minio
