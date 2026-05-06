@@ -3,7 +3,7 @@
 {{- $policy := $.Files.Get $path | fromYaml -}}
 {{- $baseMetadata := dict 
     "labels" (include "kyverno-policies.labels" $ | fromYaml)
-    "annotations" (dict "argocd.argoproj.io/sync-options" "Force=true") -}}
+#    "annotations" (dict "argocd.argoproj.io/sync-options" "Force=true") -}}
 {{- $metadata := merge ($policy.metadata | default (dict)) $baseMetadata -}}
 
 {{- $_ := set $policy "metadata" $metadata -}}
