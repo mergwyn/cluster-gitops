@@ -1,5 +1,8 @@
 ---
 
+config:
+  device_include: '^/dev/sd|^/dev/nvme'
+
 prometheusRules:
   enabled: true
   extraLabels:
