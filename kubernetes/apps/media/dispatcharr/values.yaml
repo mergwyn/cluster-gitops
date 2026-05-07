@@ -10,18 +10,18 @@ controllers:
           repository: ghcr.io/dispatcharr/dispatcharr
           tag: 0.23.0@sha256:b731cda8daa302c5bc28f5031158895f9996c4b1995d7f292e96d4a7461c6263
         env:
-          DISPATCHARR_ENV: aio
-          REDIS_HOST: localhost
-          CELERY_BROKER_URL: redis://localhost:6379/0
-          DISPATCHARR_LOG_LEVEL: info
+          dispatcharr_env: aio
+          redis_host: localhost
+          celery_broker_url: redis://localhost:6379/0
+          dispatcharr_log_level: info
         resources:
           requests:
-            cpu: 600m
-            memory: 1738M
+            cpu: 400m
+            memory: 1658Mi
             # enable gpu if ffmpeg profile being used
             # gpu.intel.com/i915: "1"
           limits:
-            memory: 4G
+            memory: 2Gi
             # enable gpu if ffmpeg profile being used
             # gpu.intel.com/i915: "1"
 
