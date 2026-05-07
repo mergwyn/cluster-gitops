@@ -121,7 +121,7 @@ schedules:
   # default storage
   hourly-default:
     disabled: false
-    schedule: "@hourly"
+    schedule: "0 */2 * * *"
     template:
       ttl: "24h"
   daily-default:
