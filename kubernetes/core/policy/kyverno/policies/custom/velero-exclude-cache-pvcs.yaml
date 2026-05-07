@@ -1,0 +1,21 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/kyverno.io/clusterpolicy_v1.json
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: velero-exclude-cache-pvcs
+spec:
+  rules:
+    - name: exclude-cache-pvcs-from-velero
+      match:
+        any:
+          - resources:
+              kinds:
+                - PersistentVolumeClaim
+              name: "*-cache"
+      mutate:
+        patchStrategicMerge:
+          metadata:
+            labels:
+              velero.io/exclude-from-backup: "true"
+
