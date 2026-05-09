@@ -84,6 +84,9 @@ configMaps:
                   - e1a997ddb54e3ecbfe06341ad323c458  # Obfuscated
                   - 06d66ab109d4d2eddb2794d21526d140  # Retags
                   - 1b3994c551cbb92a2c781af061f4ab44  # Scene
+                assign_scores_to:
+                  - name: WEB-1080p
+              -trash_ids:
                   - c53085ddbd027d9624b320627748612f # DV HDR10Plus
                   - e23edd2482476e595fb990b12e7c609c # DV HDR10
                   - 58d6a88f13e2db7f5059c41047876f00 # DV
@@ -109,7 +112,8 @@ configMaps:
               - name: SQP-1 (2160p)
             include:
               # - template: radarr-quality-definition-sqp-streaming
-              - template: radarr-quality-profile-sqp-1-2160p-default
+              - template: radarr-quality-definition-movie
+              # - template: radarr-quality-profile-sqp-1-2160p-default
               - template: radarr-custom-formats-sqp-1-2160p
             custom_formats:
               - trash_ids:
