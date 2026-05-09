@@ -1,5 +1,6 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+
 defaultPodOptions:
   automountServiceAccountToken: false
   securityContext:
@@ -215,17 +216,6 @@ persistence:
     existingClaim: home-assistant-backup-nfs-pvc
     globalMounts:
       - path: /config/backups
-  cache:
-    type: persistentVolumeClaim
-    storageClass: openebs-zfspv
-    accessMode: ReadWriteOnce
-    retain: true
-    size: 1Gi
-    advancedMounts:
-      home-assistant:
-        app:
-          - path: /config/.venv
-            subPath: hass-venv
   secrets:
     type: secret
     name: "{{.Release.Name}}-secret"
