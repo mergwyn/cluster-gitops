@@ -1,0 +1,22 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/kyverno.io/clusterpolicy_v1.json
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: home-assistant-ndots-fix
+spec:
+  background: false
+  rules:
+    - name: fix-ndots-in-home-assistant
+      match:
+        any:
+          - resources:
+              kinds: [Pod]
+              namespaces: [home-assistant]
+      mutate:
+        patchStrategicMerge:
+          spec:
+            dnsConfig:
+              options:
+                - name: ndots
+                  value: "1"
