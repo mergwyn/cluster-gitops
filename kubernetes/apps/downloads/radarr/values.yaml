@@ -3,7 +3,16 @@ controllers:
   radarr:
     annotations:
       reloader.stakater.com/auto: "true"
-    containers:
+      initContainers:
+        create-kopiaignore:
+          image:
+            repository: busybox
+            tag: latest
+          command:
+            - sh
+            - -c
+            - mkdir -p /config/MediaCover && echo '*' > /config/MediaCover/.kopiaignore
+      containers:
       app:
         image:
           repository: ghcr.io/home-operations/radarr
@@ -68,12 +77,6 @@ persistence:
     storageClass: openebs-zfspv
     accessMode: ReadWriteOnce
     size: 2Gi
-  config-cache:
-    storageClass: openebs-zfspv
-    accessMode: ReadWriteOnce
-    size: 2Gi
-    globalMounts:
-      - path: /config/MediaCover
   data:
     enabled: true
     existingClaim: vpn-nfs-pvc
