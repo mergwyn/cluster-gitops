@@ -1,8 +1,19 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+
 controllers:
   sonarr:
     annotations:
       reloader.stakater.com/auto: "true"
+    initContainers:
+      create-kopiaignore:
+        image:
+          repository: busybox
+          tag: latest
+        command:
+          - sh
+          - -c
+          - mkdir -p /config/MediaCover && echo '*' > /config/MediaCover/.kopiaignore
     containers:
       app:
         image:
@@ -68,12 +79,6 @@ persistence:
     storageClass: openebs-zfspv
     accessMode: ReadWriteOnce
     size: 2Gi
-  config-cache:
-    storageClass: openebs-zfspv
-    accessMode: ReadWriteOnce
-    size: 2Gi
-    globalMounts:
-      - path: /config/MediaCover
   data:
     enabled: true
     existingClaim: vpn-nfs-pvc
