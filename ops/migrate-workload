@@ -7,6 +7,39 @@ TARGET_NS=$2
 APP_NAME=$3
 DRY_RUN=false
 
+scale_operator() {
+    local replicas=$1
+    local action=$([ "$replicas" -eq 0 ] && echo "down" || echo "up")
+
+    # Find any prometheus-operator deployment in the namespace
+    # Uses the stable component label rather than instance, which varies
+    OPERATOR_DEPLOYMENT=$(kubectl get deployment -n "$TARGET_NS" \
+        -l "app.kubernetes.io/component=prometheus-operator" \
+        -o name 2>/dev/null | head -1)
+
+    if [[ -z "$OPERATOR_DEPLOYMENT" ]]; then
+        return 0  # No operator in this namespace, nothing to do
+    fi
+
+    # Only act if our target is a StatefulSet managed by the operator
+    # i.e. it's a Prometheus or Alertmanager CR
+    if kubectl get prometheus,alertmanager -n "$TARGET_NS" 2>/dev/null | \
+        grep -qE "(prometheus|alertmanager)-${APP_NAME}|${APP_NAME}"; then
+
+        echo "--- Scaling $action Prometheus Operator ($OPERATOR_DEPLOYMENT) ---"
+        kubectl scale "$OPERATOR_DEPLOYMENT" -n "$TARGET_NS" --replicas="$replicas"
+
+        if [ "$replicas" -eq 0 ]; then
+            kubectl wait --for=delete pod \
+                -l "app.kubernetes.io/component=prometheus-operator" \
+                -n "$TARGET_NS" --timeout=60s
+        else
+            kubectl rollout status "$OPERATOR_DEPLOYMENT" \
+                -n "$TARGET_NS" --timeout=60s
+        fi
+    fi
+}
+
 # Check for dry-run flag anywhere in args
 for arg in "$@"; do
     if [[ "$arg" == "-d" || "$arg" == "--dry-run" ]]; then
@@ -96,6 +129,7 @@ fi
 echo "Detected Workload: $WORKLOAD_KIND"
 
 echo "--- 3. Scaling Down $APP_NAME ---"
+scale_operator 0
 kubectl scale "$WORKLOAD_KIND" -l "$SELECTOR" --replicas=0 -n "$TARGET_NS"
 kubectl wait --for=delete pod -l "$SELECTOR" -n "$TARGET_NS" --timeout=60s
 
@@ -105,10 +139,24 @@ velero backup create "$BACKUP_NAME" \
   --selector "$SELECTOR" \
   --wait
 
-echo "--- 5. Deleting PVCs on $SOURCE_NODE ---"
-# Note: We don't cordon here because we want the restore to be able to use any node,
-# but the ConfigMap in Step 2 handles the PVC placement.
+echo "--- 5. Deleting PVCs and released PVs on $SOURCE_NODE ---"
+# Capture the PV names before deleting the PVCs
+PV_NAMES=$(kubectl get pvc -l "$SELECTOR" -n "$TARGET_NS" \
+    -o jsonpath='{.items[*].spec.volumeName}')
+
 kubectl delete pvc -l "$SELECTOR" -n "$TARGET_NS"
+
+# Wait briefly for PVs to transition to Released, then delete them
+# so OpenEBS provisions fresh ones on the target node
+if [[ -n "$PV_NAMES" ]]; then
+    echo "Deleting backing PVs: $PV_NAMES"
+    for pv in $PV_NAMES; do
+        # Wait for Released status (reclaim policy means it won't auto-delete)
+        kubectl wait pv "$pv" --for=jsonpath='{.status.phase}'=Released \
+            --timeout=30s 2>/dev/null || true
+        kubectl delete pv "$pv"
+    done
+fi
 
 echo "--- 6. Restoring to $TARGET_NODE ---"
 velero restore create "restore-$BACKUP_NAME" \
@@ -136,6 +184,7 @@ for pvc in $(kubectl get pvc -n "$TARGET_NS" -l "$SELECTOR" -o name); do
 done
 
 echo "--- 7. Scaling Up & Waiting ---"
+scale_operator 1
 kubectl scale "$WORKLOAD_KIND" -l "$SELECTOR" --replicas=1 -n "$TARGET_NS"
 
 echo "Waiting for rollout..."
