@@ -1,18 +1,19 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 controllers:
   radarr:
     annotations:
       reloader.stakater.com/auto: "true"
-      initContainers:
-        create-kopiaignore:
-          image:
-            repository: busybox
-            tag: latest
-          command:
-            - sh
-            - -c
-            - mkdir -p /config/MediaCover && echo '*' > /config/MediaCover/.kopiaignore
-      containers:
+    initContainers:
+      create-kopiaignore:
+        image:
+          repository: busybox
+          tag: latest
+        command:
+          - sh
+          - -c
+          - mkdir -p /config/MediaCover && echo '*' > /config/MediaCover/.kopiaignore
+    containers:
       app:
         image:
           repository: ghcr.io/home-operations/radarr
@@ -33,7 +34,7 @@ controllers:
         probes:
           liveness: &probes
             enabled: true
-            custom: true
+            custom: trueF
             spec:
               httpGet:
                 path: /ping
