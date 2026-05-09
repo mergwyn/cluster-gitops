@@ -1,5 +1,6 @@
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+
 controllers:
   radarr:
     annotations:
@@ -34,7 +35,7 @@ controllers:
         probes:
           liveness: &probes
             enabled: true
-            custom: trueF
+            custom: true
             spec:
               httpGet:
                 path: /ping
