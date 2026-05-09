@@ -5,15 +5,6 @@ controllers:
   prowlarr:
     annotations:
       reloader.stakater.com/auto: "true"
-    initContainers:
-      create-kopiaignore:
-        image:
-          repository: busybox
-          tag: latest
-        command:
-          - sh
-          - -c
-          - mkdir -p /config/MediaCover && echo '*' > /config/MediaCover/.kopiaignore
     containers:
       app:
         image:
@@ -59,7 +50,7 @@ controllers:
         resources:
           requests:
             cpu: 100m
-            memory: 183Mi
+            memory: 225Mi
           limits:
             memory: 512Mi
 
