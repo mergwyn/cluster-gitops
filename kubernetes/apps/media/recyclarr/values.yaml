@@ -94,7 +94,7 @@ configMaps:
                   - a3e19f8f627608af0211acd02bf89735 # DV SDR
                 assign_scores_to:
                   - name: WEB-1080p
-                  score: -1000
+                    score: -1000
             media_naming:
               series: default
               season: default
