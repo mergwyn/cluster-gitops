@@ -65,7 +65,7 @@ releases:
   - name: traefik
     namespace: network
     chart: oci://ghcr.io/traefik/helm/traefik
-    version: 39.0.8
+    version: 39.0.9
     set:
       # Bootstrap-only: install CRDs so ArgoCD can manage IngressRoute resources.
       # Runtime is installed later by ArgoCD using the same chart.
