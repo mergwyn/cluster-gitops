@@ -52,7 +52,7 @@ alertmanager:
         email_configs:
           - to: gary@theclarkhome.com
             from: email-k8s-admin@theclarkhome.com
-            smarthost: mail.system:587
+            smarthost: mail.system.svc.cluster.local:587
   spec:
     resources:
       requests:
