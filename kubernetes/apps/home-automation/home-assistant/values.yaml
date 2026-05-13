@@ -204,6 +204,7 @@ serviceMonitor:
 
 persistence:
   config:
+    forceRename: "{{.Release.Name}}-config"
     type: persistentVolumeClaim
     storageClass: openebs-zfspv
     accessMode: ReadWriteOnce
