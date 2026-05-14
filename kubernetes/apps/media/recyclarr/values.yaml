@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 
 controllers:
   recyclarr:
@@ -29,7 +30,7 @@ controllers:
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
-          capabilities: {drop: ["ALL"]}
+          capabilities: { drop: ["ALL"] }
         resources:
           requests:
             cpu: 10m
@@ -59,7 +60,6 @@ persistence:
         subPath: recyclarr.yml
   tmp:
     type: emptyDir
-
 
 configMaps:
   config:
