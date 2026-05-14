@@ -54,7 +54,6 @@ This file should be treated as the **source of truth** for network layout decisi
 
 Notes:
 
-* kube-vip currently uses `10.58.0.32`
 * MetalLB IP pools must **exclude** kube-vip addresses
 * This range is reserved exclusively for production Kubernetes networking
 
@@ -145,4 +144,3 @@ Any modification to this document should:
 ---
 
 *Last updated: pre-Cilium / MetalLB migration*
-
