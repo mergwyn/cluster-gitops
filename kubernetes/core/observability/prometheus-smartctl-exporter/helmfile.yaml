@@ -5,7 +5,7 @@ bases:
 releases:
   - name: prometheus-smartctl-exporter
     chart: oci://ghcr.io/prometheus-community/charts/prometheus-smartctl-exporter
-    version: 0.16.0
+    version: 0.16.1
     values:
       - values.yaml
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
