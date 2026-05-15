@@ -72,7 +72,7 @@ service:
     externalTrafficPolicy: Local
     type: LoadBalancer
     annotations:
-      metallb.io/loadBalancerIPs: { { .Values.network.plex | quote } }
+      metallb.io/loadBalancerIPs: {{.Values.network.plex | quote}}
     loadBalancerClass: metallb.io/internal
     ports:
       http:
