@@ -1,48 +1,56 @@
-# Cilium Migration Playbook
-## k3s -- Flannel to Cilium (Dev Rehearsal)
 
-**Scope:** CNI replacement only. Egress Gateway, WireGuard integration, and
-bootstrap updates are out of scope.
+# Cilium Migration Playbook
+
+## k3s - Flannel to Cilium (Dev Rehearsal)
+
+**Scope:** CNI replacement only. Egress Gateway, WireGuard integration,
+kube-proxy replacement, and bootstrap updates are out of scope. kube-proxy
+will continue running alongside Cilium and can be addressed later once the
+dev cluster is stable.
 
 **Environment:**
-- 3-node control plane LXC cluster, no workloads
+
+- 3-node control plane k3s VMs on LXC, no workloads
 - Vanilla k3s flannel, k3s v1.34.6
 - Pod CIDR: 10.42.0.0/16 (k3s default)
 - Service CIDR: 10.43.0.0/16 (k3s default)
 - Dev cluster VIP: 10.58.0.60
+- Multus, MetalLB, and kube-vip installed
+- Cilium CLI v0.19.2, will install Cilium v1.19.1
 
 **Strategy:**
-- Phase A: Install Cilium alongside kube-proxy via Cilium CLI (fast iteration)
-- Phase B: Once stable, disable kube-proxy as a separate change
-- Phase C: Once values are proven, codify into helmfile for the prod path
 
----
+- Phase 1: Snapshot, prep config drop-ins
+- Phase 2: Rolling node restart with interleaved Cilium install (preserves DNS)
+- Phase 3: Validate
+- Phase 4: Codify into helmfile
+
+-----
 
 ## Prerequisites
 
 ```bash
-# Install cilium CLI on workstation
-brew install cilium-cli
+# Confirm Cilium CLI is installed and on the expected version
+cilium version
 
 # Confirm correct cluster context
 kubectl config current-context
 kubectl get nodes
 
-# Snapshot LXC VMs before starting -- easy rollback
-lxc snapshot create <each-dev-node> pre-cilium-migration
+# Snapshot the k3s VMs before starting - easy rollback
+for vm in k3s-1 k3s-2 k3s-3; do
+  lxc snapshot create $vm pre-cilium-migration
+done
 ```
 
-All nodes should be `Ready`, all kube-system pods `Running`. Don't start on a
-degraded cluster.
+All nodes should be `Ready`, all kube-system pods `Running`. Don't start
+on a degraded cluster.
 
----
+-----
 
-## Phase 1 -- Disable Flannel (All Nodes)
+## Phase 1 - Prepare k3s Config Drop-ins
 
-Add config drop-in on **every node** before restarting any of them. This
-ensures consistency when nodes come back up.
-
-Create `/etc/rancher/k3s/config.yaml.d/50-cilium.yaml` on each node:
+Create a local file `50-cilium.yaml`:
 
 ```yaml
 # Disable built-in flannel CNI
@@ -52,135 +60,201 @@ flannel-backend: none
 disable-network-policy: true
 ```
 
-Notice we are **not** touching kube-proxy yet -- that comes in Phase B.
-
----
-
-## Phase 2 -- Rolling Node Restart with Interleaved Cilium Install
-
-**DNS continuity matters.** Your CoreDNS deployment uses `topologySpreadConstraints`
-with `maxSkew: 1` on hostname -- one replica per node. If we restart all three
-nodes before installing Cilium, all three CoreDNS pods lose networking and DNS
-goes fully down. With this revised ordering, we install Cilium after two nodes
-are restarted, so CoreDNS on those two recovers before the third node is touched.
-
-Phase 2 flow:
-
-```
-Restart node 1  ->  restart node 2  ->  install Cilium  ->  restart node 3
-```
-
-### Step 1 -- Restart node 1
+Push to all nodes before restarting any of them, so the config is
+consistent when they come back up:
 
 ```bash
-kubectl cordon <node-1>
-ssh <node-1> 'systemctl restart k3s'
-# Wait for Ready (60-90s)
-kubectl get nodes -w
-kubectl uncordon <node-1>
-```
-
-CoreDNS on node 1 will be `CrashLoopBackOff` or `ContainerCreating` -- expected.
-Cluster DNS is degraded but functional via the 2 remaining replicas.
-
-### Step 2 -- Restart node 2
-
-```bash
-kubectl cordon <node-2>
-ssh <node-2> 'systemctl restart k3s'
-kubectl get nodes -w
-kubectl uncordon <node-2>
-```
-
-Now 2/3 CoreDNS pods are broken. The remaining replica on node 3 is still
-serving DNS -- quorum-style protection. Don't touch node 3 yet.
-
-### Step 3 -- Install Cilium (jump to Phase A below)
-
-Install Cilium **now**, with node 3 still on flannel. Cilium agents will
-deploy on nodes 1 and 2 (where flannel is disabled) and provide networking.
-CoreDNS pods on those nodes will recover within ~30s of cilium-agent landing.
-
-After Cilium agents are running on nodes 1 and 2 and their CoreDNS pods are
-back to `Running`, return here for step 4.
-
-Confirm before proceeding:
-
-```bash
-# CoreDNS should be 2/3 Ready (node 3 will still be Running on flannel)
-kubectl get pods -n kube-system -l k8s-app=kube-dns -o wide
-
-# Both restarted nodes should have cilium-agent Running
-kubectl get pods -n kube-system -l k8s-app=cilium -o wide
-```
-
-### Step 4 -- Restart node 3
-
-Only now, with DNS protected by 2 working CoreDNS replicas on Cilium:
-
-```bash
-kubectl cordon <node-3>
-ssh <node-3> 'systemctl restart k3s'
-kubectl get nodes -w
-kubectl uncordon <node-3>
-```
-
-Within ~30s, cilium-agent should also land on node 3 and CoreDNS there will
-recover. You should now have 3/3 CoreDNS replicas Running on Cilium.
-
-### Confirm flannel is gone from all nodes
-
-```bash
-for node in <node-1> <node-2> <node-3>; do
-  echo "=== $node ==="
-  ssh $node 'ls /run/flannel/ 2>&1 || echo "no flannel dir (good)"'
-  ssh $node 'ip link show cni0 2>&1 | head -1 || echo "no cni0 (good)"'
-  ssh $node 'ip link show flannel.1 2>&1 | head -1 || echo "no flannel.1 (good)"'
+for vm in k3s-1 k3s-2 k3s-3; do
+  lxc file push 50-cilium.yaml \
+    $vm/etc/rancher/k3s/config.yaml.d/50-cilium.yaml
 done
 ```
 
-If flannel interfaces persist on any node, reboot that node -- they don't
-always clean up on `systemctl restart`.
+Note: we are not touching kube-proxy. It will continue to run alongside
+Cilium until explicitly disabled in a future migration.
 
----
+-----
 
-## Phase A -- Install Cilium (called during Phase 2 Step 3)
+## Phase 2 - Rolling Node Restart with Interleaved Cilium Install
 
-This phase runs **between Step 2 and Step 4 of Phase 2** -- after 2 nodes are
-on no-CNI and before the third is restarted.
+DNS continuity matters. Your CoreDNS deployment uses
+`topologySpreadConstraints` with `maxSkew: 1` on hostname - one replica
+per node. If we restart all three nodes before installing Cilium, all
+three CoreDNS pods lose networking and DNS goes fully down. With this
+ordering, we install Cilium after two nodes are restarted, so CoreDNS on
+those two recovers before the third node is touched.
+
+Flow:
+
+```
+Restart k3s-1  ->  restart k3s-2  ->  install Cilium  ->  restart k3s-3
+```
+
+### Step 1 - Restart k3s-1
+
+```bash
+kubectl cordon k3s-1
+lxc exec k3s-1 -- systemctl restart k3s
+# Wait for Ready (60-90s)
+kubectl get nodes -w
+kubectl uncordon k3s-1
+```
+
+CoreDNS on k3s-1 will be `CrashLoopBackOff` or `ContainerCreating` -
+expected. Cluster DNS is degraded but functional via the 2 remaining
+replicas.
+
+### Step 2 - Restart k3s-2
+
+```bash
+kubectl cordon k3s-2
+lxc exec k3s-2 -- systemctl restart k3s
+kubectl get nodes -w
+kubectl uncordon k3s-2
+```
+
+Now 2/3 CoreDNS pods are broken. The remaining replica on k3s-3 is still
+serving DNS. Don't touch k3s-3 yet.
+
+### Step 3 - Install Cilium
+
+With k3s-1 and k3s-2 on no-CNI and k3s-3 still on flannel:
 
 ```bash
 cilium install \
-  --version 1.16.7 \
+  --version 1.19.1 \
   --set k8sServiceHost=10.58.0.60 \
   --set k8sServicePort=6443 \
   --set ipam.mode=cluster-pool \
   --set ipam.operator.clusterPoolIPv4PodCIDRList='{10.42.0.0/16}' \
+  --set cni.binPath=/var/lib/rancher/k3s/data/current/bin \
+  --set cni.confPath=/var/lib/rancher/k3s/agent/etc/cni/net.d \
   --set hubble.enabled=true \
   --set hubble.relay.enabled=true \
   --set hubble.ui.enabled=true \
   --set operator.replicas=1
 ```
 
-**Note: `kubeProxyReplacement` is NOT set.** This means Cilium installs in
-"probe" mode and lets kube-proxy continue handling services. Cilium owns the
-pod networking, kube-proxy owns service routing.
+Why those CNI path flags matter: k3s places CNI binaries and configs in
+non-standard locations under `/var/lib/rancher/k3s/`. Without these flags,
+Cilium installs but pods stay in `ContainerCreating` because the kubelet
+can't find the CNI plugin. This is a very common gotcha.
 
-### Validation
+`kubeProxyReplacement` is deliberately NOT set. Cilium installs without
+taking over service routing, and kube-proxy continues handling services.
+
+Wait for Cilium to be ready:
 
 ```bash
-# Wait for Cilium to be ready
 cilium status --wait
+```
 
-# All nodes should report Ready, all pods Running
+Cilium agents will deploy on k3s-1 and k3s-2 (where flannel is disabled)
+and provide networking. CoreDNS pods on those nodes should recover within
+~30s of cilium-agent landing.
+
+Confirm before proceeding:
+
+```bash
+# CoreDNS should be 2/3 Ready (k3s-3 will still be Running on flannel)
+kubectl get pods -n kube-system -l k8s-app=kube-dns -o wide
+
+# k3s-1 and k3s-2 should have cilium-agent Running
+kubectl get pods -n kube-system -l k8s-app=cilium -o wide
+```
+
+### Step 4 - Restart k3s-3
+
+Only now, with DNS protected by 2 working CoreDNS replicas on Cilium:
+
+```bash
+kubectl cordon k3s-3
+lxc exec k3s-3 -- systemctl restart k3s
+kubectl get nodes -w
+kubectl uncordon k3s-3
+```
+
+Within ~30s, cilium-agent should also land on k3s-3 and CoreDNS there
+will recover. You should now have 3/3 CoreDNS replicas Running on Cilium.
+
+### Step 5 - Confirm flannel is gone from all nodes
+
+```bash
+for vm in k3s-1 k3s-2 k3s-3; do
+  echo "=== $vm ==="
+  lxc exec $vm -- ls /run/flannel/ 2>&1 || echo "no flannel dir (good)"
+  lxc exec $vm -- ip link show cni0 2>&1 | head -1 || echo "no cni0 (good)"
+  lxc exec $vm -- ip link show flannel.1 2>&1 | head -1 || echo "no flannel.1 (good)"
+done
+```
+
+If flannel interfaces persist on any node, reboot that node - they don't
+always clean up on `systemctl restart`.
+
+-----
+
+## Phase 3 - Validate
+
+### Basic health
+
+```bash
+# All nodes Ready
 kubectl get nodes
+
+# All pods Running
 kubectl get pods -A
 
-# CoreDNS should recover within ~30s of cilium-agent starting on each node
-kubectl get pods -n kube-system -l k8s-app=kube-dns
+# Cilium specifically
+cilium status
+```
 
-# Verify Cilium-managed networking
+### DNS resolution from a pod
+
+```bash
 kubectl exec -n kube-system <coredns-pod> -- nslookup kubernetes.default
+```
+
+### Multus
+
+Multus runs as a meta-plugin on top of the primary CNI. When flannel was
+removed, Multus's default delegate config under
+`/var/lib/rancher/k3s/agent/etc/cni/net.d/` may still reference flannel.
+Confirm Multus is now delegating to Cilium:
+
+```bash
+# Check CNI conf files on a node - should see cilium, not flannel
+lxc exec k3s-1 -- ls /var/lib/rancher/k3s/agent/etc/cni/net.d/
+
+# Confirm NetworkAttachmentDefinitions still resolve
+kubectl get net-attach-def -A
+```
+
+If Multus is misbehaving, the fix is usually to delete the old flannel
+conf file under `net.d/` and let Multus re-read the current state. On
+restart, k3s and Cilium should manage this automatically, but worth
+checking.
+
+### MetalLB
+
+MetalLB operates at L2 and doesn't depend on the CNI - should be
+unaffected:
+
+```bash
+kubectl get pods -n metallb-system
+# All Running
+
+# Test a LoadBalancer service is still answering
+kubectl get svc -A | grep LoadBalancer
+# Curl one of the External-IPs from a workstation
+```
+
+### kube-vip
+
+The API VIP (10.58.0.60) is owned by kube-vip. Confirm it still binds:
+
+```bash
+ping 10.58.0.60
+kubectl get nodes  # this call uses the VIP
 ```
 
 ### Connectivity test
@@ -190,112 +264,35 @@ cilium connectivity test
 ```
 
 This deploys temporary test pods across nodes and runs ~40 checks. Allow
-10-15 minutes. All should pass before moving on.
+10-15 minutes. Some host-network checks may fail in restricted
+environments; if pod-to-pod and pod-to-service checks pass, you're in
+good shape.
 
-### Hubble check
+### Hubble
 
 ```bash
-# Port-forward Hubble UI
-cilium hubble ui
-
-# Or use the CLI
 cilium hubble port-forward &
 hubble observe --since 5m
 ```
 
-You should see flows being captured. This is the observability win -- when
-something breaks later, you can see exactly what's being dropped and why.
+You should see flows being captured. This is your new debugging tool -
+the main observability win from the migration.
 
-**Stop here and let it bake.** Run for at least a few hours, ideally a day,
-before moving to Phase B. Watch `cilium status` and `kubectl get pods -A`
-for any flapping.
+Stop here and let it bake. Run for at least a few hours, ideally a day,
+before declaring success. Watch `cilium status` for any flapping.
 
----
+-----
 
-## Phase B -- Remove kube-proxy
+## Phase 4 - Codify into Helmfile
 
-Only proceed after Phase A is stable.
-
-### Step 1 -- Update Cilium to take over kube-proxy duties
-
-```bash
-cilium upgrade \
-  --set kubeProxyReplacement=true \
-  --set k8sServiceHost=10.58.0.60 \
-  --set k8sServicePort=6443
-```
-
-This tells Cilium to start handling service routing in addition to pod
-networking. kube-proxy is still running but Cilium's BPF programs will
-intercept service traffic first.
-
-Wait for rollout:
-
-```bash
-cilium status --wait
-kubectl rollout status -n kube-system ds/cilium
-```
-
-### Step 2 -- Verify Cilium is handling services
-
-```bash
-# Should report "True" for kubeProxyReplacement
-kubectl -n kube-system exec ds/cilium -- cilium status | grep KubeProxyReplacement
-```
-
-### Step 3 -- Disable kube-proxy in k3s
-
-Update `/etc/rancher/k3s/config.yaml.d/50-cilium.yaml` on every node:
-
-```yaml
-flannel-backend: none
-disable-network-policy: true
-disable-kube-proxy: true
-```
-
-Then rolling restart again (same procedure as Phase 2):
-
-```bash
-# Per node
-kubectl cordon <node>
-ssh <node> 'systemctl restart k3s'
-# wait for Ready
-kubectl uncordon <node>
-```
-
-### Step 4 -- Confirm kube-proxy is gone
-
-```bash
-# No kube-proxy pods should exist
-kubectl get pods -A | grep kube-proxy
-# Expected: no resources
-
-# No kube-proxy iptables chains
-ssh <node> 'iptables -t nat -L | grep KUBE-SERVICES'
-# Expected: empty
-```
-
-### Step 5 -- Re-run connectivity test
-
-```bash
-cilium connectivity test
-```
-
-All checks should still pass with kube-proxy gone.
-
----
-
-## Phase C -- Codify into Helmfile
-
-Once Phase B is stable, capture the working configuration into your existing
-Cilium helmfile under `kubernetes/*platform/network/cilium/`.
+Once Phase 3 is stable, capture the working configuration into your
+existing Cilium helmfile under `kubernetes/*platform/network/cilium/`.
 
 Key values to encode (translating from the CLI flags):
 
 ```yaml
 # values.yaml.gotmpl or equivalent
-kubeProxyReplacement: true
-k8sServiceHost: 10.58.0.60      # dev VIP; parametrise per environment
+k8sServiceHost: 10.58.0.60       # dev VIP; parametrise per environment
 k8sServicePort: 6443
 
 ipam:
@@ -303,6 +300,10 @@ ipam:
   operator:
     clusterPoolIPv4PodCIDRList:
       - 10.42.0.0/16
+
+cni:
+  binPath: /var/lib/rancher/k3s/data/current/bin
+  confPath: /var/lib/rancher/k3s/agent/etc/cni/net.d
 
 hubble:
   enabled: true
@@ -323,87 +324,85 @@ Then remove the Cilium exclusion from your dev appset:
   exclude: true
 ```
 
-Commit and push. ArgoCD will pick up the Cilium app, but since Cilium is
-already installed with matching config, the reconciliation should be a
-no-op (or close to it). Confirm:
+Commit and push. ArgoCD will pick up the Cilium app. Since Cilium is
+already installed with matching config, reconciliation should be a no-op
+or close to it. Confirm:
 
 ```bash
 kubectl get application -n argocd cilium
 # Should show Synced / Healthy
 ```
 
-If ArgoCD wants to make destructive changes, **pause sync** and reconcile
+If ArgoCD wants to make destructive changes, pause sync and reconcile
 the values until it shows no diff before allowing it to sync.
 
----
+-----
 
 ## Rollback
 
-### Phase A rollback (Cilium installed, kube-proxy still up)
+### Easy path - LXC snapshots
+
+```bash
+for vm in k3s-1 k3s-2 k3s-3; do
+  lxc stop $vm
+  lxc snapshot restore $vm pre-cilium-migration
+  lxc start $vm
+done
+```
+
+### Manual rollback (after partial migration)
 
 ```bash
 # Uninstall Cilium
 cilium uninstall
 
-# Restore flannel on each node -- remove the drop-in
-ssh <node> 'rm /etc/rancher/k3s/config.yaml.d/50-cilium.yaml'
-ssh <node> 'systemctl restart k3s'
+# Remove the k3s config drop-in
+for vm in k3s-1 k3s-2 k3s-3; do
+  lxc exec $vm -- rm /etc/rancher/k3s/config.yaml.d/50-cilium.yaml
+  lxc exec $vm -- systemctl restart k3s
+done
 ```
 
-### Phase B rollback (kube-proxy already removed)
-
-This is harder -- getting kube-proxy back requires:
-
-1. Remove `disable-kube-proxy: true` from k3s config
-2. Restart k3s on each node
-3. Then proceed with Phase A rollback
-
-For the rehearsal, easier path: revert to the LXC snapshots you took at the
-start.
-
----
+-----
 
 ## What to Watch Out For
 
-**LXC kernel module visibility.** Cilium uses eBPF heavily. The host kernel
-needs `bpf` and `cgroup2` available, and LXC containers need permission to
-access them. If `cilium status` shows BPF mount errors, the LXC profile
-needs:
+**eBPF requirements.** Cilium uses eBPF heavily. Since you're running k3s
+in VMs (not containers) on LXC, the eBPF requirements are met by the
+guest kernel directly - no LXC capability juggling needed.
 
-```
-lxc.apparmor.profile = unconfined
-lxc.cap.drop =
-linux.kernel_modules = ip_tables,ip6_tables,netlink_diag,nf_nat,overlay
-security.privileged = true
-```
+**Connectivity test failures on host-network.** Some `cilium connectivity
+test` checks involve host-network pods and may fail in restricted
+environments. If pod-to-pod and pod-to-service checks pass, the failures
+are typically benign.
 
-These are the same kinds of caps your k3s LXC containers already need --
-worth verifying before starting.
+**Multus delegate.** Worth checking the CNI conf files under
+`/var/lib/rancher/k3s/agent/etc/cni/net.d/` if NetworkAttachmentDefinitions
+stop working - stale flannel conf can confuse Multus.
 
-**Cilium 1.16 vs 1.17.** As of Cilium 1.17 the install flags changed
-slightly for `kubeProxyReplacement` -- the values went from string
-("strict"/"partial"/"disabled") to boolean. The playbook uses 1.16 syntax.
-If you go newer, check the upgrade notes.
+**Cilium 1.19 vs older.** As of 1.17, `kubeProxyReplacement` is boolean
+not string. This playbook targets 1.19.1 (current default for cilium-cli
+0.19.x). Not relevant in this migration since we're not enabling kube-proxy
+replacement.
 
-**Connectivity test failures on LXC.** Some of the connectivity test checks
-involve host-network pods and may fail in LXC environments with restricted
-caps. If `cilium connectivity test` fails on host-network checks but
-in-cluster pod-to-pod traffic works fine, it's usually safe to proceed.
+-----
 
----
+## Future Work (Out of Scope)
 
-## Prod Migration Notes (Out of Scope but Worth Noting)
+After dev is stable, follow-up migrations to consider:
 
-When you eventually run this on prod:
+1. **kube-proxy replacement** - have Cilium take over service routing
+   then disable kube-proxy in k3s. Done as a separate change with its
+   own bake period.
 
-- **Snapshot every node first** -- you have charlie, delta, echo etc.
-- **MetalLB will be affected.** Cilium has its own LB IPAM (L2 announcements
-  via `CiliumL2AnnouncementPolicy`). Decide before prod migration whether
-  to keep MetalLB or move to Cilium's L2 -- the latter is cleaner but more
-  change at once.
-- **Pod restart impact.** Existing pods will lose networking briefly when
-  flannel goes away and Cilium takes over. With real workloads this means
-  service disruption -- plan a maintenance window.
-- **kube-vip / VIP handling.** Your prod VIP (10.58.0.30) is provided by
-  kube-vip and should be unaffected, but worth confirming kube-vip still
-  binds correctly after Cilium takes over.
+2. **Cilium Egress Gateway** - route selected pods through your yankee/zulu
+   WireGuard containers.
+
+3. **CiliumNetworkPolicy** - default-deny for VPN-routed pods as a
+   killswitch.
+
+4. **Cilium L2 announcements** - potentially replace MetalLB with
+   Cilium's built-in LB IPAM. More disruption, but consolidates tools.
+
+5. **Bootstrap update** - integrate Cilium into the cluster bootstrap so
+   future rebuilds install Cilium from the start.
