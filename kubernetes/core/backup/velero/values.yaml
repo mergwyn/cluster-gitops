@@ -15,7 +15,7 @@ snapshotsEnabled: false
 kubectl:
   image:
     repository: public.ecr.aws/bitnami/kubectl
-    tag: 1.36.1@sha256:2ca60869516c8cfb730c039a7ffa8ea9e1dcbbd92286a78132f92b74a3704790
+    tag: 1.36.1@sha256:39474e86a263bc8bc016bebe50c453fbba3c3bfdeda5419774fd270bdbec72bf
 
 configuration:
   uploaderType: kopia
