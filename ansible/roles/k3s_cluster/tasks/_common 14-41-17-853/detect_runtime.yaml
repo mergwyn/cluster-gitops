@@ -1,0 +1,34 @@
+---
+- name: Check if runtime is explicitly set in inventory
+  set_fact:
+    runtime_type: "{{ runtime_type | default('container') }}"
+  when: runtime_type is defined
+
+- name: Auto-detect runtime from first node (if not set)
+  when: runtime_type is not defined
+  block:
+    - name: Check if first node exists
+      shell: "lxc info {{ groups['k3s_cluster'][0] }} &>/dev/null && echo 'exists' || echo 'missing'"
+      register: node_exists
+      changed_when: false
+
+    - name: Detect runtime type from existing node
+      shell: |
+        lxc config show {{ groups['k3s_cluster'][0] }} 2>/dev/null | grep -q "type: vm" && echo "vm" || echo "container"
+      register: detected_runtime
+      changed_when: false
+      when: node_exists.stdout == 'exists'
+
+    - name: Set runtime_type from detection
+      set_fact:
+        runtime_type: "{{ detected_runtime.stdout }}"
+      when: node_exists.stdout == 'exists'
+
+    - name: Default to container if node doesn't exist
+      set_fact:
+        runtime_type: "container"
+      when: node_exists.stdout != 'exists'
+
+- name: Display runtime configuration
+  debug:
+    msg: "Using runtime: {{ runtime_type }}"

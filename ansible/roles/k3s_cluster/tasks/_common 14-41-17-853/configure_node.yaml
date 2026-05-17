@@ -1,0 +1,48 @@
+---
+- name: Ensure config directory exists on {{ node_name }}
+  delegate_to: localhost
+  command: "lxc exec {{ node_name }} -- mkdir -p /etc/rancher/k3s/config.yaml.d/"
+
+- name: Create temporary directory for {{ node_name }}
+  delegate_to: localhost
+  tempfile:
+    state: directory
+    suffix: "k3s-config-{{ node_name }}"
+  register: tempdir
+
+- name: Create list of node IPs (run once)
+  set_fact:
+    node_ip_list: "{{ node_ips.values() | list }}"
+  run_once: true
+
+- name: Copy config files to temp directory for {{ node_name }}
+  delegate_to: localhost
+  copy:
+    src: "{{ role_path }}/files/k3s-config/"
+    dest: "{{ tempdir.path }}/"
+    mode: preserve
+
+- name: Create 20-tls-san.yaml using template
+  delegate_to: localhost
+  template:
+    src: tls-san.yaml.j2
+    dest: "{{ tempdir.path }}/config.yaml.d/20-tls-san.yaml"
+
+
+- name: Push config.yaml to {{ node_name }}
+  delegate_to: localhost
+  command: "lxc file push {{ tempdir.path }}/config.yaml {{ node_name }}/etc/rancher/k3s/config.yaml"
+
+- name: Push config.yaml.d directory to {{ node_name }}
+  delegate_to: localhost.
+  command: "lxc file push -r {{ tempdir.path }}/config.yaml.d/. {{ node_name }}/etc/rancher/k3s/"
+
+- name: Fix ownership on {{ node_name }}
+  delegate_to: localhost
+  command: "lxc exec {{ node_name }} -- chown -R root:root /etc/rancher/k3s/"
+
+- name: Clean up temp directory for {{ node_name }}
+  delegate_to: localhost
+  file:
+    path: "{{ tempdir.path }}"
+    state: absent
