@@ -1,0 +1,21 @@
+---
+- name: Check if first node exists
+  shell: "lxc info {{ groups['k3s_cluster'][0] }} &>/dev/null && echo 'exists' || echo 'missing'"
+  register: node_exists
+  changed_when: false
+
+- name: Detect runtime from first node
+  shell: |
+    lxc config show {{ groups['k3s_cluster'][0] }} 2>/dev/null | grep -q "type: vm" && echo "vm" || echo "container"
+  register: runtime_check
+  changed_when: false
+  when: node_exists.stdout == 'exists'
+
+- name: Set runtime_type fact
+  set_fact:
+    runtime_type: "{{ runtime_check.stdout | default('container') }}"
+    net_iface: "{{ 'enp5s0' if runtime_check.stdout == 'vm' else 'eth0' }}"
+
+- name: Display detected runtime
+  debug:
+    msg: "Detected runtime: {{ runtime_type }} (using interface: {{ net_iface }})"

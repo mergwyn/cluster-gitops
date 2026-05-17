@@ -1,0 +1,23 @@
+---
+- name: Create ArgoCD namespace
+  kubernetes.core.k8s:
+    kubeconfig: "{{ kubeconfig }}"
+    api_version: v1
+    kind: Namespace
+    name: "{{ argocd_ns }}"
+    state: present
+
+
+- name: Create ArgoCD Age Secret
+  kubernetes.core.k8s:
+    kubeconfig: "{{ kubeconfig }}"
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: argocd-age-secret-keys
+        namespace: "{{ argocd_ns }}"
+      type: Opaque
+      stringData:
+        keys.txt: "{{ lookup('file', lookup('env', 'HOME') + '/.config/sops/age/keys.txt') }}"
