@@ -18,7 +18,7 @@ all:
         k3s-1:
           lxd_target: charlie
         k3s-2:
-          lxd_target: golf
+          lxd_target: delta
         k3s-3:
           lxd_target: hotel
 
