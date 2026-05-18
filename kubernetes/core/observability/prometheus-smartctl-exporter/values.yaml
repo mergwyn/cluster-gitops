@@ -1,7 +1,6 @@
 ---
-
 config:
-  device_include: '^/dev/sd|^/dev/nvme'
+  device_include: "(^/dev/|^)(sd|nvme)"
 
 prometheusRules:
   enabled: true
