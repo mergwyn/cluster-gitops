@@ -13,6 +13,7 @@ controllers:
       hostNetwork: true
       hostPID: true
       priorityClassName: system-node-critical
+      automountServiceAccountToken: true
       tolerations:
         - key: CriticalAddonsOnly
           operator: Exists
@@ -43,10 +44,17 @@ controllers:
           # -- multus installer pull policy
           pullPolicy: "{{ .Values.controllers.multus.containers.multus.image.pullPolicy }}"
         command:
-          - "cp"
-          - "-f"
-          - "/usr/src/multus-cni/bin/multus-shim"
-          - "/host/opt/cni/bin/multus-shim"
+          - /bin/sh
+          - -x
+          - -c
+          - |
+            cp -f /usr/src/multus-cni/bin/multus-shim /host/opt/cni/bin/multus-shim
+            if [ ! -L /host/etc/cni ] && [ ! -e /host/etc/cni ]; then
+              mkdir -p /host/etc
+              ln -s /var/lib/rancher/k3s/agent/etc/cni /host/etc/cni
+            fi
+            echo "--- /host/etc/cni/net.d/multus.d ---"
+            ls -la /host/etc/cni/net.d/multus.d/ || echo "DIRECTORY MISSING"
         securityContext:
           privileged: true
         resources:
@@ -149,6 +157,8 @@ persistence:
         multus:
           - path: /hostroot
             mountPropagation: HostToContainer
+        multus-installer:
+          - path: /host
   host-run:
     enabled: true
     type: hostPath

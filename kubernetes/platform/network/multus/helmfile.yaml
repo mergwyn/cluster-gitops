@@ -8,6 +8,8 @@ releases:
   - name: multus
     chart: ../../../charts/multus
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+    #dependencies:
+    #- chart: oci://ghcr.io/bjw-s-labs/helm/common
     values:
       - values.yaml
       - networks.yaml.gotmpl

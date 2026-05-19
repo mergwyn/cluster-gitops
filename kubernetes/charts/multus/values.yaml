@@ -13,7 +13,7 @@ controllers:
           # -- multus installer repostory
           repository: ghcr.io/k8snetworkplumbingwg/multus-cni
           # -- multus installer tag
-          tag: "{{ .Chart.AppVersion }}-thick"
+          tag: "v{{ .Chart.AppVersion }}-thick"
           # -- multus installer pull policy
           pullPolicy: IfNotPresent
     initContainers:
