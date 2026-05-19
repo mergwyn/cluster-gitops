@@ -1,7 +1,7 @@
 ---
 apiVersion: v2
 name: multus
-description: Multus CNI for K3s
+description: Multus CNI for K3s, copied from angelnu/multus
 type: application
 version: 1.0.0
 appVersion: 4.2.4
