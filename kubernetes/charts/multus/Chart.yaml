@@ -1,0 +1,11 @@
+---
+apiVersion: v2
+name: multus
+description: Multus CNI for K3s
+type: application
+version: 1.0.0
+appVersion: 4.2.4
+dependencies:
+  - name: common
+    repository: https://bjw-s-labs.github.io/helm-charts
+    version: 5.0.1
