@@ -45,7 +45,6 @@ controllers:
           pullPolicy: "{{ .Values.controllers.multus.containers.multus.image.pullPolicy }}"
         command:
           - /bin/sh
-          - -x
           - -c
           - |
             cp -f /usr/src/multus-cni/bin/multus-shim /host/opt/cni/bin/multus-shim
@@ -53,8 +52,6 @@ controllers:
               mkdir -p /host/etc
               ln -s /var/lib/rancher/k3s/agent/etc/cni /host/etc/cni
             fi
-            echo "--- /host/etc/cni/net.d/multus.d ---"
-            ls -la /host/etc/cni/net.d/multus.d/ || echo "DIRECTORY MISSING"
         securityContext:
           privileged: true
         resources:
