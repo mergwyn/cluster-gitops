@@ -2,7 +2,8 @@
 argocd-apps-backup.yaml
 **/*bootstrap/.cluster-token
 **/Chart.lock
-**/charts/
+kubernetes/charts/*/charts/
+kubernetes/charts/*/Chart.lock
 **/default-values.yaml
 ops/cilium
 ansible/ansible-structure-report.txt
