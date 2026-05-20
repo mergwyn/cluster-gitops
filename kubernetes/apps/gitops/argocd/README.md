@@ -1,11 +1,11 @@
 # ArgoCD
 
-ArgoCD is deployed via helmfile as part of the `platform/gitops` wave (wave 1).
+ArgoCD is deployed via helmfile as part of the wave 1.
 
 ## Directory Structure
 
 ```
-platform/gitops/argocd/
+apps/gitops/argocd/
 ├── app.yaml                  # ApplicationSet discovery file (wave: 1, namespace: argocd)
 ├── helmfile.yaml             # Helmfile deploying argocd-secret, argocd, and argocd-externalsecret
 ├── values.yaml               # ArgoCD Helm values (repoServer, configs, ingress, resources)
