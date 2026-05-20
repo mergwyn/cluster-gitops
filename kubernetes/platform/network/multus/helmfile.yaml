@@ -1,15 +1,15 @@
 ---
+# yaml-language-server: $schema=https://json.schemastore.org/helmfile
+
 bases:
   - ../../../clusters/environments.yaml
-repositories:
-  - name: angelnu
-    url: https://angelnu.github.io/helm-charts
 
 releases:
   - name: multus
-    chart: angelnu/multus
-    version: 7.0.0
+    chart: ../../../charts/multus
+    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+    #dependencies:
+    #- chart: oci://ghcr.io/bjw-s-labs/helm/common
     values:
       - values.yaml
       - networks.yaml.gotmpl
-    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
