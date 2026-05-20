@@ -14,13 +14,13 @@ releases:
     chart: bedag/raw
     version: 2.0.2
     secrets:
-      - ../../platform/gitops/argocd/argocd-secret-sops.yaml
+      - ../../apps/gitops/argocd/argocd-secret-sops.yaml
 
   - name: argocd
     namespace: argocd
     chart: oci://ghcr.io/argoproj/argo-helm/argo-cd
     version: 9.5.14
     values:
-      - ../../platform/gitops/argocd/values.yaml
+      - ../../apps/gitops/argocd/values.yaml
     needs:
       - argocd-secret

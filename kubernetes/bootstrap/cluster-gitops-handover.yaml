@@ -16,39 +16,35 @@ spec:
         repoURL: https://github.com/mergwyn/cluster-gitops.git
         revision: &revision main
         files:
-          - path: kubernetes/*platform/gitops/*/app.yaml
-          - path: kubernetes/*platform/security/*/app.yaml
-          - path: kubernetes/*platform/network/*/app.yaml
-          - path: kubernetes/*platform/network/cilium/app.yaml
+          - path: kubernetes/apps/gitops/*/app.yaml
+          - path: kubernetes/apps/security/*/app.yaml
+          - path: kubernetes/apps/network/*/app.yaml
+          - path: kubernetes/apps/network/cilium/app.yaml
             exclude: true
-          - path: kubernetes/*platform/storage/*/app.yaml
-            exclude: true
-          - path: kubernetes/*platform/vpn/*/app.yaml
-            exclude: true
-          - path: kubernetes/*core/ingress/traefik/app.yaml
+          - path: kubernetes/apps/ingress/traefik/app.yaml
 
   template:
     metadata:
-      name: '{{.path.basename}}'
+      name: "{{.path.basename}}"
 
     spec:
       project: default
       source:
         repoURL: https://github.com/mergwyn/cluster-gitops.git
         targetRevision: *revision
-        path: '{{.path.path}}'
+        path: "{{.path.path}}"
         plugin:
           name: helmfile
           env:
             - name: HELMFILE_ENVIRONMENT
               value: dev
             - name: HELMFILE_NAMESPACE
-              value: '{{.appNamespace}}'
+              value: "{{.appNamespace}}"
             - name: HELMFILE_TEMPLATE_OPTIONS
               value: "--include-crds"
       destination:
         server: https://kubernetes.default.svc
-        namespace: '{{.appNamespace}}'
+        namespace: "{{.appNamespace}}"
 
       syncPolicy:
         automated:
@@ -61,9 +57,9 @@ spec:
           - RespectIgnoreDifferences=true
           - SkipDryRunOnMissingResource=true
           - ApplyOutOfSyncOnly=true
-      
+
       ignoreDifferences:
-        - group: '*'
+        - group: "*"
           kind: ExternalSecret
           jqPathExpressions:
             - .spec.dataFrom[].extract.conversionStrategy

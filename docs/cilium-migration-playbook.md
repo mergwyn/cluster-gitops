@@ -286,7 +286,7 @@ before declaring success. Watch `cilium status` for any flapping.
 ## Phase 4 - Codify into Helmfile
 
 Once Phase 3 is stable, capture the working configuration into your
-existing Cilium helmfile under `kubernetes/*platform/network/cilium/`.
+existing Cilium helmfile under `kubernetes/apps/network/cilium/`.
 
 Key values to encode (translating from the CLI flags):
 
@@ -320,7 +320,7 @@ Then remove the Cilium exclusion from your dev appset:
 
 ```yaml
 # In cluster-gitops-handover.yaml, REMOVE this exclusion:
-- path: kubernetes/*platform/network/cilium/app.yaml
+- path: kubernetes/apps/network/cilium/app.yaml
   exclude: true
 ```
 
