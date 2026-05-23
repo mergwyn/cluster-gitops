@@ -25,3 +25,7 @@ environments:
       - ../../../clusters/_common.yaml
       - ../../../clusters/dev.yaml
   default: *prod
+
+helmDefaults:
+  syncArgs:
+    - "--server-side=false"
