@@ -7,6 +7,6 @@
   "internalChecksAsSuccess": true,
   "ignorePaths": [
     "disabled/**",
-    "archive/**"
+    ".archive/**"
   ]
 }
