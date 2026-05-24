@@ -5,6 +5,11 @@ controllers:
   plex:
     annotations:
       reloader.stakater.com/auto: "true"
+    pod:
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
 
     initContainers:
       kopiaignore:
