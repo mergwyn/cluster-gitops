@@ -31,21 +31,21 @@ alertmanager:
     global:
       smtp_require_tls: false
 
-      inhibit_rules:
-        - source_matchers:
-            - alertname = "NodeDown"
-          target_matchers:
-            - alertname != "NodeDown"  # Mute everything EXCEPT the Down alert
-          # This is the "glue" that links them to the same machine:
-          equal: ['instance', 'node', 'kubernetes_node', 'host']
+    inhibit_rules:
+      - source_matchers:
+          - alertname = "NodeDown"
+        target_matchers:
+          - alertname != "NodeDown"
+        equal: ['instance', 'node', 'kubernetes_node', 'host']
 
-      route:
-        receiver: 'email-k8s-admin'
-        routes:
-          - receiver: 'null'
-            matchers:
-              - alertname =~ "InfoInhibitor|Watchdog"
-          - receiver: 'email-k8s-admin'
+    route:
+      receiver: 'email-k8s-admin'
+      routes:
+        - receiver: 'null'
+          matchers:
+            - alertname =~ "InfoInhibitor|Watchdog"
+        - receiver: 'email-k8s-admin'
+
     receivers:
       - name: 'null'
       - name: 'email-k8s-admin'
@@ -53,6 +53,7 @@ alertmanager:
           - to: gary@theclarkhome.com
             from: email-k8s-admin@theclarkhome.com
             smarthost: mail.system.svc.cluster.local:587
+
   spec:
     resources:
       requests:
