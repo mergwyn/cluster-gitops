@@ -104,7 +104,7 @@ prometheus:
               job: node-exporter
         relabel_configs:
           - source_labels: [__address__]
-            regex: '([^:]+):.+'
+            regex: '([^.]+)\..*:.*'
             target_label: instance
             replacement: '$1'
 
