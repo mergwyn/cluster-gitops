@@ -1,0 +1,12 @@
+---
+
+service:
+  annotations:
+    metallb.io/loadBalancerIPs: {{.Values.network.traefik_internal | quote}}
+  spec:
+    enabled: true
+    type: LoadBalancer
+    loadBalancerClass: metallb.io/internal
+    labels: {}
+    loadBalancerSourceRanges: []
+    externalIPs: []
