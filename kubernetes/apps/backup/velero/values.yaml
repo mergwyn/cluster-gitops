@@ -102,6 +102,8 @@ schedules:
     template:
       ttl: "168h"
       storageLocation: idrive
+      excludedNamespaces:
+        - velero
       # volumeSnapshotLocations: &idrivesnap []  # [idrive]
   weekly-idrive:
     disabled: false
@@ -109,6 +111,8 @@ schedules:
     template:
       ttl: "672h"
       storageLocation: idrive
+      excludedNamespaces:
+        - velero
       # volumeSnapshotLocations: *idrivesnap
   monthly-idrive:
     disabled: false
@@ -116,6 +120,8 @@ schedules:
     template:
       ttl: "2190h"
       storageLocation: idrive
+      excludedNamespaces:
+        - velero
       # volumeSnapshotLocations: *idrivesnap
   # default storage
   hourly-default:
