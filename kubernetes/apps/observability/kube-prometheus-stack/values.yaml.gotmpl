@@ -53,14 +53,6 @@ alertmanager:
             from: email-k8s-admin@theclarkhome.com
             smarthost: mail.system.svc.cluster.local:587
 
-  spec:
-    resources:
-      requests:
-        cpu: 15m
-        memory: 105Mi
-      limits:
-        # cpu: 15m
-        memory: 105Mi
 
 
   route:
@@ -71,6 +63,14 @@ alertmanager:
       parentRefs:
         - name: traefik-internal
           namespace: network
+
+  alertmanagerSpec:
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          memory: 512Mi
 
 #  storage:
 #    volumeClaimTemplate:
