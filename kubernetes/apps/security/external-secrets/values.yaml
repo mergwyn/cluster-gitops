@@ -10,10 +10,10 @@ serviceMonitor:
   interval: 1m
 
 resources:
-  limits:
+  requests:
     cpu: 10m
     memory: 150Mi
-  requests:
+  limits:
     memory: 250Mi
 
 certController:
