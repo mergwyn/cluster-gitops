@@ -12,9 +12,9 @@ serviceMonitor:
 resources:
   limits:
     cpu: 10m
-    memory: 100Mi
+    memory: 150Mi
   requests:
-    memory: 100Mi
+    memory: 250Mi
 
 certController:
   image:
