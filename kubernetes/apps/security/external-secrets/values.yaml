@@ -14,7 +14,7 @@ resources:
     cpu: 10m
     memory: 150Mi
   limits:
-    memory: 250Mi
+    memory: 200Mi
 
 certController:
   image:
@@ -22,12 +22,25 @@ certController:
   serviceMonitor:
     enabled: true
     interval: 1m
+  resources:
+    requests:
+      cpu: 10m
+      memory: 150Mi
+    limits:
+      memory: 150Mi
+
 webhook:
   image:
     repository: ghcr.io/external-secrets/external-secrets
   serviceMonitor:
     enabled: true
     interval: 1m
+  resources:
+    requests:
+      cpu: 10m
+      memory: 100Mi
+    limits:
+      memory: 100Mi
 
 grafanaDashboard:
   enabled: true
