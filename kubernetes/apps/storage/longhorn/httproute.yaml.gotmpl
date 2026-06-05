@@ -1,0 +1,11 @@
+
+httproute:
+  enabled: true
+  parentRefs:
+    - name: traefik-internal
+      namespace: network
+      sectionName: websecure
+  hostnames:
+    - "{{.Release.Name}}.{{.Values.cluster.domain}}"
+  rules:
+  pathType: PathPrefix

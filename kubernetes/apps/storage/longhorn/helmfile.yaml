@@ -1,0 +1,16 @@
+bases:
+  - ../../../clusters/environments.yaml
+
+---
+repositories:
+  - name: longhorn
+    url: https://charts.longhorn.io
+
+releases:
+  - name: longhorn
+    chart: longhorn/longhorn
+    version: 1.12.0
+    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+    values:
+      - values.yaml
+      - httproute.yaml.gotmpl

@@ -1,0 +1,43 @@
+defaultSettings:
+  defaultReplicaCount: 3
+  replicaSoftAntiAffinity: true
+  createDefaultDiskLabeledNodes: true
+  storageOverProvisioningPercentage: 150
+  storageMinimalAvailablePercentage: 10
+  backupTarget: ""
+  # Prevent Longhorn becoming default SC until migration complete
+  defaultDataLocality: disabled
+  v2DataEngine: false
+
+persistence:
+  defaultClassReplicaCount: 3
+  # Not default until migration complete
+  defaultClass: false
+
+ingress:
+  enabled: false
+
+longhornUI:
+  replicas: 1
+
+longhornManager:
+  resources: {}
+#    requests:
+#      cpu: 25m
+#      memory: 128Mi
+#    limits:
+#      memory: 256Mi
+
+extraObjects:
+  - apiVersion: snapshot.storage.k8s.io/v1
+    kind: VolumeSnapshotClass
+    metadata:
+      name: longhorn-snapshot
+      annotations:
+        snapshot.storage.kubernetes.io/is-default-class: "false"
+      labels:
+        velero.io/csi-volumesnapshot-class: "true"
+    driver: driver.longhorn.io
+    deletionPolicy: Delete
+    parameters:
+      type: snap
