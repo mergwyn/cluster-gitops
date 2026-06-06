@@ -1,4 +1,6 @@
 ---
+
+---
 apiVersionOverride:
   podDisruptionBudget: policy/v1
 
@@ -18,6 +20,20 @@ admissionController:
     resources:
       limits:
         cpu: null
+  rbac:
+    clusterRole:
+      extraResources:
+        - apiGroups:
+            - velero.io
+          resources:
+            - backups
+            - schedules
+          verbs:
+            - get
+            - list
+            - watch
+            - update
+            - patch
 
 backgroundController:
   serviceMonitor:
@@ -45,13 +61,23 @@ backgroundController:
             - update
             - get
             - list
+        - apiGroups:
+            - velero.io
+          resources:
+            - backups
+            - schedules
+          verbs:
+            - get
+            - list
+            - watch
+            - update
+            - patch
 
 features:
   generateValidatingAdmissionPolicy:
     enabled: true
   PolicyExceptions:
     enabled: true
-
 
 cleanupController:
   serviceMonitor:
@@ -65,3 +91,4 @@ reportsController:
 
 grafana:
   enabled: true
+
