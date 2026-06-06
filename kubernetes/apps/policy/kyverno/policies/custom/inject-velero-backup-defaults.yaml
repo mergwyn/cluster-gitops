@@ -1,0 +1,32 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/kyverno.io/clusterpolicy_v1.jsonapiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: inject-velero-backup-defaults
+  annotations:
+    policies.kyverno.io/title: Inject Velero Backup Exclusions
+    policies.kyverno.io/category: Velero Automation
+    policies.kyverno.io/subject: Backup, Schedule
+    description: >-
+      Automatically injects the 'velero' namespace and 'datauploads' resource
+      into the exclusion lists of all Velero Backups and Schedules to prevent
+      CSI Data Mover restore conflicts.
+spec:
+  background: false
+  rules:
+    - name: mutate-velero-exclusions
+      match:
+        any:
+          - resources:
+              kinds:
+                - velero.io/v1/Backup
+                - velero.io/v1/Schedule
+      mutate:
+        foreach:
+          - list: request.object.spec
+            patchStrategicMerge:
+              spec:
+                excludedNamespaces:
+                  - velero
+                excludedResources:
+                  - datauploads.velero.io
