@@ -1,32 +1,322 @@
 #!/usr/bin/env bash
 # migrate-workload.sh
 
-# Usage: ./migrate-workload.sh <target-node> <namespace> <app-name> [-d]
-TARGET_NODE=$1
-TARGET_NS=$2
-APP_NAME=$3
+# Usage examples:
+#  Node migration (existing behaviour):
+#    ./migrate-workload --to-node charlie --namespace media --app tautulli
+#  StorageClass migration (OpenEBS -> Longhorn):
+#    ./migrate-workload --to-storage-class longhorn --namespace media --app tautulli [--from-storage-class openebs-zfspv]
+#  Common flags:
+#    --dry-run
+#    --argocd-app <name> (defaults to app name)
+#    --argocd-namespace <ns> (defaults to argocd)
+#    --argocd-project <project> (optional, auto-detected from Application if omitted)
+#    --window-schedule <cron> (defaults to "* * * * *")
+#    --window-duration <duration> (defaults to "1h")
+#    --argocd-core (add --core to argocd CLI calls)
+
+set -o errexit
+set -o pipefail
+set -o nounset
+
 DRY_RUN=false
+MODE=""
+TARGET_NODE=""
+TARGET_SC=""
+FROM_SC=""
+TARGET_NS=""
+APP_NAME=""
+ARGOCD_APP=""
+ARGOCD_NS="argocd"
+ARGOCD_PROJECT="default"
+WINDOW_SCHEDULE='* * * * *'
+WINDOW_DURATION='1h'
+ARGOCD_CORE=false
+TIMEOUT_SECONDS=300
+
+usage() {
+  cat <<EOF
+Usage: $0 [--to-node <node> | --to-storage-class <storageclass>] --namespace <ns> --app <name> [options]
+
+Options:
+  --from-storage-class <old-sc>    Explicitly set the source storage class (overrides auto-detection)
+  --argocd-app <name>             ArgoCD Application name (defaults to --app)
+  --argocd-namespace <ns>         ArgoCD namespace (default: argocd)
+  --argocd-project <proj>         ArgoCD Project (auto-detected if omitted)
+  --window-schedule <cron>        Cron schedule for deny window (default: '* * * * *')
+  --window-duration <duration>    Duration for deny window, e.g. '1h' (default: '1h')
+  --argocd-core                   Pass --core to argocd cli when adding/removing window
+  --dry-run
+  -h|--help
+
+Examples:
+  $0 --to-storage-class longhorn --from-storage-class openebs-zfspv --namespace media --app tautulli
+EOF
+}
+
+# Simple arg parsing
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --to-node)
+      MODE="node"
+      TARGET_NODE="$2"
+      shift 2
+      ;;
+    --to-storage-class)
+      MODE="storage"
+      TARGET_SC="$2"
+      shift 2
+      ;;
+    --from-storage-class)
+      FROM_SC="$2"
+      shift 2
+      ;;
+    --namespace)
+      TARGET_NS="$2"
+      shift 2
+      ;;
+    --app)
+      APP_NAME="$2"
+      shift 2
+      ;;
+    --argocd-app)
+      ARGOCD_APP="$2"
+      shift 2
+      ;;
+    --argocd-namespace)
+      ARGOCD_NS="$2"
+      shift 2
+      ;;
+    --argocd-project)
+      ARGOCD_PROJECT="$2"
+      shift 2
+      ;;
+    --window-schedule)
+      WINDOW_SCHEDULE="$2"
+      shift 2
+      ;;
+    --window-duration)
+      WINDOW_DURATION="$2"
+      shift 2
+      ;;
+    --argocd-core)
+      ARGOCD_CORE=true
+      shift
+      ;;
+    -d|--dry-run)
+      DRY_RUN=true
+      shift
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "Unknown arg: $1"
+      usage
+      exit 1
+      ;;
+  esac
+done
+
+# Prompt for missing values where reasonable
+if [[ -z "$MODE" ]]; then
+  echo "Choose mode: (1) node migration, (2) storage-class migration"
+  select opt in "node" "storage"; do
+    case $opt in
+      node) MODE="node"; break;;
+      storage) MODE="storage"; break;;
+    esac
+  done
+fi
+
+if [[ -z "$TARGET_NS" ]]; then
+  read -rp "Enter Namespace (e.g., media): " TARGET_NS
+fi
+
+if [[ -z "$APP_NAME" ]]; then
+  read -rp "Enter App Name (e.g., tautulli): " APP_NAME
+fi
+
+if [[ -z "$ARGOCD_APP" ]]; then
+  ARGOCD_APP="$APP_NAME"
+fi
+
+if [ "$DRY_RUN" = true ]; then
+  echo "!!! DRY RUN MODE ENABLED - No changes will be made !!!"
+fi
+
+SELECTOR="app.kubernetes.io/instance=$APP_NAME"
+
+# Ensure argocd CLI is present and authenticated (fail fast)
+ensure_argocd_cli() {
+  if ! command -v argocd >/dev/null 2>&1; then
+    echo "Error: 'argocd' CLI not found in PATH. Install and login (e.g. 'argocd login <server>') and retry."
+    exit 1
+  fi
+  if ! argocd account get-user-info >/dev/null 2>&1; then
+    echo "Error: 'argocd' CLI not authenticated. Run 'argocd login <server>' and retry."
+    exit 1
+  fi
+}
+
+# Helpers for ArgoCD project sync-window (uses argocd CLI only)
+add_argocd_window() {
+  echo "--- Adding deny sync window for Application $ARGOCD_APP in project $ARGOCD_PROJECT ---"
+  if [ "$DRY_RUN" = true ]; then
+    echo "DRY: argocd proj windows add $ARGOCD_PROJECT --kind deny --schedule '$WINDOW_SCHEDULE' --duration '$WINDOW_DURATION' --applications $ARGOCD_APP $([ "$ARGOCD_CORE" = true ] && echo "--core")"
+    return 0
+  fi
+  ARGOCD_CORE_ARG=( )
+  if [ "$ARGOCD_CORE" = true ]; then
+    ARGOCD_CORE_ARG+=("--core")
+  fi
+  argocd proj windows add "$ARGOCD_PROJECT" --kind deny --schedule "$WINDOW_SCHEDULE" --duration "$WINDOW_DURATION" --applications "$ARGOCD_APP" "${ARGOCD_CORE_ARG[@]}"
+}
+
+remove_argocd_window() {
+  echo "--- Removing deny sync window for Application $ARGOCD_APP in project $ARGOCD_PROJECT ---"
+  if [ "$DRY_RUN" = true ]; then
+    echo "DRY: argocd proj windows remove $ARGOCD_PROJECT --kind deny --schedule '$WINDOW_SCHEDULE' --duration '$WINDOW_DURATION' --applications $ARGOCD_APP $([ "$ARGOCD_CORE" = true ] && echo "--core")"
+    return 0
+  fi
+  ARGOCD_CORE_ARG=( )
+  if [ "$ARGOCD_CORE" = true ]; then
+    ARGOCD_CORE_ARG+=("--core")
+  fi
+  argocd proj windows remove "$ARGOCD_PROJECT" --kind deny --schedule "$WINDOW_SCHEDULE" --duration "$WINDOW_DURATION" --applications "$ARGOCD_APP" "${ARGOCD_CORE_ARG[@]}"
+}
+
+# Function to wait for a velero restore to reach Completed (prefer velero CLI, fallback to resource checks)
+wait_for_velero_restore() {
+  local restore_name="$1"
+  local timeout="$2"
+  local elapsed=0
+  local interval=5
+
+  echo "Polling velero restore CR status for $restore_name (kubectl preferred)"
+  if command -v velero >/dev/null 2>&1; then
+    while [ $elapsed -lt $timeout ]; do
+        # Prefer the Velero restore CR via kubectl first
+        phase=$(kubectl get restore -n velero "$restore_name" -o jsonpath='{.status.phase}' 2>/dev/null || true)
+
+        # If that didn't return anything, try velero CLI 'get'
+        if [[ -z "$phase" ]]; then
+        if command -v velero >/dev/null 2>&1; then
+            phase=$(velero restore get "$restore_name" -o jsonpath='{.status.phase}' 2>/dev/null || true)
+        fi
+        fi
+
+        # If still empty, try parsing 'velero restore describe' output for a 'Phase:' line
+        if [[ -z "$phase" && $(command -v velero >/dev/null 2>&1) ]]; then
+        desc=$(velero restore describe "$restore_name" 2>/dev/null || true)
+        if [[ -n "$desc" ]]; then
+            # look for a line like 'Phase:                       Completed'
+            phase=$(printf "%s" "$desc" | awk -F":" '/^Phase:/ { gsub(/^[ \t]+|[ \t]+$/, "", $2); print $2; exit }' || true)
+        fi
+        fi
+
+        phase=${phase:-Unknown}
+        echo "Velero restore phase: $phase (elapsed ${elapsed}s)"
+
+        if [[ "$phase" == "Completed" ]]; then
+        echo "Velero restore completed"
+        return 0
+        fi
+
+        if [[ "$phase" == "Failed" || "$phase" == "PartiallyFailed" ]]; then
+            echo "Velero restore failed or partially failed. Showing details:"
+            if command -v velero >/dev/null 2>&1; then
+            velero restore describe "$restore_name" || true
+            fi
+            kubectl -n velero get restore "$restore_name" -o yaml || true
+            return 2
+        fi
+
+        # If phase is Unknown for a while, print debug info once
+        if [[ "$phase" == "Unknown" && $elapsed -ge 30 ]]; then
+        echo "Debug: velero restore CR:"
+        kubectl -n velero get restore "$restore_name" -o yaml || true
+        fi
+
+        sleep $interval
+        elapsed=$((elapsed+interval))
+    done
+
+    echo "Timed out waiting for velero restore to complete after ${timeout}s"
+    return 124
+  else
+    echo "velero CLI not found; falling back to checking PVC existence and binding status"
+    # Wait for PVCs to appear
+    local pvc_timeout=60
+    local pvc_elapsed=0
+    until kubectl get pvc -n "$TARGET_NS" -l "$SELECTOR" | grep -q "$APP_NAME" || [ $pvc_elapsed -ge $pvc_timeout ]; do
+      sleep 2
+      pvc_elapsed=$((pvc_elapsed+2))
+    done
+    if [ $pvc_elapsed -ge $pvc_timeout ]; then
+      echo "Error: PVCs did not appear within ${pvc_timeout}s"
+      return 1
+    fi
+    # Wait for PVCs to become Bound
+    local bound_timeout=$timeout
+    local bound_elapsed=0
+    while [ $bound_elapsed -lt $bound_timeout ]; do
+      not_bound_count=0
+      for pvc in $(kubectl get pvc -n "$TARGET_NS" -l "$SELECTOR" -o name); do
+        phase=$(kubectl get "$pvc" -n "$TARGET_NS" -o jsonpath='{.status.phase}' || true)
+        if [[ "$phase" != "Bound" ]]; then
+          not_bound_count=$((not_bound_count+1))
+        fi
+      done
+      if [ $not_bound_count -eq 0 ]; then
+        echo "All PVCs are Bound"
+        return 0
+      fi
+      echo "Waiting for PVCs to become Bound... ($bound_elapsed / $bound_timeout)"
+      sleep $interval
+      bound_elapsed=$((bound_elapsed+interval))
+    done
+    echo "Timed out waiting for PVCs to bind"
+    return 124
+  fi
+}
+
+# Make sure we always try to remove the sync window and cleanup Velero configmaps on exit
+cleanup_actions=()
+on_exit() {
+  for action in "${cleanup_actions[@]}"; do
+    case "$action" in
+      remove_window) remove_argocd_window || true ;;
+      delete_velero_cm_node) kubectl delete configmap change-pvc-node-selector-config -n velero 2>/dev/null || true ;;
+      delete_velero_cm_sc) kubectl delete configmap change-storage-class-config -n velero 2>/dev/null || true ;;
+      scale_operator_up) scale_operator 1 || true ;;
+    esac
+  done
+}
+trap on_exit EXIT
 
 scale_operator() {
     local replicas=$1
     local action=$([ "$replicas" -eq 0 ] && echo "down" || echo "up")
 
-    # Find any prometheus-operator deployment in the namespace
-    # Uses the stable component label rather than instance, which varies
     OPERATOR_DEPLOYMENT=$(kubectl get deployment -n "$TARGET_NS" \
         -l "app.kubernetes.io/component=prometheus-operator" \
-        -o name 2>/dev/null | head -1)
+        -o name 2>/dev/null | head -1 || true)
 
     if [[ -z "$OPERATOR_DEPLOYMENT" ]]; then
-        return 0  # No operator in this namespace, nothing to do
+        return 0
     fi
 
-    # Only act if our target is a StatefulSet managed by the operator
-    # i.e. it's a Prometheus or Alertmanager CR
     if kubectl get prometheus,alertmanager -n "$TARGET_NS" 2>/dev/null | \
         grep -qE "(prometheus|alertmanager)-${APP_NAME}|${APP_NAME}"; then
 
         echo "--- Scaling $action Prometheus Operator ($OPERATOR_DEPLOYMENT) ---"
+        if [ "$DRY_RUN" = true ]; then
+          echo "DRY: kubectl scale $OPERATOR_DEPLOYMENT -n $TARGET_NS --replicas=$replicas"
+          return 0
+        fi
+
         kubectl scale "$OPERATOR_DEPLOYMENT" -n "$TARGET_NS" --replicas="$replicas"
 
         if [ "$replicas" -eq 0 ]; then
@@ -40,60 +330,61 @@ scale_operator() {
     fi
 }
 
-# Check for dry-run flag anywhere in args
-for arg in "$@"; do
-    if [[ "$arg" == "-d" || "$arg" == "--dry-run" ]]; then
-        DRY_RUN=true
-    fi
-done
+# --- 1. Verification: Identifying Resources & (optional) Source Node ---
 
-# Prompt if arguments are missing
-if [[ -z "$TARGET_NODE" ]]; then echo "Enter Target Node (e.g., 'charlie'):"; read -r TARGET_NODE; fi
-if [[ -z "$TARGET_NS" ]]; then echo "Enter Namespace (e.g., 'media'):"; read -r TARGET_NS; fi
-if [[ -z "$APP_NAME" ]]; then echo "Enter App Name (e.g., 'tautulli'):"; read -r APP_NAME; fi
+echo "--- 1. Verification: Identifying Resources & (optional) Source Node ---"
 
-if [ "$DRY_RUN" = true ]; then
-    echo "!!! DRY RUN MODE ENABLED - No changes will be made !!!"
-fi
-
-# The selector used by most Helm/Argo apps
-SELECTOR="app.kubernetes.io/instance=$APP_NAME"
-
-echo "--- 1. Verification: Identifying Resources & Source Node ---"
-
-# Dynamically find the SOURCE_NODE by looking at where the current pods are running
-SOURCE_NODE=$(kubectl get pods -n "$TARGET_NS" -l "$SELECTOR" -o jsonpath='{.items[0].spec.nodeName}')
-
-if [[ -z "$SOURCE_NODE" ]]; then
+if [ "$MODE" = "node" ]; then
+  # Determine source node by where pods are running
+  SOURCE_NODE=$(kubectl get pods -n "$TARGET_NS" -l "$SELECTOR" -o jsonpath='{.items[0].spec.nodeName}' 2>/dev/null || true)
+  if [[ -z "$SOURCE_NODE" ]]; then
     echo "Error: Could not find any running pods for '$APP_NAME' to determine source node."
     exit 1
-fi
-
-if [[ "$SOURCE_NODE" == "$TARGET_NODE" ]]; then
+  fi
+  if [[ "$SOURCE_NODE" == "$TARGET_NODE" ]]; then
     echo "Error: App is already running on $TARGET_NODE. Nothing to migrate."
     exit 1
+  fi
+  echo "Plan: migrate from node $SOURCE_NODE to $TARGET_NODE"
+else
+  echo "Plan: migrate storage class to $TARGET_SC"
 fi
 
-DEPLOYS=$(kubectl get deployment -l "$SELECTOR" -n "$TARGET_NS" -o name)
-STATEFULSETS=$(kubectl get statefulset -l "$SELECTOR" -n "$TARGET_NS" -o name)
-PVCS=$(kubectl get pvc -l "$SELECTOR" -n "$TARGET_NS" -o name)
+DEPLOYS=$(kubectl get deployment -l "$SELECTOR" -n "$TARGET_NS" -o name 2>/dev/null || true)
+STATEFULSETS=$(kubectl get statefulset -l "$SELECTOR" -n "$TARGET_NS" -o name 2>/dev/null || true)
+PVCS=$(kubectl get pvc -l "$SELECTOR" -n "$TARGET_NS" -o name 2>/dev/null || true)
 
-echo "Migration Plan:"
-echo "  From: $SOURCE_NODE  -->  To: $TARGET_NODE"
-echo "  Resources: $DEPLOYS $STATEFULSETS"
-echo "  PVCs: $PVCS"
+echo "Resources: $DEPLOYS $STATEFULSETS"
+echo "PVCs: $PVCS"
 
 if [ "$DRY_RUN" = true ]; then
-    echo "--- DRY RUN COMPLETE ---"
-    exit 0
+  echo "--- DRY RUN COMPLETE ---"
+  exit 0
 fi
 
 BACKUP_NAME="migration-$APP_NAME-$(date +%Y%m%d-%H%M%S)"
 
-# --- REAL WORK STARTS HERE ---
+# --- PREP: determine argocd project and add sync-window ---
 
-echo "--- 2. Configuring Velero Node Mapping ($SOURCE_NODE -> $TARGET_NODE) ---"
-cat <<EOF | kubectl apply -f -
+# Fail fast if argocd CLI is missing or not authenticated
+ensure_argocd_cli
+
+if [[ -z "$ARGOCD_PROJECT" ]]; then
+  echo "Detecting ArgoCD Project for Application $ARGOCD_APP (ns: $ARGOCD_NS)..."
+  ARGOCD_PROJECT=$(kubectl get application -n "$ARGOCD_NS" "$ARGOCD_APP" -o jsonpath='{.spec.project}' 2>/dev/null || true)
+  if [[ -z "$ARGOCD_PROJECT" ]]; then
+    echo "Error: Could not determine ArgoCD Project for Application $ARGOCD_APP. Provide --argocd-project or ensure the Application exists in $ARGOCD_NS."
+    exit 1
+  fi
+fi
+
+# add window
+add_argocd_window
+cleanup_actions+=(remove_window)
+
+if [ "$MODE" = "node" ]; then
+  echo "--- Configuring Velero Node Mapping ($SOURCE_NODE -> $TARGET_NODE) ---"
+  cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -105,89 +396,188 @@ metadata:
 data:
   ${SOURCE_NODE}: ${TARGET_NODE}
 EOF
-
-echo "--- Identifying Workload Type ---"
-# Check for Deployment
-if kubectl get deployment -l "$SELECTOR" -n "$TARGET_NS" 2>&1 | grep -q "No resources found"; then
-    WORKLOAD_KIND=""
-else
-    WORKLOAD_KIND="deployment"
-fi
-
-# If no deployment, check for StatefulSet
-if [[ -z "$WORKLOAD_KIND" ]]; then
-    if ! kubectl get statefulset -l "$SELECTOR" -n "$TARGET_NS" 2>&1 | grep -q "No resources found"; then
-        WORKLOAD_KIND="statefulset"
-    fi
-fi
-
-if [[ -z "$WORKLOAD_KIND" ]]; then
-    echo "Error: No Deployment or StatefulSet found for $APP_NAME"
+  cleanup_actions+=(delete_velero_cm_node)
+elif [ "$MODE" = "storage" ]; then
+  # Determine the current storage class used by PVCs (take from first PVC) unless overridden
+  if [[ -n "$FROM_SC" ]]; then
+    OLD_SC="$FROM_SC"
+  else
+    OLD_SC=$(kubectl get pvc -l "$SELECTOR" -n "$TARGET_NS" -o jsonpath='{.items[0].spec.storageClassName}' 2>/dev/null || true)
+  fi
+  if [[ -z "$OLD_SC" ]]; then
+    echo "Error: Could not determine source storageClass from PVCs. Provide --from-storage-class to override."
     exit 1
+  fi
+  echo "--- Configuring Velero StorageClass Mapping ($OLD_SC -> $TARGET_SC) ---"
+  cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: change-storage-class-config
+  namespace: velero
+  labels:
+    velero.io/plugin-config: ""
+    velero.io/change-storage-class: RestoreItemAction
+data:
+  ${OLD_SC}: ${TARGET_SC}
+EOF
+  cleanup_actions+=(delete_velero_cm_sc)
+fi
+
+# Identify workload kind
+WORKLOAD_KIND=""
+if kubectl get deployment -l "$SELECTOR" -n "$TARGET_NS" 2>&1 | grep -q "No resources found"; then
+  WORKLOAD_KIND=""
+else
+  WORKLOAD_KIND="deployment"
+fi
+if [[ -z "$WORKLOAD_KIND" ]]; then
+  if ! kubectl get statefulset -l "$SELECTOR" -n "$TARGET_NS" 2>&1 | grep -q "No resources found"; then
+    WORKLOAD_KIND="statefulset"
+  fi
+fi
+
+if [[ -z "$WORKLOAD_KIND" ]]; then
+  echo "Error: No Deployment or StatefulSet found for $APP_NAME"
+  exit 1
 fi
 
 echo "Detected Workload: $WORKLOAD_KIND"
 
-echo "--- 3. Scaling Down $APP_NAME ---"
-scale_operator 0
-kubectl scale "$WORKLOAD_KIND" -l "$SELECTOR" --replicas=0 -n "$TARGET_NS"
-kubectl wait --for=delete pod -l "$SELECTOR" -n "$TARGET_NS" --timeout=60s
+# --- Scale down ---
 
-echo "--- 4. Velero Backup ---"
+echo "--- Scaling Down $APP_NAME ---"
+scale_operator 0
+# ensure operator is scaled back up on exit
+cleanup_actions+=(scale_operator_up)
+
+kubectl scale "$WORKLOAD_KIND" -l "$SELECTOR" --replicas=0 -n "$TARGET_NS"
+kubectl wait --for=delete pod -l "$SELECTOR" -n "$TARGET_NS" --timeout=60s || true
+
+# --- Velero backup ---
+
+echo "--- Velero Backup ---"
 velero backup create "$BACKUP_NAME" \
   --include-namespaces "$TARGET_NS" \
   --selector "$SELECTOR" \
   --wait
 
-echo "--- 5. Deleting PVCs and released PVs on $SOURCE_NODE ---"
-# Capture the PV names before deleting the PVCs
-PV_NAMES=$(kubectl get pvc -l "$SELECTOR" -n "$TARGET_NS" \
-    -o jsonpath='{.items[*].spec.volumeName}')
+# --- Delete PVCs & PVs so the restore can reprovision on target storage class / node ---
 
-kubectl delete pvc -l "$SELECTOR" -n "$TARGET_NS"
+echo "--- Deleting PVCs and released PVs ---"
+PV_NAMES=$(kubectl get pvc -l "$SELECTOR" -n "$TARGET_NS" -o jsonpath='{.items[*].spec.volumeName}' 2>/dev/null || true)
 
-# Wait briefly for PVs to transition to Released, then delete them
-# so OpenEBS provisions fresh ones on the target node
+kubectl delete pvc -l "$SELECTOR" -n "$TARGET_NS" --ignore-not-found
+
 if [[ -n "$PV_NAMES" ]]; then
     echo "Deleting backing PVs: $PV_NAMES"
     for pv in $PV_NAMES; do
-        # Wait for Released status (reclaim policy means it won't auto-delete)
-        kubectl wait pv "$pv" --for=jsonpath='{.status.phase}'=Released \
-            --timeout=30s 2>/dev/null || true
-        kubectl delete pv "$pv"
+        kubectl wait pv "$pv" --for=jsonpath='{.status.phase}'=Released --timeout=30s 2>/dev/null || true
+        kubectl delete pv "$pv" --ignore-not-found
     done
 fi
 
-echo "--- 6. Restoring to $TARGET_NODE ---"
-velero restore create "restore-$BACKUP_NAME" \
+# --- Restore ---
+
+echo "--- Restoring from $BACKUP_NAME ---"
+RESTORE_NAME="restore-$BACKUP_NAME"
+velero restore create "$RESTORE_NAME" \
   --from-backup "$BACKUP_NAME" \
   --existing-resource-policy update
 
-echo "Waiting for PVCs to be created by Velero..."
-# Loop until the PVC appears or we timeout (60s)
-TIMEOUT=60
-COUNTER=0
-until kubectl get pvc -n "$TARGET_NS" -l "$SELECTOR" | grep -q "$APP_NAME" || [ $COUNTER -eq $TIMEOUT ]; do
-  sleep 2
-  ((COUNTER+=2))
-done
-
-if [ $COUNTER -eq $TIMEOUT ]; then
-  echo "Error: PVC did not appear in time. Check Velero logs."
+# Wait for velero restore completion (with improved logging)
+if ! wait_for_velero_restore "$RESTORE_NAME" "$TIMEOUT_SECONDS"; then
+  echo "Error: Velero restore did not complete successfully. See output above for details."
   exit 1
 fi
 
-echo "--- 6.5 Cleaning PVC selectors for OpenEBS compatibility ---"
+# After restore completes, ensure PVCs exist and are Bound
+echo "Waiting for PVCs to exist and be Bound..."
+PVC_WAIT_TIMEOUT=120
+PVC_ELAPSED=0
+INTERVAL=5
+while [ $PVC_ELAPSED -lt $PVC_WAIT_TIMEOUT ]; do
+  missing=0
+  not_bound=0
+  pvcs_list=$(kubectl get pvc -n "$TARGET_NS" -l "$SELECTOR" -o name 2>/dev/null || true)
+  if [[ -z "$pvcs_list" ]]; then
+    missing=1
+  else
+    for pvc in $pvcs_list; do
+      phase=$(kubectl get "$pvc" -n "$TARGET_NS" -o jsonpath='{.status.phase}' 2>/dev/null || true)
+      if [[ "$phase" != "Bound" ]]; then
+        not_bound=1
+      fi
+    done
+  fi
+  if [ $missing -eq 0 ] && [ $not_bound -eq 0 ]; then
+    echo "All PVCs present and Bound"
+    break
+  fi
+  echo "Waiting for PVCs: missing=$missing not_bound=$not_bound (elapsed ${PVC_ELAPSED}s)"
+  sleep $INTERVAL
+  PVC_ELAPSED=$((PVC_ELAPSED+INTERVAL))
+done
+if [ $PVC_ELAPSED -ge $PVC_WAIT_TIMEOUT ]; then
+  echo "Error: PVCs did not become Bound within ${PVC_WAIT_TIMEOUT}s"
+  exit 1
+fi
+
+# If storage mode, verify storageClassName on restored PVCs. If the Velero plugin worked, PVCs should have the target SC.
+if [ "$MODE" = "storage" ]; then
+  echo "--- Verifying storage class on restored PVCs ---"
+  for pvc in $(kubectl get pvc -n "$TARGET_NS" -l "$SELECTOR" -o name); do
+    sc=$(kubectl get "$pvc" -n "$TARGET_NS" -o jsonpath='{.spec.storageClassName}')
+    if [[ "$sc" != "$TARGET_SC" ]]; then
+      echo "Warning: $pvc has storageClass '$sc' (expected '$TARGET_SC'). Attempting to patch..."
+      if [ "$DRY_RUN" = true ]; then
+        echo "DRY: kubectl patch $pvc -n $TARGET_NS --type=json -p '[{"op":"replace","path":"/spec/storageClassName","value":"$TARGET_SC"}]'"
+      else
+        phase=$(kubectl get "$pvc" -n "$TARGET_NS" -o jsonpath='{.status.phase}') || phase=""
+        if [[ "$phase" == "" || "$phase" == "Pending" ]]; then
+          kubectl patch "$pvc" -n "$TARGET_NS" --type=json -p "[{\"op\":\"replace\",\"path\":\"/spec/storageClassName\",\"value\":\"$TARGET_SC\"}]" || true
+        else
+          echo "Cannot change storageClassName on PVC $pvc in phase $phase. You may need to recreate the PVCs or rely on the Velero plugin mapping."
+        fi
+      fi
+    else
+      echo "$pvc -> storageClass $sc"
+    fi
+  done
+fi
+
+# --- Cleaning PVC selectors for OpenEBS compatibility (same as before) ---
+
+echo "--- Cleaning PVC selectors for compatibility ---"
 for pvc in $(kubectl get pvc -n "$TARGET_NS" -l "$SELECTOR" -o name); do
     echo "Patching $pvc..."
-    kubectl patch "$pvc" -n "$TARGET_NS" --type json -p='[{"op": "remove", "path": "/spec/selector"}]' || true
+    kubectl patch "$pvc" -n "$TARGET_NS" --type json -p='[{"op": "remove", "path": "/spec/selector"}]' 2>/dev/null || true
 done
 
-echo "--- 7. Scaling Up & Waiting ---"
+# --- Scale up ---
+
+echo "--- Scaling Up & Waiting ---"
 scale_operator 1
 kubectl scale "$WORKLOAD_KIND" -l "$SELECTOR" --replicas=1 -n "$TARGET_NS"
 
 echo "Waiting for rollout..."
-kubectl rollout status "$WORKLOAD_KIND" -l "$SELECTOR" -n "$TARGET_NS" --timeout=5m
+kubectl rollout status "$WORKLOAD_KIND" -l "$SELECTOR" -n "$TARGET_NS" --timeout=5m || true
+
+# --- CLEANUP: remove velero configmaps we created and remove argocd window (on_exit will run) ---
+
+if [ "$DRY_RUN" = true ]; then
+  echo "DRY: cleanup would remove Velero configmaps and remove ArgoCD project window"
+else
+  if [ "$MODE" = "node" ]; then
+    kubectl delete configmap change-pvc-node-selector-config -n velero --ignore-not-found || true
+  elif [ "$MODE" = "storage" ]; then
+    kubectl delete configmap change-storage-class-config -n velero --ignore-not-found || true
+  fi
+fi
+
+# Remove cleanup actions that we've already executed to avoid duplicate attempts on exit
+cleanup_actions=()
 
 echo "--- FINISHED ---"
+
+exit 0
