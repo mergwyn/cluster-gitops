@@ -28,6 +28,10 @@ longhornManager:
 #    limits:
 #      memory: 256Mi
 
+metrics:
+  serviceMonitor:
+    enabled: true
+
 extraObjects:
   - apiVersion: snapshot.storage.k8s.io/v1
     kind: VolumeSnapshotClass
