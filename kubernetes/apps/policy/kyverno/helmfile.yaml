@@ -11,10 +11,10 @@ releases:
     values:
       - values.yaml
 
-  - name: kyverno-policies-custom
-    chart: ./policies
-    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
-    needs:
-      - kyverno
-    values:
-      - validationFailureAction: Enforce
+#  - name: kyverno-policies-custom
+#    chart: ./policies
+#    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+#    needs:
+#      - kyverno
+#    values:
+#      - validationFailureAction: Enforce
