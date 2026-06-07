@@ -14,7 +14,7 @@ config:
 existingSecret: postfix-mail
 
 persistence:
-  storageClass: openebs-zfspv
+  storageClass: longhorn
 
 resources:
   requests:
