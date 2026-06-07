@@ -9,7 +9,9 @@ EXTRA_KINDS=(
   secret
   # clusterrole
   # clusterrolebinding
-  # serviceaccount
+  serviceaccount
+  configmap
+  customresourcedefinition
 )
 
 EXTRA="${EXTRA_KINDS[*]}"
