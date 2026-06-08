@@ -36,7 +36,7 @@ service:
 persistence:
   data:
     type: persistentVolumeClaim
-    storageClass: openebs-zfspv
+    storageClass: longhorn
     accessMode: ReadWriteOnce
     retain: true
     size: 2Gi
