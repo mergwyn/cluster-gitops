@@ -43,7 +43,6 @@ admissionController:
             - get
             - create
             - update
-            - get
             - list
 
 backgroundController:
@@ -71,7 +70,6 @@ backgroundController:
             - get
             - create
             - update
-            - get
             - list
         - apiGroups:
             - velero.io
@@ -103,4 +101,3 @@ reportsController:
 
 grafana:
   enabled: true
-
