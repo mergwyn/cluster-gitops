@@ -9,9 +9,9 @@ repositories:
 releases:
   - name: sonarr
     chart: bjw-s-labs/app-template
-    version: 4.6.2
+    version: 5.0.1
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
     values:
       - values.yaml
-      - values.yaml.gotmpl
+      - values-route.yaml.gotmpl
       - externalsecret.yaml
