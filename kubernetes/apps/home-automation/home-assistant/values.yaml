@@ -241,9 +241,10 @@ persistence:
 
 rawResources:
   rules:
-    kind: PrometheusRule
-    apiVersion: monitoring.coreos.com/v1
-    spec:
+    enabled: true
+    manifest:
+      kind: PrometheusRule
+      apiVersion: monitoring.coreos.com/v1
       spec:
         groups:
           - name: home-assistant
