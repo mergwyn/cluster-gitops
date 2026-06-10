@@ -98,9 +98,10 @@ service:
 
 rawResources:
   ingressroute:
-    kind: IngressRouteTCP
-    apiVersion: traefik.io/v1alpha1
-    spec:
+    enabled: true
+    manifest:
+      kind: IngressRouteTCP
+      apiVersion: traefik.io/v1alpha1
       spec:
         ingressClassName: traefik-external
         entryPoints:
