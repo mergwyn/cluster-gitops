@@ -1,0 +1,14 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "regexManagers": [
+    {
+      "fileMatch": ["\\.yaml$", "\\.yml$", "\\.gotmpl$"],
+      "matchStrings": [
+        "yaml-language-server: \\$schema=https:\\/\\/raw\\.githubusercontent\\.com\\/bjw-s-labs\\/helm-charts\\/common-(?<currentValue>[0-dev.\\-]+)\\/charts"
+      ],
+      "datasourceTemplate": "github-tags",
+      "depNameTemplate": "bjw-s-labs/helm-charts",
+      "extractVersionTemplate": "^common-(?<version>.*)$"
+    }
+  ]
+}
