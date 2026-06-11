@@ -44,3 +44,56 @@ extraObjects:
     deletionPolicy: Delete
     parameters:
       type: snap
+  # Custom PrometheusRule for Longhorn-specific alerts, including our custom orphaned ghost volume tracking
+  - apiVersion: monitoring.coreos.com/v1
+    kind: PrometheusRule
+    metadata:
+      name: longhorn-alerts
+      namespace: monitoring
+      labels:
+        release: kube-prometheus-stack
+    spec:
+      groups:
+        - name: longhorn.storage.alerts
+          rules:
+            # 1. THE GHOST VOLUME ALERT (Our custom tracking fix)
+            - alert: LonghornOrphanedGhostVolume
+              expr: |
+                longhorn_volume_state{state="detached"} == 1
+                unless on(volume) (longhorn_volume_actual_size_bytes * 0 == 0)
+              for: 1h
+              labels:
+                severity: warning
+              annotations:
+                summary: "Orphaned Longhorn volume detected: {{`{{ $labels.volume }}`}}"
+                description: "The volume '{{`{{ $labels.volume }}`}}' is detached with no bounding Kubernetes PV record. Clean it up using: 'kubectl delete volume.longhorn.io {{`{{ $labels.volume }}`}} -n longhorn-system'"
+
+            # 2. VOLUME FAULTED (Critical Data Loss Indicator)
+            - alert: LonghornVolumeFaulted
+              expr: longhorn_volume_robustness{state="faulted"} == 1
+              for: 1m
+              labels:
+                severity: critical
+              annotations:
+                summary: "Longhorn Volume Faulted: {{`{{ $labels.volume }}`}}"
+                description: "Volume '{{`{{ $labels.volume }}`}}' has entered a FAULTED state. All storage replicas are unavailable."
+
+            # 3. VOLUME DEGRADED (Loss of High-Availability Replication)
+            - alert: LonghornVolumeDegraded
+              expr: longhorn_volume_robustness{state="degraded"} == 1
+              for: 15m
+              labels:
+                severity: warning
+              annotations:
+                summary: "Longhorn Volume Degraded: {{`{{ $labels.volume }}`}}"
+                description: "Volume '{{`{{ $labels.volume }}`}}' is degraded. One or more replicas are unhealthy or missing."
+
+            # 4. PHYSICAL DISK SPACE EXHAUSTION (Critical Node Storage Level)
+            - alert: LonghornDiskSpaceCritical
+              expr: (longhorn_disk_usage_bytes / longhorn_disk_capacity_bytes) > 0.90
+              for: 5m
+              labels:
+                severity: critical
+              annotations:
+                summary: "Longhorn Node Disk Space Critical: {{`{{ $labels.node }}`}}"
+                description: "Physical disk paths on node '{{`{{ $labels.node }}`}}' have exceeded 90% space utilization. Clean out unused assets before safety locks engage."
