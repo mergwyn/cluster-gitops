@@ -5,8 +5,7 @@ defaultSettings:
   storageOverProvisioningPercentage: 150
   storageMinimalAvailablePercentage: 10
   backupTarget: ""
-  # Prevent Longhorn becoming default SC until migration complete
-  defaultDataLocality: disabled
+  defaultDataLocality: best-effort
   v2DataEngine: false
 
 persistence:
