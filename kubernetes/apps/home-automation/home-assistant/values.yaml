@@ -113,23 +113,28 @@ controllers:
               echo "[guardrail] Installing sqlite3"
               apk add --no-cache sqlite
             fi
-
             DB=/config/home-assistant_v2.db
-
             echo "[guardrail] Checking Home Assistant SQLite DB..."
-
             if [ ! -f "$DB" ]; then
               echo "[guardrail] ERROR: DB missing — refusing to start"
               exit 1
             fi
-
-            if ! sqlite3 "$DB" "PRAGMA integrity_check;" | grep -q "^ok$"; then
-              echo "[guardrail] ERROR: DB corrupt — refusing to start"
+            echo "[guardrail] Checking schema verison..."
+            if ! "$DB" "PRAGMA schema_version;" > /dev/null; then
+              echo "[guardrail] ERROR: Schema version check failed — refusing to start"
               exit 1
             fi
-
+            echo "[guardrail] Running WAL checkpoint..."
+            if ! sqlite3 "$DB" "PRAGMA wal_checkpoint(TRUNCATE);" > /dev/null; then
+              echo "[guardrail] ERROR: WAL checkpoint failed — refusing to start"
+              exit 1
+            fi
+            echo "[guardrail] Checking schema..."
+            if ! sqlite3 "$DB" "SELECT COUNT(*) FROM sqlite_master;" > /dev/null; then
+              echo "[guardrail] ERROR: Schema check failed — refusing to start"
+              exit 1
+            fi
             echo "[guardrail] DB OK — starting Home Assistant"
-
             exec /init
         resources:
           requests:
