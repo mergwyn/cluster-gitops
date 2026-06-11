@@ -120,7 +120,7 @@ controllers:
               exit 1
             fi
             echo "[guardrail] Checking schema verison..."
-            if ! "$DB" "PRAGMA schema_version;" > /dev/null; then
+            if ! sqlite3 "$DB" "PRAGMA schema_version;" > /dev/null; then
               echo "[guardrail] ERROR: Schema version check failed — refusing to start"
               exit 1
             fi
