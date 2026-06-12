@@ -60,7 +60,7 @@ extraObjects:
             - alert: LonghornOrphanedGhostVolume
               expr: |
                 longhorn_volume_state{state="detached"} == 1
-                unless on(volume) (longhorn_volume_actual_size_bytes * 0 == 0)
+                and on(volume) longhorn_volume_actual_size_bytes
               for: 1h
               labels:
                 severity: warning
