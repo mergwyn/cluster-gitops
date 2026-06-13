@@ -1,0 +1,15 @@
+---
+bases:
+  - ../../../clusters/environments.yaml
+
+repositories:
+  - name: open-webui
+    url: https://helm.openwebui.com
+
+releases:
+  - name: ollama
+    chart: open-webui/open-webui
+    version: "14.8.0"
+    namespace: '{{ env "HELMFILE_NAMESPACE" | default "default" }}'
+    values:
+      - values.yaml.gotmpl

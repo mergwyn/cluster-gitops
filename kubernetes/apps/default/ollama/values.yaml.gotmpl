@@ -1,0 +1,41 @@
+---
+
+ollama:
+  enabled: false
+pipelines:
+  enabled: false
+
+service:
+  type: ClusterIP
+  port: 8080
+
+replicaCount: 1
+
+ollamaUrls:
+  - http://mike.theclarkhome.com:11434
+
+# Optional: Add OpenRouter / OpenAI endpoints here if you want access to Claude as well
+extraEnvVars:
+  - name: WEBUI_NAME
+    value: "The Clark Home AI"
+
+# Configure persistent storage for chat histories and login accounts
+persistence:
+  enabled: true
+  existingClaim: "" # Leave blank to let k3s auto-provision, or swap in a Longhorn PVC name
+  size: 2Gi
+  accessModes:
+    - ReadWriteOnce
+
+route:
+  enabled: true
+  hostnames:
+    - "{{ .Release.Name }}.{{ .Values.cluster.domain }}"
+  parentRefs:
+    - name: traefik-internal
+      namespace: network
+      sectionName: websecure
+  rules:
+    - backendRefs:
+        - identifier: app
+          port: http
