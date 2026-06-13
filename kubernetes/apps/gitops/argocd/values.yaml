@@ -59,9 +59,9 @@ repoServer:
           DIFF_VER="v3.15.7"
 
           # 1. Download Core Binaries
-          echo "Downloading Helm ${CUSTOM_HELM_VERSION}..."
-          wget -qO- "https://get.helm.sh/helm-${CUSTOM_HELM_VERSION}-linux-amd64.tar.gz" | tar -xz -C /tmp
-          mv /tmp/linux-amd64/helm /custom-tools/helm
+          #echo "Downloading Helm ${CUSTOM_HELM_VERSION}..."
+          #wget -qO- "https://get.helm.sh/helm-${CUSTOM_HELM_VERSION}-linux-amd64.tar.gz" | tar -xz -C /tmp
+          #mv /tmp/linux-amd64/helm /custom-tools/helm
 
           echo "Downloading Helmfile ${CUSTOM_HELMFILE_VERSION}..."
           HELMFILE_STRIPPED=$(echo ${CUSTOM_HELMFILE_VERSION} | sed 's/^v//')
