@@ -26,6 +26,8 @@ persistence:
   size: 2Gi
   accessModes:
     - ReadWriteOnce
+  annotations:
+    helm.sh/resource-policy: keep
 
 route:
   enabled: true
