@@ -31,12 +31,95 @@ configs:
     policy.default: role:admin
 
 repoServer:
+  resources:
+    requests:
+      cpu: 20m
+      memory: 308Mi
+    limits:
+      memory: 1400M
+
+  initContainers:
+    - name: download-tools
+      image: alpine:3.19
+      command: ["sh", "-c"]
+      args:
+        - |
+          set -e
+
+          # Renovate tracks these exact variables inline
+          # renovate: datasource=github-releases depName=helmfile/helmfile
+          CUSTOM_HELMFILE_VERSION="v1.5.2"
+          # renovate: datasource=github-releases depName=getsops/sops
+          CUSTOM_SOPS_VERSION="v3.9.4"
+          # renovate: datasource=github-releases depName=helm/helm
+          CUSTOM_HELM_VERSION="v4.1.4"
+          # renovate: datasource=docker depName=ghcr.io/jkroepke/helm-secrets/secrets
+          SECRETS_VER="4.7.4"
+          # renovate: datasource=github-releases depName=databus23/helm-diff
+          DIFF_VER="v3.15.7"
+
+          # 1. Download Core Binaries
+          echo "Downloading Helm ${CUSTOM_HELM_VERSION}..."
+          wget -qO- "https://get.helm.sh/helm-${CUSTOM_HELM_VERSION}-linux-amd64.tar.gz" | tar -xz -C /tmp
+          mv /tmp/linux-amd64/helm /custom-tools/helm
+
+          echo "Downloading Helmfile ${CUSTOM_HELMFILE_VERSION}..."
+          HELMFILE_STRIPPED=$(echo ${CUSTOM_HELMFILE_VERSION} | sed 's/^v//')
+          wget -qO /custom-tools/helmfile "https://github.com/helmfile/helmfile/releases/download/${CUSTOM_HELMFILE_VERSION}/helmfile_${HELMFILE_STRIPPED}_linux_amd64"
+          chmod +x /custom-tools/helmfile
+
+          echo "Downloading SOPS ${CUSTOM_SOPS_VERSION}..."
+          wget -qO /custom-tools/sops "https://github.com/getsops/sops/releases/download/${CUSTOM_SOPS_VERSION}/sops-${CUSTOM_SOPS_VERSION}.linux.amd64"
+          chmod +x /custom-tools/sops
+
+          # 2. Pre-install Helm Plugins cleanly using our fresh Helm 4 binary
+          echo "Pre-installing Helm plugins..."
+          export HELM_PLUGINS="/custom-tools/helm-plugins"
+
+          /custom-tools/helm plugin install oci://ghcr.io/jkroepke/helm-secrets/secrets:${SECRETS_VER}
+          /custom-tools/helm plugin install oci://ghcr.io/jkroepke/helm-secrets/secrets-getter:${SECRETS_VER}
+          /custom-tools/helm plugin install oci://ghcr.io/jkroepke/helm-secrets/secrets-post-renderer:${SECRETS_VER}
+          /custom-tools/helm plugin install https://github.com/databus23/helm-diff --version ${DIFF_VER}
+
+          echo "All binaries and plugins ready!"
+      volumeMounts:
+        - mountPath: /custom-tools
+          name: custom-tools
+
   volumes:
     - name: age-secret-keys
       secret:
         secretName: argocd-age-secret-keys
-    - name: helmfile-cmp-tmp
+    - name: custom-tools
       emptyDir: {}
+
+  volumeMounts:
+    - name: age-secret-keys
+      mountPath: /sops/age
+    # Mount the compiled assets back into the native execution environment paths
+    - name: custom-tools
+      mountPath: /usr/local/bin/helmfile
+      subPath: helmfile
+    - name: custom-tools
+      mountPath: /usr/local/bin/sops
+      subPath: sops
+    - name: custom-tools
+      mountPath: /usr/local/bin/helm
+      subPath: helm
+    - name: custom-tools
+      mountPath: /home/argocd/.local/share/helm/plugins
+      subPath: helm-plugins
+
+  cmp:
+    plugins:
+      helmfile-modern:
+        generate:
+          command: ["sh", "-c"]
+          args: |
+            export SOPS_AGE_KEY_FILE=/sops/age/keys.txt
+            helmfile --namespace $HELMFILE_NAMESPACE --environment $HELMFILE_ENVIRONMENT template $HELMFILE_TEMPLATE_OPTIONS
+
+  # TODO: remove this section when testing complete
   extraContainers:
     - name: helmfile-plugin
       image: travisghansen/argo-cd-helmfile:v0.3.13@sha256:1251e329f72cadaf55860b9029d13c887559b5f20287915f21d32d722aaeef2e
@@ -56,13 +139,7 @@ repoServer:
           name: plugins
         - mountPath: /tmp
           name: helmfile-cmp-tmp
-  resources:
-    requests:
-      cpu: 20m
-      memory: 308Mi
-    limits:
-      # cpu: 300m
-      memory: 1400M
+
 server:
   # TODO test again when https://github.com/argoproj/argo-helm/issues/3550 resolved
   # httproute:
