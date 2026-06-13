@@ -10,8 +10,7 @@ defaultSettings:
 
 persistence:
   defaultClassReplicaCount: 3
-  # Not default until migration complete
-  defaultClass: false
+  defaultClass: true
 
 ingress:
   enabled: false
