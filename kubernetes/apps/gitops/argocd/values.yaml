@@ -63,23 +63,23 @@ repoServer:
           #wget -qO- "https://get.helm.sh/helm-${CUSTOM_HELM_VERSION}-linux-amd64.tar.gz" | tar -xz -C /tmp
           #mv /tmp/linux-amd64/helm /custom-tools/helm
 
-          echo "Downloading Helmfile ${CUSTOM_HELMFILE_VERSION}..."
-          HELMFILE_STRIPPED=$(echo ${CUSTOM_HELMFILE_VERSION} | sed 's/^v//')
-          wget -qO /custom-tools/helmfile "https://github.com/helmfile/helmfile/releases/download/${CUSTOM_HELMFILE_VERSION}/helmfile_${HELMFILE_STRIPPED}_linux_amd64"
-          chmod +x /custom-tools/helmfile
+          #echo "Downloading Helmfile ${CUSTOM_HELMFILE_VERSION}..."
+          #HELMFILE_STRIPPED=$(echo ${CUSTOM_HELMFILE_VERSION} | sed 's/^v//')
+          #wget -qO /custom-tools/helmfile "https://github.com/helmfile/helmfile/releases/download/${CUSTOM_HELMFILE_VERSION}/helmfile_${HELMFILE_STRIPPED}_linux_amd64"
+          #chmod +x /custom-tools/helmfile
 
-          echo "Downloading SOPS ${CUSTOM_SOPS_VERSION}..."
-          wget -qO /custom-tools/sops "https://github.com/getsops/sops/releases/download/${CUSTOM_SOPS_VERSION}/sops-${CUSTOM_SOPS_VERSION}.linux.amd64"
-          chmod +x /custom-tools/sops
+          #echo "Downloading SOPS ${CUSTOM_SOPS_VERSION}..."
+          #wget -qO /custom-tools/sops "https://github.com/getsops/sops/releases/download/${CUSTOM_SOPS_VERSION}/sops-${CUSTOM_SOPS_VERSION}.linux.amd64"
+          #chmod +x /custom-tools/sops
 
           # 2. Pre-install Helm Plugins cleanly using our fresh Helm 4 binary
-          echo "Pre-installing Helm plugins..."
-          export HELM_PLUGINS="/custom-tools/helm-plugins"
+          #echo "Pre-installing Helm plugins..."
+          #export HELM_PLUGINS="/custom-tools/helm-plugins"
 
-          /custom-tools/helm plugin install oci://ghcr.io/jkroepke/helm-secrets/secrets:${SECRETS_VER}
-          /custom-tools/helm plugin install oci://ghcr.io/jkroepke/helm-secrets/secrets-getter:${SECRETS_VER}
-          /custom-tools/helm plugin install oci://ghcr.io/jkroepke/helm-secrets/secrets-post-renderer:${SECRETS_VER}
-          /custom-tools/helm plugin install https://github.com/databus23/helm-diff --version ${DIFF_VER}
+          #/custom-tools/helm plugin install oci://ghcr.io/jkroepke/helm-secrets/secrets:${SECRETS_VER}
+          #/custom-tools/helm plugin install oci://ghcr.io/jkroepke/helm-secrets/secrets-getter:${SECRETS_VER}
+          #/custom-tools/helm plugin install oci://ghcr.io/jkroepke/helm-secrets/secrets-post-renderer:${SECRETS_VER}
+          #/custom-tools/helm plugin install https://github.com/databus23/helm-diff --version ${DIFF_VER}
 
           echo "All binaries and plugins ready!"
       volumeMounts:
