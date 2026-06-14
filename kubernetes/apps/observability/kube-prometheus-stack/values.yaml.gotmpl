@@ -152,6 +152,19 @@ prometheus:
         - name: traefik-internal
           namespace: network
 
+kubeApiServer:
+  serviceMonitor:
+    metricRelabelings:
+      - sourceLabels: [__name__]
+        regex: 'apiserver_request_duration_seconds_bucket|apiserver_request_sli_duration_seconds_bucket|apiserver_request_body_size_bytes_bucket|apiserver_response_sizes_bucket|apiserver_watch_list_duration_seconds_bucket|apiserver_watch_cache_read_wait_seconds_bucket|apiserver_watch_events_sizes_bucket'
+        action: drop
+kubeEtcd:
+  serviceMonitor:
+    metricRelabelings:
+      - sourceLabels: [__name__]
+        regex: 'etcd_request_duration_seconds_bucket'
+        action: drop
+
 grafana:
   adminPassword: ""
   admin:
