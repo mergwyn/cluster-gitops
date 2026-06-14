@@ -84,6 +84,8 @@ alertmanager:
 prometheus:
   prometheusSpec:
     serviceMonitorSelectorNilUsesHelmValues: false
+    retention: 10d
+    retentionSize: "42GB"
     # podMonitorSelectorNilUsesHelmValues: false
     additionalScrapeConfigs:
       - job_name: minio-job-v2
