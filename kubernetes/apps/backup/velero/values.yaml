@@ -94,6 +94,7 @@ nodeAgent:
       # cpu: 90m
       memory: 2G
 
+# TODO revisit hourly exclusion and timeouts when prometheus calms down"
 schedules:
   # idrive storage
   daily-idrive:
@@ -102,27 +103,27 @@ schedules:
     template:
       ttl: "168h"
       storageLocation: idrive
+      csiSnapshotTimeout: 30m
       excludedNamespaces:
         - velero
-      # volumeSnapshotLocations: &idrivesnap []  # [idrive]
   weekly-idrive:
     disabled: false
     schedule: "30 4 * * 0"
     template:
       ttl: "672h"
       storageLocation: idrive
+      csiSnapshotTimeout: 30m
       excludedNamespaces:
         - velero
-      # volumeSnapshotLocations: *idrivesnap
   monthly-idrive:
     disabled: false
     schedule: "30 5 1 * *"
     template:
       ttl: "2190h"
       storageLocation: idrive
+      csiSnapshotTimeout: 30m
       excludedNamespaces:
         - velero
-      # volumeSnapshotLocations: *idrivesnap
   # default storage
   hourly-default:
     disabled: false
@@ -131,11 +132,13 @@ schedules:
       ttl: "24h"
       excludedNamespaces:
         - velero
+        - monitoring
   daily-default:
     disabled: false
     schedule: "15 0 * * *"
     template:
       ttl: "168h"
+      csiSnapshotTimeout: 30m
       excludedNamespaces:
         - velero
   weekly-default:
@@ -143,6 +146,7 @@ schedules:
     schedule: "15 1 * * 0"
     template:
       ttl: "672h"
+      csiSnapshotTimeout: 30m
       excludedNamespaces:
         - velero
   monthly-default:
@@ -150,6 +154,7 @@ schedules:
     schedule: "15 2 1 * *"
     template:
       ttl: "2190h"
+      csiSnapshotTimeout: 30m
       excludedNamespaces:
         - velero
 
