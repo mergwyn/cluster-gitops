@@ -38,7 +38,7 @@ extraObjects:
       namespace: longhorn-system
     spec:
       task: "snapshot-delete"
-      cron: "0 6 * * *"
+      cron: "45 6 * * *"
       retain: 1
       concurrency: 1
       groups:
