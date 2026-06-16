@@ -7,6 +7,11 @@ defaultSettings:
   backupTarget: ""
   defaultDataLocality: best-effort
   v2DataEngine: false
+  recurringJobs:
+    - name: "snapshot-purge-job"
+      task: "snapshot-delete"
+      schedule: "0 6 * * *"
+      retain: 1
 
 persistence:
   defaultClassReplicaCount: 3

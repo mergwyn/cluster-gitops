@@ -129,6 +129,8 @@ prometheus:
         metadata:
           annotations:
             helm.sh/resource-policy: keep
+            volume.longhorn.io/recurring-job-source: "default"
+            volume.longhorn.io/recurring-jobs: '[{"name":"snapshot-purge-job","isGroup":false}]'
         spec:
           storageClassName: longhorn
           accessModes: ["ReadWriteOnce"]
