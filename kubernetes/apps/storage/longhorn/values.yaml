@@ -7,11 +7,6 @@ defaultSettings:
   backupTarget: ""
   defaultDataLocality: best-effort
   v2DataEngine: false
-  recurringJobs:
-    - name: "snapshot-purge-job"
-      task: "snapshot-delete"
-      schedule: "0 6 * * *"
-      retain: 1
 
 persistence:
   defaultClassReplicaCount: 3
@@ -36,6 +31,19 @@ longhornManager:
 #    enabled: true
 
 extraObjects:
+  - apiVersion: longhorn.io/v1beta2
+    kind: RecurringJob
+    metadata:
+      name: snapshot-purge-job
+      namespace: longhorn-system
+    spec:
+      task: "snapshot-delete"
+      cron: "0 6 * * *"
+      retain: 1
+      concurrency: 1
+      groups:
+        - default
+
   - apiVersion: snapshot.storage.k8s.io/v1
     kind: VolumeSnapshotClass
     metadata:
@@ -48,7 +56,8 @@ extraObjects:
     deletionPolicy: Delete
     parameters:
       type: snap
-  # Custom PrometheusRule for Longhorn-specific alerts, including our custom orphaned ghost volume tracking
+
+      # Custom PrometheusRule for Longhorn-specific alerts, including our custom orphaned ghost volume tracking
   - apiVersion: monitoring.coreos.com/v1
     kind: PrometheusRule
     metadata:
