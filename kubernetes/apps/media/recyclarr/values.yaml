@@ -76,7 +76,6 @@ configMaps:
             delete_old_custom_formats: true
             include_custom_format_when_renaming: true
 
-            # Auto-manage modern file-size constraints
             quality_definition:
               type: series
 
@@ -90,16 +89,11 @@ configMaps:
                       - e1a997ddb54e3ecbfe06341ad323c458  # Obfuscated
                       - 06d66ab109d4d2eddb2794d21526d140  # Retags
                       - 1b3994c551cbb92a2c781af061f4ab44  # Scene
-                    score: 0 # Uses official Trash Guide recommended defaults
+                    score: 0
 
-                  # Block all Dolby Vision variants on 1080p Web releases
+                  # Block non-fallback DV on Sonarr (Valid Sonarr ID)
                   - trash_ids:
-                      - c53085ddbd027d9624b320627748612f  # DV HDR10Plus
-                      - e23edd2482476e595fb990b12e7c609c  # DV HDR10
-                      - 58d6a88f13e2db7f5059c41047876f00  # DV
-                      - 55d53828b9d81cbe20b02efd00aa0efd  # DV HLG
-                      - a3e19f8f627608af0211acd02bf89735  # DV SDR
-                      - 4cfd34720ae6047c87c093408a287262  # DV (w/o HDR fallback)
+                      - d776a1ea912a117d66d83b880ff2055d  # DV (w/o HDR fallback)
                     score: -1000
 
             media_naming:
@@ -121,17 +115,16 @@ configMaps:
             delete_old_custom_formats: true
             include_custom_format_when_renaming: true
 
-            # Auto-manage modern file-size constraints
             quality_definition:
               type: movie
 
             quality_profiles:
               - name: SQP-1 (2160p)
                 custom_formats:
-                  # Avoid SDR x265 bloat and Profile 5 DV (No Fallback for Samsung/iPads)
+                  # Avoid SDR x265 bloat and use the corrected Radarr Profile 5 fallback ID
                   - trash_ids:
                       - 839bea857ed2c0a8e084f3cbdbd65ecb  # x265 (no HDR/DV)
-                      - 4cfd34720ae6047c87c093408a287262  # DV (w/o HDR fallback)
+                      - 923b6abef9b17f937fab56cfcf89e1f1  # DV (w/o HDR fallback) [CORRECTED]
                     score: -1000
 
                   # General Release Filtering (Trash Defaults)
