@@ -111,8 +111,6 @@ configMaps:
             delete_old_custom_formats: true
             quality_profiles:
               - name: SQP-1 (2160p)
-            include:
-              - template: radarr-custom-formats-sqp-1-2160p
             custom_formats:
               - trash_ids:
                   - 839bea857ed2c0a8e084f3cbdbd65ecb  # x265 (no HDR/DV)
