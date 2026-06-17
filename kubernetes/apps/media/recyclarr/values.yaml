@@ -96,9 +96,9 @@ configMaps:
                   - name: WEB-1080p
                     score: 0
 
-              # Block non-fallback DV on Sonarr (Restored to accurate Sonarr ID)
+              # Block non-fallback DV on Sonarr (Verified Upstream ID)
               - trash_ids:
-                  - d776a1ea912a117d66d83b880ff2055d  # DV (w/o HDR fallback)
+                  - 9b27ab6498ec0f31a3353992e19434ca  # DV (w/o HDR fallback)
                 assign_scores_to:
                   - name: WEB-1080p
                     score: -1000
