@@ -70,7 +70,7 @@ configMaps:
         # SONARR CONFIGURATION
         # -------------------------------------------------------------
         sonarr:
-          sonarr:
+          instance1:
             base_url: http://sonarr.vpn.svc.cluster.local:8989
             api_key: !env_var SONARR_API_KEY
             delete_old_custom_formats: true
@@ -96,28 +96,28 @@ configMaps:
                   - name: WEB-1080p
                     score: 0
 
-              # Block non-fallback DV on Sonarr (Uses unified global ID)
+              # Block non-fallback DV on Sonarr (Restored to accurate Sonarr ID)
               - trash_ids:
-                  - 923b6abef9b17f937fab56cfcf89e1f1  # DV (w/o HDR fallback)
+                  - d776a1ea912a117d66d83b880ff2055d  # DV (w/o HDR fallback)
                 assign_scores_to:
                   - name: WEB-1080p
                     score: -1000
 
-            # Tells Recyclarr to push the official complex tokens directly to Sonarr
+            # Valid Sonarr media naming specification structure
             media_naming:
-              series: plex-tvdb
+              series: default
               season: default
               episodes:
                 rename: true
-                standard: plex-tvdb
-                daily: plex-tvdb
-                anime: plex-tvdb
+                standard: default
+                daily: default
+                anime: default
 
         # -------------------------------------------------------------
         # RADARR CONFIGURATION
         # -------------------------------------------------------------
         radarr:
-          radarr:
+          instance1:
             base_url: http://radarr.vpn.svc.cluster.local:7878
             api_key: !env_var RADARR_API_KEY
             delete_old_custom_formats: true
@@ -152,7 +152,7 @@ configMaps:
                   - name: SQP-1 (2160p)
                     score: 0
 
-            # Tells Recyclarr to push the official complex tokens directly to Radarr
+            # Keeps Radarr's verified functional naming configuration
             media_naming:
               folder: plex-tmdb
               movie:
