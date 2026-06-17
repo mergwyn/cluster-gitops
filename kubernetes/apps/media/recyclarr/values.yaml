@@ -79,25 +79,32 @@ configMaps:
             quality_definition:
               type: series
 
+            # v8+ expects profiles declared as references here
             quality_profiles:
               - name: WEB-1080p
-                custom_formats:
-                  # General Release Filtering (Trash Defaults)
-                  - trash_ids:
-                      - 32b367365729d530ca1c124a0b180c64  # Bad Dual Groups
-                      - 82d40da2bc6923f41e14394075dd4b03  # No-RlsGroup
-                      - e1a997ddb54e3ecbfe06341ad323c458  # Obfuscated
-                      - 06d66ab109d4d2eddb2794d21526d140  # Retags
-                      - 1b3994c551cbb92a2c781af061f4ab44  # Scene
+
+            # v8+ expects custom_formats at the root level of the instance
+            custom_formats:
+              # General Release Filtering (Trash Defaults)
+              - trash_ids:
+                  - 32b367365729d530ca1c124a0b180c64  # Bad Dual Groups
+                  - 82d40da2bc6923f41e14394075dd4b03  # No-RlsGroup
+                  - e1a997ddb54e3ecbfe06341ad323c458  # Obfuscated
+                  - 06d66ab109d4d2eddb2794d21526d140  # Retags
+                  - 1b3994c551cbb92a2c781af061f4ab44  # Scene
+                assign_scores_to:
+                  - name: WEB-1080p
                     score: 0
 
-                  # Block non-fallback DV on Sonarr (Valid Sonarr ID)
-                  - trash_ids:
-                      - d776a1ea912a117d66d83b880ff2055d  # DV (w/o HDR fallback)
+              # Block non-fallback DV on Sonarr
+              - trash_ids:
+                  - d776a1ea912a117d66d83b880ff2055d  # DV (w/o HDR fallback)
+                assign_scores_to:
+                  - name: WEB-1080p
                     score: -1000
 
             media_naming:
-              include_custom_format_when_renaming: true # <-- MOVED HERE
+              include_custom_format_when_renaming: true
               series: "{Series TitleYear} [tvdbid-{TvdbId}]"
               season: "Season {season:00}"
               episodes:
@@ -120,25 +127,31 @@ configMaps:
 
             quality_profiles:
               - name: SQP-1 (2160p)
-                custom_formats:
-                  # Avoid SDR x265 bloat and use the corrected Radarr Profile 5 fallback ID
-                  - trash_ids:
-                      - 839bea857ed2c0a8e084f3cbdbd65ecb  # x265 (no HDR/DV)
-                      - 923b6abef9b17f937fab56cfcf89e1f1  # DV (w/o HDR fallback)
+
+            # v8+ expects custom_formats at the root level of the instance
+            custom_formats:
+              # Avoid SDR x265 bloat and use the corrected Radarr Profile 5 fallback ID
+              - trash_ids:
+                  - 839bea857ed2c0a8e084f3cbdbd65ecb  # x265 (no HDR/DV)
+                  - 923b6abef9b17f937fab56cfcf89e1f1  # DV (w/o HDR fallback)
+                assign_scores_to:
+                  - name: SQP-1 (2160p)
                     score: -1000
 
-                  # General Release Filtering (Trash Defaults)
-                  - trash_ids:
-                      - b6832f586342ef70d9c128d40c07b872  # Bad Dual Groups
-                      - cc444569854e9de0b084ab2b8b1532b2  # Black and White Editions
-                      - ae9b7c9ebde1f3bd336a8cbd1ec4c5e5  # No-RlsGroup
-                      - 7357cf5161efbf8c4d5d0c30b4815ee2  # Obfuscated
-                      - 5c44f52a8714fdd79bb4d98e2673be1f  # Retags
-                      - f537cf427b64c38c8e36298f657e4828  # Scene
+              # General Release Filtering (Trash Defaults)
+              - trash_ids:
+                  - b6832f586342ef70d9c128d40c07b872  # Bad Dual Groups
+                  - cc444569854e9de0b084ab2b8b1532b2  # Black and White Editions
+                  - ae9b7c9ebde1f3bd336a8cbd1ec4c5e5  # No-RlsGroup
+                  - 7357cf5161efbf8c4d5d0c30b4815ee2  # Obfuscated
+                  - 5c44f52a8714fdd79bb4d98e2673be1f  # Retags
+                  - f537cf427b64c38c8e36298f657e4828  # Scene
+                assign_scores_to:
+                  - name: SQP-1 (2160p)
                     score: 0
 
             media_naming:
-              include_custom_format_when_renaming: true # <-- MOVED HERE
+              include_custom_format_when_renaming: true
               folder: "{Movie CleanTitle} ({Release Year}) [imdb-{ImdbId}]"
               movie:
                 rename: true
