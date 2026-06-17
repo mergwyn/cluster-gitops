@@ -96,22 +96,22 @@ configMaps:
                   - name: WEB-1080p
                     score: 0
 
-              # Block non-fallback DV on Sonarr
+              # Block non-fallback DV on Sonarr (Uses unified global ID)
               - trash_ids:
-                  - d776a1ea912a117d66d83b880ff2055d  # DV (w/o HDR fallback)
+                  - 923b6abef9b17f937fab56cfcf89e1f1  # DV (w/o HDR fallback)
                 assign_scores_to:
                   - name: WEB-1080p
                     score: -1000
 
-            # Core Media Naming block (Correct v8 root alignment)
+            # Tells Recyclarr to push the official complex tokens directly to Sonarr
             media_naming:
-              series: "{Series TitleYear} [tvdbid-{TvdbId}]"
-              season: "Season {season:00}"
+              series: plex-tvdb
+              season: default
               episodes:
                 rename: true
-                standard: "{Series TitleYear} - S{season:00}E{episode:00} - {Episode CleanTitle} [{Custom Formats}][{Quality Full}][{MediaInfo VideoDynamicRange}][{MediaInfo VideoCodec}][{Mediainfo AudioCodec} {MediaInfo AudioChannels}][-{Release Group}]"
-                daily: "{Series TitleYear} - {Episode AirDate} - {Episode CleanTitle} [{Custom Formats}][{Quality Full}][{MediaInfo VideoDynamicRange}][{MediaInfo VideoCodec}][{Mediainfo AudioCodec} {MediaInfo AudioChannels}][-{Release Group}]"
-                anime: "{Series TitleYear} - S{season:00}E{episode:00} - {Episode CleanTitle} [{Custom Formats}][{Quality Full}][{MediaInfo VideoDynamicRange}][{MediaInfo VideoCodec}][{Mediainfo AudioCodec} {MediaInfo AudioChannels}][-{Release Group}]"
+                standard: plex-tvdb
+                daily: plex-tvdb
+                anime: plex-tvdb
 
         # -------------------------------------------------------------
         # RADARR CONFIGURATION
@@ -152,9 +152,9 @@ configMaps:
                   - name: SQP-1 (2160p)
                     score: 0
 
-            # Core Media Naming block (Correct v8 root alignment)
+            # Tells Recyclarr to push the official complex tokens directly to Radarr
             media_naming:
-              folder: "{Movie CleanTitle} ({Release Year}) [imdb-{ImdbId}]"
+              folder: plex-tmdb
               movie:
                 rename: true
-                standard: "{Movie CleanTitle} ({Release Year}) {Edition Tags} [imdb-{ImdbId}] [{Custom Formats}][{Quality Full}][{MediaInfo VideoDynamicRange}][{MediaInfo VideoBitDepth}bit][{MediaInfo VideoCodec}][{Mediainfo AudioCodec} {MediaInfo AudioChannels}][-{Release Group}]"
+                standard: plex-tmdb
