@@ -67,7 +67,7 @@ configMaps:
     data:
       recyclarr.yml: |-
         # -------------------------------------------------------------
-        # SONARR CONFIGURATION
+        # SONARR CONFIGURATIO
         # -------------------------------------------------------------
         sonarr:
           sonarr:
