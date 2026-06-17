@@ -87,12 +87,12 @@ configMaps:
                 assign_scores_to:
                   - name: WEB-1080p
               - trash_ids:
-                  - c53085ddbd027d9624b320627748612f # DV HDR10Plus
-                  - e23edd2482476e595fb990b12e7c609c # DV HDR10
-                  - 58d6a88f13e2db7f5059c41047876f00 # DV
-                  - 55d53828b9d81cbe20b02efd00aa0efd # DV HLG
-                  - a3e19f8f627608af0211acd02bf89735 # DV SDR
-                  - 4cfd34720ae6047c87c093408a287262 # DV (w/o HDR fallback)
+                  - c53085ddbd027d9624b320627748612f  # DV HDR10Plus
+                  - e23edd2482476e595fb990b12e7c609c  # DV HDR10
+                  - 58d6a88f13e2db7f5059c41047876f00  # DV
+                  - 55d53828b9d81cbe20b02efd00aa0efd  # DV HLG
+                  - a3e19f8f627608af0211acd02bf89735  # DV SDR
+                  - 4cfd34720ae6047c87c093408a287262  # DV (w/o HDR fallback)
                 assign_scores_to:
                   - name: WEB-1080p
                     score: -1000
@@ -112,9 +112,7 @@ configMaps:
             quality_profiles:
               - name: SQP-1 (2160p)
             include:
-              # - template: radarr-quality-definition-sqp-streaming
               - template: radarr-quality-definition-movie
-              # - template: radarr-quality-profile-sqp-1-2160p-default
               - template: radarr-custom-formats-sqp-1-2160p
             custom_formats:
               - trash_ids:
@@ -123,10 +121,10 @@ configMaps:
                   - name: SQP-1 (2160p)
                     score: -1000
               - trash_ids:
-                  - 4cfd34720ae6047c87c093408a287262 # DV (w/o HDR fallback)
+                  - 4cfd34720ae6047c87c093408a287262  # DV (w/o HDR fallback)
                 assign_scores_to:
-                - name: SQP-1 (2160p)
-                  score: 0
+                  - name: SQP-1 (2160p)
+                    score: -1000
               - trash_ids:
                   - b6832f586342ef70d9c128d40c07b872  # Bad Dual Groups
                   - cc444569854e9de0b084ab2b8b1532b2  # Black and White Editions
