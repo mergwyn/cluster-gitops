@@ -112,7 +112,6 @@ configMaps:
             quality_profiles:
               - name: SQP-1 (2160p)
             include:
-              - template: radarr-quality-definition-movie
               - template: radarr-custom-formats-sqp-1-2160p
             custom_formats:
               - trash_ids:
