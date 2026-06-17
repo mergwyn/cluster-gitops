@@ -67,15 +67,15 @@ configMaps:
     data:
       recyclarr.yml: |-
         # -------------------------------------------------------------
-        # SONARR CONFIGURATIO
+        # SONARR CONFIGURATION
         # -------------------------------------------------------------
         sonarr:
           sonarr:
             base_url: http://sonarr.vpn.svc.cluster.local:8989
             api_key: !env_var SONARR_API_KEY
             delete_old_custom_formats: true
-            include_custom_format_when_renaming: true
 
+            # Auto-manage modern file-size constraints
             quality_definition:
               type: series
 
@@ -97,6 +97,7 @@ configMaps:
                     score: -1000
 
             media_naming:
+              include_custom_format_when_renaming: true # <-- MOVED HERE
               series: "{Series TitleYear} [tvdbid-{TvdbId}]"
               season: "Season {season:00}"
               episodes:
@@ -113,7 +114,6 @@ configMaps:
             base_url: http://radarr.vpn.svc.cluster.local:7878
             api_key: !env_var RADARR_API_KEY
             delete_old_custom_formats: true
-            include_custom_format_when_renaming: true
 
             quality_definition:
               type: movie
@@ -124,7 +124,7 @@ configMaps:
                   # Avoid SDR x265 bloat and use the corrected Radarr Profile 5 fallback ID
                   - trash_ids:
                       - 839bea857ed2c0a8e084f3cbdbd65ecb  # x265 (no HDR/DV)
-                      - 923b6abef9b17f937fab56cfcf89e1f1  # DV (w/o HDR fallback) [CORRECTED]
+                      - 923b6abef9b17f937fab56cfcf89e1f1  # DV (w/o HDR fallback)
                     score: -1000
 
                   # General Release Filtering (Trash Defaults)
@@ -138,6 +138,7 @@ configMaps:
                     score: 0
 
             media_naming:
+              include_custom_format_when_renaming: true # <-- MOVED HERE
               folder: "{Movie CleanTitle} ({Release Year}) [imdb-{ImdbId}]"
               movie:
                 rename: true
