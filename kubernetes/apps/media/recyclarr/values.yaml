@@ -103,16 +103,15 @@ configMaps:
                   - name: WEB-1080p
                     score: -1000
 
-            # Correct v8+ Media Naming Block structure
-            naming:
-              media_naming:
-                series: "{Series TitleYear} [tvdbid-{TvdbId}]"
-                season: "Season {season:00}"
-                episodes:
-                  rename: true
-                  standard: "{Series TitleYear} - S{season:00}E{episode:00} - {Episode CleanTitle} [{Custom Formats}][{Quality Full}][{MediaInfo VideoDynamicRange}][{MediaInfo VideoCodec}][{Mediainfo AudioCodec} {MediaInfo AudioChannels}][-{Release Group}]"
-                  daily: "{Series TitleYear} - {Episode AirDate} - {Episode CleanTitle} [{Custom Formats}][{Quality Full}][{MediaInfo VideoDynamicRange}][{MediaInfo VideoCodec}][{Mediainfo AudioCodec} {MediaInfo AudioChannels}][-{Release Group}]"
-                  anime: "{Series TitleYear} - S{season:00}E{episode:00} - {Episode CleanTitle} [{Custom Formats}][{Quality Full}][{MediaInfo VideoDynamicRange}][{MediaInfo VideoCodec}][{Mediainfo AudioCodec} {MediaInfo AudioChannels}][-{Release Group}]"
+            # Core Media Naming block (Correct v8 root alignment)
+            media_naming:
+              series: "{Series TitleYear} [tvdbid-{TvdbId}]"
+              season: "Season {season:00}"
+              episodes:
+                rename: true
+                standard: "{Series TitleYear} - S{season:00}E{episode:00} - {Episode CleanTitle} [{Custom Formats}][{Quality Full}][{MediaInfo VideoDynamicRange}][{MediaInfo VideoCodec}][{Mediainfo AudioCodec} {MediaInfo AudioChannels}][-{Release Group}]"
+                daily: "{Series TitleYear} - {Episode AirDate} - {Episode CleanTitle} [{Custom Formats}][{Quality Full}][{MediaInfo VideoDynamicRange}][{MediaInfo VideoCodec}][{Mediainfo AudioCodec} {MediaInfo AudioChannels}][-{Release Group}]"
+                anime: "{Series TitleYear} - S{season:00}E{episode:00} - {Episode CleanTitle} [{Custom Formats}][{Quality Full}][{MediaInfo VideoDynamicRange}][{MediaInfo VideoCodec}][{Mediainfo AudioCodec} {MediaInfo AudioChannels}][-{Release Group}]"
 
         # -------------------------------------------------------------
         # RADARR CONFIGURATION
@@ -153,10 +152,9 @@ configMaps:
                   - name: SQP-1 (2160p)
                     score: 0
 
-            # Correct v8+ Media Naming Block structure
-            naming:
-              media_naming:
-                folder: "{Movie CleanTitle} ({Release Year}) [imdb-{ImdbId}]"
-                movie:
-                  rename: true
-                  standard: "{Movie CleanTitle} ({Release Year}) {Edition Tags} [imdb-{ImdbId}] [{Custom Formats}][{Quality Full}][{MediaInfo VideoDynamicRange}][{MediaInfo VideoBitDepth}bit][{MediaInfo VideoCodec}][{Mediainfo AudioCodec} {MediaInfo AudioChannels}][-{Release Group}]"
+            # Core Media Naming block (Correct v8 root alignment)
+            media_naming:
+              folder: "{Movie CleanTitle} ({Release Year}) [imdb-{ImdbId}]"
+              movie:
+                rename: true
+                standard: "{Movie CleanTitle} ({Release Year}) {Edition Tags} [imdb-{ImdbId}] [{Custom Formats}][{Quality Full}][{MediaInfo VideoDynamicRange}][{MediaInfo VideoBitDepth}bit][{MediaInfo VideoCodec}][{Mediainfo AudioCodec} {MediaInfo AudioChannels}][-{Release Group}]"
