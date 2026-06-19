@@ -13,9 +13,12 @@ spec:
           - resources:
               kinds: [Pod]
               namespaces:
+                - argocd
+                - home-assistant
                 - media
-                - system
                 - network
+                - system
+                - vpn
       mutate:
         patchStrategicMerge:
           spec:
