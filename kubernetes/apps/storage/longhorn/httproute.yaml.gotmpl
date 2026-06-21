@@ -9,3 +9,13 @@ httproute:
     - "{{.Release.Name}}.{{.Values.cluster.domain}}"
   rules:
   pathType: PathPrefix
+
+
+ingress:
+  enabled: true
+  ingressClassname: cloudflare-tunnel
+  annotations:
+    cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
+  host: "{{.Release.Name}}.{{.Values.cluster.domain}}"
+  tls: false
+  path: /
