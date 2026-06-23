@@ -37,6 +37,11 @@ extraObjects:
     metadata:
       name: snapshot-purge-job
       namespace: longhorn-system
+      labels:
+        app.kubernetes.io/managed-by: "Helm"
+      annocations:
+        meta.helm.sh/release-name: "{{.Release.Name}}"
+        meta.helm.sh/release-namespace: "{{.Release.Namespace}}"
     spec:
       task: "snapshot-delete"
       cron: "45 6 * * *"
@@ -66,6 +71,11 @@ extraObjects:
       namespace: monitoring
       labels:
         release: kube-prometheus-stack
+        app.kubernetes.io/managed-by: "Helm"
+      annocations:
+        meta.helm.sh/release-name: "{{.Release.Name}}"
+        meta.helm.sh/release-namespace: "{{.Release.Namespace}}"
+
     spec:
       groups:
         - name: longhorn.storage.alerts
