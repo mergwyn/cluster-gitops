@@ -11,6 +11,14 @@ service:
 
 replicaCount: 1
 
+resources:
+  requests:
+    cpu: 15m
+    memory: 1325Mi
+  limits:
+    cpu: 15m
+    memory: 1325Mi
+
 ollamaUrls:
   - http://mike.theclarkhome.com:11434
 
