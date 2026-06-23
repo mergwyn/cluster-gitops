@@ -1,0 +1,11 @@
+---
+bases:
+  - ../../../clusters/environments.yaml
+
+releases:
+  - name: descheduler
+    chart: oci://ghcr.io/home-operations/charts-mirror/descheduler
+    version: "0.36.0"
+    namespace: '{{ env "helmfile_namespace" | default "kube-system" }}'
+    values:
+      - values.yaml

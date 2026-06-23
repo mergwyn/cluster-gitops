@@ -1,0 +1,22 @@
+---
+dryRun: false
+# schedule: "*/15 * * * *"
+
+deschedulerPolicy:
+  nodeSelector: "descheduler.io/exclude!=true"
+  strategies:
+    "LowNodeUtilization":
+      enabled: true
+      params:
+        nodeResourceUtilizationThresholds:
+          thresholds:
+            "cpu": 20
+            "memory": 20
+          targetThresholds:
+            "cpu": 50
+            "memory": 50
+          excludedNamespaces:
+            - "kube-system"
+            - "longhorn-system"
+            - "metallb-system"
+            - "network"
