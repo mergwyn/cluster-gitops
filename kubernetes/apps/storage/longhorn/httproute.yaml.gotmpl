@@ -11,12 +11,11 @@ httproute:
   pathType: PathPrefix
 
 
-#ingress:
-#  enabled: true
-#  ingressClassname: cloudflare-tunnel
-#  annotations:
-#    cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
-#  host: "{{.Release.Name}}.{{.Values.cluster.domain}}"
-#  tls: false
-#  path: /
-#
+ingress:
+  enabled: true
+  ingressClassName: cloudflare-tunnel
+  annotations:
+    cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
+  host: "{{.Release.Name}}.{{.Values.cluster.domain}}"
+  path: /
+
