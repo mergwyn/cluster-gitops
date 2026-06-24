@@ -60,7 +60,7 @@ controllers:
         image:
           repository: ghcr.io/esphome/esphome
           # yamllint disable-line rule:line-length
-          tag: 2026.4.5@sha256:7419641c7fd8e37d6362f71c458bb17570f1f471cfea3b022b30dfd8117a2361
+          tag: 2026.6.2@sha256:526a75c8d64a0d962a3b088c3af4fa7cf8ecf7161b995be57fc95b0726496a39
         env:
           TZ: "Europe/London"
           ESPHOME_DASHBOARD_USE_PING: "true"
