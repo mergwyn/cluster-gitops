@@ -59,7 +59,22 @@ configuration:
   extraArgs:
     - "--backup-repository-configmap=velero-backup-repository-config"
 
+# helmfile values for the velero release
 configMaps:
+  node-agent-config:
+    data:
+      config.json: |
+        {
+          "backupPVC": {
+            "longhorn": {
+              "storageClass": "longhorn-velero-backup"
+            }
+          },
+          "loadConcurrency": {
+            "globalConfig": 1
+          }
+        }
+
   backup-repository-config:
     data:
       "kopia": |
@@ -67,6 +82,18 @@ configMaps:
           "cacheLimitMB": 2048,
           "enableCompression": true
         }
+
+nodeAgent:
+  extraArgs:
+    - --node-agent-configmap=velero-node-agent-config
+  resources:
+    requests:
+      cpu: 350m
+      memory: 600M
+    limits:
+      # cpu: 90m
+      memory: 2G
+
 
 initContainers:
   - name: velero-plugin-for-aws
@@ -84,15 +111,6 @@ resources:
     memory: 1066M
 
 deployNodeAgent: true
-
-nodeAgent:
-  resources:
-    requests:
-      cpu: 350m
-      memory: 600M
-    limits:
-      # cpu: 90m
-      memory: 2G
 
 # TODO revisit hourly exclusion and timeouts when prometheus calms down"
 schedules:

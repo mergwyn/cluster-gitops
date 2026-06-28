@@ -50,6 +50,19 @@ extraObjects:
       groups:
         - default
 
+  - apiVersion: storage.k8s.io/v1
+    kind: StorageClass
+    metadata:
+      name: longhorn-velero-backup
+    provisioner: driver.longhorn.io
+    allowVolumeExpansion: true
+    reclaimPolicy: Delete
+    volumeBindingMode: Immediate
+    parameters:
+      numberOfReplicas: "1"
+      staleReplicaTimeout: "30"
+      fsType: "ext4"
+
   - apiVersion: snapshot.storage.k8s.io/v1
     kind: VolumeSnapshotClass
     metadata:
