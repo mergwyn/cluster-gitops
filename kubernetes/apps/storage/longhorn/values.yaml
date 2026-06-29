@@ -86,7 +86,7 @@ extraObjects:
       labels:
         release: kube-prometheus-stack
         app.kubernetes.io/managed-by: "Helm"
-      annocations:
+      annotations:
         meta.helm.sh/release-name: "{{.Release.Name}}"
         meta.helm.sh/release-namespace: "{{.Release.Namespace}}"
 
