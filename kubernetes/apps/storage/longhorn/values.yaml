@@ -1,5 +1,6 @@
 defaultSettings:
   defaultReplicaCount: 3
+  concurrentReplicaRebuildPerNodeLimit: 3
   replicaSoftAntiAffinity: false
   replicaAutoBalance: best-effort
   defaultDataLocality: best-effort
