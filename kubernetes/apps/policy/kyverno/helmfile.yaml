@@ -5,7 +5,7 @@ bases:
 
 repositories:
   - name: kyverno
-    url: https://ghcr.io/kyverno/charts
+    url: https://kyverno.github.io/kyverno/
 
 releases:
   - name: kyverno
