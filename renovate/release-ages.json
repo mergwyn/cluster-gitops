@@ -2,37 +2,35 @@
   "minimumReleaseAgeBehaviour": "timestamp-optional",
   "packageRules": [
     {
-      "matchUpdateTypes": [
-        "major",
-        "minor",
-        "patch",
-        "digest"
-      ],
+      "matchUpdateTypes": ["major", "minor", "patch", "digest"],
       "minimumReleaseAge": "3 days"
     },
     {
-      "matchDatasources": [
-        "docker"
-      ],
-      "matchUpdateTypes": [
-        "digest"
-      ],
+      "matchDatasources": ["docker"],
+      "matchUpdateTypes": ["digest"],
       "minimumReleaseAge": "1 days"
     },
     {
-      "matchDatasources": [
-        "docker"
-      ],
-      "matchUpdateTypes": [
-        "minor"
-      ],
+      "matchDatasources": ["docker"],
+      "matchUpdateTypes": ["minor"],
       "minimumReleaseAge": "5 days"
     },
     {
-      "matchUpdateTypes": [
-        "major"
-      ],
+      "matchUpdateTypes": ["major"],
       "minimumReleaseAge": "14 days"
+    },
+    {
+      "description": [
+        "Disable release age checks for GHCR images missing API timestamps to clear debug logs"
+      ],
+      "matchDatasources": ["docker"],
+      "matchPackagePrefixes": [
+        "ghcr.io/coder/",
+        "ghcr.io/esphome/",
+        "ghcr.io/home-assistant/",
+        "ghcr.io/koenkk/"
+      ],
+      "minimumReleaseAge": null
     }
   ]
 }
