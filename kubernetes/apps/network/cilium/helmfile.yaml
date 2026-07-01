@@ -2,9 +2,13 @@
 bases:
   - ../../../clusters/environments.yaml
 
+repositories:
+  - name: cilium
+    url: https://helm.cilium.io/
+
 releases:
   - name: cilium
-    chart: oci://quay.io/cilium/charts/cilium
+    chart: cilium/cilium
     version: 1.19.4
     values:
       - values.yaml.gotmpl
