@@ -11,7 +11,7 @@ repositories:
 releases:
   - name: kube-prometheus-stack
     chart: prometheus-community/kube-prometheus-stack
-    version: 86.2.3
+    version: 86.3.2
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
     values:
       - values.yaml.gotmpl
