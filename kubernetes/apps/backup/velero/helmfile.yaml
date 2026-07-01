@@ -2,9 +2,13 @@
 bases:
   - ../../../clusters/environments.yaml
 
+repositories:
+  - name: velero
+    url: https://vmware-tanzu.github.io/helm-charts
+
 releases:
   - name: velero
-    chart: oci://ghcr.io/vmware-tanzu/charts/velero
+    chart: velero/velero
     version: 12.1.0
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
     values:
