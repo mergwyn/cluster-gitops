@@ -12,11 +12,6 @@ defaultBackupStorageLocation: rustfs
 snapshotsEnabled: false
 # defaultVolumeSnapshotLocations: [minio, idrive, default]
 
-kubectl:
-  image:
-    repository: public.ecr.aws/bitnami/kubectl
-    tag: 1.36.1@sha256:39474e86a263bc8bc016bebe50c453fbba3c3bfdeda5419774fd270bdbec72bf
-
 configuration:
   uploaderType: kopia
   # defaultVolumesToFsBackup: true
