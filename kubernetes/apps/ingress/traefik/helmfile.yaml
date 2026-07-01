@@ -5,9 +5,13 @@ bases:
 apiVersions:
   - monitoring.coreos.com/v1
 
+repositories:
+  - name: traefik
+    url: https://traefik.github.io/charts
+
 releases:
   - name: traefik
-    chart: oci://ghcr.io/traefik/helm/traefik
+    chart: traefik/traefik
     version: 40.3.0
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
     values:

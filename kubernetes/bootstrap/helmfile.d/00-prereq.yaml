@@ -9,6 +9,9 @@ repositories:
     url: https://prometheus-community.github.io/helm-charts/
   - name: bedag
     url: https://bedag.github.io/helm-charts
+  - name: traefik
+    url: https://traefik.github.io/charts
+
 
 releases:
 #  - name: bootstrap-namespaces
@@ -64,7 +67,7 @@ releases:
 
   - name: traefik
     namespace: network
-    chart: oci://ghcr.io/traefik/helm/traefik
+    chart: traefik/traefik
     version: 40.3.0
     set:
       # Bootstrap-only: install CRDs so ArgoCD can manage IngressRoute resources.
@@ -83,4 +86,3 @@ releases:
         value: false
       - name: serviceAccount.name
         value: undef
-
