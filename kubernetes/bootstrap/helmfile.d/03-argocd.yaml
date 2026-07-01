@@ -5,6 +5,8 @@ bases:
   - ../environments.yaml
 
 repositories:
+  - name: argoproj
+    url: https://argoproj.github.io/argo-helm/
   - name: bedag
     url: https://bedag.github.io/helm-charts/
 
@@ -18,7 +20,7 @@ releases:
 
   - name: argocd
     namespace: argocd
-    chart: oci://ghcr.io/argoproj/argo-helm/argo-cd
+    chart: argoproj/argo-cd
     version: 9.5.21
     values:
       - ../../apps/gitops/argocd/values.yaml
