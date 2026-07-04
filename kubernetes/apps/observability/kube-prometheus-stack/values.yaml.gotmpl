@@ -23,6 +23,8 @@ crds:
   enabled: true
   upgradeJob:
     enabled: true
+    labels:
+      velero.io/exclude-from-backup: "true"
     #forceConflicts: true
 
 alertmanager:
