@@ -23,9 +23,12 @@ crds:
   enabled: true
   upgradeJob:
     enabled: true
+    #forceConflicts: true
     labels:
       velero.io/exclude-from-backup: "true"
-    #forceConflicts: true
+    serviceAccount:
+      labels:
+        velero.io/exclude-from-backup: "true"
 
 alertmanager:
   config:
