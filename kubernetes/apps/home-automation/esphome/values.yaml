@@ -18,8 +18,8 @@ controllers:
     initContainers:
       config-initialization:
         image:
-          repository: docker.io/library/alpine/git
-          tag: 2.47.2
+          repository: docker.io/alpine/git
+          tag: 2.54.0
         command: ["/bin/sh", "-c"]
         args:
           - |-
