@@ -16,40 +16,27 @@ controllers:
           }]
 
     initContainers:
-      kopiaignore:
+      config-initialization:
         image:
-          repository: docker.io/library/alpine
-          tag: 3.24@sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b
+          repository: docker.io/alpine/git
+          tag: 2.47.2
         command: ["/bin/sh", "-c"]
         args:
           - |-
+            set -ex
             tee /config/.kopiaignore <<!
             /.esphome
             /.code-server/logs
             /.git
             !
-        securityContext:
-          runAsUser: 0
-      github-setup:
-        # Set up config repo
-        image:
-          repository: docker.io/library/ubuntu
-          tag: 26.04@sha256:b7f48194d4d8b763a478a621cdc81c27be222ba2206ca3ca6bc42b49685f3d9e
-        command: ["/bin/sh", "-c"]
-        args:
-          - |-
-            set -x
             cd /config
             # Need to initialise repository?
             if [ ! -d .git ] ; then
-              # This container will never have git installed
-              apt update && apt install -y git
-              # Prepare to clone
+              echo "Initializing config repository from GitHub..."
               mkdir temp-dir
-              git clone https://github.com/mergwyn/esphome-config temp-dir
+              git clone https://github.com/mergwyn/home-assistant-config temp-dir
               mv temp-dir/.git .
               rm -rf temp-dir
-              # Finally get files
               git checkout .
             fi
         securityContext:
