@@ -70,7 +70,7 @@ controllers:
         # Connect to config repo
         image:
           repository: docker.io/library/ubuntu
-          tag: 26.04@sha256:b7f48194d4d8b763a478a621cdc81c27be222ba2206ca3ca6bc42b49685f3d9e
+          tag: 26.10@sha256:68b4e16d3b586c94c232ca319a42d0a48d3d778553cbe5a07c854d0ea5eecd69
         command: ["/bin/sh", "-c"]
         args:
           - |-
