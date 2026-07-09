@@ -45,12 +45,11 @@ gatewayClass:
 rbac:
   enabled: true
 
-logs:
-  general:
-    level: INFO
-    enabled: true
-  access:
-    enabled: false
+log:
+  enabled: true
+  level: INFO
+accessLog:
+  enabled: false
 
 deployment:
   enabled: true
