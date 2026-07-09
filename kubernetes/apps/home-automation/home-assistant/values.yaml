@@ -54,7 +54,7 @@ controllers:
       config-initialization:
         image:
           repository: docker.io/alpine/git
-          tag: 2.54.0
+          tag: 2.54.0@sha256:fac7bc2c12aa52bff1c78a26359990e149954a60cdd5d6e20e7e009666c73e0a
         command: ["/bin/sh", "-c"]
         args:
           - |-
@@ -116,7 +116,7 @@ controllers:
         image:
           repository: ghcr.io/home-assistant/home-assistant
           # yamllint disable-line rule:line-length
-          tag: "2026.6.3@sha256:aed891b8f801072302815b4b0fab5adb714182967e9d2e2d4a2be558241c73ad"
+          tag: "2026.7.1@sha256:f73512ba4fe06bb4d57636fe3578d0820cdec46f81e8f837ab59e451662ff3cb"
         env:
           TZ: Europe/London
           VENV_FOLDER: /venv
