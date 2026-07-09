@@ -54,10 +54,10 @@ controllers:
           DISABLE_HA_AUTHENTICATION: "true"
         resources:
           requests:
-            cpu: 5m
-            memory: 512Mi
+            cpu: 2000m
+            memory: 1Gi
           limits:
-            memory: 2G
+            memory: 3Gi
 
       code-server:
         dependsOn: app
@@ -85,10 +85,10 @@ controllers:
         resources:
           requests:
             cpu: 10m
-            memory: 443M
+            memory: 443Mi
           limits:
             # cpu: null
-            memory: 3G
+            memory: 3Gi
 
 service:
   app:
