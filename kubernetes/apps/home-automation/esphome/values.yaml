@@ -57,7 +57,7 @@ controllers:
             cpu: 2000m
             memory: 1Gi
           limits:
-            memory: 3Gi
+            memory: 3584Mi
 
       code-server:
         dependsOn: app
