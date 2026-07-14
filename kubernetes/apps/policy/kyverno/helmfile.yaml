@@ -11,7 +11,7 @@ releases:
   - name: kyverno
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
     chart: kyverno/kyverno
-    version: 3.8.1
+    version: 3.8.2
     force: true
     values:
       - values.yaml
