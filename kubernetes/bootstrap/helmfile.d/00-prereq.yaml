@@ -36,7 +36,7 @@ releases:
   - name: kube-prometheus-stack
     chart: prometheus-community/kube-prometheus-stack
     namespace: monitoring
-    version: 87.15.1
+    version: 87.15.2
     set:
       # Bootstrap-only: install CRDs so ArgoCD can manage prometheysRule resources.
       # Runtime is installed later by ArgoCD using the same chart.
