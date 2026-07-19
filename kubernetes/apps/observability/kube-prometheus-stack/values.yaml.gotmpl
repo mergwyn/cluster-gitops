@@ -179,6 +179,8 @@ kubelet:
         action: drop
 
 grafana:
+  strategy:
+    type: Recreate
   adminPassword: ""
   admin:
     ## Name of the secret. Can be templated.
