@@ -119,6 +119,18 @@ schedules:
       csiSnapshotTimeout: 30m
       excludedNamespaces:
         - velero
+        - monitoring          # NEW — pulled out to isolate its I/O
+
+  daily-idrive-monitoring:     # NEW schedule
+    disabled: false
+    schedule: "0 4 * * *"      # 30 min after daily-idrive starts, clear of its ~57m run
+    template:
+      ttl: "168h"
+      storageLocation: idrive
+      csiSnapshotTimeout: 30m
+      includedNamespaces:
+        - monitoring
+
   weekly-idrive:
     disabled: false
     schedule: "30 4 * * 0"
