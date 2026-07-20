@@ -11,10 +11,19 @@ defaultPodOptions:
 controllers:
   home-assistant:
     annotations:
+      controllers:
+  home-assistant:
+    annotations:
+      controllers:
+  home-assistant:
+    annotations:
       secret.reloader.stakater.com/reload: >-
-        {{.Release.Name}}-secret,
-        {{.Release.Name}}-github,
-        {{.Release.Name}}-prometheus
+        {{- list 
+          (printf "%s-secret" .Release.Name)
+          (printf "%s-github" .Release.Name)
+          (printf "%s-prometheus" .Release.Name)
+          | join "," 
+        -}}
 
     pod:
       hostNetwork: true
