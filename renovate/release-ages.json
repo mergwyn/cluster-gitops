@@ -29,9 +29,9 @@
         "ghcr.io/esphome/",
         "ghcr.io/home-assistant/",
         "ghcr.io/koenkk/",
-        "ghcr.io/k8snetworkplumbingwg",
-        "ghcr.io/dispatcharr",
-        "ghcr.io/home-operations"
+        "ghcr.io/k8snetworkplumbingwg/",
+        "ghcr.io/dispatcharr/",
+        "ghcr.io/home-operations/"
       ],
       "minimumReleaseAge": null
     }
