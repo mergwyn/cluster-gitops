@@ -11,7 +11,7 @@ defaultPodOptions:
 controllers:
   home-assistant:
     annotations:
-      secret.reloader.stakater.com/reload: <-
+      secret.reloader.stakater.com/reload: >-
         {{.Release.Name}}-secret,
         {{.Release.Name}}-github,
         {{.Release.Name}}-prometheus
