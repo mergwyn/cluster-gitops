@@ -9,7 +9,7 @@ repositories:
 releases:
   - name: cilium
     chart: cilium/cilium
-    version: 1.19.5
+    version: 1.19.6
     values:
       - values.yaml.gotmpl
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
