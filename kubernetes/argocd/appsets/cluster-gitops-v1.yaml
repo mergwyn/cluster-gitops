@@ -69,6 +69,14 @@ spec:
           - RespectIgnoreDifferences=true
 
       ignoreDifferences:
+        # Try removing this once the helmfile plugin is updated to use the new helm diff plugin
+        - group: ""
+          kind: ConfigMap
+          name: kube-prometheus-stack-grafana
+          namespace: monitoring
+          jsonPointers:
+            - /data/download_dashboards.sh
+
         - kind: StatefulSet
           group: "*"
           name: mail
