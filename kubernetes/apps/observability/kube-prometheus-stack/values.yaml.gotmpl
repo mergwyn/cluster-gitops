@@ -175,7 +175,7 @@ kubelet:
   serviceMonitor:
     metricRelabelings:
       - sourceLabels: [__name__]
-        regex: 'apiserver_request_duration_seconds_bucket|apiserver_request_sli_duration_seconds_bucket|apiserver_request_body_size_bytes_bucket|apiserver_response_sizes_bucket|apiserver_watch_list_duration_seconds_bucket|apiserver_watch_cache_read_wait_seconds_bucket|apiserver_watch_events_sizes_bucket|etcd_request_duration_seconds_bucket'
+        regex: 'apiserver_.*|etcd_request_duration_seconds_bucket|workqueue_.*|scheduler_plugin_execution_duration_seconds_bucket|prober_probe_duration_seconds_bucket'
         action: drop
 
 grafana:
