@@ -1,22 +1,29 @@
 ---
 dryRun: false
-# schedule: "*/15 * * * *"
+schedule: "0 * * * *"
 
 deschedulerPolicy:
   nodeSelector: "descheduler.io/exclude!=true"
+
+  maxNoOfPodsToEvictPerNode: 2
+  maxNoOfPodsToEvictPerNamespace: 1
+
   strategies:
     "LowNodeUtilization":
       enabled: true
       params:
         nodeResourceUtilizationThresholds:
           thresholds:
-            "cpu": 20
-            "memory": 20
+            cpu: 20
+            memory: 20
+            pods: 20
           targetThresholds:
-            "cpu": 50
-            "memory": 50
+            cpu: 45
+            memory: 45
+            pods: 45
+          numberOfNodes: 1
           excludedNamespaces:
-            - "kube-system"
-            - "longhorn-system"
-            - "metallb-system"
-            - "network"
+            - kube-system
+            - longhorn-system
+            - metallb-system
+            - network
