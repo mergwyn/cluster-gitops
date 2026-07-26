@@ -5,6 +5,7 @@ defaultSettings:
   replicaAutoBalance: best-effort
   defaultDataLocality: best-effort
   createDefaultDiskLabeledNodes: true
+  removeSnapshotsDuringFilesystemTrim: true
   storageOverProvisioningPercentage: 150
   storageMinimalAvailablePercentage: 10
   backupTarget: ""
@@ -36,8 +37,26 @@ extraObjects:
   - apiVersion: longhorn.io/v1beta2
     kind: RecurringJob
     metadata:
+      name: fstrim-job
+      namespace: "{{.Release.Namespace}}"
+      labels:
+        app.kubernetes.io/managed-by: "Helm"
+      annotations:
+        meta.helm.sh/release-name: "{{.Release.Name}}"
+        meta.helm.sh/release-namespace: "{{.Release.Namespace}}"
+    spec:
+      task: "filesystem-trim"
+      cron: "15 3 * * *"
+      retain: 1
+      concurrency: 1
+      groups:
+        - default
+
+  - apiVersion: longhorn.io/v1beta2
+    kind: RecurringJob
+    metadata:
       name: snapshot-purge-job
-      namespace: longhorn-system
+      namespace: "{{.Release.Namespace}}"
       labels:
         app.kubernetes.io/managed-by: "Helm"
       annotations:
