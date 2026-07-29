@@ -22,6 +22,7 @@ localpv-provisioner:
 
 zfs-localpv:
   enabled: true
+  encrKeysDir: '/var/openebs/zfs-localpv/encryption-keys'
   crds:
     zfsLocalPv:
       enabled: true
