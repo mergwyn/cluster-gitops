@@ -47,7 +47,7 @@ extraObjects:
     spec:
       task: "filesystem-trim"
       cron: "15 3 * * *"
-      retain: 1
+      retain: 0
       concurrency: 1
       groups:
         - default
