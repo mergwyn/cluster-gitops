@@ -2,9 +2,7 @@
   "packageRules": [
     {
       "description": "auto merge patches",
-      "matchUpdateTypes": [
-        "patch"
-      ],
+      "matchUpdateTypes": ["patch"],
       "matchCurrentVersion": "<2025.0.0",
       "automerge": true,
       "ignoreTests": true
@@ -12,14 +10,42 @@
     {
       "description": "Auto merge minors and patches",
       "automerge": true,
-      "matchUpdateTypes": [
-        "minor",
-        "patch"
-      ],
-      "matchPackageNames": [
-        "/kube-prometheus-stack/"
-      ],
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchPackageNames": ["/kube-prometheus-stack/"],
       "ignoreTests": true
+    },
+    {
+      "description": "Auto merge digests - low risk / stateless apps",
+      "matchUpdateTypes": ["digest"],
+      "excludePackageNames": [
+        "/longhorn/",
+        "/argocd/",
+        "/etcd/",
+        "/home-assistant/",
+        "/esphome/",
+        "/predbat/",
+        "/zigbee2mqtt/",
+        "/mosquitto/"
+      ],
+      "automerge": true,
+      "minimumReleaseAge": "3 days",
+      "ignoreTests": true
+    },
+    {
+      "description": "Manual review - digests for stateful/critical components",
+      "matchUpdateTypes": ["digest"],
+      "matchPackageNames": [
+        "/longhorn/",
+        "/argocd/",
+        "/etcd/",
+        "/home-assistant/",
+        "/esphome/",
+        "/predbat/",
+        "/zigbee2mqtt/",
+        "/mosquitto/"
+      ],
+      "automerge": false
     }
   ]
 }
+
