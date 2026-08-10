@@ -9,7 +9,7 @@ controllers:
       app:
         image:
           repository: ghcr.io/dispatcharr/dispatcharr
-          tag: 0.26.0@sha256:9275b0c1f5319a84b412af6839a1364ef25b61d8d6ff0d2130a6c2b2504a8b07
+          tag: 0.29.0@sha256:df768adcb9993b58f5e67010cc802c8659b7f964cb1213ab7ff9bb9384db9145
         env:
           dispatcharr_env: aio
           redis_host: localhost
