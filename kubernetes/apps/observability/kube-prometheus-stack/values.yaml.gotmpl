@@ -5,6 +5,16 @@ env:
 prometheus-node-exporter:
   commonLabels:
     jobLabel: node-exporter
+
+    extraArgs:
+      - --collector.textfile.directory=/var/lib/node_exporter/textfile_collector
+
+    extraHostVolumeMounts:
+      - name: node-exporter-textfile
+        hostPath: /var/lib/node_exporter/textfile_collector
+        mountPath: /var/lib/node_exporter/textfile_collector
+        readOnly: true
+
   prometheus:
     monitor:
       relabelings:
@@ -107,9 +117,14 @@ prometheus:
               - 'alpha.theclarkhome.com:9100'
               - 'bravo.theclarkhome.com:9100'
               - 'echo.theclarkhome.com:9100'
+            labels:
+              job: host-node-exporter
+              monitoring: permanent
+          - targets:
               - 'xray.theclarkhome.com:9100'
             labels:
-              job: node-exporter
+              job: host-node-exporter
+              monitoring: intermittent
         relabel_configs:
           - source_labels: [__address__]
             regex: '([^.]+)\..*:.*'

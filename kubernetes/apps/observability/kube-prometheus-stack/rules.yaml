@@ -6,7 +6,7 @@ additionalPrometheusRulesMap:
       - name: node_alerts
         rules:
           - alert: NodeDown
-            expr: up{job="node-exporter"} == 0
+            expr: up{job="host-node-exporter",monitoring="permanent"} == 0
             for: 2m
             labels:
               severity: critical
@@ -38,11 +38,7 @@ additionalPrometheusRulesMap:
         rules:
           - alert: OpenVoxAgentNotRunning
             expr: |
-              (
-                time() - openvox_last_run_timestamp_seconds{job="node-exporter",instance="xray"} > 3600
-              )
-              and
-              (up{job="node-exporter",instance="xray"} == 1)
+              time() - openvox_last_run_timestamp_seconds{job="node-exporter",instance="xray"} > 3600
             for: 10m
             labels:
               severity: warning
