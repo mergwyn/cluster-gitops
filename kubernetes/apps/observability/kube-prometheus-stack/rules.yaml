@@ -34,13 +34,27 @@ additionalPrometheusRulesMap:
               summary: Kubernetes Container oom killer (instance {{ $labels.instance }})
               description: "Container {{ $labels.container }} in pod {{ $labels.namespace }}/{{ $labels.pod }} has been OOMKilled {{ $value }} times in the last 10 minutes.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
 
-#          - alert: OomKillEvents
-#            expr: (sum by(namespace, pod) (kube_pod_container_status_last_terminated_reason{reason=“OOMKilled”}) > 0)
-#            for: 30s
-#            labels:
-#              issue: The pod {{$labels.pod}} in {{$labels.namespace}} was recently OOMkilled.
-#              severity: critical
-#            annotations:
-#              description: |-
-#                "The pod {{$labels.pod}} in {{$labels.namespace}} was recently OOMkilled."
-#              summary: Pod was OOMKilled
+      - name: openvox
+        rules:
+          - alert: OpenVoxAgentNotRunning
+            expr: |
+              (
+                time() - openvox_last_run_timestamp_seconds{job="node-exporter",instance="xray"} > 3600
+              )
+              and
+              (up{job="node-exporter",instance="xray"} == 1)
+            for: 10m
+            labels:
+              severity: warning
+            annotations:
+              summary: "OpenVox agent has not run on {{ $labels.instance }}"
+              description: "OpenVox has not completed a run on {{ $labels.instance }} for more than 1 hour."
+
+          - alert: OpenVoxAgentRunFailed
+            expr: openvox_last_run_failed_resources{job="node-exporter",instance="xray"} > 0
+            for: 10m
+            labels:
+              severity: warning
+            annotations:
+              summary: "OpenVox agent run failed on {{ $labels.instance }}"
+              description: "The most recent OpenVox run on {{ $labels.instance }} reported {{ $value }} failed resources."
