@@ -6,7 +6,7 @@ additionalPrometheusRulesMap:
       - name: node_alerts
         rules:
           - alert: NodeDown
-            expr: up{job="host-node-exporter",monitoring="permanent"} == 0
+            expr: up{job="host-node-exporter",monitoring!="intermittent"} == 0
             for: 2m
             labels:
               severity: critical
