@@ -89,7 +89,7 @@ alertmanager:
 prometheus:
   prometheusSpec:
     serviceMonitorSelectorNilUsesHelmValues: false
-    retention: 10d
+    retention: 30d
     retentionSize: "42GB"
     # podMonitorSelectorNilUsesHelmValues: false
     additionalScrapeConfigs:
