@@ -37,8 +37,7 @@ additionalPrometheusRulesMap:
       - name: openvox
         rules:
           - alert: OpenVoxAgentNotRunning
-            expr: |
-              time() - openvox_last_run_timestamp_seconds{job="node-exporter",instance="xray"} > 3600
+            expr:  time() - openvox_last_run_timestamp_seconds{job="node-exporter"} > 3600
             for: 10m
             labels:
               severity: warning
@@ -47,7 +46,7 @@ additionalPrometheusRulesMap:
               description: "OpenVox has not completed a run on {{ $labels.instance }} for more than 1 hour."
 
           - alert: OpenVoxAgentRunFailed
-            expr: openvox_last_run_failed_resources{job="node-exporter",instance="xray"} > 0
+            expr: openvox_last_run_failed_resources{job="node-exporter"} > 0
             for: 10m
             labels:
               severity: warning
