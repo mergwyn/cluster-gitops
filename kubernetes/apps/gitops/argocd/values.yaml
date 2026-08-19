@@ -57,7 +57,7 @@ repoServer:
           # renovate: datasource=github-releases depName=getsops/sops
           CUSTOM_SOPS_VERSION="v3.9.4"
           # renovate: datasource=github-releases depName=helm/helm
-          CUSTOM_HELM_VERSION="v4.1.4"
+          CUSTOM_HELM_VERSION="v4.2.4"
           # renovate: datasource=docker depName=ghcr.io/jkroepke/helm-secrets/secrets
           SECRETS_VER="4.7.4"
           # renovate: datasource=github-releases depName=databus23/helm-diff
@@ -100,6 +100,8 @@ repoServer:
         secretName: argocd-age-secret-keys
     - name: custom-tools
       emptyDir: {}
+    - name: helmfile-cmp-tmp
+      emptyDir: {}
 
   volumeMounts:
     - name: age-secret-keys
@@ -120,6 +122,9 @@ repoServer:
   cmp:
     plugins:
       helmfile-modern:
+        discover:
+          find:
+            command: ["sh", "-c", "find . -maxdepth 2 -name helmfile.yaml"]
         generate:
           command: ["sh", "-c"]
           args: |
