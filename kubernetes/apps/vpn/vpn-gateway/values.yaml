@@ -4,6 +4,94 @@ fullnameOverride: &name vpn-gateway
 controller:
   annotations:
     reloader.stakater.com/auto: "true"
+    secret.reloader.stakater.com/reload: "\
+      gluetun-auth,privatevpn-ovn,\
+      privatevpn-ovn-conf,\
+      vpn-gateway-webhook-ca,\
+      vpn-gateway-webhook-tls"
+
+  # --- INIT CONTAINER DNS RESOLUTION & PORT CHECK ---
+initContainers:
+  vpn-resolve-dns:
+    image: qmcgaw/gluetun:latest
+    envFrom:
+      - secretRef:
+          name: privatevpn-ovn
+    securityContext:
+      capabilities:
+        add: ["NET_ADMIN"]
+    volumeMounts:
+      - name: dev-net-tun
+        mountPath: /dev/net/tun
+      - name: vpn-config-template
+        mountPath: /template
+        readOnly: true
+      - name: gluetun-generated
+        mountPath: /gluetun-generated
+    command: ["sh", "-c"]
+    args:
+      - |
+        set -e
+        tr -d '\r' < /template/base-custom.conf > /tmp/clean-custom.conf
+        REMOTE_LINE=$(grep -E '^[[:space:]]*remote ' /tmp/clean-custom.conf | head -n1)
+        DOMAIN=$(echo $REMOTE_LINE | awk '{print $2}')
+        PORT=$(echo $REMOTE_LINE | awk '{print $3}')
+
+        IPS=$(nslookup "$DOMAIN" | awk '/^Address: / { print $2 }')
+        echo "Resolved IPs: $IPS"
+
+        WORKING_IP=""
+        mkdir -p /etc/openvpn
+        printf '%s\n%s\n' "$OPENVPN_USER" "$OPENVPN_PASSWORD" > /etc/openvpn/auth.conf
+        chmod 600 /etc/openvpn/auth.conf
+
+        for ip in $IPS; do
+          echo "Probing $ip:$PORT with a real OpenVPN handshake..."
+          sed "s/$DOMAIN/$ip/g" /tmp/clean-custom.conf > /tmp/test-$ip.conf
+          # strip anything that would hijack the whole netns's routing
+          sed -i '/redirect-gateway/d' /tmp/test-$ip.conf
+
+          timeout 12 /usr/sbin/openvpn2.6 --config /tmp/test-$ip.conf \
+            --writepid /tmp/openvpn.pid \
+            --script-security 2 \
+            --log /tmp/test-$ip.log \
+            --up-delay --up /bin/true &
+          OVPN_PID=$!
+
+          for i in $(seq 1 10); do
+            grep -q "Initialization Sequence Completed" /tmp/test-$ip.log 2>/dev/null && break
+            sleep 1
+          done
+
+          if grep -q "Initialization Sequence Completed" /tmp/test-$ip.log 2>/dev/null; then
+            # pin only the health-check target over the tunnel, don't touch default route
+            ip route add 1.1.1.1/32 dev tun0 2>/dev/null || true
+            if wget -q -O- --timeout=5 http://1.1.1.1 >/dev/null 2>&1; then
+              echo "Success: $ip forwards real traffic"
+              WORKING_IP="$ip"
+            else
+              echo "Handshake OK but no forwarding on $ip — rejecting"
+            fi
+          else
+            echo "Handshake failed on $ip"
+          fi
+
+          # clean teardown regardless of outcome — shared netns with gluetun
+          kill $OVPN_PID 2>/dev/null || true
+          wait $OVPN_PID 2>/dev/null || true
+          ip route del 1.1.1.1/32 dev tun0 2>/dev/null || true
+          ip link delete tun0 2>/dev/null || true
+
+          [ -n "$WORKING_IP" ] && break
+        done
+
+        if [ -z "$WORKING_IP" ]; then
+          echo "ERROR: no candidate IP passed the real connectivity test"
+          exit 1
+        fi
+
+        sed "s/$DOMAIN/$WORKING_IP/g" /tmp/clean-custom.conf > /gluetun-generated/custom.conf
+        echo "Generated custom.conf using verified IP $WORKING_IP"
 
 routed_namespaces:
   - vpn
@@ -23,38 +111,33 @@ addons:
       image:
         repository: docker.io/qmcgaw/gluetun
         tag: v3.41.0
-    # add for https://github.com/qdm12/gluetun/issues/2606
     securityContext:
       privileged: true
-
-    # TODO convert this to 'configFile'??
-    #configFileSecret: privatevpn-ovn-conf
 
     env:
       TZ: Europe/London
       VPN_TYPE: openvpn
       VPN_SERVICE_PROVIDER: custom
-      OPENVPN_CUSTOM_CONFIG: /gluetun/config.conf
+      # Point Gluetun to the dynamically generated file in the emptyDir
+      OPENVPN_CUSTOM_CONFIG: /gluetun-generated/custom.conf
       OPENVPN_ENDPOINT_PORT: &vpn_port 1195
-      OPENVPN_VERBOSITY: 3 # debugging
-      DNS_KEEP_NAMESERVER: "off" # Try with this disabled
+      OPENVPN_VERBOSITY: 3
+      DNS_KEEP_NAMESERVER: "off"
       DOT: "off"
-      # TODO different variables for different versions. Long name is for 3.40
-      # and later
       FIREWALL_ENABLED_DISABLING_IT_SHOOTS_YOU_IN_YOUR_FOOT: "off"
       FIREWALL: "off"
-      # FIREWALL_OUTBOUND_SUBNETS: "10.0.0.0/8"
-      # FIREWALL_VPN_INPUT_PORTS: 64709
       LOG_LEVEL: debug
-      SERVER_COUNTRIES: "" # Don't know why it is necessary to clear this var
+      SERVER_COUNTRIES: ""
       UPDATER_PERIOD: 24h
-      # route already exists error
-      # OPENVPN_EXTRA_FLAGS: "--pull-filter ignore route"
+
+      # --- GLUETUN 3.41.0 HEALTH TUNING ---
+      HEALTH_TARGET_ADDRESSES: "1.1.1.1:443,8.8.8.8:53"
+      HEALTH_ICMP_TARGET_IPS: "1.1.1.1,8.8.8.8"
+      HEALTH_SMALL_CHECK_TYPE: "icmp"
 
     envFrom:
       - secretRef:
-          name: privatevpn-ovn # USER and PASSWORD
-
+          name: privatevpn-ovn
 
     networkPolicy:
       enabled: true
@@ -74,24 +157,22 @@ addons:
         name: gluetun-auth
         readOnly: true
         subPath: config.toml
+      - name: gluetun-generated
+        mountPath: /gluetun-generated
 
-# TODO check which settings are used by pod gateway and not just passed through
-# to gluetun
 settings:
   NOT_ROUTED_TO_GATEWAY_CIDRS: "10.0.0.0/8"
   VPN_LOCAL_CIDRS: "10.0.0.0/8"
-  VPN_TRAFFIC_PORT: *vpn_port # TODO which port settings are needed
-  VPN_ENDPOINT_PORT: *vpn_port # TODO which port settings are needed
+  VPN_TRAFFIC_PORT: *vpn_port
+  VPN_ENDPOINT_PORT: *vpn_port
   VPN_BLOCK_OTHER_TRAFFIC: false
   GATEWAY_ENABLE_DNSSEC: false
   DNS_LOCAL_CIDRS: "local cluster.local svc.cluster.local theclarkhome.com"
 
 configMaps:
   auth-config:
-    # -- Enables or disables the configMap
     enabled: true
     data: {}
-      # foo: bar
 
 persistence:
   gluetun-auth:
@@ -102,10 +183,35 @@ persistence:
     mountPath: /gluetun/auth/config.toml
     readOnly: true
 
+  # 1. Mount ExternalSecret containing base OpenVPN template
+  vpn-config-template:
+    enabled: true
+    type: secret
+    name: privatevpn-ovn-conf
+    mountPath: /template
+    readOnly: true
+
+  # 2. Shared emptyDir volume where the init container writes custom.conf
+  gluetun-generated:
+    enabled: true
+    type: emptyDir
+    mountPath: /gluetun-generated
+
+  dev-net-tun:
+    enabled: true
+    type: hostPath
+    hostPath: /dev/net/tun
+    hostPathType: CharDevice
+    # Don't mount into every container — only the init container needs it
+    globalMounts: []
+    advancedMounts:
+      vpn-gateway:              # controller name — confirm against your release/controller key
+        vpn-resolve-dns:        # your init container's name
+          - path: /dev/net/tun
+
 resources:
   requests:
     cpu: 40m
     memory: 50Mi
   limits:
-    # cpu: 61m
     memory: 150Mi

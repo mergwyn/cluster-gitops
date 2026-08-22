@@ -21,7 +21,7 @@ admissionController:
       limits:
         cpu: null
   rbac:
-    coreClusterRole:
+    clusterRole:
       extraResources:
         - apiGroups:
             - velero.io
@@ -50,7 +50,7 @@ backgroundController:
     enabled: true
   replicas: 3
   rbac:
-    coreClusterRole:
+    clusterRole:
       extraResources:
         - apiGroups:
             - ''
