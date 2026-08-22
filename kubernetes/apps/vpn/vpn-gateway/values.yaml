@@ -4,6 +4,11 @@ fullnameOverride: &name vpn-gateway
 controller:
   annotations:
     reloader.stakater.com/auto: "true"
+    secret.reloader.stakater.com/reload: "\
+      gluetun-auth,privatevpn-ovn,\
+      vpn-gateway-addoe-vpn-config,\
+      vpn-gateway-webhook-ca,\
+      vpn-gateway-webhook-tls"
 
 routed_namespaces:
   - vpn
