@@ -18,11 +18,11 @@ rawResources:
               "subnet": "10.58.0.0/24",
               "rangeStart": "10.58.0.210",
               "rangeEnd": "10.58.0.219",
-              "gateway": "" 
+              "gateway": ""
             }
           }
 
-  &net2 home-lan:
+  &net2 vpn-gateway:
     forceRename: *net2  # needed to keep name same as historic NAD
     manifest:
       apiVersion: k8s.cni.cncf.io/v1
@@ -31,7 +31,7 @@ rawResources:
         config: |-
           {
             "cniVersion": "0.3.1",
-            "name": "home-lan",
+            "name": "vpn-gateway",
             "type": "ipvlan",
             "master": "{{.Values.network.device}}",
             "mode": "l2",
@@ -40,6 +40,6 @@ rawResources:
               "subnet": "{{.Values.network.subnet}}",
               "rangeStart": "{{.Values.network.multus.rangeStart}}",
               "rangeEnd": "{{.Values.network.multus.rangeEnd}}",
-              "gateway": "" 
+              "gateway": ""
             }
           }

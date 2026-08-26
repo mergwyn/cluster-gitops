@@ -54,7 +54,7 @@ initContainers:
 
         # 2. Append the new specific 'remote IP port' block for each resolved address
         for ip in $IPS; do
-          echo "remote $ip $PORT" >> /gluetun-generated/custom.conf
+          echo "remote $ip $PORT udp" >> /gluetun-generated/custom.conf
         done
 
         # Set up static user auth path natively
