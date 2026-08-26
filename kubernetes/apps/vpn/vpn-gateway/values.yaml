@@ -33,65 +33,37 @@ initContainers:
       - |
         set -e
         tr -d '\r' < /template/base-custom.conf > /tmp/clean-custom.conf
+
+        # Extract the base domain and port from the template
         REMOTE_LINE=$(grep -E '^[[:space:]]*remote ' /tmp/clean-custom.conf | head -n1)
         DOMAIN=$(echo $REMOTE_LINE | awk '{print $2}')
         PORT=$(echo $REMOTE_LINE | awk '{print $3}')
 
+        # Resolve DNS names to all underlying IP addresses
         IPS=$(nslookup "$DOMAIN" | awk '/^Address: / { print $2 }')
-        echo "Resolved IPs: $IPS"
 
-        WORKING_IP=""
+        if [ -z "$IPS" ]; then
+          echo "ERROR: Could not resolve any IP addresses for $DOMAIN"
+          exit 1
+        fi
+
+        echo "Resolved IPs for native fallback: $IPS"
+
+        # 1. Clean out the original 'remote domain port' line to avoid conflicts
+        sed -E '/^[[:space:]]*remote /d' /tmp/clean-custom.conf > /gluetun-generated/custom.conf
+
+        # 2. Append the new specific 'remote IP port' block for each resolved address
+        for ip in $IPS; do
+          echo "remote $ip $PORT" >> /gluetun-generated/custom.conf
+        done
+
+        # Set up static user auth path natively
         mkdir -p /etc/openvpn
         printf '%s\n%s\n' "$OPENVPN_USER" "$OPENVPN_PASSWORD" > /etc/openvpn/auth.conf
         chmod 600 /etc/openvpn/auth.conf
 
-        for ip in $IPS; do
-          echo "Probing $ip:$PORT with a real OpenVPN handshake..."
-          sed "s/$DOMAIN/$ip/g" /tmp/clean-custom.conf > /tmp/test-$ip.conf
-          # strip anything that would hijack the whole netns's routing
-          sed -i '/redirect-gateway/d' /tmp/test-$ip.conf
+        echo "Generated custom.conf with multiple native failover remote nodes."
 
-          timeout 12 /usr/sbin/openvpn2.6 --config /tmp/test-$ip.conf \
-            --writepid /tmp/openvpn.pid \
-            --script-security 2 \
-            --log /tmp/test-$ip.log \
-            --up-delay --up /bin/true &
-          OVPN_PID=$!
-
-          for i in $(seq 1 10); do
-            grep -q "Initialization Sequence Completed" /tmp/test-$ip.log 2>/dev/null && break
-            sleep 1
-          done
-
-          if grep -q "Initialization Sequence Completed" /tmp/test-$ip.log 2>/dev/null; then
-            # pin only the health-check target over the tunnel, don't touch default route
-            ip route add 1.1.1.1/32 dev tun0 2>/dev/null || true
-            if wget -q -O- --timeout=5 http://1.1.1.1 >/dev/null 2>&1; then
-              echo "Success: $ip forwards real traffic"
-              WORKING_IP="$ip"
-            else
-              echo "Handshake OK but no forwarding on $ip — rejecting"
-            fi
-          else
-            echo "Handshake failed on $ip"
-          fi
-
-          # clean teardown regardless of outcome — shared netns with gluetun
-          kill $OVPN_PID 2>/dev/null || true
-          wait $OVPN_PID 2>/dev/null || true
-          ip route del 1.1.1.1/32 dev tun0 2>/dev/null || true
-          ip link delete tun0 2>/dev/null || true
-
-          [ -n "$WORKING_IP" ] && break
-        done
-
-        if [ -z "$WORKING_IP" ]; then
-          echo "ERROR: no candidate IP passed the real connectivity test"
-          exit 1
-        fi
-
-        sed "s/$DOMAIN/$WORKING_IP/g" /tmp/clean-custom.conf > /gluetun-generated/custom.conf
-        echo "Generated custom.conf using verified IP $WORKING_IP"
 
 routed_namespaces:
   - vpn
