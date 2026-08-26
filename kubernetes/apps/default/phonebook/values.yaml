@@ -8,7 +8,7 @@ controllers:
       app:
         image:
           repository: nginxinc/nginx-unprivileged
-          tag: alpine@sha256:334d92979f15aaecd5dd50af5105e1230e2bb70765d45b1e2f964e7c5eda81c3
+          tag: alpine@sha256:901e944d1f4fc2bd077e8f5568b98c1f6f8cdacf6b97a87747c43134a339b9a7
         ports:
           - name: http
             containerPort: &port 8080
