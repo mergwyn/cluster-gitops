@@ -116,6 +116,11 @@ spec:
             - .spec.dataFrom[].extract.metadataPolicy
             - .spec.dataFrom[].extract.nullBytePolicy
 
+            - .spec.dataFrom[].remoteRef.conversionStrategy
+            - .spec.dataFrom[].remoteRef.decodingStrategy
+            - .spec.dataFrom[].remoteRef.metadataPolicy
+            - .spec.dataFrom[].remoteRef.nullBytePolicy
+
         - group: "*"
           kind: HTTPRoute
           jqPathExpressions:
