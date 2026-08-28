@@ -38,7 +38,7 @@ derive_expected_vpn_prefix() {
     || { echo "ERROR: could not read wg0.conf on ${LXC_CONTAINER}" >&2; return 1; }
 
   # Endpoint = host:port  ->  strip the port
-  endpoint_host=$(echo "${endpoint_line}" | sed 's/^Endpoint *= *//' | cut -d: -f1)
+  endpoint_host=$(echo "${endpoint_line}" | sed 's/^Endpoint[[:space:]]*=[[:space:]]*//' | cut -d: -f1)
 
   # If it's already an IP, dig +short returns nothing useful for it, so
   # check whether it's already dotted-quad first.
@@ -86,13 +86,13 @@ else
 fi
 
 echo ""
-echo "=== Test 2: vpn-test default-route egress is unaffected (still home IP) ==="
+echo "=== Test 2: vpn-test default-route egress now goes via VPN (init container active) ==="
 DEFAULT_IP=$(kubectl exec vpn-test -n "${NAMESPACE}" -- curl -s ifconfig.me || echo "CURL_FAILED")
 echo "  Result: ${DEFAULT_IP}"
-if [[ "${DEFAULT_IP}" != "${EXPECTED_VPN_IP_PREFIX}"* && "${DEFAULT_IP}" != "CURL_FAILED" ]]; then
-  pass "vpn-test default route still egresses normally (not via VPN)"
+if [[ "${DEFAULT_IP}" == "${EXPECTED_VPN_IP_PREFIX}"* ]]; then
+  pass "vpn-test default route now goes via VPN (pod-level init container routing confirmed)"
 else
-  fail "vpn-test default route unexpectedly matches VPN IP or curl failed - check default route wasn't altered unintentionally"
+  fail "vpn-test default route did NOT go via VPN - check init container ran and net1 route was applied"
 fi
 
 echo ""

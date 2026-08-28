@@ -1,73 +1,57 @@
-# VPN Egress Migration — Status & Plan
+# VPN Egress Migration — Status & Plan (v2 — simplified architecture)
 
 ## Goal
-Replace gluetun + pod-gateway with simpler node-level VPN egress via a dedicated WireGuard LXC gateway (`zulu`), as a stepping stone toward Cilium's `EgressGatewayPolicy`.
+Replace gluetun + pod-gateway with simpler VPN egress via a dedicated WireGuard LXC gateway (`zulu`), as a stepping stone toward Cilium's `EgressGatewayPolicy`.
 
-## Architecture
+## Architecture (corrected/simplified)
 
 **Gateway container (`zulu`)**
 - LXC container, Puppet class `profile::app::wireguard` (`site-modules/profile/manifests/app/wireguard.pp`)
-- Runs `wg-quick`, connected to PrivateVPN (currently Manchester server — London had handshake failures, unrelated to config)
+- Runs `wg-quick`, connected to PrivateVPN — currently Manchester server (`uk-man.pvdata.host`). London had handshake failures unrelated to config; account was also found suspended at one point and has since been resolved.
 - LAN IP: `10.58.0.24`
-- PostUp/PostDown masquerade + `ip_forward` already configured for `10.58.0.0/24`
+- PostUp/PostDown masquerade (`10.58.0.0/24` → `wg0`) + `ip_forward` already configured — no changes needed here
 
 **Multus NAD: `vpn-gateway`**
 - Namespace: `network`
-- Range: `10.58.0.50–59` (matches existing network.md-documented production Multus range)
+- Type: `ipvlan`, mode `l2`, master `br0`
+- Range: `10.58.0.50–59`
 - Static IPs assigned:
   - `dispatcharr` → `10.58.0.50` (IPTV — stays on VPN)
   - `qbittorrent` → `10.58.0.51`
   - `sabnzbd` → `10.58.0.52`
+  - `.59` reserved permanently for test pods
 
-**Node-side routing (Puppet)**
-- Class: `profile::platform::baseline::debian::virtual::k3s::vpn_egress_routing`
-- Has `$enabled` flag (default `true`) — set `false` to cleanly tear down mark/rule/route/table-name
-- Mechanism: iptables mangle mark (100) on source `10.58.0.50-59` → `ip rule` → custom table `vpn_egress` (100) → default route via `10.58.0.24`
-- **Not yet applied to any node except test runs on delta**
-- **Not yet persistent across reboot** — needs a systemd oneshot unit or `iptables-persistent`, and the `$enabled=false` branch will eventually need to also remove that persistence mechanism
+**Routing — pod-level only, no node-side config**
 
-**Pod-side routing (still to finalize before rollout)**
-- Plain node-level routing only affects traffic explicitly sourced from the pod's static IP — apps must bind to it, or:
-- **Preferred approach:** init container (`NET_ADMIN`) per pod, sets explicit routes for pod CIDR (`10.42.0.0/16`) and service CIDR (`10.43.0.0/16`) via `eth0`, then sets pod's real default route via `net1` → `10.58.0.1` (edge router). Avoids relying on each app supporting a bind-IP setting.
-- Cleanly removable later — delete the init container, delete the `vpn-gateway` Multus annotation, once Cilium's egress gateway takes over.
+Key architectural finding: `ipvlan` in L2 mode bridges the pod's second interface (`net1`) directly to the physical LAN, bypassing the host node's own IP routing/netfilter stack entirely. This means **node-level iptables/ip-rule/ip-route interception cannot see this traffic at all** — an original design assumption that turned out to be wrong, confirmed by testing. The fix is simpler than the original plan: control routing entirely from inside the pod via an init container.
 
-## Excluded from VPN (via pod-gateway, not moved namespace)
-`prowlarr`, `radarr`, `sonarr` stay in the `vpn` namespace (GUI-configured URL dependencies) but opt out of gluetun routing individually:
-
+**Per-pod init container** (added to each VPN-routed workload):
 ```yaml
-controllers:
-  <app-name>:
-    pod:
-      labels:
-        setGateway: "false"
+initContainers:
+  - name: vpn-routing
+    image: nicolaka/netshoot
+    securityContext:
+      capabilities:
+        add: ["NET_ADMIN"]
+    command:
+      - sh
+      - -c
+      - |
+        set -e
+        GW=$(ip route show default | awk '{print $3; exit}')
+        ip route add 10.43.0.0/16 via "${GW}" dev eth0
+        ip route del default
+        ip route add default via 10.58.0.24 dev net1
+        ip route show
 ```
+- `GW` captured dynamically (varies per node — each node's pod subnet has a different CNI gateway)
+- Pod CIDR (`10.42.0.0/16`) route already added automatically by CNI — no need to add it again
+- Service CIDR (`10.43.0.0/16`) needs an explicit route **via the CNI gateway**, not just `dev eth0` — an on-link route with no `via` fails silently (service IPs aren't real L2 neighbours)
+- Default route points **directly at zulu** (`10.58.0.24`), not the real LAN edge router — this is the key correction from the original plan
 
-(pod-gateway/gateway-admission-controller default is `gatewayDefault: true` — whole namespace routed unless a pod explicitly opts out via `setGateway`.)
+**No pinning needed** — since all routing logic lives in the pod spec itself, it works identically regardless of which node the pod schedules onto.
 
-## Testing assets (already produced)
-- `vpn-test-pods.yaml` — disposable `vpn-test` (attached to `vpn-gateway` NAD, `10.58.0.59`) and `non-vpn-test` pods, node name templated via `NODE_NAME_PLACEHOLDER`
-- `test-vpn-egress.sh <node-name>` — deploys both pods, derives expected VPN IP prefix live from `zulu`'s `wg0.conf` (via `lxc exec zulu`), runs egress/DNS/cluster-access checks, cleans up
-- **Test order:** apply Puppet class to one node (delta) → run script → roll to charlie, golf, hotel
+**No persistence work needed** — unlike the abandoned node-level approach (which would have needed systemd/iptables-persistent to survive reboots), init containers run on every pod start by construction. Nothing to keep in sync with a reboot.
 
-## Known gaps
-1. Reboot persistence for node-side iptables/ip rule/ip route — not yet built
-2. Pod-side routing approach (init container) — designed but not yet added to any real pod
-3. pod-gateway's gluetun kill-switch NetworkPolicy is **not actually applying** (`kubectl get networkpolicy -n vpn` returns empty) — likely a chart-version key mismatch (`addons.vpn.networkPolicy` vs. newer `networkPolicies`). **Deliberately left unfixed** — zulu's design is fail-closed by default (no fallback route), so this becomes moot once migration completes. Acceptable only if the gluetun transition period stays short.
-4. `network.md` still describes the `10.58.0.50–59` range generically — needs updating once `vpn-gateway` NAD is live in gitops
-
-## Migration order from here
-1. Roll Puppet routing class to all 4 k3s nodes
-2. Add init-container pod-side routing; migrate `sabnzbd` first, validate
-3. Migrate `qbittorrent`, then `dispatcharr`
-4. Remove gluetun sidecar/pod-gateway config from those three deployments
-5. Decommission the pod-gateway/gluetun HelmRelease entirely
-6. Update `network.md`
-7. Later: move dispatcharr/qbittorrent/sabnzbd into `media` namespace (alongside Plex) — routing is namespace-agnostic (IP-based), no changes needed to the mechanism itself; check any `media` NetworkPolicies for needed egress exceptions
-8. Long-term: Cilium `EgressGatewayPolicy` referencing zulu replaces the manual mangle/rule/route mechanism; remove the Puppet class, `vpn-gateway` NAD/annotations, and pod init containers at that point
-
-## Key reference values
-- zulu LAN IP: `10.58.0.24`
-- VPN provider: PrivateVPN (Manchester server active as of 2026-08-26; account previously suspended, now resolved)
-- Puppet gateway manifest: `site-modules/profile/manifests/app/wireguard.pp`
-- New Puppet routing class: `profile::platform::baseline::debian::virtual::k3s::vpn_egress_routing`
-- k3s pod CIDR: `10.42.0.0/16` · service CIDR: `10.43.0.0/16` (confirmed via node specs, no explicit flags)
+## Abandoned: node-level Puppet class
+- `profile::platform::baseline::debian::virtual::k3s::vpn_egress_routing` — **not used**, does not work for ipvlan-attached
