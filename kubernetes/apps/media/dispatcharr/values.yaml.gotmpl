@@ -12,26 +12,8 @@ controllers:
         [{
           "name": "vpn-gateway",
           "namespace": "network",
-          "ips": ["10.58.0.50"],  # TODO make this a config option
+          "ips": ["{{ .Values.network.dispatcharr }}""],  # TODO make this a config option
         }]
-
-    initContainers:
-      vpn-routing:
-        image: nicolaka/netshoot
-        securityContext:
-          capabilities:
-            add: ["NET_ADMIN"]
-        command:
-          - sh
-          - -c
-          - |
-            set -e
-            GW=$(ip route show default | awk '{print $3; exit}')
-            ip route add 10.43.0.0/16 via "${GW}" dev eth0
-            ip route del default
-            ip route add default via 10.58.0.24 dev net1 # TODO make gateway a config option
-            ip route show
-
     containers:
       app:
         image:
@@ -59,7 +41,7 @@ service:
     type: ClusterIP
     ports:
       http:
-        port: 9191
+        port: &port 9191
 
 persistence:
   data:
@@ -68,3 +50,31 @@ persistence:
     accessMode: ReadWriteOnce
     retain: true
     size: 2Gi
+
+route:
+  app:
+    hostnames:
+      - "{{ .Release.Name }}.{{ .Values.cluster.domain }}"
+    parentRefs:
+      - name: traefik-internal
+        namespace: network
+        sectionName: websecure
+    rules:
+      - backendRefs:
+          - identifier: app
+            port: *port
+
+ingress:
+  external:
+    enabled: true
+    className: cloudflare-tunnel
+    annotations:
+      cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
+    hosts:
+      - host: "{{ .Release.Name }}.{{ .Values.cluster.domain }}"
+        paths:
+          - path: /
+            pathType: Prefix
+            service:
+              identifier: app
+              port: *port
