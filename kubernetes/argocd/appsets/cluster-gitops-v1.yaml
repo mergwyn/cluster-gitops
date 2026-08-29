@@ -116,10 +116,10 @@ spec:
             - .spec.dataFrom[].extract.metadataPolicy
             - .spec.dataFrom[].extract.nullBytePolicy
 
-            - .spec.dataFrom[].remoteRef.conversionStrategy
-            - .spec.dataFrom[].remoteRef.decodingStrategy
-            - .spec.dataFrom[].remoteRef.metadataPolicy
-            - .spec.dataFrom[].remoteRef.nullBytePolicy
+            - .spec.data[].remoteRef.conversionStrategy
+            - .spec.data[].remoteRef.decodingStrategy
+            - .spec.data[].remoteRef.metadataPolicy
+            - .spec.data[].remoteRef.nullBytePolicy
 
         - group: "*"
           kind: HTTPRoute
