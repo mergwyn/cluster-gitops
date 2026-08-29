@@ -3,16 +3,15 @@
 
 controllers:
   sabnzbd:
-    pod:
-      annotations:
-        reloader.stakater.com/auto: "true"
-        setGateway: "false"  # TODO remove this once the pod-gatway is disabled for the vpn NS
-        k8s.v1.cni.cncf.io/networks: |
-          [{
-            "name": "vpn-gateway",
-            "namespace": "network",
-            "ips": ["{{ .Values.network.sabnzbd }}"],
-          }]
+    annotations:
+      reloader.stakater.com/auto: "true"
+      setGateway: "false"  # TODO remove this once the pod-gatway is disabled for the vpn NS
+      k8s.v1.cni.cncf.io/networks: |
+        [{
+          "name": "vpn-gateway",
+          "namespace": "network",
+          "ips": ["{{ .Values.network.sabnzbd }}"],
+        }]
     containers:
       app:
         image:
