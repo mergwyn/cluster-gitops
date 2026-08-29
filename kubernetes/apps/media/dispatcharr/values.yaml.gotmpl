@@ -5,6 +5,33 @@ controllers:
   dispatcharr:
     enabled: true
     type: deployment
+    annotations:
+      reloader.stakater.com/auto: "true"
+      setGateway: "false"  # TODO remove this once the pod-gatway is disabled for the vpn NS
+      k8s.v1.cni.cncf.io/networks: |
+        [{
+          "name": "vpn-gateway",
+          "namespace": "network",
+          "ips": ["10.58.0.50"],  # TODO make this a config option
+        }]
+
+    initContainers:
+      vpn-routing:
+        image: nicolaka/netshoot
+        securityContext:
+          capabilities:
+            add: ["NET_ADMIN"]
+        command:
+          - sh
+          - -c
+          - |
+            set -e
+            GW=$(ip route show default | awk '{print $3; exit}')
+            ip route add 10.43.0.0/16 via "${GW}" dev eth0
+            ip route del default
+            ip route add default via 10.58.0.24 dev net1 # TODO make gateway a config option
+            ip route show
+
     containers:
       app:
         image:
