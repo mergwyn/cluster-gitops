@@ -7,7 +7,7 @@ controllers:
       vpn-routing:
         image:
           repository: nicolaka/netshoot
-          tag: 0.16
+          tag: v0.16
         securityContext:
           capabilities:
             add: ["NET_ADMIN"]
@@ -21,4 +21,3 @@ controllers:
             ip route del default
             ip route add default via {{ .Values.network.vpnGateway }} dev net1
             ip route show
-

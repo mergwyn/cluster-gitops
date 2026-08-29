@@ -8,7 +8,7 @@ controllers:
       setGateway: "false"  # TODO remove this once the pod-gatway is disabled for the vpn NS
       k8s.v1.cni.cncf.io/networks: |
         [{
-          "name": "vpn-gateway",
+          "name": "homelan",
           "namespace": "network",
           "ips": ["{{ .Values.network.sabnzbd }}"],
         }]
