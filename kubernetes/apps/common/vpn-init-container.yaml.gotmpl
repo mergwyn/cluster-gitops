@@ -3,6 +3,9 @@
 
 controllers:
   {{ .Release.Name }}:
+    pod:
+      annotations:
+        setGateway: "false"
     initContainers:
       vpn-routing:
         image:

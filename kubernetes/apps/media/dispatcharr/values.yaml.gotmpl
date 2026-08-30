@@ -9,7 +9,6 @@ controllers:
       reloader.stakater.com/auto: "true"
     pod:
       annotations:
-        setGateway: "false"  # TODO remove this once the pod-gatway is disabled for the vpn NS
         k8s.v1.cni.cncf.io/networks: |
           [{
             "name": "home-lan",
