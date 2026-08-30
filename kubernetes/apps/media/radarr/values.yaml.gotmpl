@@ -4,7 +4,15 @@
 controllers:
   radarr:
     annotations:
-      reloader.stakater.com/auto: "true"
+      secret.reloader.stakater.com/reload: "{{ .Release.Name }}-api-key"
+    pod:
+      annotations:
+        k8s.v1.cni.cncf.io/networks: |
+          [{
+            "name": "home-lan",
+            "namespace": "network",
+            "ips": ["{{ .Values.network.radarr }}"]
+          }]
     initContainers:
       create-kopiaignore:
         image:
@@ -86,3 +94,31 @@ persistence:
       - path: /data
   tmp:
     type: emptyDir
+
+route:
+  app:
+    hostnames:
+      - "{{ .Release.Name }}.{{ .Values.cluster.domain }}"
+    parentRefs:
+      - name: traefik-internal
+        namespace: network
+        sectionName: websecure
+    rules:
+      - backendRefs:
+          - identifier: app
+            port: *port
+
+ingress:
+  external:
+    enabled: true
+    className: cloudflare-tunnel
+    annotations:
+      cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
+    hosts:
+      - host: "{{ .Release.Name }}.{{ .Values.cluster.domain }}"
+        paths:
+          - path: /
+            pathType: Prefix
+            service:
+              identifier: app
+              port: *port
