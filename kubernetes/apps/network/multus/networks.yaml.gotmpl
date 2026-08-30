@@ -22,7 +22,7 @@ rawResources:
             }
           }
 
-  &net2 homelan:
+  &net2 home-lan:
     forceRename: *net2  # needed to keep name same as historic NAD
     manifest:
       apiVersion: k8s.cni.cncf.io/v1
@@ -31,15 +31,15 @@ rawResources:
         config: |-
           {
             "cniVersion": "0.3.1",
-            "name": "homelan",
+            "name": "home-lan",
             "type": "ipvlan",
             "master": "{{.Values.network.device}}",
             "mode": "l2",
             "ipam": {
               "type": "host-local",
               "subnet": "{{.Values.network.subnet}}",
-              "rangeStart": "{{.Values.network.homelan.rangeStart}}",
-              "rangeEnd": "{{.Values.network.homelan.rangeEnd}}",
+              "rangeStart": "{{.Values.network.homeLan.rangeStart}}",
+              "rangeEnd": "{{.Values.network.homeLan.rangeEnd}}",
               "gateway": ""
             }
           }
