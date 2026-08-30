@@ -7,13 +7,15 @@ controllers:
     type: deployment
     annotations:
       reloader.stakater.com/auto: "true"
-      setGateway: "false"  # TODO remove this once the pod-gatway is disabled for the vpn NS
-      k8s.v1.cni.cncf.io/networks: |
-        [{
-          "name": "homelan",
-          "namespace": "network",
-          "ips": ["{{ .Values.network.dispatcharr }}"]
-        }]
+    pod:
+      annotations:
+        setGateway: "false"  # TODO remove this once the pod-gatway is disabled for the vpn NS
+        k8s.v1.cni.cncf.io/networks: |
+          [{
+            "name": "homelan",
+            "namespace": "network",
+            "ips": ["{{ .Values.network.dispatcharr }}"]
+          }]
     containers:
       app:
         image:
