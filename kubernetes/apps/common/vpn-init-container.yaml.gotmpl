@@ -1,0 +1,26 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/common-5.0.1/charts/library/common/values.schema.json
+
+controllers:
+  {{ .Release.Name }}:
+    initContainers:
+      vpn-routing:
+        image:
+          repository: nicolaka/netshoot
+          tag: v0.16
+        securityContext:
+          runAsUser: 0
+          runAsGroup: 0
+          runAsNonRoot: false
+          capabilities:
+            add: ["NET_ADMIN"]
+        command:
+          - sh
+          - -c
+          - |
+            set -e
+            GW=$(ip route show default | awk '{print $3; exit}')
+            ip route add {{ .Values.network.serviceCIDR }} via "${GW}" dev eth0
+            ip route del default
+            ip route add default via {{ .Values.network.vpnGateway }} dev net1
+            ip route show

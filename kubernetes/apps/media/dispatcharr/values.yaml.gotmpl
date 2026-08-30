@@ -5,6 +5,17 @@ controllers:
   dispatcharr:
     enabled: true
     type: deployment
+    annotations:
+      reloader.stakater.com/auto: "true"
+    pod:
+      annotations:
+        setGateway: "false"  # TODO remove this once the pod-gatway is disabled for the vpn NS
+        k8s.v1.cni.cncf.io/networks: |
+          [{
+            "name": "home-lan",
+            "namespace": "network",
+            "ips": ["{{ .Values.network.dispatcharr }}"]
+          }]
     containers:
       app:
         image:
@@ -32,7 +43,7 @@ service:
     type: ClusterIP
     ports:
       http:
-        port: 9191
+        port: &port 9191
 
 persistence:
   data:
@@ -41,3 +52,31 @@ persistence:
     accessMode: ReadWriteOnce
     retain: true
     size: 2Gi
+
+route:
+  app:
+    hostnames:
+      - "{{ .Release.Name }}.{{ .Values.cluster.domain }}"
+    parentRefs:
+      - name: traefik-internal
+        namespace: network
+        sectionName: websecure
+    rules:
+      - backendRefs:
+          - identifier: app
+            port: *port
+
+ingress:
+  external:
+    enabled: true
+    className: cloudflare-tunnel
+    annotations:
+      cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
+    hosts:
+      - host: "{{ .Release.Name }}.{{ .Values.cluster.domain }}"
+        paths:
+          - path: /
+            pathType: Prefix
+            service:
+              identifier: app
+              port: *port

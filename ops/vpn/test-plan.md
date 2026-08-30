@@ -11,7 +11,7 @@ Replace gluetun + pod-gateway with simpler VPN egress via a dedicated WireGuard 
 - LAN IP: `10.58.0.24`
 - PostUp/PostDown masquerade (`10.58.0.0/24` → `wg0`) + `ip_forward` already configured — no changes needed here
 
-**Multus NAD: `vpn-gateway`**
+**Multus NAD: `home-lan`**
 - Namespace: `network`
 - Type: `ipvlan`, mode `l2`, master `br0`
 - Range: `10.58.0.50–59`
