@@ -8,7 +8,7 @@ network:
   device: br0
   metallb:
     poolCIDR: 10.58.0.31-10.58.0.39
-  home-lan:   # multus
+  homeLan:  # multus network for home LAN access
     rangeStart: 10.58.0.50
     rangeEnd: 10.58.0.59
   # VPN gateway network
