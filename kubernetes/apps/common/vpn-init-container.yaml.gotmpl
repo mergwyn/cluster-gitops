@@ -9,6 +9,9 @@ controllers:
           repository: nicolaka/netshoot
           tag: v0.16
         securityContext:
+          runAsUser: 0
+          runAsGroup: 0
+          runAsNonRoot: false
           capabilities:
             add: ["NET_ADMIN"]
         command:
