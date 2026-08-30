@@ -12,5 +12,5 @@ releases:
     version: 5.0.1
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
     values:
-      - values.yaml
-      - values-route.yaml.gotmpl
+      - ../../common/vpn-init-container.yaml.gotmpl
+      - values.yaml.gotmpl
