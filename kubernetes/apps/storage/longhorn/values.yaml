@@ -11,6 +11,11 @@ defaultSettings:
   backupTarget: ""
   v2DataEngine: false
 
+networkPolicies:
+  enabled: false
+  restrictInternalTraffic: false
+  type: k3s
+
 persistence:
   defaultClassReplicaCount: 3
   defaultClass: true
