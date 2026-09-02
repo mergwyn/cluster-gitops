@@ -13,7 +13,7 @@ controller:
   # --- INIT CONTAINER DNS RESOLUTION & PORT CHECK ---
 initContainers:
   vpn-resolve-dns:
-    image: qmcgaw/gluetun:latest
+    image: qmcgaw/gluetun:latest@sha256:89e3cbe22e0d6f09a18d3e86269392fd9f7f08e8991040741e577f8f127cdfe4
     envFrom:
       - secretRef:
           name: privatevpn-ovn
