@@ -6,6 +6,15 @@ controllers:
     pod:
       annotations:
         setGateway: "false"
+      dnsPolicy: "None"
+      dnsConfig:
+        nameservers:
+          - {{ .Values.network.vpnGateway }}
+        searches:
+          - {{ .Release.Namespace }}.svc.cluster.local
+        options:
+          - name: ndots
+            value: "1"  # documents intent; Kyverno will enforce this anyway
     initContainers:
       vpn-routing:
         image:

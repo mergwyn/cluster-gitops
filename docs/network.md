@@ -51,6 +51,9 @@ This file should be treated as the **source of truth** for network layout decisi
 | --------------- | -------------------------------------------------- |
 | `10.58.0.30'  ` | **Production Kubernetes** virtual IP               |
 | `10.58.0.31–39` | **Production Kubernetes** MetalLB LoadBalancer IPs |
+|   `.37`         |   - CoreDNS LAN (zulu split-DNS)                   |
+|   `.38`         |   - Plex                                           |
+|   `.39`         |   - Traefik internal                               |
 
 Notes:
 
