@@ -64,7 +64,7 @@ controllers:
         image:
           repository: ghcr.io/coder/code-server
           # yamllint disable-line rule:line-length
-          tag: 4.130.0@sha256:fa367e7eddd303a95c736f7aede351cdee9036a7383cecfd8786bb5bbe78c13b
+          tag: 4.135.0@sha256:ccd326184d71efc5ebb94155eda7bb30153902342a35dbc8525450d81aa55012
         env:
           EXTENSIONS_GALLERY: '{ "serviceUrl": "https://marketplace.visualstudio.com/_apis/public/gallery", "itemUrl": "https://marketplace.visualstudio.com/items" }'
         args:
