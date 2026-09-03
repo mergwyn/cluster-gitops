@@ -18,11 +18,11 @@ controllers:
   home-assistant:
     annotations:
       secret.reloader.stakater.com/reload: >-
-        {{- list 
+        {{- list
           (printf "%s-secret" .Release.Name)
           (printf "%s-github" .Release.Name)
           (printf "%s-prometheus" .Release.Name)
-          | join "," 
+          | join ","
         -}}
 
     pod:
@@ -125,7 +125,7 @@ controllers:
         image:
           repository: ghcr.io/home-assistant/home-assistant
           # yamllint disable-line rule:line-length
-          tag: "2026.7.2@sha256:1476924357b46e80735c13e94232ba5c853cac052e9df4bb28d50fa56348097b"
+          tag: 2026.7.2@sha256:1476924357b46e80735c13e94232ba5c853cac052e9df4bb28d50fa56348097b
         env:
           TZ: Europe/London
           VENV_FOLDER: /venv
@@ -208,7 +208,7 @@ persistence:
     forceRename: "{{.Release.Name}}-config"
     type: persistentVolumeClaim
     storageClass: openebs-zfspv
-    accessMode: ReadWriteOnce
+    accessMode: ReadWriteMany
     retain: true
     size: 10Gi
     globalMounts:
