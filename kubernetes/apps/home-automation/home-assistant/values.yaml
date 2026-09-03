@@ -11,12 +11,6 @@ defaultPodOptions:
 controllers:
   home-assistant:
     annotations:
-      controllers:
-  home-assistant:
-    annotations:
-      controllers:
-  home-assistant:
-    annotations:
       secret.reloader.stakater.com/reload: >-
         {{- list
           (printf "%s-secret" .Release.Name)
