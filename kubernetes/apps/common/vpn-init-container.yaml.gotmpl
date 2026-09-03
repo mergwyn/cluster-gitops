@@ -9,9 +9,9 @@ controllers:
       dnsPolicy: "None"
       dnsConfig:
         nameservers:
-          - {{ .Values.network.vpnGateway }}
+          - "{{ .Values.network.vpnGateway }}"
         searches:
-          - {{ .Release.Namespace }}.svc.cluster.local
+          - "{{ .Release.Namespace }}.svc.cluster.local"
         options:
           - name: ndots
             value: "1"  # documents intent; Kyverno will enforce this anyway

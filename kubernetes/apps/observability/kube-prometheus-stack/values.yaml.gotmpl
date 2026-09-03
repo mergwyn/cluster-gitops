@@ -49,10 +49,10 @@ alertmanager:
 
     inhibit_rules:
       - source_matchers:
-          - alertname = "NodeDown"
+          - alertname = "NodeExpectedOffline"
         target_matchers:
-          - alertname != "NodeDown"
-        equal: ['instance', 'node', 'kubernetes_node', 'host']
+          - severity =~ ".*"
+        equal: ["instance"]
 
     route:
       receiver: 'email-k8s-admin'
@@ -311,3 +311,5 @@ defaultRules:
     kubeProxy: false
     # See https://github.com/prometheus-community/helm-charts/issues/3441
     KubeClientCertificateExpiration: false
+  disabled:
+    TargetDown: true

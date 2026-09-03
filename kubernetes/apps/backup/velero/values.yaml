@@ -3,8 +3,7 @@ upgradeCRDs: false
 
 annotations:
   secret.reloader.stakater.com/reload: <-
-    minio-s3-conf,
-    idrivee2-s3-conf
+    "minio-s3-conf,idrivee2-s3-conf"
   configmap.reloader.stakater.com/reload: <-
     velero-backup-repository-config
 
