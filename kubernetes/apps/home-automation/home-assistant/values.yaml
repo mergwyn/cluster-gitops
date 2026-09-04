@@ -57,7 +57,7 @@ controllers:
       config-initialization:
         image:
           repository: docker.io/alpine/git
-          tag: 2.54.0@sha256:697cb1c85aefc5724febaec2202a974e0d66f6abb6be91a9a86d0c8757af692a
+          tag: 2.54.0@sha256:4f9488b7295baec153a9953479690f835ad4699b1d9f11e3897a4485c224fc3e
         command: ["/bin/sh", "-c"]
         args:
           - |-
