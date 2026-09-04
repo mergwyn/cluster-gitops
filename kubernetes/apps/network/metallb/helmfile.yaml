@@ -10,7 +10,7 @@ repositories:
 releases:
   - name: metallb
     chart: metallb/metallb
-    version: 0.15.3
+    version: 0.16.1
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
     wait: true
     timeout: 300
