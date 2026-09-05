@@ -201,8 +201,8 @@ persistence:
   config:
     forceRename: "{{.Release.Name}}-config"
     type: persistentVolumeClaim
-    storageClass: openebs-zfspv
-    accessMode: ReadWriteMany
+    storageClass: longhorn
+    accessMode: ReadWriteOnce
     retain: true
     size: 10Gi
     globalMounts:
