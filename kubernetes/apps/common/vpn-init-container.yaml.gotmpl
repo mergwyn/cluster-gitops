@@ -4,8 +4,6 @@
 controllers:
   {{ .Release.Name }}:
     pod:
-      annotations:
-        setGateway: "false"
       dnsPolicy: "None"
       dnsConfig:
         nameservers:
