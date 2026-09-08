@@ -1,0 +1,16 @@
+---
+bases:
+  - ../../../clusters/environments.yaml
+
+repositories:
+  - name: media-servarr
+    url: https://media-servarr.shw.al/charts
+
+releases:
+  - name: cleanuparr
+    namespace: media
+    chart: media-servarr/cleanuparr
+    version: 0.18.0 # Bumped up to support the 'secrets' configuration block
+    values:
+      - values.yaml.gotmpl
+
