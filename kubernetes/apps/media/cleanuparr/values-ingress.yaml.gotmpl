@@ -1,0 +1,18 @@
+---
+route:
+  cleanuparr:
+    hostnames:
+      - "cleanuparr.{{ .Values.cluster.domain }}"
+    parentRefs:
+      - name: traefik-internal
+        namespace: network
+        sectionName: websecure
+    rules:
+      - matches:
+          - path:
+              type: PathPrefix
+              value: /cleanuparr
+        backendRefs:
+          - name: cleanuparr
+            port: 11011
+

@@ -2,18 +2,13 @@
 tz: "Europe/London"
 
 # Fixed: Flat string layout without the block scalar "|" or internal quotes
-podAnnotations:
-  secret.reloader.stakater.com/reload: "radarr-api-secret,sonarr-api-secret,qbittorrent-secret,sabnzbd-secret"
+deployment:
+  podAnnotations:
+    secret.reloader.stakater.com/reload: |
+      "radarr-api-secret,sonarr-api-secret,qbittorrent-secret,sabnzbd-secret"
 
-# Access the GUI dashboard over your local k3s network
 ingress:
-  enabled: true
-  className: traefik
-  hosts:
-    - host: cleanuparr.local
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
+  enabled: false
 
 # Map your *arr BWS keys to the chart properties
 secrets:
