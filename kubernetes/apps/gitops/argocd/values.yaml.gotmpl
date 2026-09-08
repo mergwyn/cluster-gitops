@@ -1,0 +1,14 @@
+{{- $base := .Values }}
+repoServer:
+  volumes:
+    {{- $base.sharedVolumes | toYaml | nindent 4 }}
+    {{- $base.modernPluginVolumes | toYaml | nindent 4 }}
+  initContainers:
+    {{- $base.modernPluginInitContainers | toYaml | nindent 4 }}
+  extraContainers:
+    - {{ $base.legacyPluginContainer | toYaml | nindent 6 }}
+    - {{ $base.modernPluginContainer | toYaml | nindent 6 }}
+
+extraObjects:
+  {{- $base.baseExtraObjects | toYaml | nindent 2 }}
+  {{- $base.modernPluginExtraObjects | toYaml | nindent 2 }}

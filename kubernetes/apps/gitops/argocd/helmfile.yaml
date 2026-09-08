@@ -26,7 +26,12 @@ releases:
     version: 10.2.2
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
     values:
-      - values.yaml
+      - values-base.yaml
+      - values-rules.yaml
+      - values-plugin-legacy.yaml
+      - values-plugin-modern.yaml
+      - values.yaml.gotmpl
+      # - values.yaml
 
   - name: argocd-externalsecret
     chart: bedag/raw
