@@ -4,7 +4,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: bootstrap-handover
+  name: cluster-gitops-v1
   namespace: argocd
 spec:
   goTemplate: true
