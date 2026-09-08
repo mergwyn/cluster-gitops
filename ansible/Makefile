@@ -9,7 +9,7 @@ help:
 	@echo "  deps          - Install required Ansible collections from requirements.yaml"
 	@echo ""
 	@echo "🚀 Provisioning:"
-	@echo "  provision     - Provision K3s cluster (default: container)"
+	@echo "  provision     - Provision K3s cluster (default: vm)"
 	@echo "  provision-container - Provision K3s cluster using LXC containers"
 	@echo "  provision-vm  - Provision K3s cluster using LXC VMs"
 	@echo ""
@@ -18,7 +18,7 @@ help:
 	@echo "  deploy-apps   - Install Kubernetes platform applications"
 	@echo ""
 	@echo "💥 Teardown:"
-	@echo "  teardown      - Destroy K3s cluster (default: container)"
+	@echo "  teardown      - Destroy K3s cluster (default: vm)"
 	@echo "  teardown-container - Destroy container-based K3s cluster"
 	@echo "  teardown-vm   - Destroy VM-based K3s cluster"
 	@echo ""
@@ -27,8 +27,9 @@ help:
 	@echo "  lint          - Run ansible-lint on all playbooks"
 	@echo ""
 	@echo "⚡ Utilities:"
-	@echo "  all           - Run deps + provision (container-based)"
-	@echo "  recreate      - Quick recreate of container cluster (teardown + provision)"
+	@echo "  all           - Run deps + provision (vm-based)"
+	@echo "  recreate      - Quick recreate of VM cluster (teardown + provision)"
+	@echo "  recreate-continer - Quick recreate of container cluster (teardown + provision)"
 	@echo "  recreate-vm   - Quick recreate of VM cluster (teardown + provision)"
 	@echo "  status        - Show cluster status (if available)"
 	@echo "  clean         - Clean up temporary files"
@@ -39,9 +40,9 @@ deps:
 	ansible-galaxy collection install -r requirements.yaml
 	@echo "✅ Dependencies installed"
 
-# Main provisioning (default to container for backward compatibility)
-provision: provision-container
-	@echo "✅ Container cluster provisioned"
+# Main provisioning (default to vm)
+provision: provision-vm
+	@echo "✅ VM cluster provisioned"
 
 provision-container:
 	@echo "🚀 Provisioning K3s cluster with LXC containers..."
@@ -63,8 +64,8 @@ deploy-apps:
 	ansible-playbook playbooks/deploy-platform-apps.yaml
 
 # Teardown operations
-teardown: teardown-container
-	@echo "✅ Container cluster destroyed"
+teardown: teardown-vm
+	@echo "✅ VM cluster destroyed"
 
 teardown-container:
 	@echo "⚠️  WARNING: This will destroy your container-based K3s cluster!"
@@ -109,8 +110,8 @@ teardown-full-vm:
 
 # Check/dry run mode (supports both runtimes)
 check:
-	@echo "🔍 Running in check mode (default: container)..."
-	ansible-playbook playbooks/provision-cluster.yaml --check -e runtime_type=container
+	@echo "🔍 Running in check mode (default: vm)..."
+	ansible-playbook playbooks/provision-cluster.yaml --check -e runtime_type=vm
 
 check-vm:
 	@echo "🔍 Running in check mode for VMs..."
@@ -124,7 +125,7 @@ lint:
 	ansible-lint roles/*/tasks/*.yaml 2>/dev/null || true
 
 # Full pipeline (default to container)
-all: deps provision-container
+all: deps provision-vm
 
 # Clean up temp files
 clean:
@@ -135,14 +136,19 @@ clean:
 	@echo "✅ Cleanup complete"
 
 # Quick recreation (for development)
-recreate: teardown-container provision-container
+recreate: recreate-vm
+	@echo "🔄 Container cluster recreated"
+
+recreate-container: teardown-container provision-container
 	@echo "🔄 Container cluster recreated"
 
 recreate-vm: teardown-vm provision-vm
 	@echo "🔄 VM cluster recreated"
 
 # Quick recreation with full cleanup
-recreate-full: teardown-full-container provision-container
+recreate-full: recreate-full-vm
+
+recreate-full-container: teardown-full-container provision-container
 	@echo "🔄 Container cluster recreated with cleanup"
 
 recreate-full-vm: teardown-full-vm provision-vm
