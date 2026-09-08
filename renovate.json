@@ -10,6 +10,7 @@
     "github>mergwyn/cluster-gitops//renovate/app-template.json",
     "github>mergwyn/cluster-gitops//renovate/docker.json",
     "github>mergwyn/cluster-gitops//renovate/automerge.json",
+    "github>mergwyn/cluster-gitops//renovate/gateway-api-crd.json",
     "github>mergwyn/cluster-gitops//renovate/exceptions.json"
   ]
 }
