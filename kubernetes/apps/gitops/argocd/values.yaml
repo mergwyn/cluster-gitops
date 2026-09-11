@@ -47,7 +47,7 @@ repoServer:
 
   initContainers:
     - name: download-tools
-      image: alpine:3.19
+      image: alpine:3.19@sha256:6baf43584bcb78f2e5847d1de515f23499913ac9f12bdf834811a3145eb11ca1
       command: ["sh", "-c"]
       args:
         - |
@@ -124,7 +124,7 @@ repoServer:
 
     # 2. NEW SIDECAR (Modern Init-Container Built Binaries)
     - name: helmfile-modern-plugin
-      image: quay.io/argoproj/argocd:v2.10.4
+      image: quay.io/argoproj/argocd:v2.10.4@sha256:a2ce24e264c5be63ce4af478f086a866f6df2b68673ad5e5c8f4574de1d00eae
       command: [/var/run/argocd/argocd-cmp-server]
       securityContext:
         runAsNonRoot: true
