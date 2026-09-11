@@ -42,6 +42,7 @@ additionalPrometheusRulesMap:
             annotations:
               summary: "OpenVox agent run failed on {{ $labels.instance }}"
               description: "The most recent OpenVox run on {{ $labels.instance }} reported {{ $value }} failed resources."
+
   custom-target-down:
     groups:
       - name: node_alerts
@@ -55,13 +56,13 @@ additionalPrometheusRulesMap:
               summary: "Node {{ $labels.instance }} is down"
               description: "Prometheus cannot scrape the node-exporter on {{ $labels.instance }}."
 
-      - alert: NodeExpectedOffline
-        expr: up{job="node-exporter", monitoring="intermittent"} == 0
-        for: 5m
-        labels:
-          severity: none
-        annotations:
-          summary: "Intermittent node offline (expected)"
+          - alert: NodeExpectedOffline
+            expr: up{job="node-exporter", monitoring="intermittent"} == 0
+            for: 5m
+            labels:
+              severity: none
+            annotations:
+              summary: "Intermittent node offline (expected)"
 
       - name: custom.rules
         rules:
