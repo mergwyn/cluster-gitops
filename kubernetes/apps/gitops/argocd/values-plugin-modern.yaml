@@ -108,8 +108,5 @@ modernPluginConfigYaml: |
   metadata:
     name: helmfile-modern
   spec:
-    discover:
-      find:
-        glob: "**/helmfile.yaml*"
     generate:
       command: ["/usr/local/bin/helmfile-modern-generate.sh"]
