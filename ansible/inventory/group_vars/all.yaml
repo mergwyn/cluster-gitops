@@ -1,6 +1,6 @@
 ---
 # Global Defaults
-k3s_version: "v1.34.2+k3s1"
+k3s_version: "v1.36.3+k3s1"
 image: "ubuntu:24.04"
 profile: "default"
 memory: "4GB"

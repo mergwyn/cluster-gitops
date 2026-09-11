@@ -1,0 +1,115 @@
+---
+# Modern CMP sidecar - custom helmfile-modern plugin.
+# Plain YAML - no templating in this file. The assembler
+# (values.yaml.gotmpl) reads this via readFile + fromYaml, and pulls the
+# actual generate script in from scripts/helmfile-modern-generate.sh
+# directly - edit the script there, not here.
+
+modernPluginContainer:
+  name: helmfile-modern-plugin
+  image: quay.io/argoproj/argocd:v2.10.4 # Uses standard base ArgoCD image for cmp-server
+  command: [/var/run/argocd/argocd-cmp-server]
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 999
+  volumeMounts:
+    - mountPath: /var/run/argocd
+      name: var-files
+    - mountPath: /sops/age
+      name: age-secret-keys
+    - mountPath: /tmp
+      name: helmfile-cmp-tmp
+    # Shared socket dir - required for the cmp-server to bind its .sock file
+    - mountPath: /home/argocd/cmp-server/plugins
+      name: plugins
+    # Compiled binaries & plugins (from the download-tools init container)
+    - mountPath: /usr/local/bin/helmfile
+      name: custom-tools
+      subPath: helmfile
+    - mountPath: /usr/local/bin/sops
+      name: custom-tools
+      subPath: sops
+    - mountPath: /usr/local/bin/helm
+      name: custom-tools
+      subPath: helm
+    - mountPath: /home/argocd/.local/share/helm/plugins
+      name: custom-tools
+      subPath: helm-plugins
+    # CMP plugin config
+    - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+      subPath: plugin.yaml
+      name: helmfile-modern-config
+    # Generate script
+    - mountPath: /usr/local/bin/helmfile-modern-generate.sh
+      subPath: helmfile-modern-generate.sh
+      name: helmfile-modern-script
+
+modernPluginInitContainers:
+  - name: download-tools
+    image: alpine:3.19
+    command: ["sh", "-c"]
+    args:
+      - |
+        set -e
+        set -x
+
+        nslookup google.com
+
+        apk update && apk add --no-cache ca-certificates tar
+
+        CUSTOM_HELMFILE_VERSION="v1.7.3"
+        CUSTOM_SOPS_VERSION="v3.13.2"
+        CUSTOM_HELM_VERSION="v4.2.4"
+        SECRETS_VER="4.7.4"
+        DIFF_VER="v3.15.7"
+
+        # 1. Download Core Binaries
+        wget -qO- "https://get.helm.sh/helm-${CUSTOM_HELM_VERSION}-linux-amd64.tar.gz" | tar -xz -C /tmp
+        mv /tmp/linux-amd64/helm /custom-tools/helm
+
+        wget -qO- "https://github.com/helmfile/helmfile/releases/download/${CUSTOM_HELMFILE_VERSION}/helmfile_${CUSTOM_HELMFILE_VERSION#v}_linux_amd64.tar.gz" | tar -xz -C /tmp
+        mv /tmp/helmfile /custom-tools/helmfile
+        chmod +x /custom-tools/helmfile
+
+        wget -qO /custom-tools/sops "https://github.com/getsops/sops/releases/download/${CUSTOM_SOPS_VERSION}/sops-${CUSTOM_SOPS_VERSION}.linux.amd64"
+        chmod +x /custom-tools/sops
+
+        # 2. Pre-install Helm OCI Plugins
+        export HELM_PLUGINS="/custom-tools/helm-plugins"
+        /custom-tools/helm plugin install oci://ghcr.io/jkroepke/helm-secrets/secrets:${SECRETS_VER} --verify=false
+        /custom-tools/helm plugin install oci://ghcr.io/jkroepke/helm-secrets/secrets-getter:${SECRETS_VER} --verify=false
+        /custom-tools/helm plugin install oci://ghcr.io/jkroepke/helm-secrets/secrets-post-renderer:${SECRETS_VER} --verify=false
+
+        # 3. Extract helm-diff
+        mkdir -p /custom-tools/helm-plugins/helm-diff
+        wget -qO- "https://github.com/databus23/helm-diff/releases/download/${DIFF_VER}/helm-diff-linux-amd64.tgz" | tar -xz -C /custom-tools/helm-plugins/helm-diff
+
+        echo "All binaries and plugins successfully compiled!"
+    volumeMounts:
+      - mountPath: /custom-tools
+        name: custom-tools
+
+modernPluginVolumes:
+  - name: custom-tools
+    emptyDir: {}
+  - name: helmfile-modern-config
+    configMap:
+      name: helmfile-modern-config
+  - name: helmfile-modern-script
+    configMap:
+      name: helmfile-modern-generate-script
+      defaultMode: 0755
+
+# Static plugin.yaml content - the assembler injects this verbatim into
+# the helmfile-modern-config ConfigMap's data.
+modernPluginConfigYaml: |
+  apiVersion: argoproj.io/v1alpha1
+  kind: ConfigManagementPlugin
+  metadata:
+    name: helmfile-modern
+  spec:
+    discover:
+      find:
+        command: ["sh", "-c", "find . -maxdepth 2 -name helmfile.yaml"]
+    generate:
+      command: ["/usr/local/bin/helmfile-modern-generate.sh"]

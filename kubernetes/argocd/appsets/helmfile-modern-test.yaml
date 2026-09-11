@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: helmfile-modern-poc
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions:
+    - missingkey=error
+  generators:
+    - git:
+        repoURL: https://github.com/mergwyn/cluster-gitops.git
+        revision: &revision main
+        files:
+          - path: kubernetes/apps/default/phonebook/app.yaml
+  template:
+    metadata:
+      name: "{{.path.basename}}"
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/mergwyn/cluster-gitops.git
+        targetRevision: *revision
+        path: "{{.path.path}}"
+        plugin:
+          name: helmfile-modern
+          env:
+            - name: HELMFILE_ENVIRONMENT
+              value: dev
+            - name: HELMFILE_NAMESPACE
+              value: "{{.appNamespace}}"
+            - name: HELMFILE_TEMPLATE_OPTIONS
+              value: "--include-crds"
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: "{{.appNamespace}}"

@@ -32,14 +32,31 @@ releases:
 #            metadata:
 #              name: monitoring
 
+  # Install gateway crds so ArgoCD can manage Gateway API resources.
+  - name: gateway-api-crds
+    namespace: kube-system
+    chart: bedag/raw
+    version: 2.0.2
+    values:
+      - resources: []
+    hooks:
+      - events: ["presync"]
+        showlogs: true
+        command: kubectl
+        args:
+          - apply
+          - --server-side
+          - -f
+          # renovate: datasource=github-releases depName=kubernetes-sigs/gateway-api
+          - https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.6.1/standard-install.yaml
 
+  # Bootstrap-only: install CRDs so ArgoCD can manage prometheysRule resources.
+    # Runtime is installed later by ArgoCD using the same chart.
   - name: kube-prometheus-stack
     chart: prometheus-community/kube-prometheus-stack
     namespace: monitoring
     version: 87.21.0
     set:
-      # Bootstrap-only: install CRDs so ArgoCD can manage prometheysRule resources.
-      # Runtime is installed later by ArgoCD using the same chart.
       - name: crds.enabled
         value: true
       - name: prometheusOperator.enabled
@@ -65,13 +82,13 @@ releases:
       - name: kubeScheduler.enabled
         value: false
 
+  # Bootstrap-only: install CRDs so ArgoCD can manage IngressRoute resources.
+  # Runtime is installed later by ArgoCD using the same chart.
   - name: traefik
     namespace: network
     chart: traefik/traefik
     version: 41.1.0
     set:
-      # Bootstrap-only: install CRDs so ArgoCD can manage IngressRoute resources.
-      # Runtime is installed later by ArgoCD using the same chart.
       - name: providers.kubernetesCRD.enabled
         value: true
       - name: providers.kubernetesIngress.enabled

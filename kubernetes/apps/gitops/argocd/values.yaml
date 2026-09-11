@@ -1,4 +1,6 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/argoproj/argo-helm/main/charts/argo-cd/values.yaml
+
 env:
   TZ: Europe/London
 
@@ -31,6 +33,11 @@ configs:
     policy.default: role:admin
 
 repoServer:
+  dnsConfig:
+      options:
+        - name: ndots
+          value: "1"
+        - name: single-request-reopen
   resources:
     requests:
       cpu: 20m
@@ -38,53 +45,49 @@ repoServer:
     limits:
       memory: 1400M
 
-#  initContainers:
-#    - name: download-tools
-#      image: alpine:3.19
-#      command: ["sh", "-c"]
-#      args:
-#        - |
-#          set -e
-#
-#          # Renovate tracks these exact variables inline
-#          # renovate: datasource=github-releases depName=helmfile/helmfile
-#          CUSTOM_HELMFILE_VERSION="v1.5.2"
-#          # renovate: datasource=github-releases depName=getsops/sops
-#          CUSTOM_SOPS_VERSION="v3.9.4"
-#          # renovate: datasource=github-releases depName=helm/helm
-#          CUSTOM_HELM_VERSION="v4.1.4"
-#          # renovate: datasource=docker depName=ghcr.io/jkroepke/helm-secrets/secrets
-#          SECRETS_VER="4.7.4"
-#          # renovate: datasource=github-releases depName=databus23/helm-diff
-#          DIFF_VER="v3.15.7"
-#
-#          # 1. Download Core Binaries
-#          #echo "Downloading Helm ${CUSTOM_HELM_VERSION}..."
-#          #wget -qO- "https://get.helm.sh/helm-${CUSTOM_HELM_VERSION}-linux-amd64.tar.gz" | tar -xz -C /tmp
-#          #mv /tmp/linux-amd64/helm /custom-tools/helm
-#
-#          #echo "Downloading Helmfile ${CUSTOM_HELMFILE_VERSION}..."
-#          #HELMFILE_STRIPPED=$(echo ${CUSTOM_HELMFILE_VERSION} | sed 's/^v//')
-#          #wget -qO /custom-tools/helmfile "https://github.com/helmfile/helmfile/releases/download/${CUSTOM_HELMFILE_VERSION}/helmfile_${HELMFILE_STRIPPED}_linux_amd64"
-#          #chmod +x /custom-tools/helmfile
-#
-#          #echo "Downloading SOPS ${CUSTOM_SOPS_VERSION}..."
-#          #wget -qO /custom-tools/sops "https://github.com/getsops/sops/releases/download/${CUSTOM_SOPS_VERSION}/sops-${CUSTOM_SOPS_VERSION}.linux.amd64"
-#          #chmod +x /custom-tools/sops
-#
-#          # 2. Pre-install Helm Plugins cleanly using our fresh Helm 4 binary
-#          #echo "Pre-installing Helm plugins..."
-#          #export HELM_PLUGINS="/custom-tools/helm-plugins"
-#
-#          #/custom-tools/helm plugin install oci://ghcr.io/jkroepke/helm-secrets/secrets:${SECRETS_VER}
-#          #/custom-tools/helm plugin install oci://ghcr.io/jkroepke/helm-secrets/secrets-getter:${SECRETS_VER}
-#          #/custom-tools/helm plugin install oci://ghcr.io/jkroepke/helm-secrets/secrets-post-renderer:${SECRETS_VER}
-#          #/custom-tools/helm plugin install https://github.com/databus23/helm-diff --version ${DIFF_VER}
-#
-#          echo "All binaries and plugins ready!"
-#      volumeMounts:
-#        - mountPath: /custom-tools
-#          name: custom-tools
+  initContainers:
+    - name: download-tools
+      image: alpine:3.19
+      command: ["sh", "-c"]
+      args:
+        - |
+          set -e
+          set -x
+
+          apk update && apk add --no-cache ca-certificates tar
+
+
+          CUSTOM_HELMFILE_VERSION="v1.7.3"
+          CUSTOM_SOPS_VERSION="v3.13.2"
+          CUSTOM_HELM_VERSION="v4.2.4"
+          SECRETS_VER="4.7.4"
+          DIFF_VER="v3.15.7"
+
+          # 1. Download Core Binaries
+          wget -qO- "https://get.helm.sh/helm-${CUSTOM_HELM_VERSION}-linux-amd64.tar.gz" | tar -xz -C /tmp
+          mv /tmp/linux-amd64/helm /custom-tools/helm
+
+          wget -qO- "https://github.com/helmfile/helmfile/releases/download/${CUSTOM_HELMFILE_VERSION}/helmfile_${CUSTOM_HELMFILE_VERSION#v}_linux_amd64.tar.gz" | tar -xz -C /tmp
+          mv /tmp/helmfile /custom-tools/helmfile
+          chmod +x /custom-tools/helmfile
+
+          wget -qO /custom-tools/sops "https://github.com/getsops/sops/releases/download/${CUSTOM_SOPS_VERSION}/sops-${CUSTOM_SOPS_VERSION}.linux.amd64"
+          chmod +x /custom-tools/sops
+
+          # 2. Pre-install Helm OCI Plugins
+          export HELM_PLUGINS="/custom-tools/helm-plugins"
+          /custom-tools/helm plugin install oci://ghcr.io/jkroepke/helm-secrets/secrets:${SECRETS_VER} --verify=false
+          /custom-tools/helm plugin install oci://ghcr.io/jkroepke/helm-secrets/secrets-getter:${SECRETS_VER} --verify=false
+          /custom-tools/helm plugin install oci://ghcr.io/jkroepke/helm-secrets/secrets-post-renderer:${SECRETS_VER} --verify=false
+
+          # 3. Extract helm-diff
+          mkdir -p /custom-tools/helm-plugins/helm-diff
+          wget -qO- "https://github.com/databus23/helm-diff/releases/download/${DIFF_VER}/helm-diff-linux-amd64.tgz" | tar -xz -C /custom-tools/helm-plugins/helm-diff
+
+          echo "All binaries and plugins successfully compiled!"
+      volumeMounts:
+        - mountPath: /custom-tools
+          name: custom-tools
 
   volumes:
     - name: age-secret-keys
@@ -92,35 +95,14 @@ repoServer:
         secretName: argocd-age-secret-keys
     - name: custom-tools
       emptyDir: {}
+    - name: helmfile-cmp-tmp
+      emptyDir: {}
+    - name: helmfile-modern-config
+      configMap:
+        name: helmfile-modern-config
 
-  volumeMounts:
-    - name: age-secret-keys
-      mountPath: /sops/age
-    # Mount the compiled assets back into the native execution environment paths
-#    - name: custom-tools
-#      mountPath: /usr/local/bin/helmfile
-#      subPath: helmfile
-#    - name: custom-tools
-#      mountPath: /usr/local/bin/sops
-#      subPath: sops
-#    - name: custom-tools
-#      mountPath: /usr/local/bin/helm
-#      subPath: helm
-#    - name: custom-tools
-#      mountPath: /home/argocd/.local/share/helm/plugins
-#      subPath: helm-plugins
-
-#  cmp:
-#    plugins:
-#      helmfile-modern:
-#        generate:
-#          command: ["sh", "-c"]
-#          args: |
-#            export SOPS_AGE_KEY_FILE=/sops/age/keys.txt
-#            helmfile --namespace $HELMFILE_NAMESPACE --environment $HELMFILE_ENVIRONMENT template $HELMFILE_TEMPLATE_OPTIONS
-
-  # TODO: remove this section when testing complete
   extraContainers:
+    # 1. LEGACY SIDECAR (Travisghansen)
     - name: helmfile-plugin
       image: travisghansen/argo-cd-helmfile:v0.3.13@sha256:1251e329f72cadaf55860b9029d13c887559b5f20287915f21d32d722aaeef2e
       command: [/var/run/argocd/argocd-cmp-server]
@@ -139,6 +121,38 @@ repoServer:
           name: plugins
         - mountPath: /tmp
           name: helmfile-cmp-tmp
+
+    # 2. NEW SIDECAR (Modern Init-Container Built Binaries)
+    - name: helmfile-modern-plugin
+      image: quay.io/argoproj/argocd:v2.10.4
+      command: [/var/run/argocd/argocd-cmp-server]
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+      volumeMounts:
+        - mountPath: /var/run/argocd
+          name: var-files
+        - mountPath: /sops/age
+          name: age-secret-keys
+        - mountPath: /tmp
+          name: helmfile-cmp-tmp
+        - mountPath: /home/argocd/cmp-server/plugins   # ← added: shared socket dir
+          name: plugins
+        - mountPath: /usr/local/bin/helmfile
+          name: custom-tools
+          subPath: helmfile
+        - mountPath: /usr/local/bin/sops
+          name: custom-tools
+          subPath: sops
+        - mountPath: /usr/local/bin/helm
+          name: custom-tools
+          subPath: helm
+        - mountPath: /home/argocd/.local/share/helm/plugins
+          name: custom-tools
+          subPath: helm-plugins
+        - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+          subPath: plugin.yaml
+          name: helmfile-modern-config
 
 server:
   # TODO test again when https://github.com/argoproj/argo-helm/issues/3550 resolved
@@ -197,6 +211,31 @@ extraObjects:
               port: 80
               scheme: h2c
       tls: {}
+
+  # Standalone ConfigMap for helmfile-modern
+  - apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: helmfile-modern-config
+      namespace: argocd
+    data:
+      plugin.yaml: |
+        apiVersion: argoproj.io/v1alpha1
+        kind: ConfigManagementPlugin
+        metadata:
+          name: helmfile-modern
+        spec:
+          discover:
+            find:
+              command: ["sh", "-c", "find . -maxdepth 2 -name helmfile.yaml"]
+          generate:
+            command: ["sh", "-c"]
+            args:
+              - |
+                export SOPS_AGE_KEY_FILE=/sops/age/keys.txt
+                helmfile --namespace "$ARGOCD_ENV_HELMFILE_NAMESPACE" \
+                        --environment "$ARGOCD_ENV_HELMFILE_ENVIRONMENT" \
+                        template $ARGOCD_ENV_HELMFILE_TEMPLATE_OPTIONS
 
 controller:
   resources:

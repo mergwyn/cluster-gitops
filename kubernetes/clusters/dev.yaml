@@ -9,11 +9,20 @@ network:
   vip: 10.58.0.60
   metallb:
     poolCIDR: 10.58.0.61-10.58.0.69
-  multus:
+  homeLan:
     rangeStart: 10.58.0.80
     rangeEnd: 10.58.0.89
-  traefik_internal: 10.58.0.69
+  # metallb pool
+  coreDNS: 10.58.0.67
   plex: 10.58.0.68
+  traefik_internal: 10.58.0.69
+  # multus home-lan
+  dispatcharr: 10.58.0.80
+  qbittorrent: 10.58.0.81
+  sabnzbd: 10.58.0.82
+  prowlarr: 10.58.0.83
+  radarr: 10.58.0.84
+  sonarr: 10.58.0.85
 
 # CertManager dev settings (explicitly staging)
 certManager:

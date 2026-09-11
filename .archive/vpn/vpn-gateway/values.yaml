@@ -4,11 +4,6 @@ fullnameOverride: &name vpn-gateway
 controller:
   annotations:
     reloader.stakater.com/auto: "true"
-    secret.reloader.stakater.com/reload: "\
-      gluetun-auth,privatevpn-ovn,\
-      privatevpn-ovn-conf,\
-      vpn-gateway-webhook-ca,\
-      vpn-gateway-webhook-tls"
 
   # --- INIT CONTAINER DNS RESOLUTION & PORT CHECK ---
 initContainers:
