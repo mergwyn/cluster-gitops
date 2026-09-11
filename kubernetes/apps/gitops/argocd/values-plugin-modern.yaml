@@ -1,8 +1,9 @@
 ---
 # Modern CMP sidecar - custom helmfile-modern plugin.
-# The generate script lives at scripts/helmfile-modern-generate.sh
-# and is pulled in verbatim via readFile below - edit the script file,
-# not this ConfigMap, to avoid drift between the two.
+# Plain YAML - no templating in this file. The assembler
+# (values.yaml.gotmpl) reads this via readFile + fromYaml, and pulls the
+# actual generate script in from scripts/helmfile-modern-generate.sh
+# directly - edit the script there, not here.
 
 modernPluginContainer:
   name: helmfile-modern-plugin
@@ -99,30 +100,16 @@ modernPluginVolumes:
       name: helmfile-modern-generate-script
       defaultMode: 0755
 
-modernPluginExtraObjects:
-  - apiVersion: v1
-    kind: ConfigMap
-    metadata:
-      name: helmfile-modern-config
-      namespace: argocd
-    data:
-      plugin.yaml: |
-        apiVersion: argoproj.io/v1alpha1
-        kind: ConfigManagementPlugin
-        metadata:
-          name: helmfile-modern
-        spec:
-          discover:
-            find:
-              command: ["sh", "-c", "find . -maxdepth 2 -name helmfile.yaml"]
-          generate:
-            command: ["/usr/local/bin/helmfile-modern-generate.sh"]
-
-  - apiVersion: v1
-    kind: ConfigMap
-    metadata:
-      name: helmfile-modern-generate-script
-      namespace: argocd
-    data:
-      helmfile-modern-generate.sh: |
-{{ readFile "scripts/helmfile-modern-generate.sh" | indent 8 }}
+# Static plugin.yaml content - the assembler injects this verbatim into
+# the helmfile-modern-config ConfigMap's data.
+modernPluginConfigYaml: |
+  apiVersion: argoproj.io/v1alpha1
+  kind: ConfigManagementPlugin
+  metadata:
+    name: helmfile-modern
+  spec:
+    discover:
+      find:
+        command: ["sh", "-c", "find . -maxdepth 2 -name helmfile.yaml"]
+    generate:
+      command: ["/usr/local/bin/helmfile-modern-generate.sh"]

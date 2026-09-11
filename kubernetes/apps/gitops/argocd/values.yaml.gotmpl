@@ -1,14 +1,44 @@
-{{- $base := .Values }}
+
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/argoproj/argo-helm/main/charts/argo-cd/values.yaml
+#
+# Assembler file - the only file that defines real argo-cd chart keys
+# (repoServer.volumes, repoServer.extraContainers, extraObjects, etc).
+#
+# NOTE: this file reads the fragment files itself via readFile + fromYaml,
+# rather than relying on helmfile's .Values in a values-list entry - each
+# entry in a release's `values:` list is templated independently, so
+# .Values here would NOT see sibling files earlier in the list.
+{{- $base := readFile "values-base.yaml" | fromYaml }}
+{{- $legacy := readFile "values-plugin-legacy.yaml" | fromYaml }}
+{{- $modern := readFile "values-plugin-modern.yaml" | fromYaml }}
+{{- $script := readFile "scripts/helmfile-modern-generate.sh" }}
+
 repoServer:
   volumes:
     {{- $base.sharedVolumes | toYaml | nindent 4 }}
-    {{- $base.modernPluginVolumes | toYaml | nindent 4 }}
+    {{- $modern.modernPluginVolumes | toYaml | nindent 4 }}
   initContainers:
-    {{- $base.modernPluginInitContainers | toYaml | nindent 4 }}
+    {{- $modern.modernPluginInitContainers | toYaml | nindent 4 }}
   extraContainers:
-    - {{ $base.legacyPluginContainer | toYaml | nindent 6 }}
-    - {{ $base.modernPluginContainer | toYaml | nindent 6 }}
+    - {{- $legacy.legacyPluginContainer | toYaml | nindent 6 }}
+    - {{- $modern.modernPluginContainer | toYaml | nindent 6 }}
 
 extraObjects:
   {{- $base.baseExtraObjects | toYaml | nindent 2 }}
-  {{- $base.modernPluginExtraObjects | toYaml | nindent 2 }}
+  - apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: helmfile-modern-config
+      namespace: argocd
+    data:
+      plugin.yaml: |
+{{ $modern.modernPluginConfigYaml | indent 8 }}
+  - apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: helmfile-modern-generate-script
+      namespace: argocd
+    data:
+      helmfile-modern-generate.sh: |
+{{ $script | indent 8 }}

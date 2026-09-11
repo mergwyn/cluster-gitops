@@ -28,8 +28,6 @@ releases:
     values:
       - values-base.yaml
       - values-rules.yaml
-      - values-plugin-legacy.yaml
-      - values-plugin-modern.yaml
       - values.yaml.gotmpl
       # - values.yaml
 
