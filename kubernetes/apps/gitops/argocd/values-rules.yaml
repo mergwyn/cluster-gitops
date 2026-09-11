@@ -1,6 +1,17 @@
 ---
 # This is a separate values file to remove the dependency on
 # prometheus crds during bootstrap
+repoServer:
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+
+applicationSet:
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
 
 controller:
   metrics:
