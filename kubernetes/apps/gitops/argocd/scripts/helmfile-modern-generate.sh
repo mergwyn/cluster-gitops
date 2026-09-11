@@ -38,6 +38,10 @@ fi
 
 helmfile --namespace "${HELMFILE_NAMESPACE}" \
          --environment "${HELMFILE_ENVIRONMENT}" \
+         repos
+
+helmfile --namespace "${HELMFILE_NAMESPACE}" \
+         --environment "${HELMFILE_ENVIRONMENT}" \
          --allow-no-matching-release \
          template \
          --skip-deps \
