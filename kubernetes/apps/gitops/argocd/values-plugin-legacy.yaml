@@ -10,6 +10,8 @@ legacyPluginContainer:
   env:
     - name: SOPS_AGE_KEY_FILE
       value: /sops/age/keys.txt
+    - name: HELMFILE_DISCOVERY_RESPONSE
+      value: "true"
   securityContext:
     runAsNonRoot: true
     runAsUser: 999
