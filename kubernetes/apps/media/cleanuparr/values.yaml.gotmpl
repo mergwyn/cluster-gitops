@@ -1,0 +1,47 @@
+---
+tz: "Europe/London"
+
+# Fixed: Flat string layout without the block scalar "|" or internal quotes
+deployment:
+  podAnnotations:
+    secret.reloader.stakater.com/reload: |
+      "radarr-api-secret,sonarr-api-secret,qbittorrent-secret,sabnzbd-secret"
+
+ingress:
+  enabled: false
+
+# Map your *arr BWS keys to the chart properties
+secrets:
+  - name: radarrApiKey
+    ref: radarr-api-secret
+    key: RADARR__API_KEY
+  - name: sonarrApiKey
+    ref: sonarr-api-secret
+    key: SONARR__API_KEY
+
+# Inject download client credentials directly from BWS secrets
+env:
+  # qBittorrent Credentials
+  - name: CLEANUPARR_QBITTORRENT_USER
+    valueFrom:
+      secretKeyRef:
+        name: qbittorrent-secret
+        key: QBITTORRENT__USERNAME
+  - name: CLEANUPARR_QBITTORRENT_PASS
+    valueFrom:
+      secretKeyRef:
+        name: qbittorrent-secret
+        key: QBITTORRENT__PASSWORD
+  
+  # SABnzbd API Key
+  - name: CLEANUPARR_SABNZBD_API_KEY
+    valueFrom:
+      secretKeyRef:
+        name: sabnzbd-secret
+        key: SABNZBD__API_KEY
+
+# Retain your configurations across pod restarts
+persistence:
+  enabled: true
+  size: 1Gi
+
