@@ -1,0 +1,62 @@
+repositories:
+  - name: media-servarr
+    url: https://github.io
+
+releases:
+  - name: cleanuparr
+    namespace: media
+    chart: media-servarr/cleanuparr
+    version: 0.18.0
+    values:
+      - tz: "Europe/London"
+      
+      # Automatically restarts the pod when any linked BWS secret changes
+      - podAnnotations:
+          ://stakater.com: "true"
+
+      # Access the GUI dashboard over your local k3s network
+      - ingress:
+          enabled: true
+          className: traefik
+          hosts:
+            - host: cleanuparr.local
+              paths:
+                - path: /
+                  pathType: ImplementationSpecific
+
+      # Map your *arr BWS keys to the chart properties
+      - secrets:
+          - name: radarrApiKey
+            ref: radarr-api-secret
+            key: RADARR__API_KEY
+          - name: sonarrApiKey
+            ref: sonarr-api-secret
+            key: SONARR__API_KEY
+
+      # Inject download client credentials directly from BWS secrets
+      - env:
+          # qBittorrent Credentials
+          - name: CLEANUPARR_QBITTORRENT_USER
+            valueFrom:
+              secretKeyRef:
+                name: qbittorrent-secret
+                key: QBITTORRENT__USERNAME
+          - name: CLEANUPARR_QBITTORRENT_PASS
+            valueFrom:
+              secretKeyRef:
+                name: qbittorrent-secret
+                key: QBITTORRENT__PASSWORD
+          
+          # SABnzbd API Key
+          - name: CLEANUPARR_SABNZBD_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: sabnzbd-secret
+                key: SABNZBD__API_KEY
+
+      # Retain your configurations across pod restarts
+      - persistence:
+          enabled: true
+          size: 1Gi
+          storageClass: longhorn
+

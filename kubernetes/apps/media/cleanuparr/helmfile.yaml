@@ -1,0 +1,24 @@
+---
+bases:
+  - ../../../clusters/environments.yaml
+
+repositories:
+  - name: media-servarr
+    url: https://media-servarr.shw.al/charts
+  - name: bjw-s-labs
+    url: https://bjw-s-labs.github.io/helm-charts
+
+releases:
+  - name: cleanuparr
+    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+    chart: media-servarr/cleanuparr
+    version: 0.18.0 # Bumped up to support the 'secrets' configuration block
+    values:
+      - values.yaml.gotmpl
+
+  - name: cleanuparr-ingress
+    chart: bjw-s-labs/app-template
+    version: 5.0.1
+    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+    values:
+      - values-ingress.yaml.gotmpl
