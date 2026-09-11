@@ -58,29 +58,29 @@ releases:
     version: 87.21.0
     set:
       - name: crds.enabled
-        value: true
+        value: "true"
       - name: prometheusOperator.enabled
-        value: false
+        value: "false"
       - name: prometheus.enabled
-        value: false
+        value: "false"
       - name: alertmanager.enabled
-        value: false
+        value: "false"
       - name: grafana.enabled
-        value: false
+        value: "false"
       - name: kubeStateMetrics.enabled
-        value: false
+        value: "false"
       - name: nodeExporter.enabled
-        value: false
+        value: "false"
       - name: coreDns.enabled
-        value: false
+        value: "false"
       - name: kubeControllerManager.enabled
-        value: false
+        value: "false"
       - name: kubeEtcd.enabled
-        value: false
+        value: "false"
       - name: kubeProxy.enabled
-        value: false
+        value: "false"
       - name: kubeScheduler.enabled
-        value: false
+        value: "false"
 
   # Bootstrap-only: install CRDs so ArgoCD can manage IngressRoute resources.
   # Runtime is installed later by ArgoCD using the same chart.
@@ -90,16 +90,16 @@ releases:
     version: 41.1.0
     set:
       - name: providers.kubernetesCRD.enabled
-        value: true
+        value: "true"
       - name: providers.kubernetesIngress.enabled
-        value: false
+        value: "false"
       - name: service.enabled
-        value: false
+        value: "false"
       - name: deployment.enabled
-        value: false
+        value: "false"
       - name: ingressClass.enabled
-        value: false
+        value: "false"
       - name: rbac.enabled
-        value: false
+        value: "false"
       - name: serviceAccount.name
         value: undef
