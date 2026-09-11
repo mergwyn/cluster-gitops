@@ -26,6 +26,7 @@ releases:
     version: 10.2.2
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
     values:
+      - values-rules.yaml
       - values.yaml
 
   - name: argocd-externalsecret
