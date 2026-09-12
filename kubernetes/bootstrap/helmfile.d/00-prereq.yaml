@@ -87,7 +87,7 @@ releases:
   - name: traefik
     namespace: network
     chart: traefik/traefik
-    version: 41.1.0
+    version: 41.5.0
     set:
       - name: providers.kubernetesCRD.enabled
         value: "true"
