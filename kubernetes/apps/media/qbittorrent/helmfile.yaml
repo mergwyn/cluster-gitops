@@ -14,3 +14,4 @@ releases:
     values:
       - ../../common/vpn-init-container.yaml.gotmpl
       - values.yaml.gotmpl
+      - externalsecret.yaml
