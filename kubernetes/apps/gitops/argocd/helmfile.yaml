@@ -23,7 +23,7 @@ releases:
 
   - name: argocd
     chart: argoproj/argo-cd
-    version: 10.2.2
+    version: 10.8.4
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
     values:
       - values-rules.yaml
