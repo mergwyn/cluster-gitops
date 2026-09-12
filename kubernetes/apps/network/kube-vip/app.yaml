@@ -1,3 +1,4 @@
 ---
 wave: 1
 appNamespace: kube-system
+cmpPlugin: helmfile

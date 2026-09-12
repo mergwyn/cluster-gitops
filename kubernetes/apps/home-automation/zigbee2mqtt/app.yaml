@@ -1,3 +1,4 @@
 ---
 wave: 3
 appNamespace: home-assistant
+cmpPlugin: helmfile

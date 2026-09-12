@@ -1,2 +1,3 @@
 wave: 2
 appNamespace: reloader-system
+cmpPlugin: helmfile

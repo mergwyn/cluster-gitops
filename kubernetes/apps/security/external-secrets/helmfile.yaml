@@ -66,3 +66,33 @@ releases:
     needs:
       - bitwarden-access-token
       - external-secrets
+
+  # 5. Vault CLI bootstrap credentials
+  - name: bitwarden-vault-secret
+    chart: bedag/raw
+    version: 2.0.2
+    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+    secrets:
+      - bitwarden-vault-sops.yaml
+
+  # 6. bw serve pod + service + NetworkPolicy
+  - name: bitwarden-vault-cli
+    chart: bedag/raw
+    version: 2.0.2
+    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+    values:
+      - bitwarden-vault-cli.yaml
+    needs:
+      - bitwarden-vault-secret
+
+  # 7. Password Manager ClusterSecretStores
+  - name: bitwarden-vault-store
+    chart: bedag/raw
+    version: 2.0.2
+    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+    values:
+      - bitwarden-vault-store.yaml
+    needs:
+      - bitwarden-vault-cli
+      - external-secrets
+

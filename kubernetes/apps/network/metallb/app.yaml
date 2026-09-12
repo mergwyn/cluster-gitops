@@ -1,2 +1,3 @@
 wave: 1
 appNamespace: metallb-system
+cmpPlugin: helmfile
