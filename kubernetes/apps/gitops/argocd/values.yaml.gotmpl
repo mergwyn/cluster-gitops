@@ -10,7 +10,6 @@
 # entry in a release's `values:` list is templated independently, so
 # .Values here would NOT see sibling files earlier in the list.
 {{- $base := readFile "values-base.yaml" | fromYaml }}
-{{- $legacy := readFile "values-plugin-legacy.yaml" | fromYaml }}
 {{- $modern := readFile "values-plugin-modern.yaml" | fromYaml }}
 {{- $script := readFile "scripts/helmfile-modern-generate.sh" }}
 
@@ -21,7 +20,6 @@ repoServer:
   initContainers:
     {{- $modern.modernPluginInitContainers | toYaml | nindent 4 }}
   extraContainers:
-    - {{- $legacy.legacyPluginContainer | toYaml | nindent 6 }}
     - {{- $modern.modernPluginContainer | toYaml | nindent 6 }}
 
 extraObjects:
