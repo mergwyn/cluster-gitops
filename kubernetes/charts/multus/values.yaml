@@ -22,7 +22,7 @@ controllers:
           # -- CNI installer repostory
           repository: ghcr.io/angelnu/cni-plugins
           # -- CNI installer tag
-          tag: 1.9.1@sha256:eb51e46d37aaa0163c24da1fed5b06ae341d1e1526178593a83854529b2d1c68
+          tag: 1.9.1@sha256:d2450aa92b469e90ad6c8690f7212fa27b68681df4b1e269a803bff036d8e1e3
           # -- CNI installer pull policy
           pullPolicy: IfNotPresent
       multus-installer: {}
