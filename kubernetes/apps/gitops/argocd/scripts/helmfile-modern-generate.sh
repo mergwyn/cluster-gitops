@@ -21,6 +21,7 @@ KUBE_VERSION=$(echo "${KUBE_VERSION}" | sed 's/[^0-9.]*//g')
 export HELM_HOME="/tmp/__helmfile-modern__/apps/${ARGOCD_APP_NAME}"
 mkdir -p "${HELM_HOME}"
 export HOME="${HELM_HOME}"
+export HELM_PLUGINS=/custom-tools/helm-plugins
 
 # Build --api-versions flags from KUBE_API_VERSIONS (CSV),
 # forwarded to Helm via helmfile's --args passthrough.
