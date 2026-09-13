@@ -22,10 +22,10 @@ spec:
     type: RollingSync
     rollingSync:
       steps:
-        - matchExpressions: [{ key: wave, operator: In, values: ["1"] }]
-        - matchExpressions: [{ key: wave, operator: In, values: ["2"] }]
-        - matchExpressions: [{ key: wave, operator: In, values: ["3"] }]
-        - matchExpressions: [{ key: wave, operator: In, values: ["4"] }]
+        - matchExpressions: [{key: wave, operator: In, values: ["1"]}]
+        - matchExpressions: [{key: wave, operator: In, values: ["2"]}]
+        - matchExpressions: [{key: wave, operator: In, values: ["3"]}]
+        - matchExpressions: [{key: wave, operator: In, values: ["4"]}]
 
   template:
     metadata:
@@ -45,7 +45,7 @@ spec:
         targetRevision: *revision
         path: "{{.path.path}}"
         plugin:
-          name: "{{.cmpPlugin}}"
+          name: '{{dig "cmpPlugin" "helmfile-modern" .}}'
           env:
             - name: HELMFILE_NAMESPACE # This passes the var to the plugin
               value: "{{.appNamespace}}"

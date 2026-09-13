@@ -26,14 +26,14 @@ for app in $(echo "$FILES" | grep -E '(^|/)app\.yaml$' || true); do
   # Fail if forbidden keys exist
   FORBIDDEN_KEYS=$(yq e '
     keys
-    | map(select(. != "wave" and . != "appNamespace" and . != "cmpPlugin))
+    | map(select(. != "wave" and . != "appNamespace"))
     | .[]
   ' "$app" || true)
 
   if [[ -n "$FORBIDDEN_KEYS" ]]; then
     echo "❌ $app contains forbidden keys:"
     echo "$FORBIDDEN_KEYS" | sed 's/^/   - /'
-    echo "   Allowed keys: wave, appNamespace, cmpPlugin"
+    echo "   Allowed keys: wave, appNamespace"
     FAILED=1
   fi
 
