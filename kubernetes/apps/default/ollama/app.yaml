@@ -1,4 +1,4 @@
 ---
 wave: 3
 appNamespace: default
-cmpPlugin: helmfile
+cmpPlugin: helmfile-modern
