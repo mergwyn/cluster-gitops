@@ -34,7 +34,7 @@ spec:
         targetRevision: *revision
         path: "{{.path.path}}"
         plugin:
-          name: helmfile
+          name: '{{dig "cmpPlugin" "helmfile-modern" .}}'
           env:
             - name: HELMFILE_ENVIRONMENT
               value: dev
