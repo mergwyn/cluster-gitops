@@ -45,7 +45,7 @@ spec:
         targetRevision: *revision
         path: "{{.path.path}}"
         plugin:
-          name: helmfile
+          name: "{{.cmpPlugin}}"
           env:
             - name: HELMFILE_NAMESPACE # This passes the var to the plugin
               value: "{{.appNamespace}}"
