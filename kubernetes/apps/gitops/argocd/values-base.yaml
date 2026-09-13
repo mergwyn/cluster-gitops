@@ -33,6 +33,8 @@ configs:
     policy.default: role:admin
 
 repoServer:
+  podAnnotations:
+    configmap.reloader.stakater.com/reload: "helmfile-modern-config,helmfile-modern-generate-script"
   dnsConfig:
     options:
       - name: ndots
