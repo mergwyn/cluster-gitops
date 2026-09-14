@@ -19,8 +19,8 @@ releases:
         speaker:
           frr:
             enabled: false
-          frrk8s:
-            enabled: true
+        frrk8s:
+          enabled: true
 
 
   # Use a raw chart to deploy the Config CRDs after the operator is ready
