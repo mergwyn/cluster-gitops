@@ -5,6 +5,14 @@ on:
   pull_request:
     paths:
       - 'renovate/**'
+      - '.renovate/**'
+  push:
+    branches:
+      - main
+    paths:
+      - 'renovate/**'
+      - '.renovate/**'
+  workflow_dispatch: {}
 
 jobs:
   validate:
