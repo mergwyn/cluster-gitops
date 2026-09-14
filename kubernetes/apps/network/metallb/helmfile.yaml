@@ -26,6 +26,7 @@ releases:
   # Use a raw chart to deploy the Config CRDs after the operator is ready
   - name: metallb-config
     chart: bedag/raw
+    version: 2.0.2
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
     needs:
       - metallb-system/metallb
