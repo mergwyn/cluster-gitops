@@ -1,0 +1,104 @@
+---
+resources:
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: bitwarden-vault-cli
+      namespace: security
+      labels:
+        app.kubernetes.io/instance: bitwarden-vault-cli
+        app.kubernetes.io/name: bitwarden-vault-cli
+    spec:
+      replicas: 1
+      strategy:
+        type: Recreate      # session lives in-process; never run >1 replica
+      selector:
+        matchLabels:
+          app.kubernetes.io/name: bitwarden-vault-cli
+          app.kubernetes.io/instance: bitwarden-vault-cli
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: bitwarden-vault-cli
+            app.kubernetes.io/instance: bitwarden-vault-cli
+        spec:
+          containers:
+            - name: bitwarden-cli
+              image: ghcr.io/charlesthomas/bitwarden-cli:2026.3.0
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: BW_HOST
+                  valueFrom:
+                    secretKeyRef: { name: bitwarden-vault-cli, key: BW_HOST }
+                - name: BW_CLIENTID
+                  valueFrom:
+                    secretKeyRef: { name: bitwarden-vault-cli, key: BW_CLIENTID }
+                - name: BW_CLIENTSECRET
+                  valueFrom:
+                    secretKeyRef: { name: bitwarden-vault-cli, key: BW_CLIENTSECRET }
+                - name: BW_PASSWORD
+                  valueFrom:
+                    secretKeyRef: { name: bitwarden-vault-cli, key: BW_PASSWORD }
+              ports:
+                - name: http
+                  containerPort: 8087
+                  protocol: TCP
+              livenessProbe:
+                exec:
+                  command: ["wget", "-q", "http://127.0.0.1:8087/sync?force=true", "--post-data="]
+                initialDelaySeconds: 20
+                failureThreshold: 3
+                timeoutSeconds: 10
+                periodSeconds: 120
+              readinessProbe:
+                tcpSocket: { port: 8087 }
+                initialDelaySeconds: 20
+                failureThreshold: 3
+                timeoutSeconds: 1
+                periodSeconds: 10
+              startupProbe:
+                tcpSocket: { port: 8087 }
+                initialDelaySeconds: 10
+                failureThreshold: 30
+                timeoutSeconds: 1
+                periodSeconds: 5
+              resources:
+                requests: { cpu: 25m, memory: 64Mi }
+                limits: { memory: 128Mi }
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: bitwarden-vault-cli
+      namespace: security
+      labels:
+        app.kubernetes.io/instance: bitwarden-vault-cli
+        app.kubernetes.io/name: bitwarden-vault-cli
+    spec:
+      type: ClusterIP
+      ports:
+        - port: 8087
+          targetPort: http
+          protocol: TCP
+          name: http
+      selector:
+        app.kubernetes.io/name: bitwarden-vault-cli
+        app.kubernetes.io/instance: bitwarden-vault-cli
+  - apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
+    metadata:
+      name: bitwarden-vault-cli-ingress
+      namespace: security
+    spec:
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/instance: bitwarden-vault-cli
+          app.kubernetes.io/name: bitwarden-vault-cli
+      policyTypes:
+        - Ingress
+      ingress:
+        - from:
+            - podSelector:
+                matchLabels:
+                  app.kubernetes.io/instance: external-secrets
+                  app.kubernetes.io/name: external-secrets
+

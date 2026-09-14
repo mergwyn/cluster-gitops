@@ -1,0 +1,27 @@
+resources:
+    - apiVersion: v1
+      kind: Secret
+      metadata:
+        name: bitwarden-vault-cli
+        namespace: security
+      type: Opaque
+      stringData:
+        BW_HOST: ENC[AES256_GCM,data:UvrNJcV/DrprKlvSZnFZePBx0iNxYIeQ6ajj,iv:p/cO37gCcL8OjDABaEsQduVhZpM+/Jw5Bgijlryz0Bs=,tag:jXHlNRd4fRLZTXOxuR632w==,type:str] #ENC[AES256_GCM,data:fBIN3mDxdnDXCUzgHID+X46KEj0OXflc,iv:Z5h+gV4ZW9Tbq+l7y1D9wf8V7eognrkLO4DCWxNhC4c=,tag:qldGLPgtqumbl+Y3mCXaVQ==,type:comment]
+        BW_CLIENTID: ENC[AES256_GCM,data:celLfweEBQIWEkRGB2O/dezyFSAZigQ9gKWpYBVL4f58uANCp2+cM+w=,iv:zL0ie7aWXqgOIf+sL9LyMAqSClDrIBou7BpvbbWJTU8=,tag:hXuHD8627KxUhO+RnYreJg==,type:str]
+        BW_CLIENTSECRET: ENC[AES256_GCM,data:aPcN1Q817AKnhiROSfUqRCCFRwi92WCD8G4IpwfF,iv:BVhB0uNG6SRXmaHxp7yLj/rR4tmAkEugopPlSTFbd+4=,tag:hiCzJ1WPr7L6C3uZ3lcC8g==,type:str]
+        BW_PASSWORD: ENC[AES256_GCM,data:zZdrWPzSpc6DWnwyUvqySMnbUc1/iXMrLbRIkvc=,iv:HB/P/1BesQBRnIs8nIGqDO+gKj5UOhLR1gw+1Oeoreg=,tag:DLBelRsl4XbEQRBpE5Qezw==,type:str]
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB1ZnQwUXo2ZDNQWHoxUnRT
+            U1VlNU94bDZWekFFWmZIU0NvTXU3R0dDU0FjClZpa2pSQjc3TXJlSURHSEZJOGJ3
+            a0ZIRUVGbWh5anNiYkhVK2tkODl6SFUKLS0tIHZUdjFIbmJqcGVQc2t0QkM3MWtS
+            TVZxbjRHM1FRTXdTWE9OL1pZUW5sRmsKBQ94xvjOE4HRhNX9Mb+LyMVx2VIAvHEJ
+            MR497plOuCbZRlr2dNEq5LPhItDiCH7Q4WmsFFA9C3yt09X8RZXtog==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1kxa0h4zt4txae7wdjy5pck2jvzalmg4mrryuw3qqpzp2jl44n3tqmd0vyp
+    encrypted_regex: ^(data|stringData|configFile)$
+    lastmodified: "2026-09-12T13:47:48Z"
+    mac: ENC[AES256_GCM,data:SsLMiYBdhtv4TQs9gSG7IYcf2kKQvaP9e6ruHeibdYkwNImt4+QBwFyvLhw8CvGDYjq9wzVg9VMITneQdQZhixLDiA2qSfo6/IDAEMFvDWXq1ScqnQWlIJgiAWuM6ZEvLh6NUjkdPsHLnObnnr4Lz7bQL06EWBfnaiAWVFCQDhQ=,iv:g1FFpDe3vrp8vTn8041/3hsfDm7+wMkeD4Ox6CKKMk0=,tag:zpmKMvvrhYzrVfkE5buWRQ==,type:str]
+    version: 3.13.3
