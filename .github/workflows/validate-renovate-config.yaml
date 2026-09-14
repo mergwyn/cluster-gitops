@@ -17,7 +17,9 @@ on:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    container: renovate/renovate:latest
+    container:
+      image: renovate/renovate:latest
+      options: --user root
     steps:
       - uses: actions/checkout@v4
       - run: renovate-config-validator --strict
