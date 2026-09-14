@@ -1,3 +1,4 @@
+---
 name: Validate Renovate Config
 
 on:
@@ -12,4 +13,3 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: renovate-config-validator --strict
-
