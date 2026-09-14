@@ -16,6 +16,12 @@ releases:
     timeout: 300
     values:
       - loadBalancerClass: "metallb.io/internal"
+        speaker:
+          frr:
+            enabled: false
+          frrk8s:
+            enabled: true
+
 
   # Use a raw chart to deploy the Config CRDs after the operator is ready
   - name: metallb-config
