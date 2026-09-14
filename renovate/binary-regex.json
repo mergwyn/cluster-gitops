@@ -1,0 +1,14 @@
+{
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": ["kubernetes/apps/gitops/argocd/values.*\\.ya?ml"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)\\s+\\w+_VERSION=\"(?<currentValue>.*?)\""
+      ],
+      "datasourceTemplate": "{{{datasource}}}",
+      "depNameTemplate": "{{{depName}}}"
+    }
+  ]
+}
+

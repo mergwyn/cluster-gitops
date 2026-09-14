@@ -57,11 +57,16 @@ modernPluginInitContainers:
 
         apk update && apk add --no-cache ca-certificates tar
 
+        # renovate: datasource=github-releases depName=helmfile/helmfile
         CUSTOM_HELMFILE_VERSION="v1.7.3"
+        # renovate: datasource=github-releases depName=getsops/sops
         CUSTOM_SOPS_VERSION="v3.13.2"
+        # renovate: datasource=github-releases depName=helm/helm
         CUSTOM_HELM_VERSION="v4.2.4"
-        SECRETS_VER="4.7.4"
-        DIFF_VER="v3.15.7"
+        # renovate: datasource=github-tags depName=jkroepke/helm-secrets
+        SECRETS_VERSION="4.7.4"
+        # renovate: datasource=github-releases depName=databus23/helm-diff
+        DIFF_VERSION="v3.15.7"
 
         # 1. Download Core Binaries
         wget -qO- "https://get.helm.sh/helm-${CUSTOM_HELM_VERSION}-linux-amd64.tar.gz" | tar -xz -C /tmp
@@ -76,13 +81,13 @@ modernPluginInitContainers:
 
         # 2. Pre-install Helm OCI Plugins
         export HELM_PLUGINS="/custom-tools/helm-plugins"
-        /custom-tools/helm plugin install oci://ghcr.io/jkroepke/helm-secrets/secrets:${SECRETS_VER} --verify=false
-        /custom-tools/helm plugin install oci://ghcr.io/jkroepke/helm-secrets/secrets-getter:${SECRETS_VER} --verify=false
-        /custom-tools/helm plugin install oci://ghcr.io/jkroepke/helm-secrets/secrets-post-renderer:${SECRETS_VER} --verify=false
+        /custom-tools/helm plugin install oci://ghcr.io/jkroepke/helm-secrets/secrets:${SECRETS_VERSION} --verify=false
+        /custom-tools/helm plugin install oci://ghcr.io/jkroepke/helm-secrets/secrets-getter:${SECRETS_VERSION} --verify=false
+        /custom-tools/helm plugin install oci://ghcr.io/jkroepke/helm-secrets/secrets-post-renderer:${SECRETS_VERSION} --verify=false
 
         # 3. Extract helm-diff
         mkdir -p /custom-tools/helm-plugins/helm-diff
-        wget -qO- "https://github.com/databus23/helm-diff/releases/download/${DIFF_VER}/helm-diff-linux-amd64.tgz" | tar -xz -C /custom-tools/helm-plugins/helm-diff
+        wget -qO- "https://github.com/databus23/helm-diff/releases/download/${DIFF_VERSION}/helm-diff-linux-amd64.tgz" | tar -xz -C /custom-tools/helm-plugins/helm-diff
 
         echo "All binaries and plugins successfully compiled!"
     volumeMounts:
