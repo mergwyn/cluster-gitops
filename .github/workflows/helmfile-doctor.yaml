@@ -1,0 +1,21 @@
+on:
+  pull_request:
+
+jobs:
+  doctor:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check if relevant
+        id: filter
+        run: |
+          if git diff --name-only origin/main...HEAD | grep -q '^kubernetes/apps/'; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Run doctor
+        if: steps.filter.outputs.run == 'true'
+        run: ./scripts/doctor-check.sh

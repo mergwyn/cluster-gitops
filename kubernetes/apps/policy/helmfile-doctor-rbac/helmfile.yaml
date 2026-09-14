@@ -1,0 +1,17 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/helmfile
+
+bases:
+  - ../../../clusters/environments.yaml
+
+repositories:
+  - name: bedag
+    url: https://bedag.github.io/helm-charts
+
+releases:
+  - name: helmfile-doctor-rbac
+    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+    chart: bedag/raw
+    version: 2.0.2
+    values:
+      - values.yaml.gotmpl
