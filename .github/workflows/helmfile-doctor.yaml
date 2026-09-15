@@ -1,0 +1,57 @@
+---
+name: Helmfile Doctor
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  doctor:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check if relevant
+        id: filter
+        env:
+          BASE_REF: ${{ github.event_name == 'workflow_dispatch' && 'main' || github.base_ref }}
+        run: |
+          if git diff --name-only "origin/${BASE_REF}"...HEAD | grep -q '^kubernetes/apps/'; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+          fi
+          echo "base_ref=${BASE_REF}" >> "$GITHUB_OUTPUT"
+
+      - name: Write scoped kubeconfig
+        run: echo "${{ secrets.HELMFILE_DOCTOR_KUBECONFIG }}" > "${RUNNER_TEMP}/kubeconfig"
+
+      - name: Run doctor
+        env:
+          KUBECONFIG: ${{ runner.temp }}/kubeconfig
+          HELMFILE_LLM_BASE_URL: http://mike.theclarkhome.com:11434/v1
+          HELMFILE_LLM_API_KEY: ollama
+          HELMFILE_LLM_MODEL: llama3:8b
+        if: steps.filter.outputs.run == 'true'
+        run: ./scripts/doctor-check.sh "origin/${{ steps.filter.outputs.base_ref }}"
+
+      - name: Post report as PR comment
+        if: always() && steps.filter.outputs.run == 'true' && github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          {
+            echo "## Helmfile Doctor Report"
+            echo ""
+            for f in doctor-reports/*.json; do
+              app=$(basename "$f" .json)
+              echo "### ${app}"
+              echo '```json'
+              cat "$f"
+              echo '```'
+              echo ""
+            done
+          } > comment-body.md
+          gh pr comment "${{ github.event.pull_request.number }}" --body-file comment-body.md
