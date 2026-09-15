@@ -1,7 +1,6 @@
 ---
 name: Helmfile Doctor
 
-
 on:
   pull_request:
   workflow_dispatch:
