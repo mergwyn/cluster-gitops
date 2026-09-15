@@ -31,4 +31,16 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # ... existing comment-posting logic
+          {
+            echo "## Helmfile Doctor Report"
+            echo ""
+            for f in doctor-reports/*.json; do
+              app=$(basename "$f" .json)
+              echo "### ${app}"
+              echo '```json'
+              cat "$f"
+              echo '```'
+              echo ""
+            done
+          } > comment-body.md
+          gh pr comment "${{ github.event.pull_request.number }}" --body-file comment-body.md
