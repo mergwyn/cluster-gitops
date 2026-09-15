@@ -14,4 +14,4 @@ releases:
     chart: bedag/raw
     version: 2.0.2
     values:
-      - values.yaml.gotmpl
+      - values.yaml

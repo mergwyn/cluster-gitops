@@ -1,0 +1,27 @@
+---
+
+resources:
+  - apiVersion: v1
+    kind: ServiceAccount
+    metadata:
+      name: helmfile-doctor
+      namespace: kube-system
+
+  - apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRole
+    metadata:
+      name: helmfile-doctor-reader
+    rules:
+      - apiGroups: ["*"]
+        resources: ["*"]
+        verbs: ["get", "list", "watch"]
+
+  - apiVersion: v1
+    kind: Secret
+    metadata:
+      name: helmfile-doctor-token
+      namespace: kube-system
+      annotations:
+        kubernetes.io/service-account-name: helmfile-doctor
+    type: kubernetes.io/service-account-token
+
