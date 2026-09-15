@@ -22,6 +22,37 @@ resources:
       name: helmfile-doctor-token
       namespace: kube-system
       annotations:
-        kubernetes.io/service-account-name: helmfile-doctor
+        kubernetes.io/service-account.name: helmfile-doctor
     type: kubernetes.io/service-account-token
 
+  # Required for the Kyverno generate rule to be allowed to hand out this
+  # ClusterRole: Kubernetes blocks any actor (including Kyverno's own
+  # background controller) from granting permissions it doesn't itself
+  # hold, to prevent privilege escalation. Without this binding, the
+  # ClusterPolicy fails admission with a "requires permissions" error.
+  - apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRoleBinding
+    metadata:
+      name: kyverno-background-controller-helmfile-doctor-reader
+    roleRef:
+      apiGroup: rbac.authorization.k8s.io
+      kind: ClusterRole
+      name: helmfile-doctor-reader
+    subjects:
+      - kind: ServiceAccount
+        name: kyverno-background-controller
+        namespace: kyverno
+
+  - apiVersion: rbac.authorization.k8s.io/v1
+    kind: RoleBinding
+    metadata:
+      name: helmfile-doctor-reader
+      namespace: kyverno
+    roleRef:
+      apiGroup: rbac.authorization.k8s.io
+      kind: ClusterRole
+      name: helmfile-doctor-reader
+    subjects:
+      - kind: ServiceAccount
+        name: helmfile-doctor
+        namespace: kube-system
