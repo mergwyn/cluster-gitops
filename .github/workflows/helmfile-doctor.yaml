@@ -26,6 +26,9 @@ jobs:
           fi
           echo "base_ref=${BASE_REF}" >> "$GITHUB_OUTPUT"
 
+      - name: Write scoped kubeconfig
+        run: echo "${{ secrets.HELMFILE_DOCTOR_KUBECONFIG }}" > "${RUNNER_TEMP}/kubeconfig"
+
       - name: Run doctor
         env:
           KUBECONFIG: ${{ runner.temp }}/kubeconfig
