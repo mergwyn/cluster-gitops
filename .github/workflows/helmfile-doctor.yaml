@@ -1,5 +1,6 @@
 on:
   pull_request:
+  workflow_dispatch:
 
 jobs:
   doctor:
@@ -8,14 +9,26 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - name: Check if relevant
         id: filter
+        env:
+          BASE_REF: ${{ github.event_name == 'workflow_dispatch' && 'main' || github.base_ref }}
         run: |
-          if git diff --name-only origin/main...HEAD | grep -q '^kubernetes/apps/'; then
+          if git diff --name-only "origin/${BASE_REF}"...HEAD | grep -q '^kubernetes/apps/'; then
             echo "run=true" >> "$GITHUB_OUTPUT"
           else
             echo "run=false" >> "$GITHUB_OUTPUT"
           fi
+          echo "base_ref=${BASE_REF}" >> "$GITHUB_OUTPUT"
+
       - name: Run doctor
         if: steps.filter.outputs.run == 'true'
-        run: ./scripts/doctor-check.sh
+        run: ./scripts/doctor-check.sh "origin/${{ steps.filter.outputs.base_ref }}"
+
+      - name: Post report as PR comment
+        if: always() && steps.filter.outputs.run == 'true' && github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # ... existing comment-posting logic
