@@ -58,7 +58,7 @@ modernPluginInitContainers:
         apk update && apk add --no-cache ca-certificates tar
 
         # renovate: datasource=github-releases depName=helmfile/helmfile
-        CUSTOM_HELMFILE_VERSION="v1.7.3"
+        CUSTOM_HELMFILE_VERSION="v1.7.4"
         # renovate: datasource=github-releases depName=getsops/sops
         CUSTOM_SOPS_VERSION="v3.13.2"
         # renovate: datasource=github-releases depName=helm/helm
