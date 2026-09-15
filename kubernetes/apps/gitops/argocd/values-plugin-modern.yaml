@@ -64,7 +64,7 @@ modernPluginInitContainers:
         # renovate: datasource=github-releases depName=helm/helm
         CUSTOM_HELM_VERSION="v4.2.4"
         # renovate: datasource=github-tags depName=jkroepke/helm-secrets
-        SECRETS_VERSION="4.7.4"
+        SECRETS_VERSION="4.7.7"
         # renovate: datasource=github-releases depName=databus23/helm-diff
         DIFF_VERSION="v3.15.7"
 
