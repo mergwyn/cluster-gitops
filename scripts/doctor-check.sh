@@ -11,7 +11,7 @@
 #   KUBECONFIG              pointed at the scoped helmfile-doctor kubeconfig
 #   HELMFILE_LLM_BASE_URL   e.g. http://<ollama-host>:11434/v1
 #   HELMFILE_LLM_API_KEY    dummy value, Ollama ignores it
-#   HELMFILE_LLM_MODEL      e.g. llama3.1 (whatever you're running locally)
+#   HELMFILE_LLM_MODEL      e.g. llama3:8b (whatever you're running locally)
 #
 # Usage: ./doctor-check.sh <base-ref>
 #   e.g. ./doctor-check.sh origin/main
@@ -38,18 +38,20 @@ if ! echo "${CHANGED_FILES}" | grep -q '^kubernetes/apps/'; then
 fi
 echo "run=true" >> "${GITHUB_OUTPUT:-/dev/null}"
 
-# kubernetes/apps/<category>/<app-name>/... -> app name is the 4th segment
-CHANGED_APPS=$(echo "${CHANGED_FILES}" \
+# kubernetes/apps/<category>/<app-name>/... -> capture the full app
+# directory (not just the app name), since helmfile needs to be run from
+# inside it to find that app's helmfile.yaml.
+CHANGED_APP_DIRS=$(echo "${CHANGED_FILES}" \
   | grep '^kubernetes/apps/' \
-  | awk -F/ '{print $4}' \
+  | awk -F/ '{print $1"/"$2"/"$3"/"$4}' \
   | sort -u)
 
-if [[ -z "${CHANGED_APPS}" ]]; then
-  echo "Matched kubernetes/apps/ but couldn't extract an app name — check the awk pattern above against your layout." >&2
+if [[ -z "${CHANGED_APP_DIRS}" ]]; then
+  echo "Matched kubernetes/apps/ but couldn't extract an app directory — check the awk pattern above against your layout." >&2
   exit 1
 fi
 
-echo "Changed apps: ${CHANGED_APPS}"
+echo "Changed app directories: ${CHANGED_APP_DIRS}"
 
 # --- 2. Replicate what ArgoCD's CMP plugin normally injects -----------------
 echo "Discovering KUBE_API_VERSIONS and KUBE_VERSION from the live cluster..."
@@ -70,7 +72,8 @@ CRITICAL_PACKAGES=$(jq -r '
 ' "${AUTOMERGE_CONFIG}")
 
 IS_CRITICAL=false
-for app in ${CHANGED_APPS}; do
+for app_dir in ${CHANGED_APP_DIRS}; do
+  app=$(basename "${app_dir}")
   for pkg in ${CRITICAL_PACKAGES}; do
     pkg_clean=$(echo "${pkg}" | tr -d '/')   # strip regex slashes, e.g. /longhorn/ -> longhorn
     if [[ "${app}" == *"${pkg_clean}"* ]]; then
@@ -82,15 +85,19 @@ done
 echo "critical=${IS_CRITICAL}" >> "${GITHUB_OUTPUT:-/dev/null}"
 echo "Critical-tier app in this PR: ${IS_CRITICAL}"
 
-# --- 4. Run doctor per changed app ------------------------------------------
-for app in ${CHANGED_APPS}; do
-  echo "--- Running helmfile doctor for app=${app} ---"
+# --- 4. Run doctor per changed app -------------------------------------------
+# Run from inside each app's own directory so helmfile finds its
+# helmfile.yaml — running from the repo root fails with "no state file
+# found" since doctor doesn't search subdirectories.
+for app_dir in ${CHANGED_APP_DIRS}; do
+  app=$(basename "${app_dir}")
+  echo "--- Running helmfile doctor for ${app_dir} ---"
   REPORT_FILE="${REPORT_DIR}/${app}.json"
 
-  if ! helmfile -l app="${app}" doctor \
+  if ! (cd "${app_dir}" && helmfile doctor \
       --args "--api-versions ${KUBE_API_VERSIONS} --kube-version ${KUBE_VERSION_SANITISED}" \
-      --output json > "${REPORT_FILE}"; then
-    echo "doctor failed to run for ${app} (non-LLM failure, e.g. render error)" >&2
+      --output json) > "${REPORT_FILE}"; then
+    echo "doctor failed to run for ${app_dir} (non-LLM failure, e.g. render error)" >&2
     STEPS_STATUS=1
     continue
   fi
