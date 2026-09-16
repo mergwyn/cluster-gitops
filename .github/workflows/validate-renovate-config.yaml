@@ -1,0 +1,25 @@
+---
+name: Validate Renovate Config
+
+on:
+  pull_request:
+    paths:
+      - 'renovate/**'
+      - '.renovate/**'
+  push:
+    branches:
+      - main
+    paths:
+      - 'renovate/**'
+      - '.renovate/**'
+  workflow_dispatch: {}
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    container:
+      image: renovate/renovate:latest
+      options: --user root
+    steps:
+      - uses: actions/checkout@v4
+      - run: renovate-config-validator --strict

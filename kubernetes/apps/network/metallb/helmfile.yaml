@@ -10,16 +10,23 @@ repositories:
 releases:
   - name: metallb
     chart: metallb/metallb
-    version: 0.15.3
+    version: 0.16.1
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
     wait: true
     timeout: 300
     values:
       - loadBalancerClass: "metallb.io/internal"
+        speaker:
+          frr:
+            enabled: false
+        frrk8s:
+          enabled: true
+
 
   # Use a raw chart to deploy the Config CRDs after the operator is ready
   - name: metallb-config
     chart: bedag/raw
+    version: 2.0.2
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
     needs:
       - metallb-system/metallb

@@ -1,0 +1,26 @@
+{
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": ["kubernetes/apps/gitops/argocd/values.*\\.ya?ml"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)\\s+\\w+_VERSION=\"(?<currentValue>.*?)\""
+      ],
+      "datasourceTemplate": "{{{datasource}}}",
+      "depNameTemplate": "{{{depName}}}"
+    }
+  ],
+  "packageRules": [
+    {
+      "matchPackageNames": [
+        "helmfile/helmfile",
+        "getsops/sops",
+        "helm/helm",
+        "jkroepke/helm-secrets",
+        "databus23/helm-diff"
+      ],
+      "groupName": "repo-server init container tools"
+    }
+  ]
+}
+

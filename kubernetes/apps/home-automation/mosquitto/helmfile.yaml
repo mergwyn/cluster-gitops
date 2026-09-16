@@ -10,7 +10,7 @@ repositories:
 releases:
   - name: mosquitto
     chart: bjw-s-labs/app-template
-    version: 5.0.1
+    version: 5.1.0
     values:
       - values.yaml
       - externalsecret.yaml

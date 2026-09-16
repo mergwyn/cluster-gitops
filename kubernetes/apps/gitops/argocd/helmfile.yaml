@@ -4,9 +4,6 @@
 bases:
   - ../../../clusters/environments.yaml
 
-apiVersions:
-  - monitoring.coreos.com/v1
-
 repositories:
   - name: bedag
     url: https://bedag.github.io/helm-charts/
