@@ -9,6 +9,18 @@
       "datasourceTemplate": "{{{datasource}}}",
       "depNameTemplate": "{{{depName}}}"
     }
+  ],
+  "packageRules": [
+    {
+      "matchPackageNames": [
+        "helmfile/helmfile",
+        "getsops/sops",
+        "helm/helm",
+        "jkroepke/helm-secrets",
+        "databus23/helm-diff"
+      ],
+      "groupName": "repo-server init container tools"
+    }
   ]
 }
 
