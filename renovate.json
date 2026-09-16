@@ -13,5 +13,10 @@
     "github>mergwyn/cluster-gitops//renovate/gateway-api-crd.json",
     "github>mergwyn/cluster-gitops//renovate/binary-regex.json",
     "github>mergwyn/cluster-gitops//renovate/exceptions.json"
-  ]
+  ],
+  {
+    "timezone": "Europe/London",
+    "schedule": ["* * 1 1 *"],
+    "updateNotScheduled": false
+  }
 }
