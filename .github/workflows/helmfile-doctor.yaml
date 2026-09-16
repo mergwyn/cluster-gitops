@@ -34,6 +34,7 @@ jobs:
           HELMFILE_LLM_BASE_URL: http://mike.theclarkhome.com:11434/v1
           HELMFILE_LLM_API_KEY: ollama
           HELMFILE_LLM_MODEL: llama3:8b
+          HELM_PLUGINS: /usr/local/share/helm/plugins
         if: steps.filter.outputs.run == 'true'
         run: ./scripts/doctor-check.sh "origin/${{ steps.filter.outputs.base_ref }}"
 
