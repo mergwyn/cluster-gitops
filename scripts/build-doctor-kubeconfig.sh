@@ -20,9 +20,18 @@ GH_SECRET_NAME="HELMFILE_DOCTOR_KUBECONFIG"
 OUT_FILE="doctor-kubeconfig.yaml"
 REPO="mergwyn/cluster-gitops"
 
-echo "Reading cluster CA and server URL from current kubeconfig context..."
-CA=$(kubectl config view --raw -o jsonpath='{.clusters[0].cluster.certificate-authority-data}')
-SERVER=$(kubectl config view --raw -o jsonpath='{.clusters[0].cluster.server}')
+CONTEXT_NAME="k3s-prod"
+API_SERVER="https://api-k3s-prod.theclarkhome.com:6443"
+
+echo "Reading cluster CA for context '${CONTEXT_NAME}'..."
+CLUSTER_NAME=$(kubectl config view --raw -o jsonpath="{.contexts[?(@.name==\"${CONTEXT_NAME}\")].context.cluster}")
+
+if [[ -z "${CLUSTER_NAME}" ]]; then
+  echo "ERROR: no context named '${CONTEXT_NAME}' found in current kubeconfig." >&2
+  exit 1
+fi
+
+CA=$(kubectl config view --raw -o jsonpath="{.clusters[?(@.name==\"${CLUSTER_NAME}\")].cluster.certificate-authority-data}")
 
 echo "Reading ServiceAccount token from ${NAMESPACE}/${TOKEN_SECRET}..."
 TOKEN=$(kubectl get secret "${TOKEN_SECRET}" -n "${NAMESPACE}" -o jsonpath='{.data.token}' | base64 -d)
@@ -39,7 +48,7 @@ clusters:
   - name: k3s-prod-doctor
     cluster:
       certificate-authority-data: ${CA}
-      server: ${SERVER}
+      server: ${API_SERVER}
 contexts:
   - name: helmfile-doctor
     context:
