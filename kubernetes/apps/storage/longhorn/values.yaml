@@ -34,9 +34,9 @@ longhornManager:
 #    limits:
 #      memory: 256Mi
 
-#metrics:
-#  serviceMonitor:
-#    enabled: true
+metrics:
+  serviceMonitor:
+    enabled: true
 
 extraObjects:
   - apiVersion: longhorn.io/v1beta2
