@@ -3,7 +3,7 @@
 ollama:
   enabled: false
 pipelines:
-  enabled: false
+  enabled: true
 
 service:
   type: ClusterIP
@@ -52,4 +52,4 @@ ingress:
   class: "cloudflare-tunnel"
   annotations:
     cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
-  host: ollama.theclarkhome.com
+  host: "{{ .Release.Name }}.{{ .Values.cluster.domain }}"

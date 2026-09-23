@@ -7,7 +7,7 @@ repositories:
     url: https://helm.openwebui.com
 
 releases:
-  - name: ollama
+  - name: open-webui
     chart: open-webui/open-webui
     version: "16.5.0"
     namespace: '{{ env "HELMFILE_NAMESPACE" | default "default" }}'
