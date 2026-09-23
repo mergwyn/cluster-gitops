@@ -31,7 +31,7 @@ extraEnvVars:
 # Configure persistent storage for chat histories and login accounts
 persistence:
   enabled: true
-  existingClaim: "" # Leave blank to let k3s auto-provision, or swap in a Longhorn PVC name
+  existingClaim: ""  # Leave blank to let k3s auto-provision, or swap in a Longhorn PVC name
   size: 2Gi
   accessModes:
     - ReadWriteOnce
@@ -53,3 +53,13 @@ ingress:
   annotations:
     cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
   host: "{{ .Release.Name }}.{{ .Values.cluster.domain }}"
+
+pipelines:
+  persistence:
+    enabled: true
+    existingClaim: "" # Leave blank to let k3s auto-provision, or swap in a Longhorn PVC name
+    size: 2Gi
+    accessModes:
+      - ReadWriteOnce
+    annotations:
+      helm.sh/resource-policy: keep
