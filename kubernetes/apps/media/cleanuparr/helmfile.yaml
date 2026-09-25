@@ -12,7 +12,7 @@ releases:
   - name: cleanuparr
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
     chart: media-servarr/cleanuparr
-    version: 0.18.0 # Bumped up to support the 'secrets' configuration block
+    version: 0.19.2 # Bumped up to support the 'secrets' configuration block
     values:
       - values.yaml.gotmpl
 
