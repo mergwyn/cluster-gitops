@@ -9,7 +9,7 @@ repositories:
 releases:
   - name: open-webui
     chart: open-webui/open-webui
-    version: "16.5.0"
+    version: "16.6.0"
     namespace: '{{ env "HELMFILE_NAMESPACE" | default "default" }}'
     values:
       - values.yaml.gotmpl
