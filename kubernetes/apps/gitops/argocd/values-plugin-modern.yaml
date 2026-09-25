@@ -58,15 +58,15 @@ modernPluginInitContainers:
         apk update && apk add --no-cache ca-certificates tar
 
         # renovate: datasource=github-releases depName=helmfile/helmfile
-        CUSTOM_HELMFILE_VERSION="v1.7.3"
+        CUSTOM_HELMFILE_VERSION="v1.8.0"
         # renovate: datasource=github-releases depName=getsops/sops
-        CUSTOM_SOPS_VERSION="v3.13.2"
+        CUSTOM_SOPS_VERSION="v3.13.3"
         # renovate: datasource=github-releases depName=helm/helm
-        CUSTOM_HELM_VERSION="v4.2.4"
+        CUSTOM_HELM_VERSION="v4.3.0"
         # renovate: datasource=github-tags depName=jkroepke/helm-secrets
-        SECRETS_VERSION="4.7.4"
+        SECRETS_VERSION="4.7.7"
         # renovate: datasource=github-releases depName=databus23/helm-diff
-        DIFF_VERSION="v3.15.7"
+        DIFF_VERSION="v3.15.13"
 
         # 1. Download Core Binaries
         wget -qO- "https://get.helm.sh/helm-${CUSTOM_HELM_VERSION}-linux-amd64.tar.gz" | tar -xz -C /tmp
