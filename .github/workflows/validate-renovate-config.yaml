@@ -18,8 +18,8 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     container:
-      image: renovate/renovate:latest
+      image: renovate/renovate:latest@sha256:62af1deb6f45883afb105b22cb4b4d2503071e12794b6e297628e40c798349b4
       options: --user root
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - run: renovate-config-validator --strict
