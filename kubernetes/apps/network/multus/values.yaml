@@ -5,7 +5,7 @@ controllers:
       multus:
         image:
           repository: ghcr.io/k8snetworkplumbingwg/multus-cni
-          tag: v4.2.4-thick@sha256:3c20900b5381fac7f9cbbdfac8370ea10a2f6ed7fbecc678384a9db57047abb1
+          tag: v4.3.1-thick@sha256:a357a79359b80ddd5f4699117946cacf3b54f5baecf7944535594863e875fc25
     initContainers:
       cni-installer:
         image:
