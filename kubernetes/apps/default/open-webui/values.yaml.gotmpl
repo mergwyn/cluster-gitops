@@ -2,8 +2,7 @@
 
 ollama:
   enabled: false
-pipelines:
-  enabled: true
+
 
 service:
   type: ClusterIP
@@ -32,7 +31,7 @@ extraEnvVars:
 persistence:
   enabled: true
   existingClaim: ""  # Leave blank to let k3s auto-provision, or swap in a Longhorn PVC name
-  size: 2Gi
+  size: 3Gi
   accessModes:
     - ReadWriteOnce
   annotations:
@@ -55,6 +54,7 @@ ingress:
   host: "{{ .Release.Name }}.{{ .Values.cluster.domain }}"
 
 pipelines:
+  enabled: false
   persistence:
     enabled: true
     existingClaim: "" # Leave blank to let k3s auto-provision, or swap in a Longhorn PVC name
