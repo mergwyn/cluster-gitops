@@ -1,5 +1,5 @@
 defaultSettings:
-  defaultReplicaCount: 2
+  defaultReplicaCount: 3
   concurrentReplicaRebuildPerNodeLimit: 3
   replicaSoftAntiAffinity: false
   replicaAutoBalance: best-effort
@@ -17,7 +17,7 @@ networkPolicies:
   type: k3s
 
 persistence:
-  defaultClassReplicaCount: 2
+  defaultClassReplicaCount: 3
   defaultClass: true
 
 ingress:
