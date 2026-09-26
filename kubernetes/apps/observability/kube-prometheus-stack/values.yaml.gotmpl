@@ -304,6 +304,7 @@ kube-state-metrics:
         resources: ["verticalpodautoscalers"]
         verbs: ["list", "watch"]
   customResourceState:
+    enabled: true
     config:
       spec:
         resources:
