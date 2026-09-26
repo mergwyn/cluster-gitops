@@ -15,9 +15,6 @@ spec:
               kinds:
                 - Namespace
               namespaces:
-                - media
-                - vpn
-                - home-assistant
                 - default
       mutate:
         patchStrategicMerge:
@@ -25,7 +22,7 @@ spec:
             labels:
               goldilocks.fairwinds.com/enabled: "true"
               # TODO: Disable for the time being, causing oom kill issues
-              goldilocks.fairwinds.com/vpa-update-mode: "Off"
+              goldilocks.fairwinds.com/vpa-update-mode: "InPlaceOrRecreate"
 
     # --- STEP 2: OBSERVABILITY ONLY FOR OTHERS ---
     - name: enable-vpa-guidance-only
@@ -41,7 +38,6 @@ spec:
                 - media
                 - vpn
                 - home-assistant
-                - default
       mutate:
         patchStrategicMerge:
           metadata:
