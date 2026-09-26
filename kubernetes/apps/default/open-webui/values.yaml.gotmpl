@@ -18,6 +18,14 @@ resources:
     cpu: 15m
     memory: 1325Mi
 
+redis:
+  resources:
+    requests:
+      cpu: 15m
+      memory: 100Mi
+    limits:
+      memory: 100Mi
+
 ollamaUrls:
   - http://mike.theclarkhome.com:11434
 
