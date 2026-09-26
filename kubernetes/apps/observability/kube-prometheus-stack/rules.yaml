@@ -43,6 +43,96 @@ additionalPrometheusRulesMap:
               summary: "OpenVox agent run failed on {{ $labels.instance }}"
               description: "The most recent OpenVox run on {{ $labels.instance }} reported {{ $value }} failed resources."
 
+  vpa-rules:
+    groups:
+      - name: vpa-sizing.symptoms
+        rules:
+          - alert: ContainerMemoryNearLimit
+            expr: |
+              max_over_time(container_memory_working_set_bytes{container!=""}[5m])
+                / on(namespace, pod, container)
+                  kube_pod_container_resource_limits{resource="memory", unit="byte"}
+              > 0.9
+            for: 15m
+            labels:
+              severity: warning
+              category: resources
+            annotations:
+              summary: "{{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }}) using >90% of its memory limit"
+              description: "Working set within 10% of the limit for 15m. OOMKill risk — compare against the VPA upper bound and raise the limit."
+              value: "{{ $value | humanizePercentage }}"
+
+          - alert: ContainerCPUThrottled
+            expr: |
+              rate(container_cpu_cfs_throttled_periods_total{container!=""}[5m])
+                / rate(container_cpu_cfs_periods_total{container!=""}[5m])
+              > 0.25
+            for: 30m
+            labels:
+              severity: warning
+              category: resources
+            annotations:
+              summary: "{{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }}) CPU throttled"
+              description: "More than 25% of CFS periods throttled for 30m. CPU limit is too low."
+              value: "{{ $value | humanizePercentage }}"
+
+          - alert: ContainerOOMKilledRestarting
+            expr: |
+              increase(kube_pod_container_status_restarts_total[15m]) > 0
+                and on(namespace, pod, container)
+                  kube_pod_container_status_last_terminated_reason{reason="OOMKilled"} == 1
+            for: 5m
+            labels:
+              severity: warning
+              category: resources
+            annotations:
+              summary: "{{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }}) restarted, last termination OOMKilled"
+              description: "Restart churn on a container last terminated for OOMKilled. Raise memory limit/request."
+
+      - name: vpa-sizing.hygiene
+        rules:
+          - record: workload_container_memory_limit_bytes
+            expr: |
+              max by (namespace, target_name, container) (
+                kube_pod_container_resource_limits{resource="memory", unit="byte"}
+                  * on(namespace, pod) group_left(target_name)
+                    (
+                      label_replace(
+                        kube_pod_owner{owner_kind=~"StatefulSet|DaemonSet"},
+                        "target_name", "$1", "owner_name", "(.*)"
+                      )
+                      or
+                      (
+                        label_replace(
+                          kube_pod_owner{owner_kind="ReplicaSet"},
+                          "rsname", "$1", "owner_name", "(.*)"
+                        )
+                        * on(namespace, rsname) group_left(target_name)
+                          label_replace(
+                            label_replace(
+                              kube_replicaset_owner{owner_kind="Deployment"},
+                              "rsname", "$1", "replicaset", "(.*)"
+                            ),
+                            "target_name", "$1", "owner_name", "(.*)"
+                          )
+                      )
+                    )
+              )
+
+          - alert: WorkloadLimitBelowVPAUpperBound
+            expr: |
+              workload_container_memory_limit_bytes
+                < on(namespace, target_name, container) group_left()
+                  kube_customresource_vpa_containerrecommendations_upperbound{resource="memory"}
+            for: 24h
+            labels:
+              severity: info
+              category: sizing
+            annotations:
+              summary: "{{ $labels.namespace }}/{{ $labels.target_name }} ({{ $labels.container }}) memory limit below VPA upper bound"
+              description: "Limit is under the VPA peak estimate. VPA is Off, so this is a manual tuning prompt — Goldilocks Burstable recipe: requests=lowerBound, limits=upperBound."
+              limit: "{{ $value | humanize1024 }}B"
+
   custom-target-down:
     groups:
       - name: node_alerts
