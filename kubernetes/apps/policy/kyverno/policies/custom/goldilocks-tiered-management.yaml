@@ -14,7 +14,7 @@ spec:
           - resources:
               kinds:
                 - Namespace
-              namespaces:
+              namespaces: &autons
                 - default
       mutate:
         patchStrategicMerge:
@@ -34,8 +34,7 @@ spec:
       exclude:
         any:
           - resources:
-              namespaces:
-                - default
+              namespaces: *autons
       mutate:
         patchStrategicMerge:
           metadata:
