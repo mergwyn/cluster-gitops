@@ -304,9 +304,7 @@ kube-state-metrics:
         resources: ["verticalpodautoscalers"]
         verbs: ["list", "watch"]
   customResourceState:
-    enabled: true
     config:
-      kind: CustomResourceStateMetrics
       spec:
         resources:
           - groupVersionKind:
@@ -321,7 +319,7 @@ kube-state-metrics:
               target_name: [spec, targetRef, name]
             metrics:
               - name: "vpa_containerrecommendations_target"
-                help: "VPA container recommendations for memory."
+                help: "VPA container recommendations."
                 each:
                   type: Gauge
                   gauge:
@@ -329,21 +327,28 @@ kube-state-metrics:
                     valueFrom: [target, memory]
                     labelsFromPath:
                       container: [containerName]
-                commonLabels:
-                  resource: "memory"
-                  unit: "byte"
-              - name: "vpa_containerrecommendations_target"
-                help: "VPA container recommendations for cpu."
+                commonLabels: {resource: "memory", unit: "byte"}
+              - name: "vpa_containerrecommendations_upperbound"
+                help: "VPA upper bounds (max reasonable allocation)."
                 each:
                   type: Gauge
                   gauge:
                     path: [status, recommendation, containerRecommendations]
-                    valueFrom: [target, cpu]
+                    valueFrom: [upperBound, memory]
                     labelsFromPath:
                       container: [containerName]
-                commonLabels:
-                  resource: "cpu"
-                  unit: "core"
+                commonLabels: {resource: "memory", unit: "byte"}
+              - name: "vpa_containerrecommendations_lowerbound"
+                help: "VPA lower bounds (minimum viable resources)."
+                each:
+                  type: Gauge
+                  gauge:
+                    path: [status, recommendation, containerRecommendations]
+                    valueFrom: [lowerBound, memory]
+                    labelsFromPath:
+                      container: [containerName]
+                commonLabels: {resource: "memory", unit: "byte"}
+              # …repeat for cpu with valueFrom [target, cpu] / [upperBound, cpu] / [lowerBound, cpu], unit: "core"
   resources:
     requests:
       cpu: 15m
