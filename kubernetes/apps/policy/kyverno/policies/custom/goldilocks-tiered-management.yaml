@@ -35,9 +35,7 @@ spec:
         any:
           - resources:
               namespaces:
-                - media
-                - vpn
-                - home-assistant
+                - default
       mutate:
         patchStrategicMerge:
           metadata:
