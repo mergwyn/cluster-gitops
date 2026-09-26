@@ -19,6 +19,7 @@ recommender:
 updater:
   extraArgs:
     "feature-gates": "InPlaceOrRecreate=true"
+    in-place-skip-disruption-budget: true
   resources:
     requests:
       cpu: 15m
