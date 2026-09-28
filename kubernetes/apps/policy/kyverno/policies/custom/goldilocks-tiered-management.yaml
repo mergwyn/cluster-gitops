@@ -1,15 +1,10 @@
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/kyverno.io/clusterpolicy_v1.json
----
-# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/kyverno.io/clusterpolicy_v1.json
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
   name: goldilocks-tiered-management
 spec:
-  # Apply to resources that already exist when this policy changes. Without this,
-  # existing namespaces are only touched the next time each one is updated.
-  mutateExistingOnPolicyUpdate: true
   # Required for the above to have any effect.
   background: true
   rules:
