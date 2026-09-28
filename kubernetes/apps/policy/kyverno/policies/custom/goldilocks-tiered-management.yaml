@@ -15,7 +15,7 @@ spec:
               kinds:
                 - Namespace
               namespaces: &autons
-                - no-namspaces
+                - default
       mutate:
         patchStrategicMerge:
           metadata:
