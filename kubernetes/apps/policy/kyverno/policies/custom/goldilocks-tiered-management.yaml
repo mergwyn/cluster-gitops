@@ -5,7 +5,7 @@ kind: ClusterPolicy
 metadata:
   name: goldilocks-tiered-management
 spec:
-  background: true
+  #background: true
   rules:
     # --- STEP 1: AUTO-PILOT FOR APPS ---
     - name: enable-auto-vpa-for-apps
