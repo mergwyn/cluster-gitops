@@ -5,26 +5,24 @@ kind: ClusterPolicy
 metadata:
   name: goldilocks-tiered-management
 spec:
-  #background: true
   rules:
-    # --- STEP 1: AUTO-PILOT FOR APPS ---
+    # --- STEP 1: AUTO-PILOT FOR SELECTED NAMESPACES ---
     - name: enable-auto-vpa-for-apps
       match:
         any:
           - resources:
               kinds:
                 - Namespace
-              namespaces: &autons
+              names: &autons
                 - default
       mutate:
         patchStrategicMerge:
           metadata:
             labels:
               goldilocks.fairwinds.com/enabled: "true"
-              # TODO: Disable for the time being, causing oom kill issues
               goldilocks.fairwinds.com/vpa-update-mode: "InPlaceOrRecreate"
 
-    # --- STEP 2: OBSERVABILITY ONLY FOR OTHERS ---
+    # --- STEP 2: OBSERVABILITY ONLY FOR ALL OTHER NAMESPACES ---
     - name: enable-vpa-guidance-only
       match:
         any:
@@ -34,7 +32,7 @@ spec:
       exclude:
         any:
           - resources:
-              namespaces: *autons
+              names: *autons
       mutate:
         patchStrategicMerge:
           metadata:
