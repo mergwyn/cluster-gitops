@@ -29,8 +29,8 @@ updater:
       memory: 105M
 
 admissionController:
-  extraArgs:
-    "feature-gates": "InPlaceOrRecreate=true"
+  # extraArgs:
+  #   "feature-gates": "InPlaceOrRecreate=true"
   resources:
     requests:
       cpu: 15m
