@@ -1,21 +1,33 @@
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/kyverno.io/clusterpolicy_v1.json
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/kyverno.io/clusterpolicy_v1.json
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
   name: goldilocks-tiered-management
 spec:
+  # Apply to resources that already exist when this policy changes. Without this,
+  # existing namespaces are only touched the next time each one is updated.
+  mutateExistingOnPolicyUpdate: true
+  # Required for the above to have any effect.
   background: true
   rules:
-    # --- STEP 1: AUTO-PILOT FOR SELECTED NAMESPACES ---
+    # --- STEP 1: AUTO-PILOT — named namespaces only ---
     - name: enable-auto-vpa-for-apps
+      # Kyverno >=1.13 defaults this to true and skips the background controller's
+      # own requests, which is what stops existing resources being mutated.
+      # It has to be set to false explicitly; deleting the line does not help.
+      skipBackgroundRequests: false
       match:
         any:
           - resources:
               kinds:
                 - Namespace
-              names: &autons
+              names: &inplace-namespaces   # Namespace.metadata.name, not a scope filter
                 - default
+                # add further InPlaceOrRecreate namespaces here — this list is the
+                # single source of truth, the exclude below references it
       mutate:
         patchStrategicMerge:
           metadata:
@@ -23,8 +35,9 @@ spec:
               goldilocks.fairwinds.com/enabled: "true"
               goldilocks.fairwinds.com/vpa-update-mode: "InPlaceOrRecreate"
 
-    # --- STEP 2: OBSERVABILITY ONLY FOR ALL OTHER NAMESPACES ---
+    # --- STEP 2: GUIDANCE ONLY — everything else ---
     - name: enable-vpa-guidance-only
+      skipBackgroundRequests: false
       match:
         any:
           - resources:
@@ -33,7 +46,9 @@ spec:
       exclude:
         any:
           - resources:
-              names: *autons
+              kinds:
+                - Namespace
+              names: *inplace-namespaces
       mutate:
         patchStrategicMerge:
           metadata:
