@@ -18,7 +18,7 @@ recommender:
 
 updater:
   extraArgs:
-    "feature-gates": "InPlaceOrRecreate=true"
+    #"feature-gates": "InPlaceOrRecreate=true"
     in-place-skip-disruption-budget: true
   resources:
     requests:
