@@ -116,6 +116,7 @@ for app_dir in ${CHANGED_APP_DIRS}; do
   export HELMFILE_NAMESPACE="${NS}"
 
   if ! (cd "${app_dir}" && helmfile doctor \
+      --llm-timeout 90s \
       --args "--api-versions ${KUBE_API_VERSIONS} --kube-version ${KUBE_VERSION_SANITISED}" \
       --output json) > "${REPORT_FILE}"; then
     echo "doctor failed to run for ${app_dir} (non-LLM failure, e.g. render error)" >&2
