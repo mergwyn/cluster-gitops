@@ -5,6 +5,10 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   doctor:
     runs-on: self-hosted
@@ -33,7 +37,7 @@ jobs:
           KUBECONFIG: ${{ runner.temp }}/kubeconfig
           HELMFILE_LLM_BASE_URL: http://mike.theclarkhome.com:11434/v1
           HELMFILE_LLM_API_KEY: ollama
-          HELMFILE_LLM_MODEL: llama3.1:8b
+          HELMFILE_LLM_MODEL: qwen2.5-coder:14b
           HELM_PLUGINS: /usr/local/share/helm/plugins
         if: steps.filter.outputs.run == 'true'
         run: ./scripts/doctor-check.sh "origin/${{ steps.filter.outputs.base_ref }}"
@@ -49,9 +53,33 @@ jobs:
             for f in doctor-reports/*.json; do
               app=$(basename "$f" .json)
               echo "### ${app}"
-              echo '```json'
-              cat "$f"
+              echo ""
+
+              if jq -e '.llm_error' "$f" > /dev/null 2>&1; then
+                echo "⚠️ **LLM call failed:** \`$(jq -r '.llm_error' "$f")\`"
+                echo ""
+                echo "Raw diff still applied — review manually."
+              else
+                jq -r '.summary // "No summary provided."' "$f"
+                echo ""
+
+                RISK_COUNT=$(jq '.risks | length' "$f")
+                if [[ "${RISK_COUNT}" -gt 0 ]]; then
+                  echo "**Risks:**"
+                  jq -r '.risks[] | "- **[\(.level | ascii_upcase)]** \(.category): \(.description)\n  - _Suggestion:_ \(.suggestion)"' "$f"
+                  echo ""
+                fi
+
+                echo "**Affected resources:** $(jq -r '.affected_resources | join(", ")' "$f")"
+              fi
+
+              echo ""
+              echo "<details><summary>Full diff</summary>"
+              echo ""
+              echo '```diff'
+              jq -r '.diff' "$f"
               echo '```'
+              echo "</details>"
               echo ""
             done
           } > comment-body.md
