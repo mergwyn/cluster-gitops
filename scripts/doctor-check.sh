@@ -85,6 +85,11 @@ done
 echo "critical=${IS_CRITICAL}" >> "${GITHUB_OUTPUT:-/dev/null}"
 echo "Critical-tier app in this PR: ${IS_CRITICAL}"
 
+# Preload the ollama model so the first doctor run doesn't have to wait for it to load.
+echo "Warming ${HELMFILE_LLM_MODEL}..."
+curl -s "${HELMFILE_LLM_BASE_URL%/v1}/api/generate" \
+    -d "{\"model\": \"${HELMFILE_LLM_MODEL}\", \"prompt\": \"hi\", \"keep_alive\": \"30m\"}" > /dev/null
+
 # --- 4. Run doctor per changed app -------------------------------------------
 # Run from inside each app's own directory so helmfile finds its
 # helmfile.yaml — running from the repo root fails with "no state file
