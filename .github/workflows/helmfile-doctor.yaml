@@ -43,7 +43,7 @@ jobs:
         run: ./scripts/doctor-check.sh "origin/${{ steps.filter.outputs.base_ref }}"
 
       - name: Post report as PR comment
-        #if: always() && steps.filter.outputs.run == 'true' && github.event_name == 'pull_request'
+        if: always() && steps.filter.outputs.run == 'true' && github.event_name == 'pull_request'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
