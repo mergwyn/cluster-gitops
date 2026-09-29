@@ -37,7 +37,7 @@ jobs:
           KUBECONFIG: ${{ runner.temp }}/kubeconfig
           HELMFILE_LLM_BASE_URL: http://mike.theclarkhome.com:11434/v1
           HELMFILE_LLM_API_KEY: ollama
-          HELMFILE_LLM_MODEL: qwen2.5-coder:14b
+          HELMFILE_LLM_MODEL: qwen3:8b
           HELM_PLUGINS: /usr/local/share/helm/plugins
         if: steps.filter.outputs.run == 'true'
         run: ./scripts/doctor-check.sh "origin/${{ steps.filter.outputs.base_ref }}"
