@@ -3,7 +3,30 @@
 ollama:
   enabled: false
 
+ui:
+  enable_signup: false
+  enable_login_form: true
+  enable_password_change_form: true
+  enable_community_sharing: true
+  enable_message_ratings: true
 
+direct:
+  enable: true
+
+models:
+  base_models_cache: true
+
+openai:
+  enable: true
+  # These will be overridden by envFrom from the Secret below
+  api_keys: ["placeholder"]
+  api_base_urls:
+    - "https://api.openai.com/v1"
+    - "https://openrouter.ai/api/v1"
+    
+ollamaUrls:
+  - http://mike.theclarkhome.com:11434
+  -
 service:
   type: ClusterIP
   port: &port 8080
@@ -27,12 +50,10 @@ websocket:
       limits:
         memory: 100Mi
 
-ollamaUrls:
-  - http://mike.theclarkhome.com:11434
 
 # Optional: Add OpenRouter / OpenAI endpoints here if you want access to Claude as well
 extraEnvVars:
-  WEBUI_NAME: "The Clark Home AI"
+  WEBUI_NAME: "Clark AI"
 
 # Configure persistent storage for chat histories and login accounts
 persistence:
