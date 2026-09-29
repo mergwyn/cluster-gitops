@@ -18,7 +18,6 @@ recommender:
 
 updater:
   extraArgs:
-    #"feature-gates": "InPlaceOrRecreate=true"
     in-place-skip-disruption-budget: true
   resources:
     requests:
@@ -29,8 +28,6 @@ updater:
       memory: 105M
 
 admissionController:
-  # extraArgs:
-  #   "feature-gates": "InPlaceOrRecreate=true"
   resources:
     requests:
       cpu: 15m
