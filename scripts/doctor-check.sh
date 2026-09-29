@@ -94,6 +94,22 @@ for app_dir in ${CHANGED_APP_DIRS}; do
   echo "--- Running helmfile doctor for ${app_dir} ---"
   REPORT_FILE="${REPORT_DIR}/${app}.json"
 
+  if [[ ! -f "${app_dir}/app.yaml" ]]; then
+    echo "No app.yaml found for ${app_dir} — cannot determine appNamespace." >&2
+    STEPS_STATUS=1
+    continue
+  fi
+
+  NS=$(yq '.appNamespace' "${app_dir}/app.yaml")
+  if [[ -z "${NS}" || "${NS}" == "null" ]]; then
+    echo "app.yaml for ${app_dir} has no appNamespace set — refusing to guess." >&2
+    STEPS_STATUS=1
+    continue
+  fi
+
+  echo "Using appNamespace: ${NS}"
+  export HELMFILE_NAMESPACE="${NS}"
+
   if ! (cd "${app_dir}" && helmfile doctor \
       --args "--api-versions ${KUBE_API_VERSIONS} --kube-version ${KUBE_VERSION_SANITISED}" \
       --output json) > "${REPORT_FILE}"; then
