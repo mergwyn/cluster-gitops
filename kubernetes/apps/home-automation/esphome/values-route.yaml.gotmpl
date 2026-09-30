@@ -2,6 +2,7 @@
 
 route:
   app:
+    forceRename: esphome-app
     hostnames:
       - "{{.Release.Name}}.{{.Values.cluster.domain}}"
     parentRefs: &parentrefs
@@ -14,6 +15,7 @@ route:
             port: 6052
 
   code-server:
+    forceRename: esphome-code-server
     hostnames:
       - "{{.Release.Name}}-code.{{.Values.cluster.domain}}"
     parentRefs: *parentrefs
