@@ -7,6 +7,8 @@ bases:
 repositories:
   - name: open-webui
     url: https://helm.openwebui.com
+  - name: bedag
+    url: https://bedag.github.io/helm-charts/
 
 releases:
   - name: open-webui
@@ -15,3 +17,9 @@ releases:
     namespace: '{{ env "HELMFILE_NAMESPACE" | default "default" }}'
     values:
       - values.yaml.gotmpl
+  - name: openwebui-external-secret
+    chart: bedag/raw
+    version: 2.0.2
+    values:
+      - externalsecret.yaml
+    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
