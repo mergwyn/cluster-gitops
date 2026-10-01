@@ -69,4 +69,3 @@ resources:
       - kind: ServiceAccount
         name: helmfile-doctor
         namespace: kube-system
-
