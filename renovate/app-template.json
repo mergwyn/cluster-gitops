@@ -4,11 +4,21 @@
     {
       "fileMatch": ["\\.yaml$", "\\.yml$", "\\.gotmpl$"],
       "matchStrings": [
-        "yaml-language-server: \\$schema=https:\\/\\/raw\\.githubusercontent\\.com\\/bjw-s-labs\\/helm-charts\\/common-(?<currentValue>[0-dev.\\-]+)\\/charts"
+        "yaml-language-server: \\$schema=https:\\/\\/raw\\.githubusercontent\\.com\\/bjw-s-labs\\/helm-charts\\/common-(?<currentValue>[0-9][^\\/]*)\\/charts"
       ],
       "datasourceTemplate": "github-tags",
       "depNameTemplate": "bjw-s-labs/helm-charts",
       "extractVersionTemplate": "^common-(?<version>.*)$"
+    }
+  ],
+  "packageRules": [
+    {
+      "groupName": "bjw-s app-template",
+      "matchDepNames": [
+        "bjw-s-labs/helm-charts",
+        "ghcr.io/bjw-s-labs/helm/app-template",
+        "app-template"
+      ]
     }
   ]
 }
