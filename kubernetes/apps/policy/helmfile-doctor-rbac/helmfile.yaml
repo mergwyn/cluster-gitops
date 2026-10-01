@@ -15,3 +15,10 @@ releases:
     version: 2.0.2
     values:
       - values.yaml
+
+  - name: hemfile-doctor-external-secret
+    chart: bedag/raw
+    version: 2.0.2
+    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+    values:
+      - externalsecret.yaml
