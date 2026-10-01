@@ -53,10 +53,14 @@ websocket:
 
 # Optional: Add OpenRouter / OpenAI endpoints here if you want access to Claude as well
 extraEnvVars:
-  WEBUI_NAME: "Clark AI"
-  ENABLE_WEB_SEARCH: true
-  WEB_SEARCH_ENGINE: "tavily"
-  OPENAI_API_BASE_URL: "https://openrouter.ai/api/v1"
+  - name: WEBUI_NAME
+    value: "Clark AI"
+  - name: ENABLE_WEB_SEARCH
+    value: true
+  - name: WEB_SEARCH_ENGINE
+    value: tavily
+  - name: OPENAI_API_BASE_URL
+    value: https://openrouter.ai/api/v1
 
 extraEnvFrom:
   - secretRef:
