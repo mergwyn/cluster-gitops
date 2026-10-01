@@ -32,6 +32,13 @@ jobs:
       - name: Write scoped kubeconfig
         run: echo "${{ secrets.HELMFILE_DOCTOR_KUBECONFIG }}" > "${RUNNER_TEMP}/kubeconfig"
 
+      - name: Fetch LLM API key
+        run: |
+          key="$(kubectl -n kube-system get secret helmfile-doctor-env \
+            -o jsonpath='{.data.HELMFILE_LLM_API_KEY}' | base64 -d)"
+          echo "::add-mask::$key"
+          echo "HELMFILE_LLM_API_KEY=$key" >> "$GITHUB_ENV"
+
       - name: Run doctor
         env:
           KUBECONFIG: ${{ runner.temp }}/kubeconfig
