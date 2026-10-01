@@ -9,7 +9,7 @@ repositories:
     url: https://bedag.github.io/helm-charts
 
 releases:
-  - name: helmfile-doctor-rbac
+  - name: helmfile-doctor
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
     chart: bedag/raw
     version: 2.0.2

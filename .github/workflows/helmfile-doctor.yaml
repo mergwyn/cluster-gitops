@@ -42,9 +42,9 @@ jobs:
       - name: Run doctor
         env:
           KUBECONFIG: ${{ runner.temp }}/kubeconfig
-          HELMFILE_LLM_BASE_URL: http://mike.theclarkhome.com:11434/v1
-          HELMFILE_LLM_API_KEY: ollama
-          HELMFILE_LLM_MODEL: llama3.1:8b
+          HELMFILE_LLM_BASE_URL: https://openrouter.ai/api/v1
+          # HELMFILE_LLM_API_KEY: ollama
+          HELMFILE_LLM_MODEL: openrouter/auto
           HELM_PLUGINS: /usr/local/share/helm/plugins
         if: steps.filter.outputs.run == 'true'
         run: ./scripts/doctor-check.sh "origin/${{ steps.filter.outputs.base_ref }}"
