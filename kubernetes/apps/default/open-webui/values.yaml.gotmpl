@@ -56,11 +56,11 @@ extraEnvVars:
   - name: WEBUI_NAME
     value: "Clark AI"
   - name: ENABLE_WEB_SEARCH
-    value: true
+    value: "true"
   - name: WEB_SEARCH_ENGINE
-    value: tavily
-  - name: OPENAI_API_BASE_URL
-    value: https://openrouter.ai/api/v1
+    value: "tavily"
+  #- name: OPENAI_API_BASE_URL
+  #  value: "https://openrouter.ai/api/v1"
 
 extraEnvFrom:
   - secretRef:
