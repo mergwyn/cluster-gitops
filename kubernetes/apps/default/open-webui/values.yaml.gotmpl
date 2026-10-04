@@ -16,13 +16,9 @@ direct:
 models:
   base_models_cache: true
 
+enableOpenaiApi: false
 openai:
-  enable: true
-  # These will be overridden by envFrom from the Secret below
-  api_keys: ["placeholder"]
-  api_base_urls:
-    - "https://api.openai.com/v1"
-    - "https://openrouter.ai/api/v1"
+  enable: false
 
 ollamaUrls:
   - http://mike.theclarkhome.com:11434
