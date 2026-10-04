@@ -70,16 +70,8 @@ extraEnvVars:
   - name: OPENAI_USER_MODELS
     value: |
       [
-        {
-          "id": "openrouter/free",
-          "name": "OpenRouter Free",
-          "description": "Auto-selected free models"
-        },
-        {
-          "id": "openrouter/auto",
-          "name": "OpenRouter Auto",
-          "description": "Auto-selected models by cost/latency"
-        }
+        {"id": "openrouter/free", "name": "OpenRouter Free", "description": "Auto-selected free models"},
+        {"id": "openrouter/auto", "name": "OpenRouter Auto", "description": "Auto-selected by cost/latency"}
       ]
 
 # Configure persistent storage for chat histories and login accounts
