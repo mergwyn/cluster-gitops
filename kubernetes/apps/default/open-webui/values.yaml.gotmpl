@@ -67,6 +67,20 @@ extraEnvVars:
     value: "tavily"
   - name: OPENAI_API_BASE_URL
     value: "https://openrouter.ai/api/v1"
+  - name: OPENAI_USER_MODELS
+    value: |
+      [
+        {
+          "id": "openrouter/free",
+          "name": "OpenRouter Free",
+          "description": "Auto-selected free models"
+        },
+        {
+          "id": "openrouter/auto",
+          "name": "OpenRouter Auto",
+          "description": "Auto-selected models by cost/latency"
+        }
+      ]
 
 # Configure persistent storage for chat histories and login accounts
 persistence:
