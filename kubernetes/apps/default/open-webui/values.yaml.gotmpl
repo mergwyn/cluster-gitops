@@ -50,6 +50,12 @@ websocket:
       limits:
         memory: 100Mi
 
+extraEnvFrom:
+  - secretRef:
+      name: &secret openwebui-env
+
+annotations:
+  secret.reloader.stakater.com/reload: *secret
 
 # Optional: Add OpenRouter / OpenAI endpoints here if you want access to Claude as well
 extraEnvVars:
@@ -59,12 +65,8 @@ extraEnvVars:
     value: "true"
   - name: WEB_SEARCH_ENGINE
     value: "tavily"
-  #- name: OPENAI_API_BASE_URL
-  #  value: "https://openrouter.ai/api/v1"
-
-extraEnvFrom:
-  - secretRef:
-      name: openwebui-env
+  - name: OPENAI_API_BASE_URL
+    value: "https://openrouter.ai/api/v1"
 
 # Configure persistent storage for chat histories and login accounts
 persistence:
