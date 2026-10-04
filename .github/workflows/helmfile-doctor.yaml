@@ -9,9 +9,18 @@ permissions:
   contents: read
   pull-requests: write
 
+concurrency:
+  group: helmfile-doctor-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   doctor:
+    # Self-hosted runner with cluster access: never run fork PRs.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event.pull_request.head.repo.full_name == github.repository
     runs-on: self-hosted
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
@@ -30,9 +39,15 @@ jobs:
           echo "base_ref=${BASE_REF}" >> "$GITHUB_OUTPUT"
 
       - name: Write scoped kubeconfig
-        run: echo "${{ secrets.HELMFILE_DOCTOR_KUBECONFIG }}" > "${RUNNER_TEMP}/kubeconfig"
+        if: steps.filter.outputs.run == 'true'
+        env:
+          KUBECONFIG_CONTENT: ${{ secrets.HELMFILE_DOCTOR_KUBECONFIG }}
+        run: |
+          umask 077
+          printf '%s\n' "${KUBECONFIG_CONTENT}" > "${RUNNER_TEMP}/kubeconfig"
 
       - name: Fetch LLM API key
+        if: steps.filter.outputs.run == 'true'
         run: |
           key="$(kubectl -n kube-system get secret helmfile-doctor-env \
             -o jsonpath='{.data.HELMFILE_LLM_API_KEY}' | base64 -d)"
@@ -40,54 +55,72 @@ jobs:
           echo "HELMFILE_LLM_API_KEY=$key" >> "$GITHUB_ENV"
 
       - name: Run doctor
+        if: steps.filter.outputs.run == 'true'
         env:
           KUBECONFIG: ${{ runner.temp }}/kubeconfig
           HELMFILE_LLM_BASE_URL: https://openrouter.ai/api/v1
-          # HELMFILE_LLM_API_KEY: ollama
           HELMFILE_LLM_MODEL: openrouter/auto
           HELM_PLUGINS: /usr/local/share/helm/plugins
-        if: steps.filter.outputs.run == 'true'
+          # Read-only Argo CD API token (not admin).
+          ARGOCD_SERVER: ${{ secrets.ARGOCD_SERVER }}
+          ARGOCD_AUTH_TOKEN: ${{ secrets.ARGOCD_AUTH_TOKEN }}
+          ARGOCD_OPTS: --grpc-web --insecure
         run: ./scripts/doctor-check.sh "origin/${{ steps.filter.outputs.base_ref }}"
 
-      - name: Post report as PR comment
+      - name: Post verdict as PR comment
         if: always() && steps.filter.outputs.run == 'true' && github.event_name == 'pull_request'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          # Public repo: post verdicts and counts only. Never post diff text,
+          # stderr, or LLM prose (the summary can quote values from the diff).
           {
-            echo "## Helmfile Doctor Report"
+            echo "## Helmfile Doctor"
             echo ""
+            echo "| App | Verdict | Changed lines | Risks H/M/L |"
+            echo "|---|---|---|---|"
             for f in doctor-reports/*.json; do
+              [[ -e "$f" ]] || continue
               app=$(basename "$f" .json)
-              echo "### ${app}"
-              echo ""
 
-              if jq -e '.llm_error' "$f" > /dev/null 2>&1; then
-                echo "⚠️ **LLM call failed:** \`$(jq -r '.llm_error' "$f")\`"
-                echo ""
-                echo "Raw diff still applied — review manually."
-              else
-                jq -r '.summary // "No summary provided."' "$f"
-                echo ""
-
-                RISK_COUNT=$(jq '.risks | length' "$f")
-                if [[ "${RISK_COUNT}" -gt 0 ]]; then
-                  echo "**Risks:**"
-                  jq -r '.risks[] | "- **[\(.level | ascii_upcase)]** \(.category): \(.description)\n  - _Suggestion:_ \(.suggestion)"' "$f"
-                  echo ""
-                fi
-
-                echo "**Affected resources:** $(jq -r '.affected_resources | join(", ")' "$f")"
+              if ! jq -e . "$f" > /dev/null 2>&1; then
+                echo "| ${app} | ❌ Doctor failed: run locally | - | - |"
+                continue
+              fi
+              # The Argo CD diff must have run, or "no diff" would be meaningless.
+              if ! jq -e '.argo.invoked == true and .argo.rc != null and .argo.rc < 2' "$f" > /dev/null 2>&1; then
+                echo "| ${app} | ❌ Argo CD diff did not run: run locally | - | - |"
+                continue
               fi
 
-              echo ""
-              echo "<details><summary>Full diff</summary>"
-              echo ""
-              echo '```diff'
-              jq -r '.diff' "$f"
-              echo '```'
-              echo "</details>"
-              echo ""
+              if jq -e '.llm_error' "$f" > /dev/null 2>&1; then
+                h=$(jq '[.risks[]? | select(((.level // .severity // "") | ascii_downcase) == "high")] | length' "$f")
+                if [[ "${h}" -gt 0 ]]; then
+                  echo "| ${app} | 🛑 HIGH risk (rule-based; LLM failed): run locally | - | ${h}/-/- |"
+                else
+                  echo "| ${app} | ⚠️ LLM call failed: run locally | - | - |"
+                fi
+                continue
+              fi
+
+              lines=$(jq -r '.diff // ""' "$f" | grep -cE '^(ADDED|REMOVED) ' || true)
+              count() {
+                jq --arg l "$1" '[.risks[]? | select(((.level // .severity // "") | ascii_downcase) == $l)] | length' "$f"
+              }
+              high=$(count high); med=$(count medium); low=$(count low)
+
+              if [[ "${lines}" -eq 0 ]]; then
+                verdict="✅ No diff vs live cluster"
+              elif [[ "${high}" -gt 0 ]]; then
+                verdict="🛑 HIGH risk flagged: run locally"
+              elif [[ "${med}" -gt 0 ]]; then
+                verdict="⚠️ Review locally"
+              else
+                verdict="✅ No MEDIUM/HIGH risks flagged (advisory)"
+              fi
+              echo "| ${app} | ${verdict} | ${lines} | ${high}/${med}/${low} |"
             done
+            echo ""
+            echo "_Full report is not posted (public repo). To read it, check out this branch and run \`./scripts/doctor-check.sh origin/main\`. LLM verdicts are advisory; small models under-rate severity, so skim the diff for anything with a non-zero line count._"
           } > comment-body.md
           gh pr comment "${{ github.event.pull_request.number }}" --body-file comment-body.md

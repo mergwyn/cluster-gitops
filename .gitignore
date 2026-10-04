@@ -10,3 +10,7 @@ ansible/ansible-structure-report.txt
 ops/migrate-workload.sh.1
 ops/tautulli.yaml
 **/.DS_Store
+kubernetes/apps/default/open-webui/llm-reports/openwebui.diff
+llm-reports/argocd_open-webui.diff
+llm-reports/argocd_open-webui.json
+doctor-reports/
