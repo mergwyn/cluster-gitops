@@ -58,8 +58,8 @@ jobs:
         if: steps.filter.outputs.run == 'true'
         env:
           KUBECONFIG: ${{ runner.temp }}/kubeconfig
-          HELMFILE_LLM_BASE_URL: https://openrouter.ai/api/v1
-          HELMFILE_LLM_MODEL: openrouter/auto
+          HELMFILE_LLM_BASE_URL: http://mike.theclarkhome.com:11434/v1
+          HELMFILE_LLM_MODEL: phi4
           HELM_PLUGINS: /usr/local/share/helm/plugins
           # Read-only Argo CD API token (not admin).
           ARGOCD_SERVER: ${{ secrets.ARGOCD_SERVER }}
