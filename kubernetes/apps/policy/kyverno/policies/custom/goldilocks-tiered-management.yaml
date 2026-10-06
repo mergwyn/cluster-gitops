@@ -21,6 +21,8 @@ spec:
                 - Namespace
               names: &inplace-namespaces   # Namespace.metadata.name, not a scope filter
                 - default
+                - system
+                - reloader-system
                 # add further InPlaceOrRecreate namespaces here — this list is the
                 # single source of truth, the exclude below references it
       mutate:
