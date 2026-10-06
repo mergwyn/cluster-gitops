@@ -4,21 +4,10 @@
 bases:
   - ../../../clusters/environments.yaml
 
-repositories:
-  - name: bedag
-    url: https://bedag.github.io/helm-charts
-
 releases:
   - name: helmfile-doctor
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
-    chart: bedag/raw
-    version: 2.0.2
-    values:
-      - values.yaml
-
-  - name: hemfile-doctor-external-secret
-    chart: bedag/raw
-    version: 2.0.2
-    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
-    values:
-      - externalsecret.yaml
+    chart: resources
+    transformers:
+      - ../../common/transformers/common-annotations.yaml.gotmpl
+      - ../../common/transformers/common-labels.yaml.gotmpl

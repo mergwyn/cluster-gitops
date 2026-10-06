@@ -1,0 +1,11 @@
+apiVersion: builtin
+kind: LabelTransformer
+metadata:
+  name: common-labels
+labels:
+  app.kubernetes.io/name: {{ .Release.Name }}
+  app.kubernetes.io/instance: {{ .Release.Name }}
+  helm.sh/chart: {{ .Release.Name }}
+fieldSpecs:
+  - path: metadata/labels
+    create: true
