@@ -63,7 +63,8 @@ extraEnvVars:
 #    value: "true"
   - name: WEB_SEARCH_ENGINE
     value: "tavily"
-  - name: OPENAI_API_BASE_URL
+    # Keep the arrays in sync with OPENAI_API_KEYS
+  - name: OPENAI_API_BASE_URLS
     value: "https://openrouter.ai/api/v1"
   - name: OPENAI_API_CONFIGS
     value: |
