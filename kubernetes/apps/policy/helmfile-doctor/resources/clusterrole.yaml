@@ -3,6 +3,8 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: helmfile-doctor-reader
+  labels:
+    rbac.kyverno.io/aggregate-to-background-controller: "true"
 rules:
   - apiGroups: ["*"]
     resources: ["*"]

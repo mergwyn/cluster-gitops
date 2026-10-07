@@ -2,12 +2,9 @@
 # yaml-language-server: $schema=https://json.schemastore.org/helmfile
 
 bases:
-  - ../../../clusters/environments.yaml
+  - ../../../common/base.yaml
 
 releases:
   - name: helmfile-doctor
-    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
-    chart: resources
-    transformers:
-      - ../../common/transformers/common-annotations.yaml.gotmpl
-      - ../../common/transformers/common-labels.yaml.gotmpl
+    inherit:
+      - template: raw
