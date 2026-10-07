@@ -1,0 +1,34 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/helmfile
+
+# NOTE: all paths below resolve from the including app's helmfile directory,
+# not from this file. Apps must sit at kubernetes/apps/<tier>/<app>/.
+
+environments:
+  prod: &prod
+    values:
+      - ../../../clusters/_common.yaml
+      - ../../../clusters/prod.yaml
+  dev:
+    values:
+      - ../../../clusters/_common.yaml
+      - ../../../clusters/dev.yaml
+  default: *prod
+
+templates:
+  raw:
+    chart: resources
+    namespace: '{{ requiredEnv "HELMFILE_NAMESPACE" }}'
+    transformers:
+      - ../../../common/transformers/common-annotations.yaml.gotmpl
+      - ../../../common/transformers/common-labels.yaml.gotmpl
+
+  vpn:
+    values:
+      - ../../../common/values/vpn-routing-values.yaml.gotmpl
+
+helmDefaults:
+  wait: true
+  timeout: 300
+  syncArgs:
+    - "--server-side=false"
