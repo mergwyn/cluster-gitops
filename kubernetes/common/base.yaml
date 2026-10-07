@@ -19,7 +19,7 @@ templates:
   namespace:
     namespace: '{{ requiredEnv "HELMFILE_NAMESPACE" }}'
   raw:
-    chart: resources
+    chart: ./resources
     transformers:
       - ../../../common/transformers/common-annotations.yaml.gotmpl
       - ../../../common/transformers/common-labels.yaml.gotmpl
