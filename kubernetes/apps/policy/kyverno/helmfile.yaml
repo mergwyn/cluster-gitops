@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=https://json.schemastore.org/helmfile
 ---
 bases:
-  - ../../../clusters/environments.yaml
+  - ../../../common/base.yaml
 
 repositories:
   - name: kyverno
@@ -9,17 +9,17 @@ repositories:
 
 releases:
   - name: kyverno
-    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
     chart: kyverno/kyverno
     version: 3.9.1
+    inherit:
+    - template: namespace
     force: true
     values:
       - values.yaml
 
-  - name: kyverno-policies-custom
-    chart: ./policies
-    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+  - name: kyverno-policies
     needs:
       - kyverno
-    values:
-      - validationFailureAction: Enforce
+    inherit:
+    - template: raw
+    - template: cluster-scoped
