@@ -16,13 +16,16 @@ environments:
   default: *prod
 
 templates:
+  namespace:
+    namespace: '{{ requiredEnv "HELMFILE_NAMESPACE" }}'
   raw:
     chart: resources
-    namespace: '{{ requiredEnv "HELMFILE_NAMESPACE" }}'
     transformers:
       - ../../../common/transformers/common-annotations.yaml.gotmpl
       - ../../../common/transformers/common-labels.yaml.gotmpl
-
+  cluster-scoped:
+    transformers:
+      - ../../../common/transformers/strip-namespace.yaml
   vpn:
     values:
       - ../../../common/values/vpn-routing-values.yaml.gotmpl

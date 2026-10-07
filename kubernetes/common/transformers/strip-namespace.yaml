@@ -1,0 +1,9 @@
+apiVersion: builtin
+kind: PatchTransformer
+metadata:
+  name: strip-namespace
+patch: |-
+  - op: remove
+    path: /metadata/namespace
+target:
+    kind: ClusterPolicy|ClusterPolicyReport|ClusterSecretStore
