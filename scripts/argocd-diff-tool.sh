@@ -22,7 +22,7 @@ log "invoked app=${ARGO_APP:-?}"
 
 mkdir "${ARGO_DIFF_LOCK:?}" 2>/dev/null || { log "skipped (lock held)"; exit 0; }
 
-args=(app diff "${ARGO_APP:?}" --server-side-generate)
+args=(app --core diff "${ARGO_APP:?}" --server-side-generate)
 if [[ -n "${REVISION:-}" ]]; then
   args+=(--revision "$REVISION")
   log "mode=revision rev=${REVISION}"
