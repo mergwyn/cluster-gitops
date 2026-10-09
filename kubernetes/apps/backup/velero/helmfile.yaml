@@ -9,7 +9,7 @@ repositories:
 releases:
   - name: velero
     chart: velero/velero
-    version: 12.1.0
+    version: 12.2.0
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
     values:
       - values.yaml
