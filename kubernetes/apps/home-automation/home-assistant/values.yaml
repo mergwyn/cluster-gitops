@@ -187,7 +187,8 @@ controllers:
                   )
                 ' "$CONFIG_ENTRIES" > "$TEMP_FILE"
 
-              chmod --reference="$CONFIG_ENTRIES" "$TEMP_FILE"
+              FILE_MODE="$(stat -c '%a' "$CONFIG_ENTRIES")"
+              chmod "$FILE_MODE" "$TEMP_FILE"
               mv "$TEMP_FILE" "$CONFIG_ENTRIES"
               trap - EXIT
 
