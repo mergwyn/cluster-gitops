@@ -63,7 +63,7 @@ controllers:
           - |-
             set -e
             # 1. Generate the Kopia ignore rules
-            echo "Writing .kopiaignore..."
+            echo "[kopia] Writing .kopiaignore..."
             tee /config/.kopiaignore <<!
             /.code-server/logs
             /.git
@@ -74,7 +74,7 @@ controllers:
             # 2. Synchronize configuration state from GitHub if empty
             cd /config
             if [ ! -d .git ] ; then
-              echo "Initializing config repository from GitHub..."
+              echo "[git] Initializing config repository from GitHub..."
               mkdir temp-dir
               git clone https://github.com/mergwyn/home-assistant-config temp-dir
               mv temp-dir/.git .
@@ -82,12 +82,12 @@ controllers:
               git checkout .
             fi
 
-            # 3. DB Guardrails: Install sqlite3 inside the init container layer
-            echo "[guardrail] Installing sqlite3 for validation..."
-            apk add --no-cache sqlite
+            # 3. Installing required tools inside the init container layer
+            echo "[init] Installing required tools..."
+            apk add --no-cache sqlite jq yq
 
-            DB=/config/home-assistant_v2.db
             echo "[guardrail] Checking Home Assistant SQLite DB..."
+            DB=/config/home-assistant_v2.db
             if [ ! -f "$DB" ]; then
               echo "[guardrail] ERROR: DB missing — refusing to start"
               exit 1
@@ -111,6 +111,91 @@ controllers:
               exit 1
             fi
             echo "[guardrail] DB OK — validation complete."
+
+            # 4. Reconcile BottlecapDave Octopus Energy API key
+            echo "[octopus] Reconciling API key..."
+
+            CONFIG_ENTRIES=/config/.storage/core.config_entries
+
+            # Read account and API key from secrets.yaml
+            ACCOUNT_ID="$(yq -r '.octopus_account' /config/secrets.yaml)"
+            API_KEY="$(yq -r '.octopus_api_key' /config/secrets.yaml)"
+
+            # Validate required secrets
+            if [ -z "$ACCOUNT_ID" ] || [ "$ACCOUNT_ID" = "null" ]; then
+              echo "[octopus] ERROR: octopus_account missing from secrets.yaml"
+              exit 1
+            fi
+
+            if [ -z "$API_KEY" ] || [ "$API_KEY" = "null" ]; then
+              echo "[octopus] ERROR: octopus_api_key missing from secrets.yaml"
+              exit 1
+            fi
+
+            # Check the Home Assistant config entries file
+            if [ ! -f "$CONFIG_ENTRIES" ]; then
+              echo "[octopus] ERROR: config_entries file missing"
+              exit 1
+            fi
+
+            # Require exactly one matching Octopus account
+            MATCH_COUNT="$(
+              jq --arg account_id "$ACCOUNT_ID" '
+                [
+                  .data.entries[]
+                  | select(
+                      .domain == "octopus_energy"
+                      and .data.account_id == $account_id
+                      and .data.kind == "account"
+                    )
+                ] | length
+              ' "$CONFIG_ENTRIES"
+            )"
+            if [ "$MATCH_COUNT" != "1" ]; then
+              echo "[octopus] ERROR: Expected one matching account, found $MATCH_COUNT"
+              exit 1
+            fi
+
+            # Skip the write if the API key is already correct
+            if jq -e \
+              --arg account_id "$ACCOUNT_ID" \
+              --arg api_key "$API_KEY" '
+                any(
+                  .data.entries[];
+                  .domain == "octopus_energy"
+                  and .data.account_id == $account_id
+                  and .data.kind == "account"
+                  and .data.api_key == $api_key
+                )
+              ' "$CONFIG_ENTRIES" >/dev/null; then
+              echo "[octopus] API key already up to date"
+            else
+              # Write to a temporary file, preserving permissions
+              TEMP_FILE="$(mktemp /config/.storage/core.config_entries.XXXXXX)"
+              trap 'rm -f "$TEMP_FILE"' EXIT
+
+              jq \
+                --arg account_id "$ACCOUNT_ID" \
+                --arg api_key "$API_KEY" '
+                  .data.entries |= map(
+                    if .domain == "octopus_energy"
+                       and .data.account_id == $account_id
+                       and .data.kind == "account"
+                    then .data.api_key = $api_key
+                    else .
+                    end
+                  )
+                ' "$CONFIG_ENTRIES" > "$TEMP_FILE"
+
+              chmod --reference="$CONFIG_ENTRIES" "$TEMP_FILE"
+              mv "$TEMP_FILE" "$CONFIG_ENTRIES"
+              trap - EXIT
+
+              echo "[octopus] API key updated"
+            fi
+
+            echo "[octopus] Keys and account updated from secret"
+
         securityContext:
           runAsUser: 0
 
@@ -215,12 +300,11 @@ persistence:
   secrets:
     type: secret
     name: "{{.Release.Name}}-secret"
-    advancedMounts:
-      home-assistant:
-        app:
-          - path: /config/secrets.yaml
-            subPath: secrets.yaml
-            readOnly: true
+    globalMounts:
+      - path: /config/secrets.yaml
+        subPath: secrets.yaml
+        readOnly: true
+
   tmpfs:
     type: emptyDir
     advancedMounts:
