@@ -62,9 +62,6 @@ jobs:
           HELMFILE_LLM_MODEL: phi4
           HELM_PLUGINS: /usr/local/share/helm/plugins
           # Read-only Argo CD API token (not admin).
-          ARGOCD_SERVER: ${{ secrets.ARGOCD_SERVER }}
-          ARGOCD_AUTH_TOKEN: ${{ secrets.ARGOCD_AUTH_TOKEN }}
-          ARGOCD_OPTS: --grpc-web --insecure
         run: ./scripts/doctor-check.sh "origin/${{ steps.filter.outputs.base_ref }}"
 
       - name: Post verdict as PR comment

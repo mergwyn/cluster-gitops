@@ -15,7 +15,6 @@
 #
 # Expects:
 #   KUBECONFIG              scoped helmfile-doctor kubeconfig
-#   ARGOCD_SERVER / ARGOCD_AUTH_TOKEN / ARGOCD_OPTS   argocd CLI access
 #   HELMFILE_LLM_BASE_URL   e.g. http://<ollama-host>:11434/v1
 #   HELMFILE_LLM_API_KEY    dummy value, Ollama ignores it
 #   HELMFILE_LLM_MODEL      e.g. qwen3:8b
