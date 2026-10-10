@@ -14,16 +14,25 @@ resources:
         tunnelToken: ENC[AES256_GCM,data:Wio/kbwQ6KNTAau4DYa7h9INpP+kXqJXYl6whKmzImXzEYENVeDWM7VS+eP20qqpdI8109XxzYM=,iv:2LWrbgbIO9WYKufKrkmxiAIEnqWxyxfGIEfqTATSAwY=,tag:We6r9gvNhgx0CCyLT/uSSg==,type:str]
 sops:
     age:
-        - recipient: age1kxa0h4zt4txae7wdjy5pck2jvzalmg4mrryuw3qqpzp2jl44n3tqmd0vyp
-          enc: |
+        - enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA0cS9xTnhxUEtaY0ZxcUZK
-            ajE3YVBkUG5GNTIrWEw4dTd5Qk5YM0t4RUdNClJ2aVo5WnhsczhEQ3Rlb3FYSnZq
-            TzVMK3pJRmVLSnZ3VDhYb1AxdnAwZkEKLS0tIFhvTnZTdGtxa3hEZzdCQWJDdVAr
-            VzE3WFcza2xIclYvTXMydkZrbzVhUlUKayHLCOW79ywWWLzLBANIgkyic0FxjXjA
-            YizK9YtURxrHWTzGdZ5u0NGInsYb9TZkEiAB1JW7+PqZ2djMFvKLpA==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA1NEs3WVBzV1pFUjcrZTIz
+            QmkwL1FCZUtkam1icysrbFU3bW9QQUMrYzJ3CnR1Q0RISEh2VjJKcWxBaVJ2ZzJT
+            U1ZBbUhNWG1uRXpFRm16WlZzcndKclkKLS0tIHl5U1RoajJxcVhTS1dMdlJKRCtD
+            VDc3SkVtV1RJSDZIaG10aGVrRTdPL2cK519H+9oehlYvMq5Mx7E3l7XqcRjeGAj/
+            RRdQUzf6i3QHf0Wm8gh4l6S2nANFWhFkLRsVUukjZgXR0RM88e80Eg==
             -----END AGE ENCRYPTED FILE-----
+          recipient: age1kxa0h4zt4txae7wdjy5pck2jvzalmg4mrryuw3qqpzp2jl44n3tqmd0vyp
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBhV25veUkrazl4aEozeGFS
+            UmtkWmJUbm5ka2xLQ2hsdFVzWGZlNXFLR0I0ClhJZGlLeDFwS2R5L3RUNXZRb1Iv
+            bEc1aXpISXFUc2tSeGl3SkE2TS9JNDQKLS0tIEt1WTF5bTd0eWRQc3g2Z0lSdkk1
+            TEsycmlkQ0FqenRBcFJMWlhHcGZSUG8KMOOV2EXqs9FeUxjGuXPr/Tv1spplEWTA
+            pUytB+qRgNzmbbeN2rVQQizP7itKMGHXkjHltQNqi7Z8O+Gvfa94dw==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1pdsld93s2qul4z7rrqkj7755gvptg09z9n4guefrcvqjcank9uestl7zfc
+    encrypted_regex: ^(data|stringData|configFile)$
     lastmodified: "2025-10-16T15:22:49Z"
     mac: ENC[AES256_GCM,data:TQJTGbNfXsLYRq6zvEmzzung1XE1jhkvU040e8knOw64qRo9W42r4grOOp647de0NBtX3QOB9HcPuPZHHVUqaX0MGXaugTpSOTzD4F2vb/Ichlpxrh5mStbeo7u9zf7yKUCKRVmqvAVnoO9y/9GPZbPFgukMcVwWknSk6R3m6xs=,iv:LhWDxPeW/uI6L0DOcL33yYswsPUzLeA+24W+qjhUf9w=,tag:jiQAL8ZtZvKKljmaiQR+fg==,type:str]
-    encrypted_regex: ^(data|stringData|configFile)$
     version: 3.10.2
