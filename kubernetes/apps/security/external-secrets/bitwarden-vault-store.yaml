@@ -1,0 +1,25 @@
+---
+resources:
+  - apiVersion: external-secrets.io/v1
+    kind: ClusterSecretStore
+    metadata:
+      name: bitwarden-vault-login
+    spec:
+      provider:
+        webhook:
+          url: "http://bitwarden-vault-cli.security.svc.cluster.local:8087/object/item/{{ .remoteRef.key }}"
+          headers:
+            Content-Type: application/json
+          result:
+            jsonPath: "$.data.login.{{ .remoteRef.property }}"
+  - apiVersion: external-secrets.io/v1
+    kind: ClusterSecretStore
+    metadata:
+      name: bitwarden-vault-fields
+    spec:
+      provider:
+        webhook:
+          url: "http://bitwarden-vault-cli.security.svc.cluster.local:8087/object/item/{{ .remoteRef.key }}"
+          result:
+            jsonPath: "$.data.fields[?@.name==\"{{ .remoteRef.property }}\"].value"
+
