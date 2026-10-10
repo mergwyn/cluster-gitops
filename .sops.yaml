@@ -4,10 +4,13 @@ creation_rules:
     encrypted_regex: ^(data|stringData|configFile)$
     age: >-
       age1kxa0h4zt4txae7wdjy5pck2jvzalmg4mrryuw3qqpzp2jl44n3tqmd0vyp
+      age1pdsld93s2qul4z7rrqkj7755gvptg09z9n4guefrcvqjcank9uestl7zfc
   - path_regex: cloudcasa/values.yaml$
     encrypted_regex: ^(clusterID|cluster_id)$
     age: >-
       age1kxa0h4zt4txae7wdjy5pck2jvzalmg4mrryuw3qqpzp2jl44n3tqmd0vyp
+      age1pdsld93s2qul4z7rrqkj7755gvptg09z9n4guefrcvqjcank9uestl7zfc
   - path_regex: inventory/group_vars/secrets\.yaml$
     age: >-
       age1kxa0h4zt4txae7wdjy5pck2jvzalmg4mrryuw3qqpzp2jl44n3tqmd0vyp
+      age1pdsld93s2qul4z7rrqkj7755gvptg09z9n4guefrcvqjcank9uestl7zfc
