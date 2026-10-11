@@ -9,7 +9,7 @@ repositories:
 releases:
   - name: descheduler
     chart: descheduler/descheduler
-    version: "0.36.0"
+    version: "0.37.0"
     namespace: '{{ env "helmfile_namespace" | default "kube-system" }}'
     values:
       - values.yaml

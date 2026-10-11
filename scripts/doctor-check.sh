@@ -15,7 +15,6 @@
 #
 # Expects:
 #   KUBECONFIG              scoped helmfile-doctor kubeconfig
-#   ARGOCD_SERVER / ARGOCD_AUTH_TOKEN / ARGOCD_OPTS   argocd CLI access
 #   HELMFILE_LLM_BASE_URL   e.g. http://<ollama-host>:11434/v1
 #   HELMFILE_LLM_API_KEY    dummy value, Ollama ignores it
 #   HELMFILE_LLM_MODEL      e.g. qwen3:8b
@@ -51,7 +50,7 @@ GUARD_IGNORE="${GUARD_IGNORE:-^(doctor-reports/|scripts/|\.github/|\.gitignore$)
 MODE="${DOCTOR_MODE:-}"
 REVISION="${REVISION:-}"
 HF_ENV="prod"
-LLM_TIMEOUT="180s"
+LLM_TIMEOUT="300s"
 BASE_REF=""
 EXPLICIT_APPS=()
 NO_GUARD="${DOCTOR_NO_GUARD:-0}"

@@ -54,6 +54,7 @@ contexts:
     context:
       cluster: k3s-prod-doctor
       user: helmfile-doctor
+      namespace: argocd
 current-context: helmfile-doctor
 users:
   - name: helmfile-doctor

@@ -7,7 +7,7 @@ controllers:
     pod:
       annotations:
         # yamllint disable-line rule:line-length
-        secret.reloader.stakater.com/reload: "esphome-secret,esphome-github"
+        reloader.stakater.com/auto: "true"
         k8s.v1.cni.cncf.io/networks: |
           [{
             "name":"macvlan-static",
@@ -19,7 +19,7 @@ controllers:
       config-initialization:
         image:
           repository: docker.io/alpine/git
-          tag: 2.54.0@sha256:832b1cd1a271509f3d5272a1a62d4cb2ab1a53426ebde1f6c2cb7349f907dc6f
+          tag: 2.54.0@sha256:a4bb51f1a3553df194ce679fc1db721d8bfba2046fa1a88fe9d4ac551ffbce25
         command: ["/bin/sh", "-c"]
         args:
           - |-

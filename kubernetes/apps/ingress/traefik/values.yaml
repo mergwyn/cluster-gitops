@@ -55,7 +55,7 @@ deployment:
   enabled: true
   replicas: 2
   annotations:
-    secret.reloader.stakater.com/reload: "auto"
+    reloader.stakater.com/auto: "true"
   podAnnotations: {}
   additionalContainers: []
   initContainers: []
