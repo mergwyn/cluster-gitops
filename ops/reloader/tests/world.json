@@ -1,0 +1,146 @@
+{
+  "namespaces": ["default", "network", "velero", "reloader-system"],
+  "objects": [
+    { "apiVersion": "v1", "kind": "Namespace", "metadata": { "name": "default" } },
+    { "apiVersion": "v1", "kind": "Namespace", "metadata": { "name": "network" } },
+    { "apiVersion": "v1", "kind": "Namespace", "metadata": { "name": "velero" } },
+    { "apiVersion": "v1", "kind": "Namespace", "metadata": { "name": "reloader-system" } },
+
+    { "apiVersion": "v1", "kind": "Secret", "metadata": { "name": "phonebook-init-secret", "namespace": "default" } },
+    { "apiVersion": "v1", "kind": "Secret", "metadata": { "name": "phonebook-db-secret", "namespace": "default" } },
+    { "apiVersion": "v1", "kind": "Secret", "metadata": { "name": "phonebook-env", "namespace": "default" } },
+    { "apiVersion": "v1", "kind": "Secret", "metadata": { "name": "phonebook-vol-secret", "namespace": "default" } },
+    { "apiVersion": "v1", "kind": "Secret", "metadata": { "name": "phonebook-projected", "namespace": "default" } },
+    { "apiVersion": "v1", "kind": "ConfigMap", "metadata": { "name": "phonebook-features", "namespace": "default" } },
+    { "apiVersion": "v1", "kind": "ConfigMap", "metadata": { "name": "phonebook-config", "namespace": "default" } },
+    { "apiVersion": "v1", "kind": "ConfigMap", "metadata": { "name": "phonebook-vol-cm", "namespace": "default" } },
+    { "apiVersion": "v1", "kind": "ConfigMap", "metadata": { "name": "phonebook-projected-cm", "namespace": "default" } },
+
+    { "apiVersion": "v1", "kind": "Secret", "metadata": { "name": "legacy-secret", "namespace": "default" } },
+    { "apiVersion": "v1", "kind": "ConfigMap", "metadata": {
+        "name": "matched-config", "namespace": "default",
+        "annotations": { "reloader.stakater.com/match": "true" } } },
+    { "apiVersion": "v1", "kind": "ConfigMap", "metadata": { "name": "unmatched-config", "namespace": "default" } },
+
+    { "apiVersion": "v1", "kind": "Secret", "metadata": { "name": "traefik-tls", "namespace": "network" } },
+
+    { "apiVersion": "v1", "kind": "Secret", "metadata": { "name": "minio-s3-conf", "namespace": "velero" } },
+    { "apiVersion": "v1", "kind": "Secret", "metadata": { "name": "idrivee2-s3-conf", "namespace": "velero" } },
+    { "apiVersion": "v1", "kind": "ConfigMap", "metadata": { "name": "velero-backup-repository-config", "namespace": "velero" } },
+
+    {
+      "apiVersion": "apps/v1", "kind": "Deployment",
+      "metadata": { "name": "phonebook", "namespace": "default", "uid": "uid-phonebook",
+        "labels": { "app": "phonebook" },
+        "annotations": { "reloader.stakater.com/auto": "true" } },
+      "spec": { "selector": { "matchLabels": { "app": "phonebook" } },
+        "template": { "metadata": { "labels": { "app": "phonebook" } },
+          "spec": {
+            "initContainers": [ { "name": "init", "image": "busybox",
+              "env": [ { "name": "INIT_TOKEN",
+                "valueFrom": { "secretKeyRef": { "name": "phonebook-init-secret", "key": "token" } } } ] } ],
+            "containers": [ { "name": "web", "image": "nginx",
+              "env": [
+                { "name": "DB_PASSWORD", "valueFrom": { "secretKeyRef": { "name": "phonebook-db-secret", "key": "password" } } },
+                { "name": "FEATURE_FLAGS", "valueFrom": { "configMapKeyRef": { "name": "phonebook-features", "key": "flags" } } } ],
+              "envFrom": [ { "secretRef": { "name": "phonebook-env" } },
+                           { "configMapRef": { "name": "phonebook-config" } } ],
+              "volumeMounts": [ { "name": "secret-vol", "mountPath": "/etc/secrets" },
+                                { "name": "cm-vol", "mountPath": "/etc/config" } ] } ],
+            "volumes": [
+              { "name": "secret-vol", "secret": { "secretName": "phonebook-vol-secret" } },
+              { "name": "cm-vol", "configMap": { "name": "phonebook-vol-cm" } },
+              { "name": "proj", "projected": { "sources": [
+                  { "secret": { "name": "phonebook-projected", "items": [ { "key": "jwt", "path": "jwt" } ] } },
+                  { "configMap": { "name": "phonebook-projected-cm", "items": [ { "key": "app.conf", "path": "app.conf" } ] } } ] } } ] } } }
+    },
+
+    {
+      "apiVersion": "apps/v1", "kind": "Deployment",
+      "metadata": { "name": "legacy-podtmpl", "namespace": "default" },
+      "spec": { "selector": { "matchLabels": { "app": "legacy" } },
+        "template": { "metadata": { "labels": { "app": "legacy" },
+            "annotations": { "secret.reloader.stakater.com/reload": "legacy-secret" } },
+          "spec": { "containers": [ { "name": "app", "image": "nginx",
+            "envFrom": [ { "secretRef": { "name": "legacy-secret" } } ] } ] } } }
+    },
+
+    {
+      "apiVersion": "apps/v1", "kind": "Deployment",
+      "metadata": { "name": "searchdemo", "namespace": "default",
+        "annotations": { "reloader.stakater.com/search": "true" } },
+      "spec": { "selector": { "matchLabels": { "app": "searchdemo" } },
+        "template": { "metadata": { "labels": { "app": "searchdemo" } },
+          "spec": { "containers": [ { "name": "app", "image": "nginx",
+            "envFrom": [ { "configMapRef": { "name": "matched-config" } },
+                         { "configMapRef": { "name": "unmatched-config" } } ] } ] } } }
+    },
+
+    {
+      "apiVersion": "apps/v1", "kind": "Deployment",
+      "metadata": { "name": "traefik", "namespace": "network",
+        "annotations": { "secret.reloader.stakater.com/reload": "auto" } },
+      "spec": { "selector": { "matchLabels": { "app": "traefik" } },
+        "template": { "metadata": { "labels": { "app": "traefik" } },
+          "spec": { "containers": [ { "name": "traefik", "image": "traefik",
+            "envFrom": [ { "secretRef": { "name": "traefik-tls" } } ] } ] } } }
+    },
+
+    {
+      "apiVersion": "apps/v1", "kind": "Deployment",
+      "metadata": { "name": "velero", "namespace": "velero",
+        "annotations": {
+          "secret.reloader.stakater.com/reload": "<- minio-s3-conf,idrivee2-s3-conf",
+          "configmap.reloader.stakater.com/reload": "velero-backup-repository-config" } },
+      "spec": { "selector": { "matchLabels": { "app": "velero" } },
+        "template": { "metadata": { "labels": { "app": "velero" } },
+          "spec": { "containers": [ { "name": "velero", "image": "velero/velero",
+            "envFrom": [ { "secretRef": { "name": "idrivee2-s3-conf" } } ],
+            "env": [ { "name": "MINIO_SECRET",
+              "valueFrom": { "secretKeyRef": { "name": "minio-s3-conf", "key": "secret" } } } ] } ] } } }
+    },
+
+    {
+      "apiVersion": "batch/v1", "kind": "CronJob",
+      "metadata": { "name": "velero-backup", "namespace": "velero",
+        "annotations": { "reloader.stakater.com/auto": "true" } },
+      "spec": { "schedule": "0 * * * *",
+        "jobTemplate": { "spec": { "template": { "metadata": { "labels": { "app": "velero" } },
+          "spec": { "restartPolicy": "Never",
+            "containers": [ { "name": "velero", "image": "velero/velero",
+              "envFrom": [ { "configMapRef": { "name": "velero-backup-repository-config" } } ] } ] } } } } }
+    },
+
+    {
+      "apiVersion": "apps/v1", "kind": "Deployment",
+      "metadata": { "name": "reloader-reloader", "namespace": "reloader-system",
+        "labels": { "app.kubernetes.io/name": "reloader", "app": "reloader" } },
+      "spec": { "selector": { "matchLabels": { "app": "reloader" } },
+        "template": { "metadata": { "labels": { "app": "reloader" } },
+          "spec": { "serviceAccountName": "reloader-reloader",
+            "containers": [ { "name": "reloader-reloader",
+              "image": "ghcr.io/stakater/reloader:v1.4.22",
+              "args": [ "--auto-reload-all=false",
+                        "--namespace-selector=environment=production",
+                        "--namespaces-to-ignore=kube-system",
+                        "--reload-strategy=env-vars" ],
+              "env": [ { "name": "POD_NAME", "valueFrom": { "fieldRef": { "fieldPath": "metadata.name" } } } ] } ] } } }
+    },
+
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1", "kind": "ClusterRole",
+      "metadata": { "name": "stakater-reloader-clusterrole" },
+      "rules": [
+        { "apiGroups": [""], "resources": [ "secrets", "configmaps" ],
+          "verbs": [ "list", "get", "watch" ],
+          "labelSelector": { "matchLabels": { "reloader": "true" } } }
+      ]
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1", "kind": "ClusterRoleBinding",
+      "metadata": { "name": "stakater-reloader-clusterrolebinding" },
+      "roleRef": { "apiGroup": "rbac.authorization.k8s.io", "kind": "ClusterRole", "name": "stakater-reloader-clusterrole" },
+      "subjects": [ { "kind": "ServiceAccount", "name": "reloader-reloader", "namespace": "reloader-system" } ]
+    }
+  ]
+}

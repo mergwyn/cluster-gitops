@@ -1,0 +1,108 @@
+#!/usr/bin/env bash
+# Minimal kubectl stand-in used by run-tests.sh. Serves objects from $FAKE_WORLD.
+set -euo pipefail
+
+W="${FAKE_WORLD:?FAKE_WORLD not set}"
+
+argv=()
+for a in "$@"; do case "$a" in --context=*) ;; *) argv+=("$a") ;; esac; done
+if [[ ${#argv[@]} -gt 0 ]]; then set -- "${argv[@]}"; else set --; fi
+
+cmd="${1:-}"; shift || true
+
+if [[ "$cmd" == "config" ]]; then
+  case "${1:-}" in
+    current-context) echo "fake-context" ;;
+    get-contexts)    echo "NAME" ;;
+    view)            echo "default" ;;   # the script asks for {..namespace}
+  esac
+  exit 0
+fi
+
+[[ "$cmd" == "get" ]] || { echo "fake-kubectl: unsupported command: $cmd" >&2; exit 1; }
+
+ns=""; all=0; label=""; name=""; outarg=""; types=""
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -n|--namespace)      ns="$2"; shift 2 ;;
+    -A|--all-namespaces) all=1; shift ;;
+    -l|--selector)       label="$2"; shift 2 ;;
+    -o|--output)         outarg="$2"; shift 2 ;;
+    -o*)                 outarg="${1#-o}"; shift ;;
+    *)                   if [[ -z "$types" ]]; then types="$1"; else name="$1"; fi; shift ;;
+  esac
+done
+
+out=""
+case "$outarg" in
+  json)         out="json" ;;
+  name)         out="name" ;;
+  go-template*) out="gotmpl" ;;
+  "")           out="quiet" ;;
+esac
+
+kind_of() {
+  case "$1" in
+    deployments|deployment)                 echo "Deployment" ;;
+    statefulsets|statefulset)               echo "StatefulSet" ;;
+    daemonsets|daemonset)                   echo "DaemonSet" ;;
+    cronjobs|cronjob)                       echo "CronJob" ;;
+    jobs|job)                               echo "Job" ;;
+    configmaps|configmap)                   echo "ConfigMap" ;;
+    secrets|secret)                         echo "Secret" ;;
+    namespaces|namespace)                   echo "Namespace" ;;
+    clusterroles|clusterrole)               echo "ClusterRole" ;;
+    clusterrolebindings|clusterrolebinding) echo "ClusterRoleBinding" ;;
+    *)                                      echo "$1" ;;
+  esac
+}
+
+kinds_csv=""
+IFS=',' read -ra tparts <<< "$types"
+for t in "${tparts[@]}"; do
+  k="$(kind_of "$t")"
+  kinds_csv="${kinds_csv:+$kinds_csv,}$k"
+done
+
+sel_json="$(jq -c --arg kinds "$kinds_csv" --arg ns "$ns" --arg name "$name" --arg label "$label" --argjson all "$all" '
+  def matches_label($l; $labels):
+    if $l == "" then true else
+      ($l | split(",") | map(split("="))
+          | all(. as $p | (($labels[$p[0]] // "") == ($p[1] // ""))))
+    end;
+  .objects
+  | map(select(.kind as $kd | ($kinds | split(",") | index($kd)) != null))
+  | map(select($all == 1 or (.metadata.namespace // "") == $ns))
+  | map(select($name == "" or .metadata.name == $name))
+  | map(select(matches_label($label; (.metadata.labels // {}))))
+' "$W")"
+
+count="$(jq 'length' <<< "$sel_json")"
+if [[ "$count" == "0" ]]; then
+  echo "Error from server (NotFound): ${types} \"${name:-$ns}\" not found" >&2
+  exit 1
+fi
+
+case "$out" in
+  json)
+    if [[ -n "$name" ]]; then
+      jq -c '.[0]' <<< "$sel_json"
+    else
+        jq -c '{ apiVersion: "v1", kind: "List", items: . }' <<< "$sel_json"
+    fi
+    ;;
+  name)
+    jq -r '.[] | (.kind | ascii_downcase) + "/" + .metadata.name' <<< "$sel_json"
+    ;;
+  gotmpl)
+    # only the ConfigMap/Secret index template is used
+    jq -r '.[] | [ .metadata.name,
+                    ((.metadata.annotations // {})["reloader.stakater.com/match"] // ""),
+                    ((.metadata.annotations // {})["reloader.stakater.com/ignore"] // "") ]
+            | @tsv' <<< "$sel_json"
+    ;;
+  quiet|"")
+    exit 0
+    ;;
+esac
+exit 0
