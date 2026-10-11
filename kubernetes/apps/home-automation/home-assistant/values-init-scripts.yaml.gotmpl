@@ -1,0 +1,11 @@
+configMaps:
+  config-initialisation:
+    data:
+      initialise.sh: |
+{{ readFile "configmaps/config-initialisation/initialise.sh" | indent 8 }}
+      check-database.sh: |
+{{ readFile "configmaps/config-initialisation/check-database.sh" | indent 8 }}
+      sync-octopus-key.sh: |
+{{ readFile "configmaps/config-initialisation/sync-octopus-key.sh" | indent 8 }}
+      kopiaignore: |
+{{ readFile "configmaps/config-initialisation/kopiaignore" | indent 8 }}

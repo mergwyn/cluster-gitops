@@ -1,0 +1,4 @@
+/.code-server/logs
+/.git
+/.venv
+/backups
