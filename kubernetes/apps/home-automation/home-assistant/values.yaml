@@ -12,6 +12,7 @@ controllers:
   home-assistant:
     annotations:
       reloader.stakater.com/auto: "true"
+      secret.reloader.stakater.com/reload: "home-assistant-prometheus"
 
     pod:
       hostNetwork: true
