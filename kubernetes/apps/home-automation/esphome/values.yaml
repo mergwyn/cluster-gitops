@@ -7,7 +7,7 @@ controllers:
     pod:
       annotations:
         # yamllint disable-line rule:line-length
-        reloader.stakater.com/reload: auto
+        reloader.stakater.com/auto: "true"
         k8s.v1.cni.cncf.io/networks: |
           [{
             "name":"macvlan-static",

@@ -19,7 +19,7 @@ controllers:
   mosquitto:
     pod:
       annotations:
-        reloader.stakater.com/reload: auto
+        reloader.stakater.com/auto: "true"
       securityContext:
         runAsNonRoot: true
         runAsUser: 1883
