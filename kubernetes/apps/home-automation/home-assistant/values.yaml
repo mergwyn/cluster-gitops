@@ -63,7 +63,7 @@ controllers:
         image:
           repository: ghcr.io/home-assistant/home-assistant
           # yamllint disable-line rule:line-length
-          tag: 2026.8.3@sha256:14931c6b13756317849f46da1d01b45937a1150db66c081cfe529d48215943fe
+          tag: 2026.10.1@sha256:130241f28d01fa80dfa3b44f7d89781c188d8642ecab9024f079f19f9f82baa0
         env:
           TZ: Europe/London
           VENV_FOLDER: /venv
