@@ -1,6 +1,6 @@
 ---
 bases:
-  - ../../../clusters/environments.yaml
+  - ../../../common/base.yaml
 
 repositories:
   - name: bjw-s-labs
@@ -9,6 +9,8 @@ releases:
   - name: home-assistant
     chart: bjw-s-labs/app-template
     version: 5.2.1
+    inherit:
+      - template: namespace
     namespace: '{{ env "HELMFILE_NAMESPACE" }}'
     values:
       - values.yaml
