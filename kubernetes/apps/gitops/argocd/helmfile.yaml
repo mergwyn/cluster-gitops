@@ -25,7 +25,7 @@ releases:
     values:
       - values-rules.yaml
       - values-base.yaml
-      - values.yaml.gotmpl
+      - values.gotmpl
 
   - name: argocd-externalsecret
     chart: bedag/raw

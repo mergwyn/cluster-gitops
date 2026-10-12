@@ -1,19 +1,21 @@
 ---
+# yaml-language-server: $schema=https://json.schemastore.org/helmfile
+
 bases:
   - ../../../common/base.yaml
 
 repositories:
   - name: bjw-s-labs
     url: https://bjw-s-labs.github.io/helm-charts
+
 releases:
   - name: home-assistant
     chart: bjw-s-labs/app-template
     version: 5.2.1
     inherit:
       - template: namespace
-    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
     values:
       - values.yaml
-      - values-init-scripts.yaml.gotmpl
+      - values-init-scripts.gotmpl
       - values-route.yaml.gotmpl
       - externalsecret.yaml
