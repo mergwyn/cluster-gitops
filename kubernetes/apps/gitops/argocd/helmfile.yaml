@@ -2,7 +2,7 @@
 # yaml-language-server: $schema=https://json.schemastore.org/helmfile
 
 bases:
-  - ../../../clusters/environments.yaml
+  - ../../../common/base.yaml
 
 repositories:
   - name: bedag
@@ -14,14 +14,16 @@ releases:
   - name: argocd-secret
     chart: bedag/raw
     version: 2.0.2
-    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+    inherit:
+      - template: namespace
     secrets:
       - argocd-secret-sops.yaml
 
   - name: argocd
     chart: argoproj/argo-cd
     version: 10.9.6
-    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+    inherit:
+      - template: namespace
     values:
       - values-rules.yaml
       - values-base.yaml
@@ -30,6 +32,7 @@ releases:
   - name: argocd-externalsecret
     chart: bedag/raw
     version: 2.0.2
-    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+    inherit:
+      - template: namespace
     values:
       - externalsecret.yaml
