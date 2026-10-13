@@ -7,4 +7,5 @@ bases:
 releases:
   - name: helmfile-doctor
     inherit:
+      - template: namespace
       - template: raw
