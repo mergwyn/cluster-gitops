@@ -5,7 +5,6 @@ metadata:
   name: bitwarden-vault-cli
   annotations:
     argocd.argoproj.io/sync-wave: "1"
-    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
   labels:
     app.kubernetes.io/instance: bitwarden-vault-cli
     app.kubernetes.io/name: bitwarden-vault-cli
@@ -23,10 +22,18 @@ spec:
         app.kubernetes.io/name: bitwarden-vault-cli
         app.kubernetes.io/instance: bitwarden-vault-cli
     spec:
+      automountServiceAccountToken: false     # added
+      securityContext:                        # added
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: bitwarden-cli
           image: ghcr.io/charlesthomas/bitwarden-cli:2026.3.0
           imagePullPolicy: IfNotPresent
+          securityContext:                    # added
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
           env:
             - name: BW_HOST
               valueFrom:
@@ -46,7 +53,7 @@ spec:
               protocol: TCP
           livenessProbe:
             exec:
-              command: ["wget", "-q", "http://127.0.0.1:8087/sync?force=true", "--post-data="]
+              command: ["wget", "-q", "-O", "/dev/null", "--post-data=", "http://127.0.0.1:8087/sync?force=true"]
             initialDelaySeconds: 20
             failureThreshold: 3
             timeoutSeconds: 10
@@ -65,7 +72,7 @@ spec:
             periodSeconds: 5
           resources:
             requests: { cpu: 25m, memory: 64Mi }
-            limits: { memory: 128Mi }
+            limits: { memory: 256Mi }         # was 128Mi
 ---
 apiVersion: v1
 kind: Service
@@ -73,7 +80,6 @@ metadata:
   name: bitwarden-vault-cli
   annotations:
     argocd.argoproj.io/sync-wave: "1"
-    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
   labels:
     app.kubernetes.io/instance: bitwarden-vault-cli
     app.kubernetes.io/name: bitwarden-vault-cli
@@ -94,7 +100,6 @@ metadata:
   name: bitwarden-vault-cli-ingress
   annotations:
     argocd.argoproj.io/sync-wave: "1"
-    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   podSelector:
     matchLabels:
@@ -108,3 +113,6 @@ spec:
             matchLabels:
               app.kubernetes.io/instance: external-secrets
               app.kubernetes.io/name: external-secrets
+      ports:
+        - port: 8087
+          protocol: TCP

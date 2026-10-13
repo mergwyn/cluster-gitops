@@ -15,7 +15,7 @@ repositories:
 
 releases:
   # Sops secrets - separate to allow for bootstrapping
-  - name: sops-secrets
+  - name: external-secrets-sops
     chart: bedag/raw
     version: 2.0.2
     inherit:
