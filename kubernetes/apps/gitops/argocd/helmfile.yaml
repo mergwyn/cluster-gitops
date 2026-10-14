@@ -14,8 +14,7 @@ releases:
   - name: argocd-secret
     chart: bedag/raw
     version: 2.0.2
-    inherit:
-      - template: namespace
+
     secrets:
       - argocd-secret-sops.yaml
 
