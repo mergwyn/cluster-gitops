@@ -1,24 +1,25 @@
-bases:
-  - ../../../clusters/environments.yaml
-
-# yaml-language-server: $schema=https://json.schemastore.org/helmfile.json
 ---
+# yaml-language-server: $schema=https://json.schemastore.org/helmfile
+
+bases:
+  - ../../../common/base.yaml
+
+
 repositories:
   - name: strrl.dev
     url: https://helm.strrl.dev
-  - name: bedag
-    url: https://bedag.github.io/helm-charts/
-    
+
+
 releases:
   - name: cloudflare-tunnel-ingress-controller
     chart: strrl.dev/cloudflare-tunnel-ingress-controller
     version: 0.1.0
+    inherit:
+      - template: namespace
     values:
       - values.yaml
-    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+
   - name: cloudflare-tunnel-ingress-controller-external-secret
-    chart: bedag/raw
-    version: 2.0.2
-    values:
-      - externalsecret.yaml
-    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+    inherit:
+      - template: namespace
+      - template: raw
