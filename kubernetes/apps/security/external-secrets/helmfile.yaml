@@ -10,29 +10,16 @@ apiVersions:
 repositories:
   - name: external-secrets
     url: https://charts.external-secrets.io/
-  - name: bedag
-    url: https://bedag.github.io/helm-charts/
 
 releases:
-  # Sops secrets - separate to allow for bootstrapping
-  - name: external-secrets-sops
-    chart: bedag/raw
-    version: 2.0.2
-    inherit:
-    - template: namespace
-    secrets:
-      - bitwarden-tokens-sops.yaml
-    transformers:
-      - ../../../common/transformers/common-annotations.yaml.gotmpl
-      - ../../../common/transformers/common-labels.yaml.gotmpl
-
-
   # Main External Secrets Chart
   - name: external-secrets
     chart: external-secrets/external-secrets
     version: 2.12.0
     inherit:
     - template: namespace
+    secrets:
+      - bitwarden-tokens-sops.yaml
     values:
       - values.yaml
 
