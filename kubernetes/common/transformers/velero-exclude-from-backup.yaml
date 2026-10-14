@@ -1,0 +1,9 @@
+apiVersion: builtin
+kind: LabelTransformer
+metadata:
+  name: velero-exclude-from-backup
+labels:
+  velero.io/exclude-from-backup: "true"
+fieldSpecs:
+  - path: metadata/labels
+    create: true

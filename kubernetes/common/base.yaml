@@ -29,6 +29,9 @@ templates:
   vpn:
     values:
       - ../../../common/values/vpn-routing-values.yaml.gotmpl
+  velero-exclude:
+    transformers:
+      - ../../../common/transformers/velero-exclude-from-backup.yaml
 
 helmDefaults:
   wait: true
