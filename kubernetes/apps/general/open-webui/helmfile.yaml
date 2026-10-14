@@ -2,24 +2,22 @@
 # yaml-language-server: $schema=https://json.schemastore.org/helmfile
 
 bases:
-  - ../../../clusters/environments.yaml
+  - ../../../common/base.yaml
 
 repositories:
   - name: open-webui
     url: https://helm.openwebui.com
-  - name: bedag
-    url: https://bedag.github.io/helm-charts/
 
 releases:
   - name: open-webui
     chart: open-webui/open-webui
     version: "16.6.0"
-    namespace: '{{ env "HELMFILE_NAMESPACE" | default "default" }}'
+    inherit:
+      - template: namespace
     values:
       - values.yaml.gotmpl
+
   - name: openwebui-external-secret
-    chart: bedag/raw
-    version: 2.0.2
-    values:
-      - externalsecret.yaml
-    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+    inherit:
+      - template: namespace
+      - template: raw
