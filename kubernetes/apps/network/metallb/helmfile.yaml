@@ -1,17 +1,18 @@
 ---
+# yaml-language-server: $schema=https://json.schemastore.org/helmfile
 bases:
-  - ../../../clusters/environments.yaml
+  - ../../../common/base.yaml
+
 repositories:
   - name: metallb
     url: https://metallb.github.io/metallb
-  - name: bedag
-    url: https://bedag.github.io/helm-charts/
 
 releases:
   - name: metallb
     chart: metallb/metallb
     version: 0.16.1
-    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+    inherit:
+      - template: namespace
     wait: true
     timeout: 300
     values:
@@ -25,10 +26,9 @@ releases:
 
   # Use a raw chart to deploy the Config CRDs after the operator is ready
   - name: metallb-config
-    chart: bedag/raw
     version: 2.0.2
-    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+    inherit:
+      - template: namespace
+      - template: raw
     needs:
       - metallb-system/metallb
-    values:
-      - values.yaml.gotmpl
