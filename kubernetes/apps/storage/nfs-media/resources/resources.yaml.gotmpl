@@ -1,0 +1,106 @@
+{{- $common_labels := dict "velero.io/exclude-from-backup" "true" -}}
+{{- $common_annotations := dict "argocd.argoproj.io/sync-options" "Replace=true" "meta.helm.sh/release-name" "nfs-media" -}}
+{{- $mount_options := list "nfsvers=4" "soft" "intr" "noatime" "rsize=1048576" "wsize=1048576" -}}
+{{- $nfs_server := "10.58.0.14" -}}
+
+# media
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-media-pv
+  labels:
+    {{- toYaml $common_labels | nindent 4 }}
+  annotations:
+    {{- toYaml $common_annotations | nindent 4 }}
+spec:
+  storageClassName: ""
+  capacity: { storage: 10Ti }
+  accessModes: ["ReadWriteMany"]
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    {{- toYaml $mount_options | nindent 4 }}
+  nfs:
+    path: /srv/media
+    server: {{ $nfs_server }}
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: media-nfs-pvc
+  namespace: media
+  annotations:
+    {{- toYaml $common_annotations | nindent 4 }}
+spec:
+  accessModes: ["ReadWriteMany"]
+  storageClassName: ""
+  resources: { requests: { storage: 10Ti } }
+  volumeName: nfs-media-pv
+
+---
+# vpn
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-vpn-pv
+  labels:
+    {{- toYaml $common_labels | nindent 4 }}
+  annotations:
+    {{- toYaml $common_annotations | nindent 4 }}
+spec:
+  storageClassName: ""
+  capacity: { storage: 10Ti }
+  accessModes: ["ReadWriteMany"]
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    {{- toYaml $mount_options | nindent 4 }}
+  nfs:
+    path: /srv/media
+    server: {{ $nfs_server }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vpn-nfs-pvc
+  namespace: vpn
+  annotations:
+    {{- toYaml $common_annotations | nindent 4 }}
+spec:
+  accessModes: ["ReadWriteMany"]
+  storageClassName: ""
+  resources: { requests: { storage: 10Ti } }
+  volumeName: nfs-vpn-pv
+
+---
+# home-assistant
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-home-assistant-backup-pv
+  labels:
+    {{- toYaml $common_labels | nindent 4 }}
+  annotations:
+    {{- toYaml $common_annotations | nindent 4 }}
+spec:
+  storageClassName: ""
+  capacity: { storage: 10Ti }
+  accessModes: ["ReadWriteMany"]
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    {{- toYaml $mount_options | nindent 4 }}
+  nfs:
+    path: /srv/backup/home-assistant
+    server: {{ $nfs_server }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: home-assistant-backup-nfs-pvc
+  namespace: home-assistant
+  annotations:
+    {{- toYaml $common_annotations | nindent 4 }}
+spec:
+  accessModes: ["ReadWriteMany"]
+  storageClassName: ""
+  resources: { requests: { storage: 10Ti } }
+  volumeName: nfs-home-assistant-backup-pv
