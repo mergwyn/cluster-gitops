@@ -1,6 +1,7 @@
 ---
+# yaml-language-server: $schema=https://json.schemastore.org/helmfile
 bases:
-  - ../../../clusters/environments.yaml
+  - ../../../common/base.yaml
 repositories:
   - name: kube-vip
     url: https://kube-vip.github.io/helm-charts
@@ -10,4 +11,5 @@ releases:
     version: 0.9.9
     values:
       - values.yaml.gotmpl
-    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+    inherit:
+      - template: namespace

@@ -2,7 +2,7 @@
 # yaml-language-server: $schema=https://json.schemastore.org/helmfile
 
 bases:
-  - ../../../clusters/environments.yaml
+  - ../../../common/base.yaml
 
 repositories:
   - name: fairwinds-stable
@@ -12,7 +12,8 @@ releases:
   - name: goldilocks
     chart: fairwinds-stable/goldilocks
     version: 11.2.0
-    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+    inherit:
+      - template: namespace
     values:
       - values.yaml
       - httproute.yaml.gotmpl

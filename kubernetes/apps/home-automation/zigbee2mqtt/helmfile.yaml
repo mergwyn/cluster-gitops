@@ -1,6 +1,7 @@
 ---
+# yaml-language-server: $schema=https://json.schemastore.org/helmfile
 bases:
-  - ../../../clusters/environments.yaml
+  - ../../../common/base.yaml
 
 repositories:
   - name: bjw-s-labs
@@ -10,7 +11,8 @@ releases:
   - name: zigbee2mqtt
     chart: bjw-s-labs/app-template
     version: 5.2.1
-    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+    inherit:
+      - template: namespace
     values:
       - values.yaml.gotmpl
       - externalsecret.yaml

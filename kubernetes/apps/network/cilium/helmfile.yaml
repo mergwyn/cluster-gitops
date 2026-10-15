@@ -1,6 +1,7 @@
 ---
+# yaml-language-server: $schema=https://json.schemastore.org/helmfile
 bases:
-  - ../../../clusters/environments.yaml
+  - ../../../common/base.yaml
 
 repositories:
   - name: cilium
@@ -10,6 +11,7 @@ releases:
   - name: cilium
     chart: cilium/cilium
     version: 1.20.2
+    inherit:
+      - template: namespace
     values:
       - values.yaml.gotmpl
-    namespace: '{{ env "HELMFILE_NAMESPACE" }}'

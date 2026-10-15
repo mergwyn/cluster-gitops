@@ -1,6 +1,7 @@
 ---
+# yaml-language-server: $schema=https://json.schemastore.org/helmfile
 bases:
-  - ../../../clusters/environments.yaml
+  - ../../../common/base.yaml
 
 repositories:
   - name: descheduler
@@ -10,6 +11,7 @@ releases:
   - name: descheduler
     chart: descheduler/descheduler
     version: "0.37.0"
-    namespace: '{{ env "helmfile_namespace" | default "kube-system" }}'
+    inherit:
+      - template: namespace
     values:
       - values.yaml
