@@ -13,7 +13,7 @@ repositories:
 releases:
   - name: cleanuparr
     chart: media-servarr/cleanuparr
-    version: 0.20.1 # Bumped up to support the 'secrets' configuration block
+    version: 0.20.2 # Bumped up to support the 'secrets' configuration block
     inherit:
     - template: namespace
     values:
