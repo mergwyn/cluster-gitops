@@ -59,7 +59,7 @@ jobs:
         env:
           KUBECONFIG: ${{ runner.temp }}/kubeconfig
           HELMFILE_LLM_BASE_URL: http://mike.theclarkhome.com:11434/v1
-          HELMFILE_LLM_MODEL: phi4
+          HELMFILE_LLM_MODEL: qwen2.5-coder:14b
           HELM_PLUGINS: /usr/local/share/helm/plugins
           # Read-only Argo CD API token (not admin).
         run: ./scripts/doctor-check.sh "origin/${{ steps.filter.outputs.base_ref }}"
