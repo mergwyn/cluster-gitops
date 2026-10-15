@@ -20,7 +20,7 @@ releases:
 
   - name: argocd
     chart: argoproj/argo-cd
-    version: 10.9.6
+    version: 10.10.3
     inherit:
       - template: namespace
     secrets:
