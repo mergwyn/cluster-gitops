@@ -1,5 +1,6 @@
-resources:
-    - apiVersion: v1
+extraObjects:
+    - |
+      apiVersion: v1
       kind: Secret
       metadata:
         name: cloudflare-cert-manager-token
@@ -10,8 +11,8 @@ resources:
             meta.helm.sh/release-namespace: security
       type: Opaque
       data:
-        #ENC[AES256_GCM,data:5TrFAUmvN2Gl8P9Oi1rqPKbPiQxzM9qX74HQLcm1XvaJllqBCcIXLEqPyGfn5chSIrm7vMuP6SoGuiJH8wKKKI4=,iv:wTER2KY99PDbKhIbg+wnApZMx2TQISpuTuemQNEhQTc=,tag:A2WZRAYpvODiuwk3/+BB5Q==,type:comment]
-        tunnelToken: ENC[AES256_GCM,data:Wio/kbwQ6KNTAau4DYa7h9INpP+kXqJXYl6whKmzImXzEYENVeDWM7VS+eP20qqpdI8109XxzYM=,iv:2LWrbgbIO9WYKufKrkmxiAIEnqWxyxfGIEfqTATSAwY=,tag:We6r9gvNhgx0CCyLT/uSSg==,type:str]
+        # base64 encoded. Make sure no newline eg echo -n 'token' | base64
+        tunnelToken: WGk4emZBVm9KV3pDaVVjWXBTUXJIVERoWDBqVkNFUEszVDV0d20wZQ==
 sops:
     age:
         - enc: |
@@ -33,6 +34,6 @@ sops:
             -----END AGE ENCRYPTED FILE-----
           recipient: age1pdsld93s2qul4z7rrqkj7755gvptg09z9n4guefrcvqjcank9uestl7zfc
     encrypted_regex: ^(data|stringData|configFile)$
-    lastmodified: "2025-10-16T15:22:49Z"
-    mac: ENC[AES256_GCM,data:TQJTGbNfXsLYRq6zvEmzzung1XE1jhkvU040e8knOw64qRo9W42r4grOOp647de0NBtX3QOB9HcPuPZHHVUqaX0MGXaugTpSOTzD4F2vb/Ichlpxrh5mStbeo7u9zf7yKUCKRVmqvAVnoO9y/9GPZbPFgukMcVwWknSk6R3m6xs=,iv:LhWDxPeW/uI6L0DOcL33yYswsPUzLeA+24W+qjhUf9w=,tag:jiQAL8ZtZvKKljmaiQR+fg==,type:str]
-    version: 3.10.2
+    lastmodified: "2026-10-15T14:36:20Z"
+    mac: ENC[AES256_GCM,data:9ZUocguSV9QM8c+mgGt/Iwy/Trk5w7zlzjGvSd+z21wIAJ+fvR9WXzekvYCxzVX6Iz+umE1NDpB0DX4bAYibGGN9NnbJ1p2rrsHJkqHcm2dJIqWvrqpYlPRgdZlsytp8Tk0hefSyor7HtMu1E3YIoRct8GuLcLA+7pWPYj8OLEM=,iv:X9XlhEoNVDtEs3FgNHN2iJXQRerOKYBuqb+1T1EVvpY=,tag:iUiw/zRQtGunlJwyY1PVTQ==,type:str]
+    version: 3.13.3

@@ -6,4 +6,4 @@ patch: |-
   - op: remove
     path: /metadata/namespace
 target:
-    kind: ClusterPolicy|ClusterPolicyReport|ClusterSecretStore
+    kind: ClusterPolicy|ClusterPolicyReport|ClusterSecretStore|ClusterIssuer
