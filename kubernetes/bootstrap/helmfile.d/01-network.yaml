@@ -11,7 +11,7 @@ repositories:
 releases:
   - name: kube-vip
     chart: kube-vip/kube-vip
-    version: 0.9.9
+    version: 0.11.1
     namespace: kube-system
     values:
       - ../../apps/network/kube-vip/values.yaml.gotmpl
