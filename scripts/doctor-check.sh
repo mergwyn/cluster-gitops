@@ -303,6 +303,7 @@ for app_dir in ${CHANGED_APP_DIRS}; do
       --log-level warn \
       --args "--api-versions ${KUBE_API_VERSIONS} --kube-version ${KUBE_VERSION_SANITISED}" \
       --diff-args "--diff-tool=${DIFF_TOOL}" \
+      --llm-max-tokens 8192 \
       --output json
   ) > "${REPORT_FILE}" 2> "${REPORT_DIR}/${app}.err"; then
     rmdir "${LOCK}" 2>/dev/null || true

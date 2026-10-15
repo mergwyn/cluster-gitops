@@ -21,7 +21,7 @@
 # Exit status is diff's (0 same, 1 differ, >1 error), as argocd expects.
 set -uo pipefail
 
-IGNORE_REGEX="${DIFF_IGNORE_REGEX:-^[[:space:]]*(helm\.sh/chart|app\.kubernetes\.io/version):}"
+IGNORE_REGEX="${DIFF_IGNORE_REGEX:-^[[:space:]]*(helm\.sh/chart|app\.kubernetes\.io/version):|^[[:space:]]*chart:[[:space:]]+[A-Za-z0-9._-]+-v?[0-9]+\.[0-9]+\.[0-9]+}"
 
 tmp="$(mktemp -d)"
 trap 'rm -rf "${tmp}"' EXIT

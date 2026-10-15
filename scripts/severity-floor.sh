@@ -12,7 +12,8 @@
 #   wildcard RBAC added.
 # Rules (MEDIUM): hardening (runAsNonRoot / readOnlyRootFilesystem) removed;
 #   Ingress/IngressRoute/HTTPRoute/Gateway host changes; any RBAC change;
-#   CRD change; replicas set to 0.
+#   CRD change; replicas set to 0; service-account-token Secret added;
+#   operator --secret-field-selector changed.
 set -uo pipefail
 
 report="${1:?usage: severity-floor.sh <report.json>}"
@@ -105,6 +106,10 @@ function flush(   i, j, rp, ap, rm, am) {
     emit("medium", "hardening setting removed")
   if (side == "A" && c ~ /(runAsNonRoot|readOnlyRootFilesystem):[[:space:]]*false/)
     emit("medium", "hardening setting disabled")
+  if (side == "A" && c ~ /^[[:space:]]*type:[[:space:]]*kubernetes\.io\/service-account-token/)
+    emit("medium", "long-lived service-account token Secret added")
+  if (c ~ /secret-field-selector/)
+    emit("medium", "operator Secret watch scope changed (--secret-field-selector)")
 
   if (kind ~ /^(Ingress|IngressRoute|HTTPRoute|Gateway)$/ && c ~ /host/)
     emit("medium", "exposure (hostnames) changed (" kind ")")
