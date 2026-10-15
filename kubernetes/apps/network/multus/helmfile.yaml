@@ -2,12 +2,13 @@
 # yaml-language-server: $schema=https://json.schemastore.org/helmfile
 
 bases:
-  - ../../../clusters/environments.yaml
+  - ../../../common/base.yaml
 
 releases:
   - name: multus
     chart: ../../../charts/multus
-    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+    inherit:
+      - template: namespace
     #dependencies:
     #- chart: oci://ghcr.io/bjw-s-labs/helm/common
     values:

@@ -1,6 +1,7 @@
 ---
+# yaml-language-server: $schema=https://json.schemastore.org/helmfile
 bases:
-  - ../../../clusters/environments.yaml
+  - ../../../common/base.yaml
 
 repositories:
   - name: stakater
@@ -10,6 +11,7 @@ releases:
   - name: reloader
     chart: stakater/reloader
     version: 2.2.18
-    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+    inherit:
+      - template: namespace
     values:
       - values.yaml

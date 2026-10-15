@@ -1,6 +1,7 @@
 ---
+# yaml-language-server: $schema=https://json.schemastore.org/helmfile
 bases:
-  - ../../../clusters/environments.yaml
+  - ../../../common/base.yaml
 
 apiVersions:
   - monitoring.coreos.com/v1
@@ -13,7 +14,8 @@ releases:
   - name: traefik
     chart: traefik/traefik
     version: 41.7.1
-    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+    inherit:
+      - template: namespace
     values:
       - service.yaml.gotmpl
       - values.yaml

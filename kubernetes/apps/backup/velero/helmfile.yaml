@@ -1,6 +1,7 @@
 ---
+# yaml-language-server: $schema=https://json.schemastore.org/helmfile
 bases:
-  - ../../../clusters/environments.yaml
+  - ../../../common/base.yaml
 
 repositories:
   - name: velero
@@ -10,7 +11,8 @@ releases:
   - name: velero
     chart: velero/velero
     version: 12.2.1
-    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+    inherit:
+      - template: namespace
     values:
       - values.yaml
       - externalsecret.yaml

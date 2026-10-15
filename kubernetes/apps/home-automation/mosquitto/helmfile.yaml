@@ -2,7 +2,7 @@
 # yaml-language-server: $schema=https://json.schemastore.org/helmfile
 
 bases:
-  - ../../../clusters/environments.yaml
+  - ../../../common/base.yaml
 
 repositories:
   - name: bjw-s-labs
@@ -14,4 +14,5 @@ releases:
     values:
       - values.yaml
       - externalsecret.yaml
-    namespace: '{{ env "HELMFILE_NAMESPACE" }}'
+    inherit:
+      - template: namespace
