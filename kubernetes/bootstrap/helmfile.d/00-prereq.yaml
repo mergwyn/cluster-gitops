@@ -48,7 +48,7 @@ releases:
           - --server-side
           - -f
           # renovate: datasource=github-releases depName=kubernetes-sigs/gateway-api
-          - https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.6.2/standard-install.yaml
+          - https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.6.3/standard-install.yaml
 
   # Bootstrap-only: install CRDs so ArgoCD can manage prometheysRule resources.
     # Runtime is installed later by ArgoCD using the same chart.
