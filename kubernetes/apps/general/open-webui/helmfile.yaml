@@ -11,7 +11,7 @@ repositories:
 releases:
   - name: open-webui
     chart: open-webui/open-webui
-    version: "16.6.0"
+    version: "17.0.0"
     inherit:
       - template: namespace
     values:
