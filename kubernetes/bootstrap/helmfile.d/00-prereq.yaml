@@ -2,7 +2,7 @@
 # yaml-language-server: $schema=https://json.schemastore.org/helmfile
 
 bases:
-  - ../environments.yaml
+  - ../bootstrap-bases.yaml
 
 repositories:
   - name: prometheus-community
@@ -80,6 +80,10 @@ releases:
       - name: kubeProxy.enabled
         value: "false"
       - name: kubeScheduler.enabled
+        value: "false"
+      - name: kubelet.enabled
+        value: "false"
+      - name: kubeApiServer.enabled
         value: "false"
 
   # Bootstrap-only: install CRDs so ArgoCD can manage IngressRoute resources.

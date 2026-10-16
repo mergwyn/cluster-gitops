@@ -2,7 +2,7 @@
 # yaml-language-server: $schema=https://json.schemastore.org/helmfile
 
 bases:
-  - ../environments.yaml
+   - ../bootstrap-bases.yaml
 
 repositories:
   - name: argoproj
@@ -24,6 +24,6 @@ releases:
     version: 10.9.6
     values:
       - ../../apps/gitops/argocd/values-base.yaml
-      - ../../apps/gitops/argocd/values.yaml.gotmpl
+      - ../../apps/gitops/argocd/values.gotmpl
     needs:
       - argocd-secret
