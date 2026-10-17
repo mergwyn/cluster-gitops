@@ -1,8 +1,8 @@
 ---
 - name: Generate bootstrap/environments.yaml
   template:
-    src: environments.yaml.j2
-    dest: "{{ bootstrap_dir }}/environments.yaml"
+    src: bases.yaml.j2
+    dest: "{{ bootstrap_dir }}/bootstrap-bases.yaml"
   vars:
     relative_path: "../.."
   delegate_to: localhost

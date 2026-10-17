@@ -2,7 +2,7 @@
 # yaml-language-server: $schema=https://json.schemastore.org/helmfile
 
 bases:
-  - ../environments.yaml
+  -  ../bootstrap-bases.yaml
 
 repositories:
   - name: kube-vip
