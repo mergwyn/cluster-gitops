@@ -7,16 +7,8 @@ bases:
 repositories:
   - name: argoproj
     url: https://argoproj.github.io/argo-helm/
-  - name: bedag
-    url: https://bedag.github.io/helm-charts/
 
 releases:
-  - name: argocd-secret
-    chart: bedag/raw
-    version: 2.0.2
-    secrets:
-      - argocd-secret-sops.yaml
-
   - name: argocd
     chart: argoproj/argo-cd
     version: 10.9.6
@@ -26,5 +18,10 @@ releases:
       - argocd-secret-sops.yaml
     values:
       - values-rules.yaml
-      - values-base.yaml
-      - values.gotmpl
+      - values.yaml
+      - values-repo-server.yaml
+
+  - name: argocd-resources
+    inherit:
+      - template: namespace
+      - template: raw

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: helmfile-modern-config
+data:
+  plugin.yaml: |
+    apiVersion: argoproj.io/v1alpha1
+    kind: ConfigManagementPlugin
+    metadata:
+      name: helmfile-modern
+    spec:
+      generate:
+        command: ["/usr/local/bin/helmfile-modern-generate.sh"]
