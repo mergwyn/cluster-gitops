@@ -14,3 +14,4 @@ kubernetes/apps/default/open-webui/llm-reports/openwebui.diff
 llm-reports/argocd_open-webui.diff
 llm-reports/argocd_open-webui.json
 doctor-reports/
+ops/migrate-helmfile/
