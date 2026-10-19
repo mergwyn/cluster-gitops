@@ -24,6 +24,9 @@ network:
   prowlarr: 10.58.0.53
   radarr: 10.58.0.54
   sonarr: 10.58.0.55
+  # multus macvlan-static
+  esphome: 10.58.211
+  demo: 10.58.0.214
 
 
 # CertManager prod settings (production LE)

@@ -23,6 +23,9 @@ network:
   prowlarr: 10.58.0.83
   radarr: 10.58.0.84
   sonarr: 10.58.0.85
+  # multus macvlan-static
+  esphome: 10.58.215
+  demo: 10.58.0.219
 
 # CertManager dev settings (explicitly staging)
 certManager:
