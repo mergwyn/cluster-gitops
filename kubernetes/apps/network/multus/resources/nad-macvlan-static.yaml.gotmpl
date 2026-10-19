@@ -13,7 +13,7 @@ spec:
       "mode": "l2",
       "ipam": {
         "type": "host-local",
-        "subnet": "{{.Values.network.subnet}}"
+        "subnet": "{{.Values.network.subnet}}",
         "rangeStart": "{{.Values.network.macvlanStatic.rangeStart}}",
         "rangeEnd": "{{.Values.network.macvlanStatic.rangeEnd}}",
         "gateway": ""
