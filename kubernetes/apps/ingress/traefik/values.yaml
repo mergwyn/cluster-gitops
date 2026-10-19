@@ -180,9 +180,15 @@ extraObjects:
         template:
           data:
             users: "{{`{{ htpasswd .username .password \"\" }}`}}"
-      dataFrom:
-        - extract:
-            key: traefik_dashboard
+      data:
+        - secretKey: username
+          remoteRef:
+            key: &uuid b1466498-c22b-4195-a62d-b1f801153b2e
+            property: username
+        - secretKey: password
+          remoteRef:
+            key: *uuid
+            property: password
 
 #   - apiVersion: gateway.networking.k8s.io/v1beta1
 #     kind: HTTPRoute
