@@ -1,9 +1,3 @@
    cni:
      netPath: /var/lib/rancher/k3s/agent/etc/cni/net.d
      binPath: /var/lib/rancher/k3s/data/cni
-   multus:
-     image:
-       tag: v4.3.1
-   cni-plugins:
-     image:
-       tag: v1.9.1
