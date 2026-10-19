@@ -1,5 +1,5 @@
 ---
-- name: Generate bootstrap/environments.yaml
+- name: Generate bootstrap/boostrap-bases.yaml
   template:
     src: bases.yaml.j2
     dest: "{{ bootstrap_dir }}/bootstrap-bases.yaml"
