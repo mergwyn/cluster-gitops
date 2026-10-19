@@ -10,9 +10,9 @@ controllers:
         reloader.stakater.com/auto: "true"
         k8s.v1.cni.cncf.io/networks: |
           [{
-            "name":"macvlan-static",
+            "name":"home-lan",
             "namespace": "network",
-            "ips": ["10.58.0.211"]
+            "ips": [".Values.network.esphome}}"]
           }]
 
     initContainers:
