@@ -2,4 +2,4 @@
 name: gpudeviceplugin
 
 nodeFeatureRule: true
-# resourceManager: false
+sharedDevNum: 2

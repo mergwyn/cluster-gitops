@@ -27,6 +27,7 @@ network:
   radarr: 10.58.0.84
   sonarr: 10.58.0.85
   esphome: 10.58.0.86
+  demo: 10.58.0.57
 
 # CertManager dev settings (explicitly staging)
 certManager:
