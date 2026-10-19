@@ -173,7 +173,7 @@ extraObjects:
     spec:
       secretStoreRef:
         kind: ClusterSecretStore
-        name: bitwarden-secrets
+        name: bitwarden-vault-login
       target:
         name: traefik-dashboard-secret
         creationPolicy: Owner
