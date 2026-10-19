@@ -5,7 +5,7 @@ cluster:
   id: 2
 
 network:
-  device: eth0
+  device: enp5s0
   vip: 10.58.0.60
   metallb:
     poolCIDR: 10.58.0.61-10.58.0.69
