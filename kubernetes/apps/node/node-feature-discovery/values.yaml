@@ -1,10 +1,11 @@
 ---
 
+master:
+  resources:
+    limits: { memory: 128Mi }
+gc:
+  resources:
+    limits: { memory: 128Mi }
 worker:
   resources:
-    requests:
-      cpu: 15m
-      memory: 100Mi
-    limits:
-      cpu: 24m
-      memory: 100Mi
+    limits: { memory: 128Mi }
