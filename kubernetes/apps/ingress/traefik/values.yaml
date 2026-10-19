@@ -160,17 +160,6 @@ extraObjects:
         app.kubernetes.io/name: "{{.Release.Name}}"
         app.kubernetes.io/instance: "{{.Release.Name}}-{{.Release.Namespace}}"
     spec:
-      basicAuth:
-        secret: traefik-dashboard-secret
-
-  - apiVersion: external-secrets.io/v1
-    kind: ExternalSecret
-    metadata:
-      name: traefik-dashboard-basicauth
-      labels:
-        app.kubernetes.io/name: "{{.Release.Name}}"
-        app.kubernetes.io/instance: "{{.Release.Name}}-{{.Release.Namespace}}"
-    spec:
       secretStoreRef:
         kind: ClusterSecretStore
         name: bitwarden-vault-login
