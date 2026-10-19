@@ -14,6 +14,6 @@ releases:
     inherit:
       - template: namespace
     values:
-      - values.yaml
+      - values.yaml.gotmpl
       - values-route.yaml.gotmpl
       - externalsecret.yaml

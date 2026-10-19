@@ -4,13 +4,21 @@
 bases:
   - ../../../common/base.yaml
 
+repositories:
+  - name: bjw-s-labs
+    url: ghcr.io/bjw-s-labs/helm
+    oci: true
+
 releases:
   - name: multus
-    chart: ../../../charts/multus
+    chart: bjw-s-labs/multus
+    version: 1.3.6
     inherit:
       - template: namespace
-    #dependencies:
-    #- chart: oci://ghcr.io/bjw-s-labs/helm/common
     values:
       - values.yaml
-      - networks.yaml.gotmpl
+
+  - name: multus-resources
+    inherit:
+      - template: namespace
+      - template: raw
