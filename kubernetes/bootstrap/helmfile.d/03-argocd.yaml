@@ -2,28 +2,26 @@
 # yaml-language-server: $schema=https://json.schemastore.org/helmfile
 
 bases:
-   - ../bootstrap-bases.yaml
+  - ../bootstrap-bases.yaml
 
 repositories:
   - name: argoproj
     url: https://argoproj.github.io/argo-helm/
-  - name: bedag
-    url: https://bedag.github.io/helm-charts/
 
 releases:
-  - name: argocd-secret
-    namespace: argocd
-    chart: bedag/raw
-    version: 2.0.2
-    secrets:
-      - ../../apps/gitops/argocd/argocd-secret-sops.yaml
-
   - name: argocd
-    namespace: argocd
     chart: argoproj/argo-cd
     version: 10.9.6
+    namespace: argocd
+    secrets:
+      - ../../apps/gitops/argocd/argocd-secret-sops.yaml
     values:
-      - ../../apps/gitops/argocd/values-base.yaml
-      - ../../apps/gitops/argocd/values.gotmpl
-    needs:
-      - argocd-secret
+      # - values-rules.yaml  # rules will ne installed by argocd run
+      - ../../apps/gitops/argocd/values.yaml
+      - ../../apps/gitops/argocd/values-repo-server.yaml
+
+  - name: argocd-resources
+    namespace: argocd
+    inherit:
+      - template: raw
+    chart: ../../apps/gitops/argocd/resources

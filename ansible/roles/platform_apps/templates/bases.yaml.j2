@@ -14,3 +14,11 @@ helmDefaults:
   cleanupOnFail: true
   wait: true
   waitForJobs: true
+
+templates:
+  raw:
+    chart: resources
+    transformers:
+      - {{ (bootstrap_dir + '/../common/transformers/common-annotations.yaml.gotmpl') | realpath }}
+      - {{ (bootstrap_dir + '/../common/transformers/common-labels.yaml.gotmpl') | realpath }}
+
