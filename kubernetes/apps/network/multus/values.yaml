@@ -1,25 +1,9 @@
----
-controllers:
-  multus:
-    containers:
-      multus:
-        image:
-          repository: ghcr.io/k8snetworkplumbingwg/multus-cni
-          tag: v4.3.1-thick@sha256:a357a79359b80ddd5f4699117946cacf3b54f5baecf7944535594863e875fc25
-    initContainers:
-      cni-installer:
-        image:
-          repository: rancher/hardened-cni-plugins
-          tag: v1.9.0-build20251215@sha256:095324ab04261e82dce08dd3824563837bad246f424f3f57612e1881c63a5f80
-
-cni:
-  paths:
-    config: /var/lib/rancher/k3s/agent/etc/cni/net.d
-    bin: /var/lib/rancher/k3s/data/cni
-
-  logLevel: verbose
-
-  version: "0.3.1"
-
-hostPaths:
-  netns: /run/netns/
+   cni:
+     netPath: /var/lib/rancher/k3s/agent/etc/cni/net.d
+     binPath: /var/lib/rancher/k3s/data/cni
+   multus:
+     image:
+       tag: v4.3.1
+   cni-plugins:
+     image:
+       tag: v1.9.1
