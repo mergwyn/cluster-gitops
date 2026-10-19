@@ -4,7 +4,7 @@ worker:
   resources:
     requests:
       cpu: 15m
-      memory: 105M
+      memory: 100Mi
     limits:
-      # cpu: 634m
-      memory: 1369M
+      cpu: 24m
+      memory: 100Mi
