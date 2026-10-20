@@ -34,7 +34,7 @@ controllers:
             if [ ! -d .git ] ; then
               echo "Initializing config repository from GitHub..."
               mkdir temp-dir
-              git clone https://github.com/mergwyn/home-assistant-config temp-dir
+              git clone https://github.com/mergwyn/esphome-config temp-dir
               mv temp-dir/.git .
               rm -rf temp-dir
               git checkout .
