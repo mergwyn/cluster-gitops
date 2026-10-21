@@ -81,6 +81,44 @@
   retries: 10
   delay: 2
 
+- name: Link /etc/cni/net.d to the k3s CNI directory on {{ node_name }}
+  delegate_to: localhost
+  ansible.builtin.command:
+    argv:
+      - lxc
+      - exec
+      - "{{ node_name }}"
+      - --
+      - sh
+      - -c
+      - |
+        set -eu
+        target=/var/lib/rancher/k3s/agent/etc/cni/net.d
+
+        # Remove a stray self-referencing link left by an earlier ln -s
+        if [ -L "$target/net.d" ]; then
+          rm "$target/net.d"
+          echo CHANGED
+        fi
+
+        # Move aside a real directory (not a link)
+        if [ -e /etc/cni/net.d ] && [ ! -L /etc/cni/net.d ]; then
+          mv /etc/cni/net.d "/etc/cni/net.d.pre-k3s.$(date +%s)"
+          echo CHANGED
+        fi
+
+        mkdir -p /etc/cni
+
+        # -n stops ln following an existing link to a directory
+        if [ "$(readlink /etc/cni/net.d || true)" != "$target" ]; then
+          ln -sfn "$target" /etc/cni/net.d
+          echo CHANGED
+        fi
+  register: cni_link
+  changed_when: "'CHANGED' in cni_link.stdout"
+  tags:
+    - cni
+
 - name: Push config.yaml to {{ node_name }}
   delegate_to: localhost
   command: "lxc file push {{ tempdir.path }}/config.yaml {{ node_name }}/etc/rancher/k3s/config.yaml"

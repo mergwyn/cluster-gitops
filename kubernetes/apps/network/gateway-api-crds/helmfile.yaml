@@ -1,0 +1,11 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/helmfile
+
+bases:
+  - ../../../common/base.yaml
+
+releases:
+  - name: gateway-api-crds
+    chart: ./crds
+    inherit:
+      - template: namespace

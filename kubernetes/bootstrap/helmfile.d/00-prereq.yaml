@@ -7,48 +7,16 @@ bases:
 repositories:
   - name: prometheus-community
     url: https://prometheus-community.github.io/helm-charts/
-  - name: bedag
-    url: https://bedag.github.io/helm-charts
   - name: traefik
     url: https://traefik.github.io/charts
 
 
 releases:
-#  - name: bootstrap-namespaces
-#    chart: bedag/raw
-#    version: 2.0.2
-#    values:
-#      - resources:
-#          - apiVersion: v1
-#            kind: Namespace
-#            metadata:
-#              name: security
-#          - apiVersion: v1
-#            kind: Namespace
-#            metadata:
-#              name: argocd
-#          - apiVersion: v1
-#            kind: Namespace
-#            metadata:
-#              name: monitoring
 
   # Install gateway crds so ArgoCD can manage Gateway API resources.
   - name: gateway-api-crds
     namespace: kube-system
-    chart: bedag/raw
-    version: 2.0.2
-    values:
-      - resources: []
-    hooks:
-      - events: ["presync"]
-        showlogs: true
-        command: kubectl
-        args:
-          - apply
-          - --server-side
-          - -f
-          # renovate: datasource=github-releases depName=kubernetes-sigs/gateway-api
-          - https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.6.2/standard-install.yaml
+    chart: ../../apps/network/gateway-api-crds/crds
 
   # Bootstrap-only: install CRDs so ArgoCD can manage prometheysRule resources.
     # Runtime is installed later by ArgoCD using the same chart.
