@@ -10,7 +10,7 @@ repositories:
 releases:
   - name: node-feature-discovery
     chart: node-feature-discovery/node-feature-discovery
-    version: 0.19.0
+    version: 0.20.0
     values:
       - values.yaml
     inherit:
