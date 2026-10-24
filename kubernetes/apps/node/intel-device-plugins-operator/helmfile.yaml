@@ -11,9 +11,5 @@ releases:
   - name: intel-device-plugins-operator
     chart: intel/intel-device-plugins-operator
     version: 0.37.1
-    values:
-      - resources:
-          limits:
-            cpu: null
     inherit:
       - template: namespace
