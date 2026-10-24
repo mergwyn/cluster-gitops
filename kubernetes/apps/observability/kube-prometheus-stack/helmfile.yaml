@@ -11,7 +11,7 @@ repositories:
 releases:
   - name: kube-prometheus-stack
     chart: prometheus-community/kube-prometheus-stack
-    version: 91.9.0
+    version: 92.3.0
     inherit:
       - template: namespace
     values:

@@ -23,7 +23,7 @@ releases:
   - name: kube-prometheus-stack
     chart: prometheus-community/kube-prometheus-stack
     namespace: monitoring
-    version: 91.9.0
+    version: 92.3.0
     set:
       - name: crds.enabled
         value: "true"
