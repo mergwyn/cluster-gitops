@@ -90,7 +90,7 @@ repoServer:
   extraContainers:
     - name: helmfile-modern-plugin
       # Standard ArgoCD image, used only to run cmp-server
-      image: quay.io/argoproj/argocd:v2.10.4@sha256:a2ce24e264c5be63ce4af478f086a866f6df2b68673ad5e5c8f4574de1d00eae
+      image: quay.io/argoproj/argocd:v2.14.21@sha256:2fe6dadaa0c137ed74c845d6fc6cc78b104fa5c76bbd25fff791424318f95eca
       command: [/var/run/argocd/argocd-cmp-server]
       securityContext:
         runAsNonRoot: true
