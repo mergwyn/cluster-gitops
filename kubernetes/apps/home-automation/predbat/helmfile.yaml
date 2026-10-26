@@ -16,3 +16,4 @@ releases:
     values:
       - values.yaml
       - values-route.yaml.gotmpl
+      - external-secret.yaml
