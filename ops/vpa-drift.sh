@@ -1,54 +1,42 @@
 #!/usr/bin/env bash
+set -euo pipefail
+ns="${1:?usage: $0 <namespace>}"
 
-# Parse Namespace flag
-TARGET_NS="-A"
-while getopts "n:" opt; do
-  case $opt in
-    n) TARGET_NS="-n $OPTARG" ;;
-    *) echo "Usage: $0 [-n namespace]"; exit 1 ;;
-  esac
-done
+vpa=$(kubectl get vpa -n "$ns" -o json)
+wl=$(kubectl get deploy,sts,ds -n "$ns" -o json)
 
-TMP_FILE=$(mktemp)
+{
+  printf 'CONTAINER\tMANIFEST_CPU\tVPA_CPU\tMANIFEST_MEM\tVPA_MEM\n'
+  jq -rn --argjson vpa "$vpa" --argjson wl "$wl" '
+    # CPU quantity -> millicores, e.g. "2" -> "2000m", "11m" -> "11m"
+    def cpu:
+      if . == null then "-"
+      elif endswith("m") then (.[:-1] | tonumber | round | tostring) + "m"
+      else (tonumber * 1000 | round | tostring) + "m"
+      end;
 
-# Expanded Header with Limits
-printf "%s\t%s\t%s\t%s\t%s\t%s\n" "NAMESPACE" "DEPLOYMENT" "TYPE" "CUR_REQ" "CUR_LIM" "RECOMMENDED" > "$TMP_FILE"
-printf "%s\t%s\t%s\t%s\t%s\t%s\n" "---------" "----------" "----" "-------" "-------" "-----------" >> "$TMP_FILE"
+    # Memory quantity -> Mi, e.g. "1239M" -> "1182Mi", "764046746" -> "729Mi"
+    def mem:
+      if . == null then "-"
+      else
+        capture("^(?<n>[0-9.]+)(?<u>[A-Za-z]*)$") as $m
+        | ({"":1, "Ki":1024, "Mi":1048576, "Gi":1073741824, "Ti":1099511627776,
+            "k":1000, "K":1000, "M":1000000, "G":1000000000, "T":1000000000000}[$m.u]) as $f
+        | ($m.n | tonumber) * $f / 1048576 | round | tostring + "Mi"
+      end;
 
-# Get VPAs (filtered by namespace if flag provided)
-kubectl get vpa $TARGET_NS -o json | jq -c '.items[]' | while read -r vpa; do
-    NS=$(echo "$vpa" | jq -r '.metadata.namespace')
-    TARGET_NAME=$(echo "$vpa" | jq -r '.spec.targetRef.name')
-
-    # Recommendations
-    REC_CPU=$(echo "$vpa" | jq -r '.status.recommendation.containerRecommendations[0].target.cpu // "0"')
-    REC_MEM_RAW=$(echo "$vpa" | jq -r '.status.recommendation.containerRecommendations[0].target.memory // "0"')
-
-    if [[ "$REC_MEM_RAW" =~ ^[0-9]+$ ]] && [ "$REC_MEM_RAW" -gt 0 ]; then
-        REC_MEM="$((REC_MEM_RAW / 1024 / 1024))Mi"
-    else
-        REC_MEM="$REC_MEM_RAW"
-    fi
-
-    # Get Current Requests AND Limits
-    JSON_RESOURCES=$(kubectl get deploy -n "$NS" "$TARGET_NAME" -o jsonpath='{.spec.template.spec.containers[0].resources}' 2>/dev/null)
-
-    CUR_REQ_CPU=$(echo "$JSON_RESOURCES" | jq -r '.requests.cpu // "unset"')
-    CUR_LIM_CPU=$(echo "$JSON_RESOURCES" | jq -r '.limits.cpu // "unset"')
-
-    CUR_REQ_MEM=$(echo "$JSON_RESOURCES" | jq -r '.requests.memory // "unset"')
-    CUR_LIM_MEM=$(echo "$JSON_RESOURCES" | jq -r '.limits.memory // "unset"')
-
-    # CPU Row (if differs from Request)
-    if [ "$CUR_REQ_CPU" != "$REC_CPU" ]; then
-        printf "%s\t%s\t%s\t%s\t%s\t%s\n" "$NS" "$TARGET_NAME" "CPU" "$CUR_REQ_CPU" "$CUR_LIM_CPU" "$REC_CPU" >> "$TMP_FILE"
-    fi
-
-    # MEM Row (if differs from Request)
-    if [ "$CUR_REQ_MEM" != "$REC_MEM" ]; then
-        printf "%s\t%s\t%s\t%s\t%s\t%s\n" "$NS" "$TARGET_NAME" "MEM" "$CUR_REQ_MEM" "$CUR_LIM_MEM" "$REC_MEM" >> "$TMP_FILE"
-    fi
-done
-
-column -t -s $'\t' "$TMP_FILE"
-rm "$TMP_FILE"
+    ($vpa.items
+      | map(select(.status.recommendation)
+            | .spec.targetRef as $t
+            | .status.recommendation.containerRecommendations[]
+            | {key: "\($t.kind)/\($t.name)/\(.containerName)", value: .target})
+      | from_entries) as $rec
+    | $wl.items[]
+    | .kind as $k | .metadata.name as $n
+    | .spec.template.spec.containers[]
+    | "\($k)/\($n)/\(.name)" as $key
+    | [$key,
+       (.resources.requests.cpu    | cpu), ($rec[$key].cpu    | cpu),
+       (.resources.requests.memory | mem), ($rec[$key].memory | mem)]
+    | @tsv'
+} | column -t -s $'\t'
