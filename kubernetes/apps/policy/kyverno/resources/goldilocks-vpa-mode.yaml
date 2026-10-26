@@ -1,0 +1,56 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/kyverno.io/clusterpolicy_v1.json
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: goldilocks-vpa-mode
+spec:
+  mutateExistingOnPolicyUpdate: true
+  rules:
+    # Subset: auto-apply recommendations
+    - name: vpa-auto-for-apps
+      match:
+        any:
+          - resources:
+              kinds:
+                - Namespace
+      mutate:
+        targets:
+          - apiVersion: v1
+            kind: Namespace
+            preconditions:
+              all:
+                - key: "{{ target.metadata.name }}"
+                  operator: AnyIn
+                  value: &autons
+                    - default
+                    - system
+                    - media
+                    - reloader-system
+        patchStrategicMerge:
+          metadata:
+            labels:
+              goldilocks.fairwinds.com/enabled: "true"
+              goldilocks.fairwinds.com/vpa-update-mode: "InPlaceOrRecreate"
+
+    # Everything else: recommendations only
+    - name: vpa-guidance-only
+      match:
+        any:
+          - resources:
+              kinds:
+                - Namespace
+      mutate:
+        targets:
+          - apiVersion: v1
+            kind: Namespace
+            preconditions:
+              all:
+                - key: "{{ target.metadata.name }}"
+                  operator: AnyNotIn
+                  value: *autons
+        patchStrategicMerge:
+          metadata:
+            labels:
+              goldilocks.fairwinds.com/enabled: "true"
+              goldilocks.fairwinds.com/vpa-update-mode: "Off"
