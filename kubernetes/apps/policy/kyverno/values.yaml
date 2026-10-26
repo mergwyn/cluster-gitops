@@ -4,6 +4,10 @@
 apiVersionOverride:
   podDisruptionBudget: policy/v1
 
+controller:
+  flags:
+    on-by-default: true
+
 webhooksCleanup:
   enabled: true
   autoDeleteWebhooks:
@@ -57,6 +61,9 @@ backgroundController:
           resources:
             - namespaces
           verbs:
+            - get
+            - list
+            - watch
             - create
             - update
             - delete
