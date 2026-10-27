@@ -10,7 +10,7 @@ route:
         sectionName: websecure
     rules:
       - backendRefs:
-          - identifier: app
+          - identifier: predbat
             port: 5052
 
 ingress:
@@ -25,5 +25,5 @@ ingress:
           - path: /
             pathType: Prefix
             service:
-              identifier: app
+              identifier: predbat
               port: http
