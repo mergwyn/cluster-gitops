@@ -6,7 +6,11 @@ controllers:
   esphome:
     pod:
       annotations:
-        # yamllint disable-line rule:line-length
+        goldilocks.fairwinds.com/vpa-resource-policy: |
+          containerPolicies:
+            - containerName: app
+              mode: "Off"
+
         reloader.stakater.com/auto: "true"
         k8s.v1.cni.cncf.io/networks: |
           [{
