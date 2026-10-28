@@ -19,7 +19,7 @@ controllers:
           memory: 512Mi
 
     containers:
-      app:
+      predbat:
         image:
           repository: nipar44/predbat_addon
           tag: alpine-v9.4.5@sha256:7972c53c72533fff316a0079aac7bbebed82fc503273bd68af89f3796bc0c807
@@ -27,7 +27,7 @@ controllers:
           TZ: "Europe/London"
 
 service:
-  app:
+  predbat:
     forceRename: "{{.Release.Name}}"
     ports:
       http:
@@ -42,3 +42,10 @@ persistence:
     size: 1Gi
     globalMounts:
       - path: /config
+#  secrets:
+#    type: secret
+#    name: "{{.Release.Name}}-secret"
+#    globalMounts:
+#      - path: /config/secrets.yaml
+#        subPath: secrets.yaml
+#        readOnly: true
