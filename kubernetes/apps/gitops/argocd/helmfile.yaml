@@ -14,8 +14,8 @@ releases:
     version: 10.10.5
     inherit:
       - template: namespace
-    secrets:
-      - argocd-secret-sops.yaml
+    #secrets:
+    #  - argocd-secret-sops.yaml
     values:
       - values-rules.yaml
       - values.yaml
