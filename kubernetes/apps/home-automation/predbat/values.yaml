@@ -42,10 +42,10 @@ persistence:
     size: 1Gi
     globalMounts:
       - path: /config
-#  secrets:
-#    type: secret
-#    name: "{{.Release.Name}}-secret"
-#    globalMounts:
-#      - path: /config/secrets.yaml
-#        subPath: secrets.yaml
-#        readOnly: true
+  secrets:
+    type: secret
+    name: "{{.Release.Name}}-secret"
+    globalMounts:
+      - path: /config/secrets-new.yaml
+        subPath: secrets-new.yaml
+        readOnly: true
