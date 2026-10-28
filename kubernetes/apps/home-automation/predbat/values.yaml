@@ -46,6 +46,6 @@ persistence:
     type: secret
     name: "{{.Release.Name}}-secret"
     globalMounts:
-      - path: /config/secrets-new.yaml
-        subPath: secrets-new.yaml
+      - path: /config/secrets.yaml
+        subPath: secrets.yaml
         readOnly: true
