@@ -17,3 +17,8 @@ releases:
     values:
       - values.yaml
       - externalsecret.yaml
+
+  - name: recyclarr-files
+    inherit:
+      - template: namespace
+      - template: raw

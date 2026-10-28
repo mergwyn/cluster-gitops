@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: recyclarr-config
+data:
+  recyclarr.yml: |-
+    # your corrected recyclarr.yml, indented four spaces
+  settings.yml: |-
+    resource_providers:
+      - name: local-sonarr-cfs
+        type: custom-formats
+        path: /config/custom-formats/sonarr
+        service: sonarr
+      - name: local-radarr-cfs
+        type: custom-formats
+        path: /config/custom-formats/radarr
+        service: radarr
+  sonarr-not-english.json: |-
+    {
+      "trash_id": "local-sonarr-not-english",
+      "name": "Language: Not English",
+      "includeCustomFormatWhenRenaming": false,
+      "specifications": [
+        {
+          "name": "Not English Language",
+          "implementation": "LanguageSpecification",
+          "negate": true,
+          "required": false,
+          "fields": { "value": 1 }
+        }
+      ]
+    }
+  radarr-not-english.json: |-
+    {
+      "trash_id": "local-radarr-not-english",
+      "name": "Language: Not English",
+      "includeCustomFormatWhenRenaming": false,
+      "specifications": [
+        {
+          "name": "Not English Language",
+          "implementation": "LanguageSpecification",
+          "negate": true,
+          "required": false,
+          "fields": { "value": 1 }
+        }
+      ]
+    }
