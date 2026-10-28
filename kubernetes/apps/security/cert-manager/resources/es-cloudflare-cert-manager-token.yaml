@@ -1,0 +1,20 @@
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: cert-manager
+spec:
+  secretStoreRef:
+    name: bitwarden-secrets
+    kind: ClusterSecretStore
+  target:
+    name: cloudflare-cert-manager-token-test
+    template:
+      engineVersion: v2
+      data:
+        "tunnelToken": '{{ .tunnel_token }}'
+  data:
+    - secretKey: tunnel_token
+      remoteRef:
+        key: cloudflare_cert_manager_token
+        property: tunnelToken
