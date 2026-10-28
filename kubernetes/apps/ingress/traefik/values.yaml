@@ -183,7 +183,7 @@ extraObjects:
       data:
         - secretKey: username
           remoteRef:
-            key: &uuid b1466498-c22b-4195-a62d-b1f801153b2e
+            key: &90c525e9-6694-4713-82db-b4f00126a169
             property: username
         - secretKey: password
           remoteRef:
