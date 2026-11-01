@@ -1,7 +1,4 @@
 {
-  "schedule": [
-    "* 2-6 * * 3,7"
-  ],
   "timezone": "Europe/London",
   "internalChecksFilter": "strict",
   "internalChecksAsSuccess": true,
