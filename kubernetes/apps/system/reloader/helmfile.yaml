@@ -10,7 +10,7 @@ repositories:
 releases:
   - name: reloader
     chart: stakater/reloader
-    version: 2.2.18
+    version: 2.2.19
     inherit:
       - template: namespace
     values:
