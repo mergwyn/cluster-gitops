@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: z2m-config-test
+  namespace: home-assistant
+spec:
+  restartPolicy: Never
+  containers:
+    - name: test
+      image: ghcr.io/koenkk/zigbee2mqtt:2.14.3
+      command: ["sh", "-c"]
+      args:
+        - |
+          set -eu
+          export ZIGBEE2MQTT_DATA=/data
+          cat > /data/configuration.yaml <<'EOF'
+          version: 4
+          mqtt:
+            server: mqtt://localhost
+          serial:
+            port: /dev/null
+          EOF
+          cd /app
+          timeout 30 node index.js 2>&1 | head -40 || true
+          echo "--- configuration.yaml after startup"
+          cat /data/configuration.yaml
+
+      env:
+        - name: ZIGBEE2MQTT_CONFIG_ADVANCED_PAN_ID
+          valueFrom: {secretKeyRef: {name: zigbee2mqtt-secret, key: zigbee_pan_id}}
+        - name: ZIGBEE2MQTT_CONFIG_ADVANCED_EXT_PAN_ID
+          valueFrom: {secretKeyRef: {name: zigbee2mqtt-secret, key: zigbee_ext_pan_id}}
+        - name: ZIGBEE2MQTT_CONFIG_ADVANCED_NETWORK_KEY
+          valueFrom: {secretKeyRef: {name: zigbee2mqtt-secret, key: zigbee_network_key}}
+        - name: ZIGBEE2MQTT_CONFIG_MQTT_USER
+          valueFrom: {secretKeyRef: {name: zigbee2mqtt-secret, key: mqtt_user}}
+        - name: ZIGBEE2MQTT_CONFIG_MQTT_PASSWORD
+          valueFrom: {secretKeyRef: {name: zigbee2mqtt-secret, key: mqtt_password}}
+
+      volumeMounts:
+        - name: data
+          mountPath: /data
+  volumes:
+    - name: data
+      emptyDir: {}
