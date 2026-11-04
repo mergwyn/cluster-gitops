@@ -1,14 +1,9 @@
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/common-5.2.1/charts/library/common/values.schema.json
+
 global:
   # -- Set an override for the prefix of the fullname
   nameOverride: zigbee2mqtt
-  # -- Set the entire name definition
-  fullnameOverride:
-  # -- Set additional global labels. Helm templates can be used.
-  labels: {}
-  # -- Set additional global annotations. Helm templates can be used.
-  annotations: {}
 
 controllers:
   zigbee2mqtt:
@@ -42,6 +37,12 @@ controllers:
           # ZIGBEE2MQTT_CONFIG_ADVANCED_NETWORK_KEY: "GENERATE"
           # ZIGBEE2MQTT_CONFIG_ADVANCED_PAN_ID: "GENERATE"
           # ZIGBEE2MQTT_CONFIG_ADVANCED_EXT_PAN_ID: "GENERATE"
+          # ZIGBEE2MQTT_CONFIG_ADVANCED_NETWORK_KEY_NEW:
+          #   valueFrom:
+          #     secretKeyRef:
+          #       name: zigbee2mqtt-secret
+          #       key: zigbee_network_key
+          ZIGBEE2MQTT_CONFIG_EXT_PAN_ID_NEW: "[0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08]"
           ZIGBEE2MQTT_CONFIG_EXPERIMENTAL_NEW_API: true
           ZIGBEE2MQTT_CONFIG_FRONTEND_PORT: 8080
           # yamllint disable-line rule:line-length
