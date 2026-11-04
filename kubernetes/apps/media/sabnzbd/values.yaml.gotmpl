@@ -25,6 +25,15 @@ controllers:
           - secretRef:
               name: "{{ .Release.Name }}-api-key"
         probes:
+          startup:
+            enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /api?mode=version
+                port: *port
+              periodSeconds: 5
+              failureThreshold: 60
           liveness: &probes
             enabled: true
             custom: true
@@ -32,10 +41,9 @@ controllers:
               httpGet:
                 path: /api?mode=version
                 port: *port
-              initialDelaySeconds: 0
               periodSeconds: 10
-              timeoutSeconds: 1
-              failureThreshold: 3
+              timeoutSeconds: 5
+              failureThreshold: 6
           readiness: *probes
         securityContext:
           allowPrivilegeEscalation: false
