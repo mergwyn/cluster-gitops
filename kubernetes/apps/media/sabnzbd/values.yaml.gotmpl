@@ -35,7 +35,7 @@ controllers:
               timeoutSeconds: 10
               periodSeconds: 10
               failureThreshold: 30
-          readinessProbe:
+          readiness:
             enabled: true
             custom: true
             spec:
@@ -45,7 +45,7 @@ controllers:
               timeoutSeconds: 10
               periodSeconds: 10
               failureThreshold: 6
-          livenessProbe:
+          liveness:
             enabled: true
             custom: true
             spec:
