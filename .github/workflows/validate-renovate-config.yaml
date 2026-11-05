@@ -18,7 +18,7 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     container:
-      image: renovate/renovate:latest@sha256:59ee9d519b9fec428243f3b73f7fecebac59756888ce1838196bb5d40efe3559
+      image: renovate/renovate:latest@sha256:71599a2007228ada2cc6acb5ed836cf2c088537ffe76dafee1ee6a1c5c45d5e5
       options: --user root
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
