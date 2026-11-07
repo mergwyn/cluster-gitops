@@ -10,7 +10,7 @@ repositories:
 releases:
   - name: mail
     chart: bokysan/mail
-    version: 5.1.0
+    version: 5.2.1
     inherit:
       - template: namespace
     values:
