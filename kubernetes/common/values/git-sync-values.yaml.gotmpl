@@ -1,0 +1,59 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/common-5.2.1/charts/library/common/values.schema.json
+# This template assume bjw-s app-template and also assumes the config is held in /config.
+
+controllers:
+  {{ .Release.Name }}:
+    initContainers:
+      git-sync:
+        restartPolicy: Always   # native sidecar, needs Kubernetes 1.28+
+        image:
+          repository: docker.io/alpine/git
+          tag: 2.54.0@sha256:ce84fd6a057b4dc5cf5009da2dd832f1c6d096c1984bf50496cf3c256402264d
+        command: ["/bin/sh", "/scripts/sync.sh"]
+        env:
+          GIT_BRANCH: main
+          SYNC_INTERVAL: "60"
+          HOME: /tmp
+        securityContext:
+          runAsUser: 0   # matches config-initialization, so file ownership stays consistent
+
+persistence:
+  sync-scripts:
+    type: configMap
+    name: "{{ .Release.Name }}-git-sync-scripts"
+    defaultMode: 0755
+    advancedMounts:
+      {{ .Release.Name }}:
+        git-sync:
+          - path: /scripts
+
+rawResources:
+  git-sync-scripts:
+    enabled: true
+    forceRename: "{{ .Release.Name }}-git-sync-scripts"
+    manifest:
+      apiVersion: v1
+      kind: ConfigMap
+      data:
+        sync.sh: |
+          #!/bin/sh
+          cd /config || exit 1
+          git config --global --add safe.directory /config
+          fails=0
+          while true; do
+            dirty=$(git status --porcelain --untracked-files=no -- . \
+              ':(exclude)automations.yaml' \
+              ':(exclude)scenes.yaml' \
+              ':(exclude)scripts.yaml')
+            if [ -n "${dirty}" ]; then
+              echo "$(date -u +%FT%TZ) local changes present, skipping pull"
+            elif git pull --ff-only -q origin "${GIT_BRANCH}"; then
+              fails=0
+            else
+              fails=$((fails + 1))
+              echo "$(date -u +%FT%TZ) pull failed (${fails} in a row)"
+              [ "${fails}" -ge 5 ] && exit 1
+            fi
+            sleep "${SYNC_INTERVAL}"
+          done

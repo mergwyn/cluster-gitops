@@ -13,6 +13,7 @@ releases:
     version: 5.2.1
     inherit:
       - template: namespace
+      - template: git-sync
     values:
       - values.yaml.gotmpl
       - values-route.yaml.gotmpl

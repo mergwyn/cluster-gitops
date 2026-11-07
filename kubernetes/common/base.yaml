@@ -26,6 +26,9 @@ templates:
   cluster-scoped:
     transformers:
       - ../../../common/transformers/strip-namespace.yaml
+  git-sync:
+    values:
+     - ../../../common/values/git-sync-values.yaml.gotmpl
   vpn:
     values:
       - ../../../common/values/vpn-routing-values.yaml.gotmpl

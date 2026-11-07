@@ -1,0 +1,14 @@
+name: esphome-check
+on: [push, pull_request]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dummy secrets
+        run: bash scripts/make-dummy-secrets.sh
+      - name: Validate configs
+        run: |
+          docker run --rm -v "$PWD":/config -w /config \
+            ghcr.io/esphome/esphome:2025.10.0 \
+            config samsung-hvac-bus.yaml samsung-nasa.yaml

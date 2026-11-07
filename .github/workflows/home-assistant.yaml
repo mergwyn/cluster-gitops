@@ -1,0 +1,9 @@
+name: ha-check
+on: [push, pull_request]
+jobs:
+  yamllint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install yamllint
+      - run: "yamllint -d '{extends: relaxed, rules: {line-length: disable}}' ."
