@@ -83,6 +83,10 @@ persistence:
     existingClaim: vpn-nfs-pvc
     globalMounts:
       - path: /data
+  scratch:
+    existingClaim:  vpn-nfs-scratch-pvc
+    globalMounts:
+      - path: /scratch
   tmp:
     type: emptyDir
 
