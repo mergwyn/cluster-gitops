@@ -44,7 +44,7 @@ controllers:
                 port: 8080
               timeoutSeconds: 10
               periodSeconds: 10
-              failureThreshold: 6
+              failureThreshold: 12
           liveness:
             enabled: true
             custom: true
@@ -52,8 +52,8 @@ controllers:
               tcpSocket:
                 port: 8080
               timeoutSeconds: 5
-              periodSeconds: 10
-              failureThreshold: 6
+              periodSeconds: 15
+              failureThreshold: 8
 
         securityContext:
           allowPrivilegeEscalation: false
