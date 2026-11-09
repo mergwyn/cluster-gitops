@@ -94,6 +94,10 @@ persistence:
     existingClaim:  vpn-nfs-pvc
     globalMounts:
       - path: /data
+  incomplete:
+    existingClaim:  vpn-nfs-scratch-pvc
+    globalMounts:
+      - path: /data/usenet/incomplete
   tmp:
     type: emptyDir
 
