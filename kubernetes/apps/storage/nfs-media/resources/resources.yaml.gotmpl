@@ -72,6 +72,39 @@ spec:
   volumeName: nfs-vpn-pv
 
 ---
+# vpn scratch
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-vpn--scratch-pv
+  labels:
+    {{- toYaml $common_labels | nindent 4 }}
+  annotations:
+    {{- toYaml $common_annotations | nindent 4 }}
+spec:
+  storageClassName: ""
+  capacity: { storage: 10Ti }
+  accessModes: ["ReadWriteMany"]
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    {{- toYaml $mount_options | nindent 4 }}
+  nfs:
+    path: /rpool/scratch
+    server: {{ $nfs_server }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vpn-nfs-scratch-pvc
+  namespace: vpn
+  annotations:
+    {{- toYaml $common_annotations | nindent 4 }}
+spec:
+  accessModes: ["ReadWriteMany"]
+  storageClassName: ""
+  resources: { requests: { storage: 10Ti } }
+  volumeName: nfs-vpn-scratch-pv
+---
 # home-assistant
 apiVersion: v1
 kind: PersistentVolume
