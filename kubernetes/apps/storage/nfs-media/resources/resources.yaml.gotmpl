@@ -89,7 +89,7 @@ spec:
   mountOptions:
     {{- toYaml $mount_options | nindent 4 }}
   nfs:
-    path: /rpool/scratch
+    path: /scratch
     server: {{ $nfs_server }}
 ---
 apiVersion: v1
