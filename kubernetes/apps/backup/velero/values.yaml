@@ -121,7 +121,7 @@ schedules:
 
   daily-idrive-monitoring:     # NEW schedule
     disabled: false
-    schedule: "0 4 * * *"      # 30 min after daily-idrive starts, clear of its ~57m run
+    schedule: "15 4 * * *"      # 30 min after daily-idrive starts, clear of its ~57m run
     template:
       ttl: "168h"
       storageLocation: idrive
@@ -131,7 +131,7 @@ schedules:
 
   weekly-idrive:
     disabled: false
-    schedule: "30 4 * * 0"
+    schedule: "15 5 * * 0"
     template:
       ttl: "672h"
       storageLocation: idrive
@@ -140,7 +140,7 @@ schedules:
         - velero
   monthly-idrive:
     disabled: false
-    schedule: "30 5 1 * *"
+    schedule: "0 6 1 * *"
     template:
       ttl: "2190h"
       storageLocation: idrive
@@ -158,7 +158,7 @@ schedules:
         - monitoring
   daily-default:
     disabled: false
-    schedule: "15 0 * * *"
+    schedule: "15 1 * * *"
     template:
       ttl: "168h"
       csiSnapshotTimeout: 30m
@@ -166,7 +166,7 @@ schedules:
         - velero
   weekly-default:
     disabled: false
-    schedule: "15 1 * * 0"
+    schedule: "00 2 * * 0"
     template:
       ttl: "672h"
       csiSnapshotTimeout: 30m
@@ -174,7 +174,7 @@ schedules:
         - velero
   monthly-default:
     disabled: false
-    schedule: "15 2 1 * *"
+    schedule: "45 2 1 * *"
     template:
       ttl: "2190h"
       csiSnapshotTimeout: 30m
