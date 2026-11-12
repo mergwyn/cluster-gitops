@@ -13,6 +13,12 @@
 	"nipar44/predbat_addon"
       ],
       "versioning": "regex:^alpine-v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$"
+    },
+    {
+      "description": "Use regex versioning for Plex; tags carry a changing build hash suffix",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["plexinc/pms-docker"],
+      "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)\\.(?<build>\\d+)-[a-f0-9]+$"
     }
   ]
 }
