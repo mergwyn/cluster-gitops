@@ -9,7 +9,7 @@ controllers:
         restartPolicy: Always   # native sidecar, needs Kubernetes 1.28+
         image:
           repository: docker.io/alpine/git
-          tag: 2.54.0@sha256:ce84fd6a057b4dc5cf5009da2dd832f1c6d096c1984bf50496cf3c256402264d
+          tag: 2.54.0@sha256:6a1fdb962814ca11508ca8d1bab94375b5b7ac4e4a9a40981c29fc32c02f095d
         command: ["/bin/sh", "/scripts/sync.sh"]
         env:
           GIT_BRANCH: main
