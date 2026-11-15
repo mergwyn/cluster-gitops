@@ -84,20 +84,20 @@ service:
         port: *port
 
 networkpolicies:
-plex:
-  controller: plex
-  policyTypes:
-    - Ingress
-  rules:
-    ingress:
-      - from:
-          - ipBlock:
-              cidr: 10.58.0.0/24
-          - ipBlock:
-              cidr: 10.42.0.0/16
-        ports:
-          - protocol: TCP
-            port: *port
+  plex:
+    controller: plex
+    policyTypes:
+      - Ingress
+    rules:
+      ingress:
+        - from:
+            - ipBlock:
+                cidr: 10.58.0.0/24
+            - ipBlock:
+                cidr: 10.42.0.0/16
+          ports:
+            - protocol: TCP
+              port: *port
 
 persistence:
   config:
