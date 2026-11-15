@@ -12,6 +12,8 @@ controllers:
       successfulJobsHistory: 1
       failedJobsHistory: 1
       ttlSecondsAfterFinished: 86400
+    annotations:
+      reloader.stakater.com/auto: "true"
 
     containers:
       app:
