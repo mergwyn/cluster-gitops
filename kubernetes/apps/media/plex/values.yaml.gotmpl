@@ -36,7 +36,7 @@ controllers:
           tag: "1.43.5.11079-b3b13e506@sha256:6d778d41daae68f89115aa87a44ae14a96b23e71a2093da173b5a9aac4091336"
         env:
           TZ: Europe/London
-          ALLOWED_NETWORKS: "10.0.0.0/8"
+          ALLOWED_NETWORKS: "10.0.0.0/8" # TODO mive settingbto initContainer
           # PLEX_CLAIM: set this if you need to reclaim the server
           PLEX_MEDIA_SERVER_APPLICATION_SUPPORT_DIR: "/config"
           PLEX_PASS: "yes"
@@ -82,6 +82,22 @@ service:
     ports:
       http:
         port: *port
+
+networkpolicies:
+plex:
+  controller: plex
+  policyTypes:
+    - Ingress
+  rules:
+    ingress:
+      - from:
+          - ipBlock:
+              cidr: 10.58.0.0/24
+          - ipBlock:
+              cidr: 10.42.0.0/16
+        ports:
+          - protocol: TCP
+            port: *port
 
 persistence:
   config:
