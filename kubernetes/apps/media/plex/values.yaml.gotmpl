@@ -23,6 +23,8 @@ controllers:
       securityContext:
         seccompProfile:
           type: RuntimeDefault
+      automountServiceAccountToken: false
+      enableServiceLinks: false
 
     containers:
       app:
