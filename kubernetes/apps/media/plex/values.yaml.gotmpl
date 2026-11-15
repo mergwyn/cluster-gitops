@@ -99,9 +99,7 @@ networkpolicies:
       ingress:
         - from:
             - ipBlock:
-                cidr: 10.58.0.0/24
-            - ipBlock:
-                cidr: 10.42.0.0/16
+                cidr: 0.0.0.0/0
           ports:
             - protocol: TCP
               port: *port
