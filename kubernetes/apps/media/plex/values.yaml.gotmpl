@@ -5,11 +5,15 @@ configMaps:
   kopiaignore:
     enabled: true
     data:
-      .kopiaignore: |-
+      .kopiaignore: |
         Plex Media Server/Cache
         Plex Media Server/Logs
         Plex Media Server/Media
         Plex Media Server/Metadata
+        Plex Media Server/Crash Reports
+        Plex Media Server/plexmediaserver.pid
+        Plex Media Server/.LocalAdminToken
+        .bash_history
 
 controllers:
   plex:
