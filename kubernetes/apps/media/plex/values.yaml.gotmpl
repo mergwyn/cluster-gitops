@@ -24,25 +24,6 @@ controllers:
         seccompProfile:
           type: RuntimeDefault
 
-    initContainers:
-      kopiaignore:
-        image:
-          repository: docker.io/library/alpine
-          tag: 3.24@sha256:f59abe656b692d901e184be3445e084786602108599d2a51d229c0f5a48c71bf
-        command: ["/bin/sh", "-c"]
-        # TODO better handling for database backup
-        # TODO move to config map
-        args:
-          - |-
-            tee /config/.kopiaignore <<!
-            Plex Media Server/Cache
-            Plex Media Server/Logs
-            Plex Media Server/Media
-            Plex Media Server/Metadata
-            !
-        securityContext:
-          runAsUser: 0
-
     containers:
       app:
         image:
@@ -136,3 +117,12 @@ persistence:
       - path: /data
   tmp:
     type: emptyDir
+  kopiaignore:
+    type: configMap
+    name: plex
+    advancedMounts:
+      plex:
+        app:
+          - path: /config/.kopiaignore
+            subPath: .kopiaignore
+            readOnly: true
