@@ -100,7 +100,7 @@ service:
     loadBalancerClass: metallb.io/internal
     ports:
       http:
-        port: *port
+        port: &port 32400
 
 networkpolicies:
   plex:
