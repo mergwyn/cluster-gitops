@@ -51,13 +51,13 @@ repoServer:
           apk update && apk add --no-cache ca-certificates tar
 
           # renovate: datasource=github-releases depName=helmfile/helmfile
-          CUSTOM_HELMFILE_VERSION="v1.8.3"
+          CUSTOM_HELMFILE_VERSION="v1.8.4"
           # renovate: datasource=github-releases depName=getsops/sops
           CUSTOM_SOPS_VERSION="v3.13.3"
           # renovate: datasource=github-releases depName=helm/helm
-          CUSTOM_HELM_VERSION="v4.3.1"
+          CUSTOM_HELM_VERSION="v4.3.2"
           # renovate: datasource=github-tags depName=jkroepke/helm-secrets
-          SECRETS_VERSION="4.7.10"
+          SECRETS_VERSION="4.7.11"
           # renovate: datasource=github-releases depName=databus23/helm-diff
           DIFF_VERSION="v3.15.15"
 
