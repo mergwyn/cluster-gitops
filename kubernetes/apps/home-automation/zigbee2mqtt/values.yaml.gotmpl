@@ -118,6 +118,14 @@ persistence:
     size: 2Gi
     globalMounts:
       - path: /data
+    secrets:
+    type: secret
+    name: zigbee2mqtt-secret-file
+    globalMounts:
+      - path: /config/secrets.yaml
+        subPath: secrets.yaml
+        readOnly: true
+
 route:
   app:
     hostnames:
