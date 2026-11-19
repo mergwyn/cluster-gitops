@@ -3,6 +3,23 @@
 additionalPrometheusRulesMap:
   additional-rules:
     groups:
+      - name: longhorn.rules
+        rules:
+          - alert: LonghornVolumeStatusCritical
+            expr: longhorn_volume_robustness == 3
+            for: 1m
+            labels:
+              severity: critical
+            annotations:
+              summary: "Longhorn volume {{ $labels.volume }} is Faulted"
+          - alert: LonghornVolumeStatusWarning
+            expr: longhorn_volume_robustness == 2
+            for: 30s
+            labels:
+              severity: warning
+            annotations:
+              summary: "Longhorn volume {{ $labels.volume }} is Degraded or Rebuilding"
+
       - name: oomkills
         rules:
           - alert: HostOomKillDetected
@@ -146,13 +163,13 @@ additionalPrometheusRulesMap:
               summary: "Node {{ $labels.instance }} is down"
               description: "Prometheus cannot scrape the node-exporter on {{ $labels.instance }}."
 
-          - alert: NodeExpectedOffline
-            expr: up{job="node-exporter", monitoring="intermittent"} == 0
-            for: 5m
-            labels:
-              severity: none
-            annotations:
-              summary: "Intermittent node offline (expected)"
+#          - alert: NodeExpectedOffline
+#            expr: up{job="node-exporter", monitoring="intermittent"} == 0
+#            for: 5m
+#            labels:
+#              severity: none
+#            annotations:
+#              summary: "Intermittent node offline (expected)"
 
       - name: custom.rules
         rules:
