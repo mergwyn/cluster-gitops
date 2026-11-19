@@ -37,16 +37,16 @@ controllers:
           # ZIGBEE2MQTT_CONFIG_ADVANCED_NETWORK_KEY: "GENERATE"
           # ZIGBEE2MQTT_CONFIG_ADVANCED_PAN_ID: "GENERATE"
           # ZIGBEE2MQTT_CONFIG_ADVANCED_EXT_PAN_ID: "GENERATE"
-          ZIGBEE2MQTT_CONFIG_ADVANCED_PAN_ID:
-            valueFrom: {secretKeyRef: {name: zigbee2mqtt-secret, key: zigbee_pan_id}}
-          ZIGBEE2MQTT_CONFIG_ADVANCED_EXT_PAN_ID:
-            valueFrom: {secretKeyRef: {name: zigbee2mqtt-secret, key: zigbee_ext_pan_id}}
-          ZIGBEE2MQTT_CONFIG_ADVANCED_NETWORK_KEY:
-            valueFrom: {secretKeyRef: {name: zigbee2mqtt-secret, key: zigbee_network_key}}
+          ZIGBEE2MQTT_CONFIG_ADVANCED_PAN_ID: "!secrets.yaml pan_id"
+            #valueFrom: {secretKeyRef: {name: zigbee2mqtt-secret, key: zigbee_pan_id}}
+          ZIGBEE2MQTT_CONFIG_ADVANCED_EXT_PAN_ID: "!secrets.yaml ext_pan_id"
+            #valueFrom: {secretKeyRef: {name: zigbee2mqtt-secret, key: zigbee_ext_pan_id}}
+          ZIGBEE2MQTT_CONFIG_ADVANCED_NETWORK_KEY: "!secrets.yaml network_key"
+            #valueFrom: {secretKeyRef: {name: zigbee2mqtt-secret, key: zigbee_network_key}}
           ZIGBEE2MQTT_CONFIG_MQTT_USER: "!secrets.yaml mqtt_user"
             #valueFrom: {secretKeyRef: {name: zigbee2mqtt-secret, key: mqtt_user}}
-          ZIGBEE2MQTT_CONFIG_MQTT_PASSWORD:
-            valueFrom: {secretKeyRef: {name: zigbee2mqtt-secret, key: mqtt_password}}
+          ZIGBEE2MQTT_CONFIG_MQTT_PASSWORD: "!secrets.yaml mqtt_password"
+            #valueFrom: {secretKeyRef: {name: zigbee2mqtt-secret, key: mqtt_password}}
           ZIGBEE2MQTT_CONFIG_EXPERIMENTAL_NEW_API: true
           ZIGBEE2MQTT_CONFIG_FRONTEND_PORT: 8080
           # yamllint disable-line rule:line-length
