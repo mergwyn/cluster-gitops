@@ -28,11 +28,6 @@ controllers:
         args:
           - |-
             set -ex
-            tee /config/.kopiaignore <<!
-            /.esphome
-            /.code-server/logs
-            /.git
-            !
             cd /config
             # Need to initialise repository?
             if [ ! -d .git ] ; then
@@ -110,6 +105,15 @@ dnsConfig:
     - 10.58.0.21
     - 10.58.0.22
 
+configMaps:
+  kopiaignore:
+    enabled: true
+    data:
+      .kopiaignore: |
+        /.esphome
+        /.code-server/logs
+        /.git
+
 persistence:
   config:
     type: persistentVolumeClaim
@@ -132,3 +136,12 @@ persistence:
       - path: /config/secrets.yaml
         subPath: secrets.yaml
         readOnly: true
+  kopiaignore:
+    type: configMap
+    name: esphome
+    advancedMounts:
+      esphome:
+        app:
+          - path: /config/.kopiaignore
+            subPath: .kopiaignore
+            readOnly: true
