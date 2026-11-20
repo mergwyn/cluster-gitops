@@ -2,19 +2,19 @@
 set -e
 
 # 1. Generate the Kopia ignore rules from the version-controlled ConfigMap.
-echo "[kopia] Writing .kopiaignore..."
-cp /scripts/kopiaignore /config/.kopiaignore
+#echo "[kopia] Writing .kopiaignore..."
+#cp /scripts/kopiaignore /config/.kopiaignore
 
 # 2. Synchronize configuration state from GitHub if empty.
-cd /config
-if [ ! -d .git ]; then
-  echo "[git] Initializing config repository from GitHub..."
-  mkdir temp-dir
-  git clone https://github.com/mergwyn/home-assistant-config temp-dir
-  mv temp-dir/.git .
-  rm -rf temp-dir
-  git checkout .
-fi
+#cd /config
+#if [ ! -d .git ]; then
+#  echo "[git] Initializing config repository from GitHub..."
+#  mkdir temp-dir
+#  git clone https://github.com/mergwyn/home-assistant-config temp-dir
+#  mv temp-dir/.git .
+#  rm -rf temp-dir
+#  git checkout .
+#fi#
 
 # 3. Install tools required by the database check and Octopus reconciliation.
 echo "[init] Installing required tools..."

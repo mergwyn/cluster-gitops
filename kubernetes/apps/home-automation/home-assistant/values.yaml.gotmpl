@@ -141,6 +141,17 @@ serviceMonitor:
           name: home-assistant-prometheus
           key: token
 
+configMaps:
+  kopiaignore:
+    enabled: true
+    forceRename: "{{.Release.Name}}-kopiaignore"
+    data:
+      .kopiaignore: |
+        /.code-server/logs
+        /.git
+        /.venv
+        /backups
+
 persistence:
   config:
     forceRename: "{{.Release.Name}}-config"
@@ -163,6 +174,15 @@ persistence:
       - path: /config/secrets.yaml
         subPath: secrets.yaml
         readOnly: true
+  kopiaignore:
+    type: configMap
+    name:  "{{.Release.Name}}-kopiaignore"
+    advancedMounts:
+      "{{ .Release.Name }}":
+        app:
+          - path: /config/.kopiaignore
+            subPath: .kopiaignore
+            readOnly: true
 
   init-scripts:
     type: configMap

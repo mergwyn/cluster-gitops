@@ -22,3 +22,9 @@ certManager:
   issuerName: letsencrypt-staging
   acmeServer: https://acme-staging-v02.api.letsencrypt.org/directory
   email: gary@theclarkhome.com
+
+gitSync:
+  githubUser: mergwyn
+  paths:  # defaults to /config
+    zigbee2mqtt: /data
+  repoNames: {}  # defaults to {{.Release.Name }}-config optional overrides

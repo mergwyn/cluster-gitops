@@ -1,12 +1,14 @@
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/common-5.2.1/charts/library/common/values.schema.json
+gitSync:
+  path: /data
 
 global:
   # -- Set an override for the prefix of the fullname
   nameOverride: zigbee2mqtt
 
 controllers:
-  zigbee2mqtt:
+  {{ .Release.Name }}:
     enabled: true
     type: deployment
     annotations:
@@ -33,16 +35,12 @@ controllers:
           ZIGBEE2MQTT_CONFIG_ADVANCED_LAST_SEEN: "ISO_8601"
           ZIGBEE2MQTT_CONFIG_ADVANCED_LOG_LEVEL: "info"
           ZIGBEE2MQTT_CONFIG_ADVANCED_LOG_OUTPUT: '["console"]'
-          #  The following entries need to be uncommented for a new install
-          # ZIGBEE2MQTT_CONFIG_ADVANCED_NETWORK_KEY: "GENERATE"
-          # ZIGBEE2MQTT_CONFIG_ADVANCED_PAN_ID: "GENERATE"
-          # ZIGBEE2MQTT_CONFIG_ADVANCED_EXT_PAN_ID: "GENERATE"
-          # TODO: consolidate secrets into one.
-          ZIGBEE2MQTT_CONFIG_ADVANCED_PAN_ID: #"!secrets.yaml pan_id"
-            valueFrom: {secretKeyRef: {name: zigbee2mqtt-secret, key: zigbee_pan_id}}
-          ZIGBEE2MQTT_CONFIG_ADVANCED_EXT_PAN_ID: #"!secrets.yaml ext_pan_id"
-            valueFrom: {secretKeyRef: {name: zigbee2mqtt-secret, key: zigbee_ext_pan_id}}
+          #  The following 3 entries need to be set to GENERATE for a new install
           ZIGBEE2MQTT_CONFIG_ADVANCED_NETWORK_KEY: "!secrets.yaml network_key"
+          ZIGBEE2MQTT_CONFIG_ADVANCED_PAN_ID: 6543
+          ZIGBEE2MQTT_CONFIG_ADVANCED_EXT_PAN_ID: # This is in a secret as I couldn't work out how to set it directly
+              valueFrom: {secretKeyRef: {name: zigbee2mqtt-secret, key: ext_pan_id }}
+          # TODO: consolidate secrets into one.
           ZIGBEE2MQTT_CONFIG_MQTT_USER: "!secrets.yaml mqtt_user"
           ZIGBEE2MQTT_CONFIG_MQTT_PASSWORD: "!secrets.yaml mqtt_password"
           ZIGBEE2MQTT_CONFIG_EXPERIMENTAL_NEW_API: true
@@ -107,6 +105,15 @@ service:
       http:
         port: &code-server-port 12321
 
+configMaps:
+  kopiaignore:
+    enabled: true
+    forceRename: "{{.Release.Name}}-kopiaignore"
+    data:
+      .kopiaignore: |
+        /.code-server/logs
+        /.git
+
 persistence:
   data:
     type: persistentVolumeClaim
@@ -123,6 +130,15 @@ persistence:
       - path: /data/secrets.yaml
         subPath: secrets.yaml
         readOnly: true
+  kopiaignore:
+    type: configMap
+    name: "{{ .Release.Name }}-kopiaignore"
+    advancedMounts:
+      "{{ .Release.Name }}":
+        app:
+          - path: /data/.kopiaignore
+            subPath: .kopiaignore
+            readOnly: true
 
 route:
   app:

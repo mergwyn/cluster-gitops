@@ -12,11 +12,27 @@ controllers:
           tag: 2.54.0@sha256:6a1fdb962814ca11508ca8d1bab94375b5b7ac4e4a9a40981c29fc32c02f095d
         command: ["/bin/sh", "/scripts/sync.sh"]
         env:
+          GITHUB_USER: {{ required "gitSync.githubUser is required" (.Values | get "gitSync.githubUser" "") | quote }}
+          REPO_NAME: {{ .Values | get (printf "gitSync.repoNames.%s" .Release.Name) (printf "%s-config" .Release.Name) | quote }}
           GIT_BRANCH: main
+          SYNC_PATH: {{ .Values | get (printf "gitSync.paths.%s" .Release.Name) "/config" | quote }}
           SYNC_INTERVAL: "60"
           HOME: /tmp
         securityContext:
           runAsUser: 0   # matches config-initialization, so file ownership stays consistent
+        lifecycle:
+          postStart:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  i=0
+                  while [ ! -f /tmp/ready ]; do
+                    i=$((i + 1))
+                    [ "${i}" -ge 300 ] && exit 1
+                    sleep 1
+                  done
 
 persistence:
   sync-scripts:
@@ -38,8 +54,22 @@ rawResources:
       data:
         sync.sh: |
           #!/bin/sh
-          cd /config || exit 1
-          git config --global --add safe.directory /config
+          cd "${SYNC_PATH}" || exit 1
+          git config --global --add safe.directory "${SYNC_PATH}"
+          trap 'exit 0' TERM INT
+
+          # Need to initialise repository?
+          if [ ! -d .git ]; then
+            echo "Initializing config repository from GitHub..."
+            rm -rf temp-dir
+            git clone --branch "${GIT_BRANCH}" \
+              "https://github.com/${GITHUB_USER}/${REPO_NAME}" temp-dir || exit 1
+            mv temp-dir/.git .
+            rm -rf temp-dir
+            git checkout . || exit 1
+          fi
+          touch /tmp/ready
+
           fails=0
           while true; do
             dirty=$(git status --porcelain --untracked-files=no -- . \
@@ -55,5 +85,6 @@ rawResources:
               echo "$(date -u +%FT%TZ) pull failed (${fails} in a row)"
               [ "${fails}" -ge 5 ] && exit 1
             fi
-            sleep "${SYNC_INTERVAL}"
+            sleep "${SYNC_INTERVAL}" &
+            wait $!
           done

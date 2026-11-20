@@ -16,7 +16,7 @@ releases:
       - template: namespace
       - template: git-sync
     values:
-      - values.yaml
+      - values.yaml.gotmpl
       - values-init-scripts.gotmpl
       - values-route.yaml.gotmpl
       - externalsecret.yaml

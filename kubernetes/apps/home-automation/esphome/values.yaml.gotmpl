@@ -19,28 +19,6 @@ controllers:
             "ips": ["{{.Values.network.esphome}}"]
           }]
 
-    initContainers:
-      config-initialization:
-        image:
-          repository: docker.io/alpine/git
-          tag: 2.54.0@sha256:6a1fdb962814ca11508ca8d1bab94375b5b7ac4e4a9a40981c29fc32c02f095d
-        command: ["/bin/sh", "-c"]
-        args:
-          - |-
-            set -ex
-            cd /config
-            # Need to initialise repository?
-            if [ ! -d .git ] ; then
-              echo "Initializing config repository from GitHub..."
-              mkdir temp-dir
-              git clone https://github.com/mergwyn/esphome-config temp-dir
-              mv temp-dir/.git .
-              rm -rf temp-dir
-              git checkout .
-            fi
-        securityContext:
-          runAsUser: 0
-
     containers:
       app:
         image:
@@ -108,6 +86,7 @@ dnsConfig:
 configMaps:
   kopiaignore:
     enabled: true
+    forceRename: "{{.Release.Name}}-kopiaignore"
     data:
       .kopiaignore: |
         /.esphome
@@ -138,7 +117,7 @@ persistence:
         readOnly: true
   kopiaignore:
     type: configMap
-    name: esphome
+    name:  "{{.Release.Name}}-kopiaignore"
     advancedMounts:
       esphome:
         app:
