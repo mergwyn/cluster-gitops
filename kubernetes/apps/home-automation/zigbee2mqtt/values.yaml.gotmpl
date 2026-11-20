@@ -38,8 +38,8 @@ controllers:
           #  The following 3 entries need to be set to GENERATE for a new install
           ZIGBEE2MQTT_CONFIG_ADVANCED_NETWORK_KEY: "!secrets.yaml network_key"
           ZIGBEE2MQTT_CONFIG_ADVANCED_PAN_ID: 6543
-          ZIGBEE2MQTT_CONFIG_ADVANCED_EXT_PAN_ID: # This is in a secret as I couldn't work out how to set it directly
-              valueFrom: {secretKeyRef: {name: zigbee2mqtt-secret, key: ext_pan_id }}
+          #ZIGBEE2MQTT_CONFIG_ADVANCED_EXT_PAN_ID: # This is in a secret as I couldn't work out how to set it directly
+          #    valueFrom: {secretKeyRef: {name: zigbee2mqtt-secret, key: ext_pan_id }}
           # TODO: consolidate secrets into one.
           ZIGBEE2MQTT_CONFIG_MQTT_USER: "!secrets.yaml mqtt_user"
           ZIGBEE2MQTT_CONFIG_MQTT_PASSWORD: "!secrets.yaml mqtt_password"
