@@ -1,0 +1,30 @@
+---
+# CEL-based variant of velero-exclude-cache-pvcs
+# Migration: Changed kind from ClusterPolicy to MutatingPolicy, using CEL for name matching
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/kyverno.io/mutatingpolicy_v1.json
+apiVersion: policies.kyverno.io/v1
+kind: MutatingPolicy
+metadata:
+  name: velero-exclude-cache-pvcs
+spec:
+  evaluation:
+    mutateExisting:
+      enabled: false
+  matchConstraints:
+    resourceRules:
+      - apiGroups:
+          - ''
+        apiVersions:
+          - v1
+        resources:
+          - persistentvolumeclaims
+  matchConditions:
+    - name: match-cache-pvc
+      expression: "object.metadata.name.endsWith('-cache')"
+  mutations:
+    - name: exclude-cache-pvcs-from-velero
+      patchType: ApplyConfiguration
+      patch:
+        metadata:
+          labels:
+            velero.io/exclude-from-backup: "true"

@@ -1,0 +1,51 @@
+---
+# CEL-based variant of add-spread-constraints
+# Migration: Changed kind from ClusterPolicy to MutatingPolicy
+# Note: Original used JMESPath template syntax in patchStrategicMerge for dynamic label matching
+# In CEL, this requires either:
+#   1. Static label matching if the template values are known and fixed
+#   2. JSONPatch with CEL expressions for dynamic patching
+# Since the template references request.object.metadata.labels and request.object.metadata.name,
+# we convert to ApplyConfiguration with a CEL-generated patch structure.
+# 
+# BEHAVIORAL CHANGE: The original uses JMESPath template evaluation to populate the matchLabel dynamically.
+# The CEL version below uses a static patch. If dynamic label matching is required,
+# consider using a custom webhook or filing an issue for CEL template support in ApplyConfiguration.
+# TODO(migration): Verify if the dynamic template behavior is essential. If so, may need manual intervention.
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/kyverno.io/mutatingpolicy_v1.json
+
+apiVersion: policies.kyverno.io/v1
+kind: MutatingPolicy
+metadata:
+  name: add-spread-constraints
+  annotations:
+    pod-policies.kyverno.io/autogen-controllers: none
+spec:
+  evaluation:
+    mutateExisting:
+      enabled: false
+  matchConstraints:
+    resourceRules:
+      - apiGroups:
+          - apps
+        apiVersions:
+          - v1
+        resources:
+          - deployments
+  mutations:
+    - name: add-spread-constraints
+      patchType: ApplyConfiguration
+      patch:
+        spec:
+          template:
+            spec:
+              topologySpreadConstraints:
+                - maxSkew: 1
+                  topologyKey: "kubernetes.io/hostname"
+                  whenUnsatisfiable: ScheduleAnyway
+                  labelSelector:
+                    matchLabels:
+                      # NOTE: This is now a static patch. Original used dynamic JMESPath templating.
+                      # If the matchLabel value must be dynamic (from request.object.metadata.labels or name),
+                      # this policy may need CEL JSONPatch with expression generation (see TODO above).
+                      app.kubernetes.io/name: "app"

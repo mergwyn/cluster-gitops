@@ -1,0 +1,60 @@
+---
+# CEL-based variant of inject-velero-backup-defaults
+# Migration: Split into two separate MutatingPolicy resources (one per resource kind)
+# Original used mutate.patchStrategicMerge with + prefix; converted to ApplyConfiguration patches
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/kyverno.io/mutatingpolicy_v1.json
+
+apiVersion: policies.kyverno.io/v1
+kind: MutatingPolicy
+metadata:
+  name: inject-velero-backup-defaults
+spec:
+  evaluation:
+    mutateExisting:
+      enabled: false
+  matchConstraints:
+    resourceRules:
+      - apiGroups:
+          - velero.io
+        apiVersions:
+          - v1
+        resources:
+          - backups
+  mutations:
+    - name: mutate-velero-backups
+      patchType: ApplyConfiguration
+      patch:
+        spec:
+          excludedNamespaces:
+            - velero
+          excludedResources:
+            - datauploads.velero.io
+
+---
+
+apiVersion: policies.kyverno.io/v1
+kind: MutatingPolicy
+metadata:
+  name: inject-velero-schedule-defaults
+spec:
+  evaluation:
+    mutateExisting:
+      enabled: false
+  matchConstraints:
+    resourceRules:
+      - apiGroups:
+          - velero.io
+        apiVersions:
+          - v1
+        resources:
+          - schedules
+  mutations:
+    - name: mutate-velero-schedules
+      patchType: ApplyConfiguration
+      patch:
+        spec:
+          template:
+            excludedNamespaces:
+              - velero
+            excludedResources:
+              - datauploads.velero.io

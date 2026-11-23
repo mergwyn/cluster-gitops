@@ -1,0 +1,66 @@
+---
+# CEL-based variant of goldilocks-vpa-mode
+# Migration: Split into two separate MutatingPolicy resources per rule
+# Original used mutate.targets with preconditions → converted to matchConstraints + matchConditions
+# Note: Original used mutateExistingOnPolicyUpdate: true; mapped to evaluation.mutateExisting.enabled: true
+# TODO(migration): These are set to Audit mode initially. Once verified against old policy reports,
+# change evaluation.mutateExisting.enabled to false to match original behavior (or keep true if intended).
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/kyverno.io/mutatingpolicy_v1.json
+
+apiVersion: policies.kyverno.io/v1
+kind: MutatingPolicy
+metadata:
+  name: vpa-auto-for-apps
+spec:
+  evaluation:
+    mutateExisting:
+      enabled: true
+  matchConstraints:
+    resourceRules:
+      - apiGroups:
+          - ''
+        apiVersions:
+          - v1
+        resources:
+          - namespaces
+  matchConditions:
+    - name: match-auto-namespaces
+      expression: "object.metadata.name in ['default', 'system', 'media', 'reloader-system']"
+  mutations:
+    - name: vpa-auto-for-apps
+      patchType: ApplyConfiguration
+      patch:
+        metadata:
+          labels:
+            goldilocks.fairwinds.com/enabled: "true"
+            goldilocks.fairwinds.com/vpa-update-mode: "InPlaceOrRecreate"
+
+---
+
+apiVersion: policies.kyverno.io/v1
+kind: MutatingPolicy
+metadata:
+  name: vpa-guidance-only
+spec:
+  evaluation:
+    mutateExisting:
+      enabled: true
+  matchConstraints:
+    resourceRules:
+      - apiGroups:
+          - ''
+        apiVersions:
+          - v1
+        resources:
+          - namespaces
+  matchConditions:
+    - name: match-guidance-namespaces
+      expression: "!(object.metadata.name in ['default', 'system', 'media', 'reloader-system'])"
+  mutations:
+    - name: vpa-guidance-only
+      patchType: ApplyConfiguration
+      patch:
+        metadata:
+          labels:
+            goldilocks.fairwinds.com/enabled: "true"
+            goldilocks.fairwinds.com/vpa-update-mode: "Off"

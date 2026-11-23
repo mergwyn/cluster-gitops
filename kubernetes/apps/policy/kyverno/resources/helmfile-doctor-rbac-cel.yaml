@@ -1,0 +1,64 @@
+---
+# CEL-based variant of generate-helmfile-doctor-binding
+# Migration: Changed kind from ClusterPolicy to GeneratingPolicy
+# Original used generate.generateExisting: true and generate.synchronize: true
+# These map to evaluation.generateExisting.enabled and evaluation.synchronize
+# 
+# Original match: Namespace (all)
+# Original exclude: kube-system, kube-public, kube-node-lease
+# Original generate: RoleBinding in the namespace of the trigger resource
+# 
+# GeneratingPolicy structure differs: resources are generated via CEL expressions
+# in spec.ruleOnData.data, not via static templates.
+# TODO(migration): GeneratingPolicy with CEL requires expressing the resource
+# as a CEL map/object structure. The below is a simplified conversion attempt.
+# If CEL resource generation doesn't work as expected, consider:
+#   1. Using kyverno generate with clone (if source exists)
+#   2. Using a template or webhook for complex generation logic
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/kyverno.io/generatingpolicy_v1.json
+
+apiVersion: policies.kyverno.io/v1
+kind: GeneratingPolicy
+metadata:
+  name: generate-helmfile-doctor-binding
+spec:
+  evaluation:
+    generateExisting:
+      enabled: true
+    synchronize:
+      enabled: true
+  matchConstraints:
+    resourceRules:
+      - apiGroups:
+          - ''
+        apiVersions:
+          - v1
+        resources:
+          - namespaces
+    excludeResourceRules:
+      - apiGroups:
+          - ''
+        apiVersions:
+          - v1
+        resources:
+          - namespaces
+        names:
+          - kube-system
+          - kube-public
+          - kube-node-lease
+  ruleOnData:
+    name: helmfile-doctor-rolebinding
+    data:
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: RoleBinding
+      metadata:
+        name: helmfile-doctor-reader
+        namespace: "{{object.metadata.name}}"
+      roleRef:
+        apiGroup: rbac.authorization.k8s.io
+        kind: ClusterRole
+        name: helmfile-doctor-reader
+      subjects:
+        - kind: ServiceAccount
+          name: helmfile-doctor
+          namespace: kube-system

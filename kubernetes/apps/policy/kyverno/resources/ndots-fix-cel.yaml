@@ -1,0 +1,32 @@
+---
+# CEL-based variant of ndots-fix
+# Migration: Changed kind from ClusterPolicy to MutatingPolicy, namespace selector → matchConditions with CEL
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/kyverno.io/mutatingpolicy_v1.json
+apiVersion: policies.kyverno.io/v1
+kind: MutatingPolicy
+metadata:
+  name: ndots-fix
+spec:
+  evaluation:
+    mutateExisting:
+      enabled: false
+  matchConstraints:
+    resourceRules:
+      - apiGroups:
+          - ''
+        apiVersions:
+          - v1
+        resources:
+          - pods
+  matchConditions:
+    - name: match-namespaces
+      expression: "object.metadata.namespace in ['argocd', 'home-assistant', 'media', 'network', 'system', 'vpn']"
+  mutations:
+    - name: fix-ndots
+      patchType: ApplyConfiguration
+      patch:
+        spec:
+          dnsConfig:
+            options:
+              - name: ndots
+                value: "1"
