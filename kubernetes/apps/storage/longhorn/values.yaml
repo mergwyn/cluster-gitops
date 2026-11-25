@@ -1,5 +1,5 @@
 defaultSettings:
-  defaultReplicaCount: &replicas 3
+  defaultReplicaCount: 3
   concurrentReplicaRebuildPerNodeLimit: 3
   replicaSoftAntiAffinity: false
   replicaAutoBalance: best-effort
@@ -85,7 +85,7 @@ extraObjects:
     reclaimPolicy: Delete
     volumeBindingMode: Immediate
     parameters:
-      numberOfReplicas: *replicas
+      numberOfReplicas: "3"
       staleReplicaTimeout: "30"
       fsType: "ext4"
       dataLocality: "disabled"
