@@ -14,7 +14,7 @@ config:
 existingSecret: postfix-mail
 
 persistence:
-  storageClass: longhorn
+  storageClass: longhorn-delete
 
 resources:
   requests:
