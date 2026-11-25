@@ -8,12 +8,12 @@
 controllers:
   multus:
     containers:
-      cni:
+      multus:
         image:
           # -- multus installer repostory
           repository: ghcr.io/k8snetworkplumbingwg/multus-cni
           # -- multus installer tag
-          tag: "{{ .Chart.AppVersion }}-thick"
+          tag: "v{{ .Chart.AppVersion }}-thick"
           # -- multus installer pull policy
           pullPolicy: IfNotPresent
     initContainers:
@@ -22,7 +22,7 @@ controllers:
           # -- CNI installer repostory
           repository: ghcr.io/angelnu/cni-plugins
           # -- CNI installer tag
-          tag: 1.9.0@sha256:695928e59286aaf05a9094e5c74a4263c6c27da228a732123accfbcac1dd676d
+          tag: 1.9.1@sha256:0427eae3c82069f9e5056f0e6c2e62a104614e4b0e11a394ef935db2e03ca02e
           # -- CNI installer pull policy
           pullPolicy: IfNotPresent
       multus-installer: {}

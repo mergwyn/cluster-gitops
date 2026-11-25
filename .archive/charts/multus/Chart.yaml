@@ -1,26 +1,11 @@
 ---
 apiVersion: v2
-appVersion: v4.2.3 # renovate: depName=ghcr.io/k8snetworkplumbingwg/multus-cni datasource=docker
-description: multus CNI allows multiple NICs per pod
 name: multus
-version: 6.0.4
-kubeVersion: ">=1.16.0-0"
-keywords:
-  - multus
-home: https://github.com/angelnu/helm-charts/tree/master/charts/stable/multus
-icon: https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/docs/images/Multus.png
-sources:
-  - https://github.com/k8snetworkplumbingwg/multus-cni
-maintainers:
-  - name: angelnu
-    email: git@angelnu.com
+description: Multus CNI for K3s, copied from angelnu/multus
+type: application
+version: 1.0.0
+appVersion: 4.2.4
 dependencies:
   - name: common
     repository: https://bjw-s-labs.github.io/helm-charts
-    version: 4.6.0
-
-annotations:
-  artifacthub.io/changes: |-
-    - kind: changed
-      description: |
-        **BREAKING**: Updated library version to 4.5.0.
+    version: 5.2.1
