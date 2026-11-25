@@ -9,7 +9,7 @@ controllers:
         restartPolicy: Always   # native sidecar, needs Kubernetes 1.28+
         image:
           repository: docker.io/alpine/git
-          tag: 2.54.0@sha256:6a1fdb962814ca11508ca8d1bab94375b5b7ac4e4a9a40981c29fc32c02f095d
+          tag: v2.54.1@sha256:29cff25811f790b9f72fc266bf8009a5a911714c0e03c31c47339c50909d9aef
         command: ["/bin/sh", "/scripts/sync.sh"]
         env:
           GITHUB_USER: {{ required "gitSync.githubUser is required" (.Values | get "gitSync.githubUser" "") | quote }}
