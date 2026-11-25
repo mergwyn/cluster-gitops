@@ -85,6 +85,7 @@ persistence:
   enabled: true
   existingClaim: ""  # Leave blank to let k3s auto-provision, or swap in a Longhorn PVC name
   size: 3Gi
+  storageClass: longhorn
   accessModes:
     - ReadWriteOnce
   annotations:
