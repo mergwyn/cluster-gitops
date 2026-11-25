@@ -1,5 +1,5 @@
 defaultSettings:
-  defaultReplicaCount: 3
+  defaultReplicaCount: &replicas 3
   concurrentReplicaRebuildPerNodeLimit: 3
   replicaSoftAntiAffinity: false
   replicaAutoBalance: best-effort
@@ -19,6 +19,7 @@ networkPolicies:
 persistence:
   defaultClassReplicaCount: 3
   defaultClass: true
+  reclaimPolicy: Retain
 
 ingress:
   enabled: false
@@ -74,6 +75,24 @@ extraObjects:
       concurrency: 1
       groups:
         - default
+
+  - apiVersion: storage.k8s.io/v1
+    kind: StorageClass
+    metadata:
+      name: longhorn-delete
+    provisioner: driver.longhorn.io
+    allowVolumeExpansion: true
+    reclaimPolicy: Delete
+    volumeBindingMode: Immediate
+    parameters:
+      numberOfReplicas: *replicas
+      staleReplicaTimeout: "30"
+      fsType: "ext4"
+      dataLocality: "disabled"
+      unmapMarkSnapChainRemoved: "ignored"
+      disableRevisionCounter: "true"
+      dataEngine: "v1"
+      backupTargetName: "default"
 
   - apiVersion: storage.k8s.io/v1
     kind: StorageClass
