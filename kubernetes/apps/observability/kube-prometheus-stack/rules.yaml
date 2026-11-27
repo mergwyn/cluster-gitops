@@ -136,19 +136,19 @@ additionalPrometheusRulesMap:
                     )
               )
 
-          - alert: WorkloadLimitBelowVPAUpperBound
-            expr: |
-              workload_container_memory_limit_bytes
-                < on(namespace, target_name, container) group_left()
-                  kube_customresource_vpa_containerrecommendations_upperbound{resource="memory"}
-            for: 24h
-            labels:
-              severity: info
-              category: sizing
-            annotations:
-              summary: "{{ $labels.namespace }}/{{ $labels.target_name }} ({{ $labels.container }}) memory limit below VPA upper bound"
-              description: "Limit is under the VPA peak estimate. VPA is Off, so this is a manual tuning prompt — Goldilocks Burstable recipe: requests=lowerBound, limits=upperBound."
-              limit: "{{ $value | humanize1024 }}B"
+#          - alert: WorkloadLimitBelowVPAUpperBound
+#            expr: |
+#              workload_container_memory_limit_bytes
+#                < on(namespace, target_name, container) group_left()
+#                  kube_customresource_vpa_containerrecommendations_upperbound{resource="memory"}
+#            for: 24h
+#            labels:
+#              severity: info
+#              category: sizing
+#            annotations:
+#              summary: "{{ $labels.namespace }}/{{ $labels.target_name }} ({{ $labels.container }}) memory limit below VPA upper bound"
+#              description: "Limit is under the VPA peak estimate. VPA is Off, so this is a manual tuning prompt — Goldilocks Burstable recipe: requests=lowerBound, limits=upperBound."
+#              limit: "{{ $value | humanize1024 }}B"
 
   custom-target-down:
     groups:
